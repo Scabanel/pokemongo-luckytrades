@@ -13,7 +13,7 @@ export async function PATCH(
 
   const { id } = await params;
   const body = await request.json();
-  const { trainerId, tradeForPokemonName, tradeForPokemonId, notes, completed } =
+  const { trainerId, tradeForPokemonName, tradeForPokemonId, notes, completed, category, shiny, customSpriteUrl, priority } =
     body;
 
   const entry = await prisma.pokemonEntry.update({
@@ -28,6 +28,10 @@ export async function PATCH(
       }),
       ...(notes !== undefined && { notes: notes || null }),
       ...(completed !== undefined && { completed }),
+      ...(category !== undefined && { category }),
+      ...(shiny !== undefined && { shiny: shiny === true }),
+      ...(customSpriteUrl !== undefined && { customSpriteUrl: customSpriteUrl || null }),
+      ...(priority !== undefined && { priority: priority != null ? Number(priority) : null }),
     },
     include: { trainer: true },
   });

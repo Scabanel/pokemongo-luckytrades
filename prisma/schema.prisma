@@ -26,6 +26,9 @@ model PokemonEntry {
   tradeForPokemonName String?
   tradeForPokemonId   Int?
   notes               String?
+  shiny               Boolean  @default(false)
+  customSpriteUrl     String?
+  priority            Int?
   completed           Boolean  @default(false)
   createdAt           DateTime @default(now())
 }

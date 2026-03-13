@@ -10,15 +10,35 @@ interface PokemonEntry {
   pokemonName: string;
   pokemonId: number;
   category: string;
+  shiny?: boolean;
+  customSpriteUrl?: string | null;
   tradeForPokemonName?: string | null;
   tradeForPokemonId?: number | null;
   notes?: string | null;
+  priority?: number | null;
   trainer?: { id: string; name: string } | null;
+}
+
+type ActiveTab = "mirror" | "want" | "give";
+
+const TABS: { key: ActiveTab; label: string; icon: string; color: string }[] = [
+  { key: "mirror", label: "Échanges miroir", icon: "🔮", color: "#b464ff" },
+  { key: "want",   label: "Je recherche",    icon: "🔍", color: "#0affe0" },
+  { key: "give",   label: "Je peux donner",  icon: "🎁", color: "#ffd93d" },
+];
+
+function sortByPriority(entries: PokemonEntry[]): PokemonEntry[] {
+  return [...entries].sort((a, b) => {
+    const pa = a.priority ?? 9999;
+    const pb = b.priority ?? 9999;
+    return pa - pb;
+  });
 }
 
 export default function Home() {
   const [entries, setEntries] = useState<PokemonEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<ActiveTab>("mirror");
 
   const fetchEntries = async () => {
     try {
@@ -38,9 +58,23 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const wants = entries.filter((e) => e.category === "want");
+  const wants = sortByPriority(entries.filter((e) => e.category === "want"));
   const gives = entries.filter((e) => e.category === "give");
   const mirrors = entries.filter((e) => e.category === "mirror");
+
+  const countByTab: Record<ActiveTab, number> = {
+    mirror: mirrors.length,
+    want: wants.length,
+    give: gives.length,
+  };
+
+  const entriesByTab: Record<ActiveTab, PokemonEntry[]> = {
+    mirror: mirrors,
+    want: wants,
+    give: gives,
+  };
+
+  const activeColor = TABS.find((t) => t.key === activeTab)?.color ?? "#0affe0";
 
   return (
     <div className="relative min-h-screen" style={{ background: "#0b0f1a" }}>
@@ -53,7 +87,7 @@ export default function Home() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
-        <header className="text-center mb-12">
+        <header className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-2 flex-wrap">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" alt="Poké Ball" width={40} height={40} className="animate-bounce-soft" style={{ imageRendering: "pixelated" }} />
@@ -66,81 +100,93 @@ export default function Home() {
           <p style={{ color: "rgba(232,237,245,0.5)", fontSize: "0.9rem" }}>
             Catalogue de trades Pokémon GO — mis à jour en temps réel
           </p>
+        </header>
 
-          {/* Counters */}
-          {!loading && (
-            <div className="flex items-center justify-center gap-4 mt-4 flex-wrap">
-              {[
-                { label: "Miroir", count: mirrors.length, color: "#b464ff" },
-                { label: "Recherche", count: wants.length, color: "#0affe0" },
-                { label: "À donner", count: gives.length, color: "#ffd93d" },
-              ].map(({ label, count, color }) => (
-                <span key={label} style={{ background: `${color}12`, border: `1px solid ${color}30`, borderRadius: 999, padding: "4px 14px", fontSize: "0.78rem", fontWeight: 700, color, fontFamily: "Exo 2, sans-serif" }}>
-                  {count} {label}
-                </span>
+        {/* Tab bar */}
+        <div className="flex gap-2 mb-6 flex-wrap justify-center">
+          {TABS.map(({ key, label, icon, color }) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "10px 20px",
+                borderRadius: 14,
+                fontFamily: "Exo 2, sans-serif",
+                fontWeight: 700,
+                fontSize: "0.88rem",
+                cursor: "pointer",
+                border: "1px solid",
+                transition: "all 0.2s",
+                ...(activeTab === key
+                  ? {
+                      background: `${color}18`,
+                      borderColor: `${color}50`,
+                      color,
+                      boxShadow: `0 0 16px ${color}18`,
+                    }
+                  : {
+                      background: "rgba(255,255,255,0.04)",
+                      borderColor: "rgba(255,255,255,0.08)",
+                      color: "rgba(232,237,245,0.45)",
+                    }),
+              }}
+            >
+              <span>{icon}</span>
+              <span>{label}</span>
+              <span
+                style={{
+                  background: activeTab === key ? `${color}20` : "rgba(255,255,255,0.06)",
+                  border: `1px solid ${activeTab === key ? `${color}40` : "rgba(255,255,255,0.1)"}`,
+                  borderRadius: 999,
+                  padding: "1px 8px",
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                  color: activeTab === key ? color : "rgba(232,237,245,0.4)",
+                }}
+              >
+                {loading ? "…" : countByTab[key]}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Cards panel — fills remaining viewport height, scrolls vertically */}
+        <div
+          className="rounded-3xl p-6"
+          style={{
+            background: "rgba(14,20,40,0.4)",
+            backdropFilter: "blur(12px)",
+            border: `1px solid ${activeColor}18`,
+            borderTop: `3px solid ${activeColor}`,
+            height: "calc(100vh - 280px)",
+            minHeight: 300,
+            overflowY: "auto",
+            scrollbarWidth: "thin",
+            scrollbarColor: `${activeColor}40 transparent`,
+          }}
+        >
+          {loading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+              {Array.from({ length: 12 }).map((_, i) => <CardSkeleton key={i} />)}
+            </div>
+          ) : entriesByTab[activeTab].length === 0 ? (
+            <EmptyState />
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+              {entriesByTab[activeTab].map((entry, i) => (
+                <PokemonCard key={entry.id} entry={entry} style={{ animationDelay: `${i * 0.04}s` }} />
               ))}
             </div>
           )}
-        </header>
-
-        {/* Sections grid */}
-        <div className="space-y-8">
-          {/* Row 1 — Recherche + À donner */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Section title="Pokémon que je recherche" icon="🔍" color="#0affe0" entries={wants} loading={loading} borderTop="3px solid #0affe0" />
-            <Section title="Pokémon que je peux donner" icon="🎁" color="#ffd93d" entries={gives} loading={loading} borderTop="3px solid #ffd93d" />
-          </div>
-
-          {/* Row 2 — Échanges miroir (pleine largeur) */}
-          <Section title="Échanges miroir ✨" icon="🔮" color="#b464ff" entries={mirrors} loading={loading} borderTop="3px solid #b464ff" fullWidth />
         </div>
 
         <footer className="text-center mt-12 opacity-25" style={{ fontSize: "0.75rem" }}>
           <a href="/admin" style={{ color: "#0affe0", textDecoration: "none" }}>Administration</a>
         </footer>
       </div>
-    </div>
-  );
-}
-
-function Section({
-  title, icon, color, entries, loading, borderTop, fullWidth = false,
-}: {
-  title: string; icon: string; color: string; entries: PokemonEntry[];
-  loading: boolean; borderTop: string; fullWidth?: boolean;
-}) {
-  const cols = fullWidth
-    ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
-    : "grid-cols-2 sm:grid-cols-3";
-
-  return (
-    <div
-      className="rounded-3xl p-6"
-      style={{ background: "rgba(14,20,40,0.4)", backdropFilter: "blur(12px)", border: `1px solid ${color}18`, borderTop }}
-    >
-      <div className="flex items-center gap-3 mb-6">
-        <span style={{ fontSize: "1.4rem" }}>{icon}</span>
-        <h2 style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "1.15rem", color }}>
-          {title}
-        </h2>
-        <span className="ml-auto animate-glow-pulse" style={{ background: `${color}18`, border: `1px solid ${color}40`, borderRadius: 999, padding: "3px 12px", fontSize: "0.8rem", fontWeight: 700, color, fontFamily: "Exo 2, sans-serif" }}>
-          {loading ? "…" : entries.length}
-        </span>
-      </div>
-
-      {loading ? (
-        <div className={`grid ${cols} gap-4`}>
-          {Array.from({ length: fullWidth ? 12 : 6 }).map((_, i) => <CardSkeleton key={i} />)}
-        </div>
-      ) : entries.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <div className={`grid ${cols} gap-4`}>
-          {entries.map((entry, i) => (
-            <PokemonCard key={entry.id} entry={entry} style={{ animationDelay: `${i * 0.04}s` }} />
-          ))}
-        </div>
-      )}
     </div>
   );
 }

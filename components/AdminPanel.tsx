@@ -15,9 +15,12 @@ interface PokemonEntry {
   pokemonName: string;
   pokemonId: number;
   category: string;
+  shiny: boolean;
+  customSpriteUrl?: string | null;
   tradeForPokemonName?: string | null;
   tradeForPokemonId?: number | null;
   notes?: string | null;
+  priority?: number | null;
   completed: boolean;
   trainer?: Trainer | null;
 }
@@ -474,7 +477,7 @@ function AdminEntryRow({
       }}
     >
       {/* Sprite */}
-      <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={48} />
+      <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={48} shiny={entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false)} customSpriteUrl={entry.customSpriteUrl} />
 
       {/* Info */}
       <div className="flex-1 min-w-0">
@@ -490,6 +493,18 @@ function AdminEntryRow({
           >
             {entry.pokemonName}
           </span>
+          {(entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false)) && (
+            <span style={{
+              background: "rgba(255,215,0,0.15)",
+              border: "1px solid rgba(255,215,0,0.5)",
+              borderRadius: 999,
+              padding: "1px 7px",
+              fontSize: "0.65rem",
+              fontWeight: 700,
+              color: "#ffd700",
+              fontFamily: "Exo 2, sans-serif",
+            }}>✨ Shiny</span>
+          )}
           {entry.trainer && (
             <span className="trainer-pill">{entry.trainer.name}</span>
           )}
@@ -557,6 +572,9 @@ function AddEntryModal({
     tradeForPokemonName: "",
     tradeForPokemonId: 0,
     notes: "",
+    shiny: false,
+    customSpriteUrl: null as string | null,
+    priority: null as number | null,
   });
   const [loading, setLoading] = useState(false);
   const [pokeSearch, setPokeSearch] = useState("");
@@ -592,6 +610,7 @@ function AddEntryModal({
           tradeForPokemonName: form.tradeForPokemonName || null,
           tradeForPokemonId: form.tradeForPokemonId || null,
           notes: form.notes || null,
+          priority: form.priority || null,
         }),
       });
       if (!res.ok) throw new Error();
@@ -652,7 +671,7 @@ function AddEntryModal({
           <label className="field-label">POKÉMON</label>
           <div className="flex gap-2 items-center mt-1">
             {form.pokemonId > 0 && (
-              <PokemonSprite pokemonId={form.pokemonId} alt={form.pokemonName} size={40} />
+              <PokemonSprite pokemonId={form.pokemonId} alt={form.pokemonName} size={40} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
             )}
             <div style={{ flex: 1, position: "relative" }}>
               <input
@@ -746,6 +765,64 @@ function AddEntryModal({
           />
         </div>
 
+        {/* Priority (want only) */}
+        {form.category === "want" && (
+          <div>
+            <label className="field-label">PRIORITÉ (1–10, optionnel)</label>
+            <input
+              type="number"
+              min={1}
+              max={10}
+              value={form.priority ?? ""}
+              onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value ? Number(e.target.value) : null }))}
+              className="glass-input mt-1"
+              placeholder="Ex : 1 = priorité max"
+              style={{ width: 180 }}
+            />
+          </div>
+        )}
+
+        {/* Shiny */}
+        <div>
+          <label className="field-label">SHINY</label>
+          <button
+            type="button"
+            onClick={() => setForm((f) => ({ ...f, shiny: !f.shiny }))}
+            style={{
+              marginTop: 4,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "8px 16px",
+              borderRadius: 10,
+              border: "1px solid",
+              cursor: "pointer",
+              fontFamily: "Exo 2, sans-serif",
+              fontWeight: 600,
+              fontSize: "0.85rem",
+              transition: "all 0.2s",
+              ...(form.shiny
+                ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.5)", color: "#ffd700" }
+                : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+            }}
+          >
+            ✨ {form.shiny ? "Shiny activé" : "Pas shiny"}
+          </button>
+        </div>
+
+        {/* Sprite personnalisé */}
+        {form.pokemonId > 0 && (
+          <div>
+            <label className="field-label">SPRITE PERSONNALISÉ (optionnel)</label>
+            <SpritePicker
+              pokemonId={form.pokemonId}
+              pokemonName={form.pokemonName}
+              currentUrl={form.customSpriteUrl}
+              onSelect={(url) => setForm((f) => ({ ...f, customSpriteUrl: url }))}
+            />
+          </div>
+        )}
+
         <div className="flex gap-2 justify-end mt-2">
           <button type="button" onClick={onClose} className="btn-secondary">
             Annuler
@@ -773,10 +850,14 @@ function EditEntryModal({
   onUpdated: (entry: PokemonEntry) => void;
 }) {
   const [form, setForm] = useState({
+    category: entry.category as "want" | "give" | "mirror",
     trainerId: entry.trainer?.id ?? "",
     tradeForPokemonName: entry.tradeForPokemonName ?? "",
     tradeForPokemonId: entry.tradeForPokemonId ?? 0,
     notes: entry.notes ?? "",
+    shiny: entry.shiny,
+    customSpriteUrl: entry.customSpriteUrl ?? null as string | null,
+    priority: entry.priority ?? null as number | null,
   });
   const [tradeSearch, setTradeSearch] = useState(entry.tradeForPokemonName ?? "");
   const [showTradeSuggestions, setShowTradeSuggestions] = useState(false);
@@ -795,10 +876,14 @@ function EditEntryModal({
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          category: form.category,
+          shiny: form.shiny,
+          customSpriteUrl: form.customSpriteUrl,
           trainerId: form.trainerId || null,
           tradeForPokemonName: form.tradeForPokemonName || null,
           tradeForPokemonId: form.tradeForPokemonId || null,
           notes: form.notes || null,
+          priority: form.priority || null,
         }),
       });
       if (!res.ok) throw new Error();
@@ -814,7 +899,7 @@ function EditEntryModal({
   return (
     <ModalOverlay onClose={onClose}>
       <div className="flex items-center gap-3 mb-5">
-        <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={48} />
+        <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={48} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
         <div>
           <h2
             style={{
@@ -830,17 +915,45 @@ function EditEntryModal({
           <span
             style={{
               fontSize: "0.75rem",
-              color: entry.category === "want" ? "#0affe0" : "#ffd93d",
+              color: form.category === "want" ? "#0affe0" : form.category === "mirror" ? "#b464ff" : "#ffd93d",
               fontWeight: 600,
               fontFamily: "Exo 2, sans-serif",
             }}
           >
-            {entry.category === "want" ? "Je recherche" : entry.category === "mirror" ? "Miroir ✨" : "Je peux donner"}
+            {form.category === "want" ? "Je recherche" : form.category === "mirror" ? "Miroir ✨" : "Je peux donner"}
           </span>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {/* Category */}
+        <div>
+          <label className="field-label">CATÉGORIE</label>
+          <div className="flex gap-2 mt-1 flex-wrap">
+            {([
+              { val: "want", label: "🔍 Je recherche", active: "rgba(10,255,224,0.15)", c: "#0affe0" },
+              { val: "give", label: "🎁 Je peux donner", active: "rgba(255,217,61,0.15)", c: "#ffd93d" },
+              { val: "mirror", label: "🔮 Miroir ✨", active: "rgba(180,100,255,0.15)", c: "#b464ff" },
+            ] as const).map(({ val, label, active, c }) => (
+              <button
+                key={val}
+                type="button"
+                onClick={() => setForm((f) => ({ ...f, category: val }))}
+                style={{
+                  flex: 1, minWidth: 100, padding: "8px 6px", borderRadius: 10,
+                  border: "1px solid", cursor: "pointer", fontFamily: "Exo 2, sans-serif",
+                  fontWeight: 600, fontSize: "0.8rem", transition: "all 0.2s",
+                  ...(form.category === val
+                    ? { background: active, borderColor: c, color: c }
+                    : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div>
           <label className="field-label">DRESSEUR</label>
           <select
@@ -899,6 +1012,62 @@ function EditEntryModal({
             onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
             className="glass-input mt-1"
             placeholder="Notes..."
+          />
+        </div>
+
+        {/* Priority (want only) */}
+        {form.category === "want" && (
+          <div>
+            <label className="field-label">PRIORITÉ (1–10, optionnel)</label>
+            <input
+              type="number"
+              min={1}
+              max={10}
+              value={form.priority ?? ""}
+              onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value ? Number(e.target.value) : null }))}
+              className="glass-input mt-1"
+              placeholder="Ex : 1 = priorité max"
+              style={{ width: 180 }}
+            />
+          </div>
+        )}
+
+        {/* Shiny */}
+        <div>
+          <label className="field-label">SHINY</label>
+          <button
+            type="button"
+            onClick={() => setForm((f) => ({ ...f, shiny: !f.shiny }))}
+            style={{
+              marginTop: 4,
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "8px 16px",
+              borderRadius: 10,
+              border: "1px solid",
+              cursor: "pointer",
+              fontFamily: "Exo 2, sans-serif",
+              fontWeight: 600,
+              fontSize: "0.85rem",
+              transition: "all 0.2s",
+              ...(form.shiny
+                ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.5)", color: "#ffd700" }
+                : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+            }}
+          >
+            ✨ {form.shiny ? "Shiny activé" : "Pas shiny"}
+          </button>
+        </div>
+
+        {/* Sprite personnalisé */}
+        <div>
+          <label className="field-label">SPRITE PERSONNALISÉ (optionnel)</label>
+          <SpritePicker
+            pokemonId={entry.pokemonId}
+            pokemonName={entry.pokemonName}
+            currentUrl={form.customSpriteUrl}
+            onSelect={(url) => setForm((f) => ({ ...f, customSpriteUrl: url }))}
           />
         </div>
 
@@ -981,6 +1150,240 @@ function SuggestionDropdown({
     </div>
   );
 }
+
+// ─── Sprite picker helpers ────────────────────────────────────────────────────
+
+const SPRITE_PATHS: { path: string; label: string }[] = [
+  { path: "versions.generation-v.black-white.animated.front_default", label: "Animé Gen V" },
+  { path: "versions.generation-v.black-white.animated.front_shiny", label: "Animé Gen V ✨" },
+  { path: "other.showdown.front_default", label: "Showdown" },
+  { path: "other.showdown.front_shiny", label: "Showdown ✨" },
+  { path: "front_default", label: "Front" },
+  { path: "front_shiny", label: "Front ✨" },
+  { path: "other.home.front_default", label: "HOME" },
+  { path: "other.home.front_shiny", label: "HOME ✨" },
+  { path: "other.official-artwork.front_default", label: "Artwork" },
+  { path: "other.official-artwork.front_shiny", label: "Artwork ✨" },
+];
+
+function getByPath(obj: Record<string, unknown>, path: string): string | null {
+  const keys = path.split(".");
+  let cur: unknown = obj;
+  for (const k of keys) {
+    if (cur == null || typeof cur !== "object") return null;
+    cur = (cur as Record<string, unknown>)[k];
+  }
+  return typeof cur === "string" && cur.startsWith("http") ? cur : null;
+}
+
+function extractSprites(sprites: Record<string, unknown>, prefix: string): { url: string; label: string }[] {
+  return SPRITE_PATHS
+    .map(({ path, label }) => ({ url: getByPath(sprites, path), label: prefix ? `${prefix} — ${label}` : label }))
+    .filter((s): s is { url: string; label: string } => s.url !== null);
+}
+
+async function fetchAllSprites(pokemonId: number): Promise<{ url: string; label: string }[]> {
+  // 1. Fetch species to get all varieties
+  const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemonId}`);
+  if (!speciesRes.ok) throw new Error("species not found");
+  const species = await speciesRes.json();
+
+  const varieties: { is_default: boolean; pokemon: { name: string; url: string } }[] = species.varieties ?? [];
+
+  // 2. Fetch each variety in parallel (cap at 20 to avoid excessive calls)
+  const toFetch = varieties.slice(0, 20);
+  const results = await Promise.allSettled(
+    toFetch.map((v) => fetch(v.pokemon.url).then((r) => r.json()))
+  );
+
+  const all: { url: string; label: string }[] = [];
+  results.forEach((result, i) => {
+    if (result.status !== "fulfilled") return;
+    const data = result.value;
+    const variety = toFetch[i];
+    // Use short name: remove base pokemon prefix for readability
+    const rawName = variety.pokemon.name;
+    const baseName = species.name as string;
+    const shortName = rawName === baseName ? "Base" : rawName.replace(`${baseName}-`, "");
+    const label = variety.is_default ? "Base" : shortName;
+    const sprites = extractSprites(data.sprites, label === "Base" ? "" : label);
+    all.push(...sprites);
+  });
+
+  // Deduplicate by URL
+  const seen = new Set<string>();
+  return all.filter(({ url }) => {
+    if (seen.has(url)) return false;
+    seen.add(url);
+    return true;
+  });
+}
+
+function SpritePicker({
+  pokemonId,
+  pokemonName,
+  currentUrl,
+  onSelect,
+}: {
+  pokemonId: number;
+  pokemonName: string;
+  currentUrl: string | null;
+  onSelect: (url: string | null) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [sprites, setSprites] = useState<{ url: string; label: string }[]>([]);
+  const [fetched, setFetched] = useState(false);
+  const [fetching, setFetching] = useState(false);
+  const [manualUrl, setManualUrl] = useState("");
+
+  // Reset cache when Pokémon changes
+  useEffect(() => {
+    setFetched(false);
+    setSprites([]);
+  }, [pokemonId]);
+
+  const handleOpen = async () => {
+    setOpen(true);
+    if (fetched) return;
+    setFetching(true);
+    try {
+      const all = await fetchAllSprites(pokemonId);
+      setSprites(all);
+    } catch {
+      // Fallback to single pokemon fetch
+      try {
+        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
+        const data = await res.json();
+        setSprites(extractSprites(data.sprites, ""));
+      } catch {
+        setSprites([]);
+      }
+    } finally {
+      setFetching(false);
+      setFetched(true);
+    }
+  };
+
+  return (
+    <>
+      <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: 4 }}>
+        {currentUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={currentUrl} alt="sprite" style={{ width: 48, height: 48, objectFit: "contain", imageRendering: "pixelated", background: "rgba(255,255,255,0.05)", borderRadius: 8 }} />
+        )}
+        <button
+          type="button"
+          onClick={handleOpen}
+          style={{
+            padding: "6px 14px", borderRadius: 10, cursor: "pointer",
+            background: "rgba(10,255,224,0.08)", border: "1px solid rgba(10,255,224,0.25)",
+            color: "#0affe0", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
+          }}
+        >
+          🎨 Sélectionner sprite
+        </button>
+        {currentUrl && (
+          <button
+            type="button"
+            onClick={() => onSelect(null)}
+            style={{
+              padding: "6px 10px", borderRadius: 10, cursor: "pointer",
+              background: "rgba(255,107,107,0.08)", border: "1px solid rgba(255,107,107,0.25)",
+              color: "#ff6b6b", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
+            }}
+          >
+            ✕ Retirer
+          </button>
+        )}
+      </div>
+
+      {open && (
+        <div
+          className="fixed inset-0 flex items-center justify-center p-4"
+          style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 400 }}
+          onClick={(e) => e.target === e.currentTarget && setOpen(false)}
+        >
+          <div
+            className="glass-card"
+            style={{ maxWidth: 580, width: "100%", maxHeight: "88vh", padding: 24, overflowY: "auto" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#0affe0", fontWeight: 700, fontSize: "1.1rem" }}>
+                Sprites — <span style={{ textTransform: "capitalize" }}>{pokemonName}</span>
+              </h3>
+              <button onClick={() => setOpen(false)} style={{ background: "none", border: "none", color: "#e8edf5", cursor: "pointer", fontSize: "1.1rem" }}>✕</button>
+            </div>
+
+            {fetching ? (
+              <div style={{ textAlign: "center", padding: 32, color: "rgba(232,237,245,0.4)" }}>Chargement…</div>
+            ) : sprites.length > 0 ? (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: 8, marginBottom: 20 }}>
+                {sprites.map(({ url, label }) => (
+                  <button
+                    key={url}
+                    type="button"
+                    onClick={() => { onSelect(url); setOpen(false); }}
+                    style={{
+                      background: currentUrl === url ? "rgba(10,255,224,0.15)" : "rgba(255,255,255,0.04)",
+                      border: `1px solid ${currentUrl === url ? "rgba(10,255,224,0.4)" : "rgba(255,255,255,0.08)"}`,
+                      borderRadius: 10, padding: 10, cursor: "pointer",
+                      display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={url}
+                      alt={label}
+                      style={{ width: 80, height: 80, objectFit: "contain", imageRendering: "pixelated" }}
+                      onError={(e) => {
+                        // Hide the whole button when the image is broken
+                        const btn = (e.currentTarget as HTMLImageElement).closest("button");
+                        if (btn) btn.style.display = "none";
+                      }}
+                    />
+                    <span style={{ fontSize: "0.6rem", color: "rgba(232,237,245,0.55)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+                      {label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : fetched ? (
+              <p style={{ color: "rgba(232,237,245,0.4)", marginBottom: 16 }}>
+                Aucun sprite trouvé via PokéAPI pour ce Pokémon.
+              </p>
+            ) : null}
+
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 16 }}>
+              <label className="field-label">URL MANUELLE</label>
+              <div className="flex gap-2 mt-1">
+                <input
+                  type="text"
+                  value={manualUrl}
+                  onChange={(e) => setManualUrl(e.target.value)}
+                  className="glass-input"
+                  placeholder="https://..."
+                  style={{ flex: 1 }}
+                />
+                <button
+                  type="button"
+                  className="btn-primary"
+                  style={{ whiteSpace: "nowrap" }}
+                  disabled={!manualUrl.startsWith("http")}
+                  onClick={() => { onSelect(manualUrl); setOpen(false); setManualUrl(""); }}
+                >
+                  ✓ Utiliser
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 function ModalOverlay({
   onClose,

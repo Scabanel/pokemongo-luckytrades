@@ -30,6 +30,9 @@ export async function POST(request: NextRequest) {
     tradeForPokemonName,
     tradeForPokemonId,
     notes,
+    shiny,
+    customSpriteUrl,
+    priority,
   } = body;
 
   if (!pokemonName || !pokemonId || !category) {
@@ -55,6 +58,9 @@ export async function POST(request: NextRequest) {
       tradeForPokemonName: tradeForPokemonName || null,
       tradeForPokemonId: tradeForPokemonId ? Number(tradeForPokemonId) : null,
       notes: notes || null,
+      shiny: shiny === true,
+      customSpriteUrl: customSpriteUrl || null,
+      priority: priority != null ? Number(priority) : null,
     },
     include: { trainer: true },
   });

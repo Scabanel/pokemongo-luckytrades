@@ -2,24 +2,43 @@
 
 import { useEffect, useRef } from "react";
 
+// 4-pointed star path helper
+function drawStar(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
+  const inner = r * 0.35;
+  ctx.beginPath();
+  for (let i = 0; i < 8; i++) {
+    const angle = (i * Math.PI) / 4;
+    const radius = i % 2 === 0 ? r : inner;
+    const px = x + Math.cos(angle - Math.PI / 2) * radius;
+    const py = y + Math.sin(angle - Math.PI / 2) * radius;
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+}
+
+// Lucky trade gold palette
+const COLORS = [
+  { r: 255, g: 215, b: 0 },   // gold
+  { r: 255, g: 193, b: 7 },   // amber
+  { r: 255, g: 236, b: 100 }, // pale gold
+  { r: 255, g: 167, b: 38 },  // deep amber
+  { r: 255, g: 248, b: 180 }, // near-white gold
+];
+
 interface Particle {
   x: number;
   y: number;
   vx: number;
   vy: number;
   radius: number;
-  color: string;
+  color: { r: number; g: number; b: number };
   alpha: number;
   alphaDir: number;
+  rotation: number;
+  rotationSpeed: number;
+  isStar: boolean;
 }
-
-const COLORS = [
-  "rgba(10, 255, 224,",   // teal
-  "rgba(255, 217, 61,",   // yellow
-  "rgba(255, 107, 107,",  // coral
-  "rgba(100, 180, 255,",  // sky blue
-  "rgba(180, 100, 255,",  // soft violet (accent only)
-];
 
 export default function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -39,48 +58,67 @@ export default function ParticleBackground() {
     resize();
     window.addEventListener("resize", resize);
 
-    // Init particles
-    const count = Math.min(80, Math.floor((window.innerWidth * window.innerHeight) / 12000));
-    particlesRef.current = Array.from({ length: count }, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      radius: Math.random() * 3 + 1,
-      color: COLORS[Math.floor(Math.random() * COLORS.length)],
-      alpha: Math.random() * 0.5 + 0.1,
-      alphaDir: (Math.random() - 0.5) * 0.008,
-    }));
+    const count = Math.min(70, Math.floor((window.innerWidth * window.innerHeight) / 13000));
+    particlesRef.current = Array.from({ length: count }, () => {
+      const isStar = Math.random() < 0.45;
+      return {
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        radius: isStar ? Math.random() * 4 + 2 : Math.random() * 2.5 + 0.8,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        alpha: Math.random() * 0.55 + 0.1,
+        alphaDir: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.009 + 0.003),
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.04,
+        isStar,
+      };
+    });
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (const p of particlesRef.current) {
-        // Update
         p.x += p.vx;
         p.y += p.vy;
         p.alpha += p.alphaDir;
+        p.rotation += p.rotationSpeed;
 
-        if (p.alpha <= 0.05 || p.alpha >= 0.65) p.alphaDir *= -1;
-        if (p.x < -10) p.x = canvas.width + 10;
-        if (p.x > canvas.width + 10) p.x = -10;
-        if (p.y < -10) p.y = canvas.height + 10;
-        if (p.y > canvas.height + 10) p.y = -10;
+        if (p.alpha <= 0.04 || p.alpha >= 0.7) p.alphaDir *= -1;
+        if (p.x < -20) p.x = canvas.width + 20;
+        if (p.x > canvas.width + 20) p.x = -20;
+        if (p.y < -20) p.y = canvas.height + 20;
+        if (p.y > canvas.height + 20) p.y = -20;
 
-        // Draw glow
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius * 4);
-        gradient.addColorStop(0, `${p.color} ${p.alpha})`);
-        gradient.addColorStop(1, `${p.color} 0)`);
+        const { r, g, b } = p.color;
 
+        // Outer glow
+        const glowR = p.isStar ? p.radius * 5 : p.radius * 4;
+        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
+        gradient.addColorStop(0, `rgba(${r},${g},${b},${p.alpha * 0.7})`);
+        gradient.addColorStop(0.4, `rgba(${r},${g},${b},${p.alpha * 0.25})`);
+        gradient.addColorStop(1, `rgba(${r},${g},${b},0)`);
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius * 4, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
         ctx.fillStyle = gradient;
         ctx.fill();
 
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `${p.color} ${Math.min(p.alpha * 2, 0.9)})`;
+        // Core shape
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        ctx.fillStyle = `rgba(${r},${g},${b},${Math.min(p.alpha * 2.2, 0.95)})`;
+
+        if (p.isStar) {
+          ctx.translate(-p.x, -p.y);
+          drawStar(ctx, p.x, p.y, p.radius);
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+        }
         ctx.fill();
+        ctx.restore();
       }
 
       animRef.current = requestAnimationFrame(draw);
@@ -98,7 +136,7 @@ export default function ParticleBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.7 }}
+      style={{ opacity: 0.65 }}
     />
   );
 }
