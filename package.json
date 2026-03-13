@@ -10,11 +10,9 @@
     "seed": "tsx prisma/seed.ts",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
-    "setup:prod": "node scripts/setup-turso.mjs"
+    "migrate:prod": "node scripts/migrate-to-postgres.mjs"
   },
   "dependencies": {
-    "@libsql/client": "^0.17.0",
-    "@prisma/adapter-libsql": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "@types/bcryptjs": "^2.4.6",
     "bcryptjs": "^3.0.3",
@@ -27,6 +25,7 @@
     "swr": "^2.4.1"
   },
   "devDependencies": {
+    "@libsql/client": "^0.17.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
