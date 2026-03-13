@@ -24,7 +24,7 @@ export default function AdminPage() {
     return (
       <div
         className="fixed inset-0 flex items-center justify-center"
-        style={{ background: "#0b0f1a" }}
+        style={{ background: "#0b0700" }}
       >
         <div
           className="animate-glow-pulse"
@@ -46,7 +46,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="relative min-h-screen" style={{ background: "#0b0f1a" }}>
+    <div className="relative min-h-screen" style={{ background: "#0b0700" }}>
       <ParticleBackground />
       <AdminPanel onLogout={() => {
         setAuthenticated(false);
@@ -90,7 +90,7 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
   return (
     <div
       className="relative min-h-screen flex items-center justify-center p-4"
-      style={{ background: "#0b0f1a" }}
+      style={{ background: "#0b0700" }}
     >
       <ParticleBackground />
 

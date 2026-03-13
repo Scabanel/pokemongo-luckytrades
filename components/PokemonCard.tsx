@@ -15,7 +15,67 @@ interface PokemonEntry {
   tradeForPokemonId?: number | null;
   notes?: string | null;
   priority?: number | null;
+  tags?: string | null;
   trainer?: { id: string; name: string } | null;
+}
+
+function parseTags(raw: string | null | undefined): string[] {
+  if (!raw) return [];
+  try { return JSON.parse(raw) as string[]; } catch { return []; }
+}
+
+const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  halloween:    { bg: "rgba(255,107,0,0.2)",   text: "#ff6b00", border: "rgba(255,107,0,0.5)" },
+  noel:         { bg: "rgba(80,200,255,0.2)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
+  "noël":       { bg: "rgba(80,200,255,0.2)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
+  holiday:      { bg: "rgba(80,200,255,0.2)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
+  anniversaire: { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
+  fete:         { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
+  "fête":       { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
+  gigamax:      { bg: "rgba(255,40,140,0.2)",   text: "#ff288c", border: "rgba(255,40,140,0.5)" },
+  dynamax:      { bg: "rgba(210,40,40,0.2)",    text: "#e03030", border: "rgba(210,40,40,0.5)" },
+  costume:      { bg: "rgba(200,100,255,0.2)",  text: "#c864ff", border: "rgba(200,100,255,0.5)" },
+  evenement:    { bg: "rgba(180,100,255,0.2)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
+  "événement":  { bg: "rgba(180,100,255,0.2)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
+};
+const DEFAULT_TAG_COLOR = { bg: "rgba(100,180,255,0.15)", text: "#64b4ff", border: "rgba(100,180,255,0.4)" };
+function getTagColor(tag: string) { return TAG_COLORS[tag.toLowerCase()] ?? DEFAULT_TAG_COLOR; }
+
+function getEventTheme(name: string, tags: string[]): {
+  borderColor: string; boxShadow: string; glow: string;
+} | null {
+  const combined = (name + " " + tags.join(" ")).toLowerCase();
+  if (combined.includes("gigamax")) return {
+    borderColor: "rgba(255,40,140,0.4)",
+    boxShadow: "0 8px 32px rgba(255,0,120,0.22), 0 0 0 1px rgba(255,40,140,0.15)",
+    glow: "radial-gradient(circle, rgba(255,40,140,0.35) 0%, transparent 70%)",
+  };
+  if (combined.includes("dynamax")) return {
+    borderColor: "rgba(210,40,40,0.4)",
+    boxShadow: "0 8px 32px rgba(200,0,0,0.22), 0 0 0 1px rgba(210,40,40,0.15)",
+    glow: "radial-gradient(circle, rgba(210,40,40,0.35) 0%, transparent 70%)",
+  };
+  if (combined.includes("halloween")) return {
+    borderColor: "rgba(255,107,20,0.4)",
+    boxShadow: "0 8px 32px rgba(255,80,0,0.18)",
+    glow: "radial-gradient(circle, rgba(255,120,0,0.3) 0%, transparent 70%)",
+  };
+  if (combined.includes("noël") || combined.includes("noel") || combined.includes("holiday")) return {
+    borderColor: "rgba(80,200,255,0.4)",
+    boxShadow: "0 8px 32px rgba(60,160,255,0.18)",
+    glow: "radial-gradient(circle, rgba(80,200,255,0.3) 0%, transparent 70%)",
+  };
+  if (combined.includes("anniversaire") || combined.includes("fête") || combined.includes("fete") || combined.includes("chapeau")) return {
+    borderColor: "rgba(255,200,50,0.4)",
+    boxShadow: "0 8px 32px rgba(255,200,0,0.18)",
+    glow: "radial-gradient(circle, rgba(255,210,50,0.3) 0%, transparent 70%)",
+  };
+  if (name.trim().includes(" ")) return {
+    borderColor: "rgba(200,100,255,0.3)",
+    boxShadow: "0 8px 32px rgba(180,80,255,0.12)",
+    glow: "radial-gradient(circle, rgba(200,100,255,0.25) 0%, transparent 70%)",
+  };
+  return null;
 }
 
 interface PokemonCardProps {
@@ -23,16 +83,6 @@ interface PokemonCardProps {
   style?: React.CSSProperties;
 }
 
-const TRAINER_COLORS = [
-  "#0affe0", "#ffd93d", "#ff6b6b", "#64b4ff",
-  "#b464ff", "#ff9f43", "#00d2d3", "#ee5a24",
-];
-
-function getTrainerColor(name: string) {
-  let hash = 0;
-  for (const c of name) hash = (hash * 31 + c.charCodeAt(0)) & 0xffffffff;
-  return TRAINER_COLORS[Math.abs(hash) % TRAINER_COLORS.length];
-}
 
 const CATEGORY_GLOW: Record<string, string> = {
   want:   "radial-gradient(circle, #0affe0 0%, transparent 70%)",
@@ -62,11 +112,15 @@ function getPriorityStyle(priority: number): { bg: string; border: string; color
 export default function PokemonCard({ entry, style }: PokemonCardProps) {
   const [showDetail, setShowDetail] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const trainerColor = entry.trainer ? getTrainerColor(entry.trainer.name) : "#0affe0";
+  const trainerColor = entry.trainer ? "#00dc64" : "#0affe0";
   const isMirror = entry.category === "mirror";
   const isShiny = entry.shiny === true || (entry.notes?.toLowerCase().includes("shiny") ?? false);
   const hasPriority = entry.priority != null && entry.priority >= 1 && entry.priority <= 10;
   const priorityStyle = hasPriority ? getPriorityStyle(entry.priority!) : null;
+  const tags = parseTags(entry.tags);
+  const isDynamax = entry.pokemonName.toLowerCase().includes("dynamax") && !entry.pokemonName.toLowerCase().includes("gigamax");
+  const isGigamax = entry.pokemonName.toLowerCase().includes("gigamax");
+  const eventTheme = getEventTheme(entry.pokemonName, tags);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -74,7 +128,7 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
     <div
       className="fixed inset-0 flex items-center justify-center p-4"
       style={{
-        background: "rgba(11,15,26,0.88)",
+        background: "rgba(10,6,0,0.88)",
         backdropFilter: "blur(12px)",
         zIndex: 300,
       }}
@@ -89,6 +143,10 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
           ...(isMirror && {
             borderColor: "rgba(180,100,255,0.3)",
             boxShadow: "0 16px 64px rgba(180,100,255,0.15)",
+          }),
+          ...(entry.trainer && {
+            borderColor: "rgba(0,220,100,0.5)",
+            boxShadow: "0 16px 64px rgba(0,200,80,0.25), 0 0 0 1px rgba(0,220,100,0.2)",
           }),
         }}
         onClick={(e) => e.stopPropagation()}
@@ -125,35 +183,60 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
           </div>
         )}
 
-        {/* Category + shiny badges */}
-        <div className="flex gap-2 flex-wrap justify-center" style={{ marginBottom: 16 }}>
-          <span
-            style={{
-              background: `${CATEGORY_COLOR[entry.category] ?? "#0affe0"}18`,
-              border: `1px solid ${CATEGORY_COLOR[entry.category] ?? "#0affe0"}40`,
-              borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.72rem", fontWeight: 700,
-              color: CATEGORY_COLOR[entry.category] ?? "#0affe0",
-              fontFamily: "Exo 2, sans-serif",
-            }}
-          >
+        {/* Category + shiny + special badges */}
+        <div className="flex gap-2 flex-wrap justify-center" style={{ marginBottom: 12 }}>
+          <span style={{
+            background: `${CATEGORY_COLOR[entry.category] ?? "#0affe0"}18`,
+            border: `1px solid ${CATEGORY_COLOR[entry.category] ?? "#0affe0"}40`,
+            borderRadius: 999, padding: "3px 12px",
+            fontSize: "0.72rem", fontWeight: 700,
+            color: CATEGORY_COLOR[entry.category] ?? "#0affe0",
+            fontFamily: "Exo 2, sans-serif",
+          }}>
             {CATEGORY_LABEL[entry.category] ?? entry.category}
           </span>
+          {isGigamax && (
+            <span style={{
+              background: "rgba(255,40,140,0.18)", border: "1px solid rgba(255,40,140,0.5)",
+              borderRadius: 999, padding: "3px 12px",
+              fontSize: "0.72rem", fontWeight: 800, color: "#ff288c",
+              fontFamily: "Exo 2, sans-serif",
+            }}>✦ Gigamax</span>
+          )}
+          {isDynamax && (
+            <span style={{
+              background: "rgba(210,40,40,0.18)", border: "1px solid rgba(210,40,40,0.5)",
+              borderRadius: 999, padding: "3px 12px",
+              fontSize: "0.72rem", fontWeight: 800, color: "#e03030",
+              fontFamily: "Exo 2, sans-serif",
+            }}>◈ Dynamax</span>
+          )}
           {isShiny && (
-            <span
-              style={{
-                background: "rgba(255,215,0,0.15)",
-                border: "1px solid rgba(255,215,0,0.5)",
-                borderRadius: 999, padding: "3px 12px",
-                fontSize: "0.72rem", fontWeight: 700,
-                color: "#ffd700",
-                fontFamily: "Exo 2, sans-serif",
-              }}
-            >
-              ✨ Shiny
-            </span>
+            <span style={{
+              background: "rgba(255,215,0,0.15)", border: "1px solid rgba(255,215,0,0.5)",
+              borderRadius: 999, padding: "3px 12px",
+              fontSize: "0.72rem", fontWeight: 700, color: "#ffd700",
+              fontFamily: "Exo 2, sans-serif",
+            }}>✨ Shiny</span>
           )}
         </div>
+
+        {/* Tags in modal */}
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 justify-center mb-3">
+            {tags.map((tag) => {
+              const c = getTagColor(tag);
+              return (
+                <span key={tag} style={{
+                  background: c.bg, border: `1px solid ${c.border}`,
+                  borderRadius: 999, padding: "2px 10px",
+                  fontSize: "0.7rem", fontWeight: 700, color: c.text,
+                  fontFamily: "Exo 2, sans-serif",
+                }}>{tag}</span>
+              );
+            })}
+          </div>
+        )}
 
         {/* Trainer */}
         {entry.trainer && (
@@ -183,7 +266,7 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
         <div className="relative mb-4">
           <div
             className="absolute inset-0 rounded-full blur-2xl opacity-30"
-            style={{ background: CATEGORY_GLOW[entry.category] ?? CATEGORY_GLOW.give }}
+            style={{ background: eventTheme?.glow ?? CATEGORY_GLOW[entry.category] ?? CATEGORY_GLOW.give }}
           />
           <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={140} shiny={isShiny} customSpriteUrl={entry.customSpriteUrl} />
         </div>
@@ -214,8 +297,8 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
           <div
             className="flex items-center gap-3 mt-2 p-3"
             style={{
-              background: "rgba(255,217,61,0.07)",
-              border: "1px solid rgba(255,217,61,0.2)",
+              background: entry.trainer ? "rgba(0,200,80,0.1)" : "rgba(255,217,61,0.07)",
+              border: entry.trainer ? "1px solid rgba(0,220,100,0.35)" : "1px solid rgba(255,217,61,0.2)",
               borderRadius: 12,
               width: "100%",
               justifyContent: "center",
@@ -240,13 +323,21 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
         className="glass-card animate-scale-in p-4 flex flex-col items-center relative cursor-pointer select-none"
         style={{
           ...style,
-          ...(isMirror && {
-            borderColor: "rgba(180,100,255,0.25)",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(180,100,255,0.08)",
-          }),
           ...(hasPriority && entry.priority === 1 && {
-            borderColor: "rgba(255,215,0,0.3)",
-            boxShadow: "0 8px 32px rgba(255,215,0,0.12)",
+            borderColor: "rgba(255,215,0,0.5)",
+            boxShadow: "0 8px 32px rgba(255,215,0,0.22), 0 0 0 1px rgba(255,215,0,0.2)",
+          }),
+          ...(hasPriority && entry.priority === 2 && {
+            borderColor: "rgba(192,192,192,0.5)",
+            boxShadow: "0 8px 32px rgba(192,192,192,0.18), 0 0 0 1px rgba(192,192,192,0.18)",
+          }),
+          ...(hasPriority && entry.priority === 3 && {
+            borderColor: "rgba(205,127,50,0.5)",
+            boxShadow: "0 8px 32px rgba(205,127,50,0.2), 0 0 0 1px rgba(205,127,50,0.18)",
+          }),
+          ...(entry.trainer && {
+            borderColor: "rgba(0, 220, 100, 0.5)",
+            boxShadow: "0 8px 32px rgba(0, 200, 80, 0.28), 0 0 0 1px rgba(0, 220, 100, 0.2), inset 0 1px 0 rgba(0, 220, 100, 0.06)",
           }),
           transition: "transform 0.15s, box-shadow 0.15s",
         }}
@@ -280,6 +371,20 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
 
         {/* Top-right badges */}
         <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
+          {isGigamax && (
+            <div style={{
+              background: "rgba(255,40,140,0.2)", border: "1px solid rgba(255,40,140,0.55)",
+              borderRadius: 8, padding: "1px 6px", fontSize: "0.6rem", fontWeight: 800,
+              color: "#ff288c", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
+            }}>✦ GMAX</div>
+          )}
+          {isDynamax && (
+            <div style={{
+              background: "rgba(210,40,40,0.2)", border: "1px solid rgba(210,40,40,0.55)",
+              borderRadius: 8, padding: "1px 6px", fontSize: "0.6rem", fontWeight: 800,
+              color: "#e03030", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
+            }}>◈ DMAX</div>
+          )}
           {isMirror && (
             <div
               style={{
@@ -322,7 +427,7 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
             <div
               style={{
                 width: 18, height: 18, borderRadius: "50%", flexShrink: 0,
-                background: trainerColor, color: "#0b0f1a",
+                background: "#00dc64", color: "#0b0f1a",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: "0.55rem", fontWeight: 700,
               }}
@@ -331,9 +436,9 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
             </div>
             <span
               style={{
-                background: `${trainerColor}18`, border: `1px solid ${trainerColor}40`,
+                background: "rgba(0,220,100,0.12)", border: "1px solid rgba(0,220,100,0.4)",
                 borderRadius: 999, padding: "2px 8px", fontSize: "0.62rem",
-                fontWeight: 600, color: trainerColor, letterSpacing: "0.03em",
+                fontWeight: 600, color: "#00dc64", letterSpacing: "0.03em",
                 fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
                 overflow: "hidden", textOverflow: "ellipsis", maxWidth: 80,
               }}
@@ -347,7 +452,13 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
         <div className="mt-7 mb-2 relative">
           <div
             className="absolute inset-0 rounded-full blur-xl opacity-25"
-            style={{ background: CATEGORY_GLOW[entry.category] ?? CATEGORY_GLOW.give }}
+            style={{ background:
+              entry.trainer ? "radial-gradient(circle, #00dc64 0%, transparent 70%)" :
+              entry.priority === 1 ? "radial-gradient(circle, #ffd700 0%, transparent 70%)" :
+              entry.priority === 2 ? "radial-gradient(circle, #c0c0c0 0%, transparent 70%)" :
+              entry.priority === 3 ? "radial-gradient(circle, #cd7f32 0%, transparent 70%)" :
+              undefined
+            }}
           />
           <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={88} shiny={isShiny} customSpriteUrl={entry.customSpriteUrl} />
         </div>
@@ -364,6 +475,31 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
           {entry.pokemonName}
         </h3>
 
+        {/* Tags */}
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 justify-center mb-1" style={{ maxWidth: 160 }}>
+            {tags.slice(0, 2).map((tag) => {
+              const c = getTagColor(tag);
+              return (
+                <span key={tag} style={{
+                  background: c.bg, border: `1px solid ${c.border}`,
+                  borderRadius: 999, padding: "1px 6px",
+                  fontSize: "0.55rem", fontWeight: 700, color: c.text,
+                  fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
+                }}>{tag}</span>
+              );
+            })}
+            {tags.length > 2 && (
+              <span style={{
+                background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: 999, padding: "1px 5px",
+                fontSize: "0.55rem", fontWeight: 700, color: "rgba(232,237,245,0.4)",
+                fontFamily: "Exo 2, sans-serif",
+              }}>+{tags.length - 2}</span>
+            )}
+          </div>
+        )}
+
         {/* Notes */}
         {entry.notes && (
           <p
@@ -376,7 +512,7 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
 
         {/* Exchange badge */}
         {entry.tradeForPokemonName && entry.tradeForPokemonId && (
-          <div className="exchange-badge mt-auto" style={{ marginTop: "auto", paddingTop: 4 }}>
+          <div className="exchange-badge mt-auto" style={{ marginTop: "auto", paddingTop: 4, ...(entry.trainer && { background: "rgba(0,200,80,0.12)", borderColor: "rgba(0,220,100,0.4)" }) }}>
             <span style={{ fontSize: "0.6rem", color: "#ffd93d", fontWeight: 600, whiteSpace: "nowrap" }}>
               {entry.category === "want" ? "Je donne" : entry.category === "mirror" ? "Échange" : "Je reçois"}
             </span>

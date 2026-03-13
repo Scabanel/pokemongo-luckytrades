@@ -13,30 +13,38 @@ export async function PATCH(
 
   const { id } = await params;
   const body = await request.json();
-  const { trainerId, tradeForPokemonName, tradeForPokemonId, notes, completed, category, shiny, customSpriteUrl, priority } =
+  const { trainerId, tradeForPokemonName, tradeForPokemonId, notes, completed, category, shiny, customSpriteUrl, priority, tags } =
     body;
 
-  const entry = await prisma.pokemonEntry.update({
-    where: { id },
-    data: {
-      ...(trainerId !== undefined && { trainerId: trainerId || null }),
-      ...(tradeForPokemonName !== undefined && {
-        tradeForPokemonName: tradeForPokemonName || null,
-      }),
-      ...(tradeForPokemonId !== undefined && {
-        tradeForPokemonId: tradeForPokemonId ? Number(tradeForPokemonId) : null,
-      }),
-      ...(notes !== undefined && { notes: notes || null }),
-      ...(completed !== undefined && { completed }),
-      ...(category !== undefined && { category }),
-      ...(shiny !== undefined && { shiny: shiny === true }),
-      ...(customSpriteUrl !== undefined && { customSpriteUrl: customSpriteUrl || null }),
-      ...(priority !== undefined && { priority: priority != null ? Number(priority) : null }),
-    },
-    include: { trainer: true },
-  });
-
-  return NextResponse.json(entry);
+  try {
+    const entry = await prisma.pokemonEntry.update({
+      where: { id },
+      data: {
+        ...(trainerId !== undefined && { trainerId: trainerId || null }),
+        ...(tradeForPokemonName !== undefined && {
+          tradeForPokemonName: tradeForPokemonName || null,
+        }),
+        ...(tradeForPokemonId !== undefined && {
+          tradeForPokemonId: tradeForPokemonId ? Number(tradeForPokemonId) : null,
+        }),
+        ...(notes !== undefined && { notes: notes || null }),
+        ...(completed !== undefined && { completed }),
+        ...(category !== undefined && { category }),
+        ...(shiny !== undefined && { shiny: shiny === true }),
+        ...(customSpriteUrl !== undefined && { customSpriteUrl: customSpriteUrl || null }),
+        ...(priority !== undefined && { priority: priority != null ? Number(priority) : null }),
+        ...(tags !== undefined && { tags: Array.isArray(tags) && tags.length > 0 ? JSON.stringify(tags) : null }),
+      },
+      include: { trainer: true },
+    });
+    return NextResponse.json(entry);
+  } catch (err) {
+    console.error("[PATCH /api/entries/:id]", err);
+    return NextResponse.json(
+      { error: "Erreur serveur", detail: err instanceof Error ? err.message : String(err) },
+      { status: 500 }
+    );
+  }
 }
 
 export async function DELETE(

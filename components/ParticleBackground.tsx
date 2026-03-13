@@ -2,9 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
-// 4-pointed star path helper
 function drawStar(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
-  const inner = r * 0.35;
+  const inner = r * 0.28;
   ctx.beginPath();
   for (let i = 0; i < 8; i++) {
     const angle = (i * Math.PI) / 4;
@@ -17,14 +16,15 @@ function drawStar(ctx: CanvasRenderingContext2D, x: number, y: number, r: number
   ctx.closePath();
 }
 
-// Lucky trade gold palette
 const COLORS = [
-  { r: 255, g: 215, b: 0 },   // gold
-  { r: 255, g: 193, b: 7 },   // amber
-  { r: 255, g: 236, b: 100 }, // pale gold
-  { r: 255, g: 167, b: 38 },  // deep amber
-  { r: 255, g: 248, b: 180 }, // near-white gold
+  { r: 255, g: 215, b: 0 },   // or
+  { r: 255, g: 193, b: 7 },   // ambre
+  { r: 255, g: 236, b: 100 }, // or pâle
+  { r: 255, g: 167, b: 38 },  // ambre foncé
+  { r: 255, g: 248, b: 190 }, // blanc doré
 ];
+
+type ParticleType = "bokeh" | "orb" | "star";
 
 interface Particle {
   x: number;
@@ -37,7 +37,38 @@ interface Particle {
   alphaDir: number;
   rotation: number;
   rotationSpeed: number;
-  isStar: boolean;
+  type: ParticleType;
+}
+
+function spawnParticle(w: number, h: number, fromBottom = false): Particle {
+  const roll = Math.random();
+  const type: ParticleType = roll < 0.22 ? "bokeh" : roll < 0.52 ? "star" : "orb";
+  const radius =
+    type === "bokeh" ? Math.random() * 55 + 20 :
+    type === "orb"   ? Math.random() * 6 + 2.5 :
+                       Math.random() * 4.5 + 2;
+
+  const y = fromBottom
+    ? h + radius
+    : type === "bokeh"
+      ? h * (0.4 + Math.random() * 0.6)
+      : Math.random() * h;
+
+  return {
+    x: Math.random() * w,
+    y,
+    vx: (Math.random() - 0.5) * 0.28,
+    vy: -(Math.random() * (type === "bokeh" ? 0.22 : 0.5) + 0.08),
+    radius,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    alpha: type === "bokeh"
+      ? Math.random() * 0.13 + 0.04
+      : Math.random() * 0.5 + 0.15,
+    alphaDir: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.005 + 0.002),
+    rotation: Math.random() * Math.PI * 2,
+    rotationSpeed: (Math.random() - 0.5) * 0.025,
+    type,
+  };
 }
 
 export default function ParticleBackground() {
@@ -58,67 +89,122 @@ export default function ParticleBackground() {
     resize();
     window.addEventListener("resize", resize);
 
-    const count = Math.min(70, Math.floor((window.innerWidth * window.innerHeight) / 13000));
-    particlesRef.current = Array.from({ length: count }, () => {
-      const isStar = Math.random() < 0.45;
-      return {
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        radius: isStar ? Math.random() * 4 + 2 : Math.random() * 2.5 + 0.8,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        alpha: Math.random() * 0.55 + 0.1,
-        alphaDir: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.009 + 0.003),
-        rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.04,
-        isStar,
-      };
-    });
+    const count = Math.min(85, Math.floor((window.innerWidth * window.innerHeight) / 10000));
+    particlesRef.current = Array.from({ length: count }, () =>
+      spawnParticle(window.innerWidth, window.innerHeight, false)
+    );
+
+    const drawBottomAura = (cx: number, strength: number) => {
+      const h = canvas.height;
+      const r = h * 0.62;
+      const grad = ctx.createRadialGradient(cx, h, 0, cx, h, r);
+      grad.addColorStop(0,   `rgba(255, 200, 0, ${0.22 * strength})`);
+      grad.addColorStop(0.25, `rgba(255, 170, 0, ${0.12 * strength})`);
+      grad.addColorStop(0.55, `rgba(255, 140, 0, ${0.05 * strength})`);
+      grad.addColorStop(1,   `rgba(255, 100, 0, 0)`);
+      ctx.beginPath();
+      ctx.ellipse(cx, h, r * 0.95, r, 0, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+    };
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (const p of particlesRef.current) {
+      // Grandes auras dorées au bas de l'écran
+      drawBottomAura(canvas.width * 0.5,  1.0);
+      drawBottomAura(canvas.width * 0.22, 0.55);
+      drawBottomAura(canvas.width * 0.78, 0.55);
+
+      for (let i = 0; i < particlesRef.current.length; i++) {
+        const p = particlesRef.current[i];
+
         p.x += p.vx;
         p.y += p.vy;
         p.alpha += p.alphaDir;
         p.rotation += p.rotationSpeed;
 
-        if (p.alpha <= 0.04 || p.alpha >= 0.7) p.alphaDir *= -1;
-        if (p.x < -20) p.x = canvas.width + 20;
-        if (p.x > canvas.width + 20) p.x = -20;
-        if (p.y < -20) p.y = canvas.height + 20;
-        if (p.y > canvas.height + 20) p.y = -20;
+        const maxAlpha = p.type === "bokeh" ? 0.18 : 0.72;
+        if (p.alpha <= 0.02 || p.alpha >= maxAlpha) p.alphaDir *= -1;
+
+        // Sortie par les côtés → réapparition côté opposé
+        if (p.x < -p.radius * 2) p.x = canvas.width + p.radius;
+        if (p.x > canvas.width + p.radius * 2) p.x = -p.radius;
+
+        // Sortie par le haut → respawn au bas
+        if (p.y < -p.radius * 2) {
+          particlesRef.current[i] = spawnParticle(canvas.width, canvas.height, true);
+          continue;
+        }
 
         const { r, g, b } = p.color;
 
-        // Outer glow
-        const glowR = p.isStar ? p.radius * 5 : p.radius * 4;
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
-        gradient.addColorStop(0, `rgba(${r},${g},${b},${p.alpha * 0.7})`);
-        gradient.addColorStop(0.4, `rgba(${r},${g},${b},${p.alpha * 0.25})`);
-        gradient.addColorStop(1, `rgba(${r},${g},${b},0)`);
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
-        ctx.fill();
+        if (p.type === "bokeh") {
+          // Grand bokeh doux
+          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+          grad.addColorStop(0,   `rgba(${r},${g},${b},${p.alpha})`);
+          grad.addColorStop(0.45, `rgba(${r},${g},${b},${p.alpha * 0.45})`);
+          grad.addColorStop(1,   `rgba(${r},${g},${b},0)`);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
 
-        // Core shape
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation);
-        ctx.fillStyle = `rgba(${r},${g},${b},${Math.min(p.alpha * 2.2, 0.95)})`;
+        } else if (p.type === "orb") {
+          // Orbe avec halo
+          const glowR = p.radius * 5;
+          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
+          grad.addColorStop(0,  `rgba(${r},${g},${b},${p.alpha * 0.85})`);
+          grad.addColorStop(0.3, `rgba(${r},${g},${b},${p.alpha * 0.35})`);
+          grad.addColorStop(1,  `rgba(${r},${g},${b},0)`);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
+          // Noyau dur
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${r},${g},${b},${Math.min(p.alpha * 2.2, 0.92)})`;
+          ctx.fill();
 
-        if (p.isStar) {
+        } else {
+          // Étoile scintillante avec croix de lumière
+          const glowR = p.radius * 7;
+          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
+          grad.addColorStop(0,  `rgba(${r},${g},${b},${p.alpha * 0.7})`);
+          grad.addColorStop(0.5, `rgba(${r},${g},${b},${p.alpha * 0.15})`);
+          grad.addColorStop(1,  `rgba(${r},${g},${b},0)`);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
+
+          // Croix de lumière (lens flare subtil)
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.globalAlpha = p.alpha * 0.35;
+          for (let arm = 0; arm < 2; arm++) {
+            const lg = ctx.createLinearGradient(-p.radius * 5, 0, p.radius * 5, 0);
+            lg.addColorStop(0, `rgba(${r},${g},${b},0)`);
+            lg.addColorStop(0.5, `rgba(${r},${g},${b},0.9)`);
+            lg.addColorStop(1, `rgba(${r},${g},${b},0)`);
+            ctx.fillStyle = lg;
+            ctx.fillRect(-p.radius * 5, -0.5, p.radius * 10, 1);
+            ctx.rotate(Math.PI / 2);
+          }
+          ctx.globalAlpha = 1;
+          ctx.restore();
+
+          // Forme étoile
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotation);
+          ctx.fillStyle = `rgba(${r},${g},${b},${Math.min(p.alpha * 2.8, 0.97)})`;
           ctx.translate(-p.x, -p.y);
           drawStar(ctx, p.x, p.y, p.radius);
-        } else {
-          ctx.beginPath();
-          ctx.arc(0, 0, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
         }
-        ctx.fill();
-        ctx.restore();
       }
 
       animRef.current = requestAnimationFrame(draw);
@@ -136,7 +222,7 @@ export default function ParticleBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.65 }}
+      style={{ opacity: 0.85 }}
     />
   );
 }

@@ -21,14 +21,16 @@ interface PokemonEntry {
   tradeForPokemonId?: number | null;
   notes?: string | null;
   priority?: number | null;
+  tags?: string | null;
   completed: boolean;
   trainer?: Trainer | null;
 }
 
 interface PokeOption {
-  name: string;
+  name: string;       // English (internal, for pokemonId resolution)
   url: string;
   id: number;
+  frenchName: string; // French (displayed + stored as pokemonName)
 }
 
 interface AdminPanelProps {
@@ -58,15 +60,30 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
   useEffect(() => {
     fetchData();
-    // Fetch pokemon list from PokeAPI
-    fetch("https://pokeapi.co/api/v2/pokemon?limit=1010")
-      .then((r) => r.json())
-      .then((data) => {
-        const options: PokeOption[] = data.results.map(
+    // Fetch Pokémon list + French names in parallel
+    Promise.all([
+      fetch("https://pokeapi.co/api/v2/pokemon?limit=1025").then((r) => r.json()),
+      fetch("https://beta.pokeapi.co/graphql/v1beta", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: `{ pokemon_v2_pokemonspeciesname(where: {language_id: {_eq: 5}}) { name pokemon_species_id } }`,
+        }),
+      })
+        .then((r) => r.json())
+        .catch(() => ({ data: { pokemon_v2_pokemonspeciesname: [] } })),
+    ])
+      .then(([listData, gqlData]) => {
+        const frenchMap = new Map<number, string>(
+          ((gqlData.data?.pokemon_v2_pokemonspeciesname ?? []) as { name: string; pokemon_species_id: number }[])
+            .map(({ name, pokemon_species_id }) => [pokemon_species_id, name])
+        );
+        const options: PokeOption[] = listData.results.map(
           (p: { name: string; url: string }, i: number) => ({
             name: p.name,
             url: p.url,
             id: i + 1,
+            frenchName: frenchMap.get(i + 1) ?? p.name,
           })
         );
         setPokeOptions(options);
@@ -77,6 +94,23 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     onLogout();
+  };
+
+  const handleExport = async () => {
+    try {
+      const res = await fetch("/api/export");
+      if (!res.ok) throw new Error();
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `luckytrades-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("Export téléchargé ✓");
+    } catch {
+      toast.error("Erreur lors de l'export");
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -145,9 +179,17 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     }
   };
 
-  const wants = entries.filter((e) => e.category === "want");
-  const gives = entries.filter((e) => e.category === "give");
-  const mirrors = entries.filter((e) => e.category === "mirror");
+  const sortEntries = (list: PokemonEntry[]) =>
+    [...list].sort((a, b) => {
+      const pa = a.priority ?? 9999;
+      const pb = b.priority ?? 9999;
+      if (pa !== pb) return pa - pb;
+      return a.pokemonName.localeCompare(b.pokemonName, "fr", { sensitivity: "base" });
+    });
+
+  const wants = sortEntries(entries.filter((e) => e.category === "want"));
+  const gives = sortEntries(entries.filter((e) => e.category === "give"));
+  const mirrors = sortEntries(entries.filter((e) => e.category === "mirror"));
 
   return (
     <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
@@ -178,6 +220,16 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             className="btn-primary"
           >
             + Ajouter un échange
+          </button>
+          <button
+            onClick={handleExport}
+            style={{
+              padding: "8px 16px", borderRadius: 12, cursor: "pointer",
+              background: "rgba(100,180,255,0.08)", border: "1px solid rgba(100,180,255,0.25)",
+              color: "#64b4ff", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem",
+            }}
+          >
+            ⬇ Export JSON
           </button>
           <button onClick={handleLogout} className="btn-danger">
             Déconnexion
@@ -340,6 +392,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
         <AddEntryModal
           trainers={trainers}
           pokeOptions={pokeOptions}
+          existingEntries={entries}
           onClose={() => setShowAddForm(false)}
           onAdded={(entry) => {
             setEntries((prev) => [entry, ...prev]);
@@ -476,6 +529,21 @@ function AdminEntryRow({
         transition: "border-color 0.2s",
       }}
     >
+      {/* Priority badge */}
+      {entry.priority != null && (
+        <div style={{
+          width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
+          background: entry.priority === 1 ? "rgba(255,215,0,0.2)" : entry.priority === 2 ? "rgba(192,192,192,0.15)" : entry.priority === 3 ? "rgba(205,127,50,0.15)" : "rgba(100,180,255,0.12)",
+          border: `2px solid ${entry.priority === 1 ? "#ffd700" : entry.priority === 2 ? "#c0c0c0" : entry.priority === 3 ? "#cd7f32" : "#64b4ff"}`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: "0.7rem", fontWeight: 800,
+          color: entry.priority === 1 ? "#ffd700" : entry.priority === 2 ? "#d4d4d4" : entry.priority === 3 ? "#e09850" : "#64b4ff",
+          fontFamily: "Exo 2, sans-serif",
+        }}>
+          {entry.priority}
+        </div>
+      )}
+
       {/* Sprite */}
       <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={48} shiny={entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false)} customSpriteUrl={entry.customSpriteUrl} />
 
@@ -556,11 +624,13 @@ function AdminEntryRow({
 function AddEntryModal({
   trainers,
   pokeOptions,
+  existingEntries,
   onClose,
   onAdded,
 }: {
   trainers: Trainer[];
   pokeOptions: PokeOption[];
+  existingEntries: PokemonEntry[];
   onClose: () => void;
   onAdded: (entry: PokemonEntry) => void;
 }) {
@@ -575,6 +645,7 @@ function AddEntryModal({
     shiny: false,
     customSpriteUrl: null as string | null,
     priority: null as number | null,
+    tags: [] as string[],
   });
   const [loading, setLoading] = useState(false);
   const [pokeSearch, setPokeSearch] = useState("");
@@ -585,11 +656,11 @@ function AddEntryModal({
   const tradeRef = useRef<HTMLDivElement>(null);
 
   const pokeSuggestions = pokeSearch.length >= 2
-    ? pokeOptions.filter((p) => p.name.includes(pokeSearch.toLowerCase())).slice(0, 8)
+    ? pokeOptions.filter((p) => p.frenchName.toLowerCase().includes(pokeSearch.toLowerCase())).slice(0, 8)
     : [];
 
   const tradeSuggestions = tradeSearch.length >= 2
-    ? pokeOptions.filter((p) => p.name.includes(tradeSearch.toLowerCase())).slice(0, 8)
+    ? pokeOptions.filter((p) => p.frenchName.toLowerCase().includes(tradeSearch.toLowerCase())).slice(0, 8)
     : [];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -597,6 +668,15 @@ function AddEntryModal({
     if (!form.pokemonId || !form.pokemonName) {
       toast.error("Sélectionne un Pokémon valide");
       return;
+    }
+    if (form.category === "want") {
+      const duplicate = existingEntries.find(
+        (e) => e.category === "want" && e.pokemonId === form.pokemonId && !!e.shiny === form.shiny
+      );
+      if (duplicate) {
+        toast.error(`${form.pokemonName}${form.shiny ? " ✨ Shiny" : ""} est déjà dans "Je recherche"`);
+        return;
+      }
     }
     setLoading(true);
 
@@ -611,6 +691,7 @@ function AddEntryModal({
           tradeForPokemonId: form.tradeForPokemonId || null,
           notes: form.notes || null,
           priority: form.priority || null,
+          tags: form.tags,
         }),
       });
       if (!res.ok) throw new Error();
@@ -691,8 +772,8 @@ function AddEntryModal({
                 <SuggestionDropdown
                   options={pokeSuggestions}
                   onSelect={(p) => {
-                    setForm((f) => ({ ...f, pokemonName: p.name, pokemonId: p.id }));
-                    setPokeSearch(p.name);
+                    setForm((f) => ({ ...f, pokemonName: p.frenchName, pokemonId: p.id }));
+                    setPokeSearch(p.frenchName);
                     setShowPokeSuggestions(false);
                   }}
                 />
@@ -743,8 +824,8 @@ function AddEntryModal({
                 <SuggestionDropdown
                   options={tradeSuggestions}
                   onSelect={(p) => {
-                    setForm((f) => ({ ...f, tradeForPokemonName: p.name, tradeForPokemonId: p.id }));
-                    setTradeSearch(p.name);
+                    setForm((f) => ({ ...f, tradeForPokemonName: p.frenchName, tradeForPokemonId: p.id }));
+                    setTradeSearch(p.frenchName);
                     setShowTradeSuggestions(false);
                   }}
                 />
@@ -763,6 +844,12 @@ function AddEntryModal({
             className="glass-input mt-1"
             placeholder="Notes..."
           />
+        </div>
+
+        {/* Tags */}
+        <div>
+          <label className="field-label">TAGS (optionnel)</label>
+          <TagInput tags={form.tags} onChange={(tags) => setForm((f) => ({ ...f, tags }))} />
         </div>
 
         {/* Priority (want only) */}
@@ -858,13 +945,14 @@ function EditEntryModal({
     shiny: entry.shiny,
     customSpriteUrl: entry.customSpriteUrl ?? null as string | null,
     priority: entry.priority ?? null as number | null,
+    tags: parseTags(entry.tags),
   });
   const [tradeSearch, setTradeSearch] = useState(entry.tradeForPokemonName ?? "");
   const [showTradeSuggestions, setShowTradeSuggestions] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const tradeSuggestions = tradeSearch.length >= 2
-    ? pokeOptions.filter((p) => p.name.includes(tradeSearch.toLowerCase())).slice(0, 8)
+    ? pokeOptions.filter((p) => p.frenchName.toLowerCase().includes(tradeSearch.toLowerCase())).slice(0, 8)
     : [];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -884,6 +972,7 @@ function EditEntryModal({
           tradeForPokemonId: form.tradeForPokemonId || null,
           notes: form.notes || null,
           priority: form.priority || null,
+          tags: form.tags,
         }),
       });
       if (!res.ok) throw new Error();
@@ -994,8 +1083,8 @@ function EditEntryModal({
                 <SuggestionDropdown
                   options={tradeSuggestions}
                   onSelect={(p) => {
-                    setForm((f) => ({ ...f, tradeForPokemonName: p.name, tradeForPokemonId: p.id }));
-                    setTradeSearch(p.name);
+                    setForm((f) => ({ ...f, tradeForPokemonName: p.frenchName, tradeForPokemonId: p.id }));
+                    setTradeSearch(p.frenchName);
                     setShowTradeSuggestions(false);
                   }}
                 />
@@ -1013,6 +1102,12 @@ function EditEntryModal({
             className="glass-input mt-1"
             placeholder="Notes..."
           />
+        </div>
+
+        {/* Tags */}
+        <div>
+          <label className="field-label">TAGS (optionnel)</label>
+          <TagInput tags={form.tags} onChange={(tags) => setForm((f) => ({ ...f, tags }))} />
         </div>
 
         {/* Priority (want only) */}
@@ -1141,7 +1236,7 @@ function SuggestionDropdown({
             height={28}
             style={{ imageRendering: "pixelated" }}
           />
-          <span>{p.name}</span>
+          <span>{p.frenchName}</span>
           <span style={{ marginLeft: "auto", color: "rgba(232,237,245,0.3)", fontSize: "0.75rem" }}>
             #{p.id}
           </span>
@@ -1149,6 +1244,13 @@ function SuggestionDropdown({
       ))}
     </div>
   );
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function parseTags(raw: string | null | undefined): string[] {
+  if (!raw) return [];
+  try { return JSON.parse(raw) as string[]; } catch { return []; }
 }
 
 // ─── Sprite picker helpers ────────────────────────────────────────────────────
@@ -1219,6 +1321,58 @@ async function fetchAllSprites(pokemonId: number): Promise<{ url: string; label:
   });
 }
 
+// ─── Pokekalos GO sprites ─────────────────────────────────────────────────────
+
+const POKEKALOS_BASE = "https://www.media.pokekalos.fr/img/pokemon/pokego";
+
+const POKEKALOS_SUFFIXES: { slug: string; label: string }[] = [
+  { slug: "", label: "Normal GO" },
+  { slug: "-halloween", label: "Halloween" },
+  { slug: "-halloween2021", label: "Halloween '21" },
+  { slug: "-halloween2022", label: "Halloween '22" },
+  { slug: "-halloween2023", label: "Halloween '23" },
+  { slug: "-halloween2024", label: "Halloween '24" },
+  { slug: "-noel", label: "Noël" },
+  { slug: "-noel-2023", label: "Noël '23" },
+  { slug: "-noel24", label: "Noël '24" },
+  { slug: "-holiday2020", label: "Holiday '20" },
+  { slug: "-holiday2021", label: "Holiday '21" },
+  { slug: "-anniversaire", label: "Anniversaire" },
+  { slug: "-capitaine", label: "Capitaine" },
+  { slug: "-summer", label: "Summer" },
+  { slug: "-costume-2022", label: "Costume '22" },
+  { slug: "-gigamax", label: "Gigamax" },
+  { slug: "-a", label: "Alolan" },
+  { slug: "-h", label: "Hisuian" },
+  { slug: "-g", label: "Galarian" },
+  { slug: "-detective", label: "Détective" },
+  { slug: "-pokemonday20", label: "Pokémon Day '20" },
+  { slug: "-pokemonday21", label: "Pokémon Day '21" },
+  { slug: "-libre", label: "Libre" },
+  { slug: "-flying", label: "Vol" },
+  { slug: "-original", label: "Original" },
+];
+
+function toPokekalosSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .split(" ")[0]
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function generatePokekalosSprites(pokemonName: string): { url: string; label: string }[] {
+  const base = toPokekalosSlug(pokemonName);
+  if (!base) return [];
+  const results: { url: string; label: string }[] = [];
+  for (const { slug, label } of POKEKALOS_SUFFIXES) {
+    results.push({ url: `${POKEKALOS_BASE}/${base}${slug}.png`, label });
+    results.push({ url: `${POKEKALOS_BASE}/${base}${slug}-s.png`, label: `${label} ✨` });
+  }
+  return results;
+}
+
 function SpritePicker({
   pokemonId,
   pokemonName,
@@ -1235,6 +1389,8 @@ function SpritePicker({
   const [fetched, setFetched] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [manualUrl, setManualUrl] = useState("");
+  const [showPokekalos, setShowPokekalos] = useState(false);
+  const pokekalosSprites = generatePokekalosSprites(pokemonName);
 
   // Reset cache when Pokémon changes
   useEffect(() => {
@@ -1354,6 +1510,60 @@ function SpritePicker({
               </p>
             ) : null}
 
+            {/* Pokekalos GO section */}
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 16, marginBottom: 16 }}>
+              <button
+                type="button"
+                onClick={() => setShowPokekalos((v) => !v)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 8,
+                  background: "rgba(255,153,0,0.08)", border: "1px solid rgba(255,153,0,0.3)",
+                  borderRadius: 10, padding: "7px 14px", cursor: "pointer",
+                  color: "#ff9900", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.8rem",
+                  width: "100%", justifyContent: "space-between",
+                }}
+              >
+                <span>🎮 Sprites Pokémon GO (Pokekalos) — variantes événement</span>
+                <span style={{ opacity: 0.7 }}>{showPokekalos ? "▲" : "▼"}</span>
+              </button>
+              {showPokekalos && (
+                <div style={{ marginTop: 10 }}>
+                  <p style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", marginBottom: 8 }}>
+                    Les tuiles cassées sont masquées automatiquement. Basé sur : <strong style={{ color: "rgba(232,237,245,0.6)" }}>{toPokekalosSlug(pokemonName)}</strong>
+                  </p>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 6 }}>
+                    {pokekalosSprites.map(({ url, label }) => (
+                      <button
+                        key={url}
+                        type="button"
+                        onClick={() => { onSelect(url); setOpen(false); }}
+                        style={{
+                          background: currentUrl === url ? "rgba(255,153,0,0.2)" : "rgba(255,255,255,0.03)",
+                          border: `1px solid ${currentUrl === url ? "rgba(255,153,0,0.5)" : "rgba(255,255,255,0.07)"}`,
+                          borderRadius: 10, padding: 8, cursor: "pointer",
+                          display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
+                        }}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={url}
+                          alt={label}
+                          style={{ width: 72, height: 72, objectFit: "contain", imageRendering: "pixelated" }}
+                          onError={(e) => {
+                            const btn = (e.currentTarget as HTMLImageElement).closest("button");
+                            if (btn) btn.style.display = "none";
+                          }}
+                        />
+                        <span style={{ fontSize: "0.58rem", color: "rgba(255,153,0,0.8)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+                          {label}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 16 }}>
               <label className="field-label">URL MANUELLE</label>
               <div className="flex gap-2 mt-1">
@@ -1380,6 +1590,93 @@ function SpritePicker({
         </div>
       )}
     </>
+  );
+}
+
+// ─── TagInput ─────────────────────────────────────────────────────────────────
+
+const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  halloween:    { bg: "rgba(255,107,0,0.18)",   text: "#ff6b00", border: "rgba(255,107,0,0.5)" },
+  noel:         { bg: "rgba(80,200,255,0.18)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
+  "noël":       { bg: "rgba(80,200,255,0.18)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
+  holiday:      { bg: "rgba(80,200,255,0.18)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
+  anniversaire: { bg: "rgba(255,215,0,0.18)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
+  fete:         { bg: "rgba(255,215,0,0.18)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
+  "fête":       { bg: "rgba(255,215,0,0.18)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
+  gigamax:      { bg: "rgba(255,40,140,0.18)",   text: "#ff288c", border: "rgba(255,40,140,0.5)" },
+  dynamax:      { bg: "rgba(210,40,40,0.18)",    text: "#e03030", border: "rgba(210,40,40,0.5)" },
+  costume:      { bg: "rgba(200,100,255,0.18)",  text: "#c864ff", border: "rgba(200,100,255,0.5)" },
+  evenement:    { bg: "rgba(180,100,255,0.18)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
+  "événement":  { bg: "rgba(180,100,255,0.18)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
+};
+const DEFAULT_TAG_COLOR = { bg: "rgba(100,180,255,0.15)", text: "#64b4ff", border: "rgba(100,180,255,0.4)" };
+
+function getTagColor(tag: string) {
+  return TAG_COLORS[tag.toLowerCase()] ?? DEFAULT_TAG_COLOR;
+}
+
+function TagInput({ tags, onChange }: { tags: string[]; onChange: (tags: string[]) => void }) {
+  const [input, setInput] = useState("");
+
+  const add = () => {
+    const trimmed = input.trim().toLowerCase();
+    if (trimmed && !tags.includes(trimmed)) onChange([...tags, trimmed]);
+    setInput("");
+  };
+
+  return (
+    <div style={{ marginTop: 6 }}>
+      {tags.length > 0 && (
+        <div className="flex gap-1 flex-wrap mb-2">
+          {tags.map((tag) => {
+            const c = getTagColor(tag);
+            return (
+              <span
+                key={tag}
+                style={{
+                  display: "inline-flex", alignItems: "center", gap: 4,
+                  background: c.bg, border: `1px solid ${c.border}`,
+                  borderRadius: 999, padding: "2px 8px 2px 10px",
+                  fontSize: "0.72rem", fontWeight: 700, color: c.text,
+                  fontFamily: "Exo 2, sans-serif",
+                }}
+              >
+                {tag}
+                <button
+                  type="button"
+                  onClick={() => onChange(tags.filter((t) => t !== tag))}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: c.text, opacity: 0.7, padding: 0, lineHeight: 1, fontSize: "0.8rem" }}
+                >
+                  ×
+                </button>
+              </span>
+            );
+          })}
+        </div>
+      )}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
+          className="glass-input"
+          placeholder="Ex: halloween, gigamax, costume..."
+          style={{ flex: 1, fontSize: "0.82rem" }}
+        />
+        <button
+          type="button"
+          onClick={add}
+          style={{
+            padding: "6px 12px", borderRadius: 10, cursor: "pointer",
+            background: "rgba(100,180,255,0.1)", border: "1px solid rgba(100,180,255,0.3)",
+            color: "#64b4ff", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.8rem",
+          }}
+        >
+          + Ajouter
+        </button>
+      </div>
+    </div>
   );
 }
 
