@@ -15,15 +15,10 @@
 
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
-import path from "path";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const dbUrl = process.env.DATABASE_URL ?? "file:./dev.db";
-const url = dbUrl.startsWith("file:.")
-  ? `file:${path.resolve(process.cwd(), dbUrl.replace(/^file:/, "")).replace(/\\/g, "/")}`
-  : dbUrl;
-
-const adapter = new PrismaLibSql({ url });
+const url = process.env.POSTGRES_PRISMA_URL ?? process.env.DATABASE_URL!;
+const adapter = new PrismaPg({ connectionString: url });
 const prisma = new PrismaClient({ adapter });
 
 interface SeedEntry {
