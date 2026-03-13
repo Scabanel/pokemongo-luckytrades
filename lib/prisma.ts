@@ -13,7 +13,10 @@ function createPrismaClient() {
     ? `file:${path.resolve(process.cwd(), dbUrl.replace(/^file:/, "")).replace(/\\/g, "/")}`
     : dbUrl;
 
-  const adapter = new PrismaLibSql({ url });
+  // Turso remote DB requires an auth token
+  const authToken = process.env.TURSO_AUTH_TOKEN;
+
+  const adapter = new PrismaLibSql({ url, ...(authToken ? { authToken } : {}) });
 
   return new PrismaClient({
     adapter,
