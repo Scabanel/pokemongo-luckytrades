@@ -54,6 +54,7 @@ async function main() {
   // Connect to Postgres via Prisma
   process.env.POSTGRES_PRISMA_URL = pgUrl;
   process.env.POSTGRES_URL_NON_POOLING = pgDirect ?? pgUrl;
+  process.env.DATABASE_URL = pgUrl; // Prisma 7 reads DATABASE_URL at runtime
 
   const pg = new PrismaClient();
 

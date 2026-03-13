@@ -1,18 +1,19 @@
 import { PrismaClient } from "@prisma/client";
-
-// Vercel Postgres uses POSTGRES_PRISMA_URL; Prisma 7 native reads DATABASE_URL
-if (!process.env.DATABASE_URL && process.env.POSTGRES_PRISMA_URL) {
-  process.env.DATABASE_URL = process.env.POSTGRES_PRISMA_URL;
-}
+import { PrismaPg } from "@prisma/adapter-pg";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
+function createClient() {
+  const url = process.env.POSTGRES_PRISMA_URL ?? process.env.DATABASE_URL!;
+  const adapter = new PrismaPg({ connectionString: url });
+  return new PrismaClient({
+    adapter,
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
+}
+
+export const prisma = globalForPrisma.prisma ?? createClient();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
