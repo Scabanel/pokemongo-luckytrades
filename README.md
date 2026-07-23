@@ -7,32 +7,43 @@ en miroir ; je gère la liste depuis `/admin`.
 ## Stack
 
 - [Next.js 16](https://nextjs.org) (App Router) + React 19 + TypeScript
-- [Prisma 7](https://www.prisma.io) + [Postgres](https://neon.tech) (Neon, provisionné via Vercel Postgres)
+- [Prisma 7](https://www.prisma.io) + [Postgres](https://supabase.com) (Supabase)
 - Déployé sur [Vercel](https://vercel.com)
 
 ## Base de données — un seul chemin
 
-**Le projet utilise Postgres (Neon) en local comme en production.** Le SQLite
-et Turso qu'on voit encore mentionnés dans l'historique git ont été abandonnés
-lors du passage à Vercel Postgres — s'il reste des scripts ou variables qui y
-font référence quelque part, ils sont morts, à supprimer.
+**Le projet utilise Postgres (Supabase) en local comme en production.** Neon
+(via l'intégration Vercel Postgres), SQLite et Turso qu'on voit encore
+mentionnés dans l'historique git ont tous été abandonnés — s'il reste des
+scripts ou variables qui y font référence quelque part, ils sont morts, à
+supprimer.
 
 `lib/prisma.ts` lit `POSTGRES_PRISMA_URL` en priorité, avec repli sur
-`DATABASE_URL`. Ce sont les variables que Vercel Postgres/Neon fournit
-automatiquement.
+`DATABASE_URL` — c'est la connexion **pooler transaction** (port 6543) de
+Supabase, utilisée par l'app à l'exécution.
+
+`prisma.config.ts` (utilisé uniquement par `prisma migrate`) utilise
+`DIRECT_URL` en priorité. Attention : le vrai hostname "direct" de Supabase
+(`db.[ref].supabase.co:5432`) résout en IPv6 uniquement sur le plan gratuit et
+n'est pas joignable depuis beaucoup de réseaux IPv4 — `DIRECT_URL` doit donc
+pointer vers le **pooler en mode session** (même hostname que le pooler
+transaction, port 5432 au lieu de 6543), qui lui est joignable en IPv4.
 
 ### Setup local
 
 ```bash
 npm install
-vercel link          # une fois, pour lier ce dossier au projet Vercel
-vercel env pull .env.local   # récupère les vraies variables Postgres/Neon
 npm run dev
 ```
 
-`.env` contient les identifiants admin (voir `.env.example`) — ils ne changent
-pas entre environnements, contrairement aux variables Postgres qui vivent dans
-`.env.local` (ignoré par git, généré par `vercel env pull`).
+Récupérer les variables `POSTGRES_PRISMA_URL`/`DIRECT_URL`/`NEXT_PUBLIC_SUPABASE_*`/
+`SUPABASE_SERVICE_ROLE_KEY` depuis le dashboard Supabase (Project Settings →
+Database / API) et les mettre dans `.env.local` (ignoré par git, voir
+`.env.example` pour le format).
+
+`.env` contient les identifiants admin historiques (voir `.env.example`) —
+seront remplacés par Supabase Auth (voir plus bas une fois la migration auth
+faite).
 
 ### Commandes utiles
 
