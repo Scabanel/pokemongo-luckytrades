@@ -71,6 +71,12 @@ générés par `npm run gen:costumes` :
 - `data/costumes.json` (~700 Ko, admin uniquement) — tous les costumes
   historiques par Pokémon (Halloween, GO Fest, anniversaires...) avec libellé
   lisible, utilisé par le sélecteur de sprite dans `/admin`.
+- `data/missing-in-go.json` (léger, noms FR déjà attachés) — Pokémon absents
+  du jeu, sans version shiny, ou sans Gigamax (liste fixe des 32 espèces
+  éligibles au Gigamax dans les jeux principaux, croisée avec les costumes
+  effectivement présents). Alimente l'onglet public "🚧 Pas encore sortis".
+  Le Dynamax n'a pas de liste d'espèces éligibles fixe dans les jeux
+  principaux — pas de section "Dynamax manquant" pour cette raison.
 
 À relancer périodiquement pour récupérer les nouveaux costumes ajoutés au jeu.
 Les "fonds" promotionnels ponctuels (ex: variantes une seule ville/événement,

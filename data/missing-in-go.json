@@ -1,0 +1,380 @@
+{
+  "missingEntirely": [
+    {
+      "id": 1002,
+      "name": "Baojian"
+    },
+    {
+      "id": 875,
+      "name": "Bekaglaçon"
+    },
+    {
+      "id": 954,
+      "name": "Bérasca"
+    },
+    {
+      "id": 896,
+      "name": "Blizzeval"
+    },
+    {
+      "id": 878,
+      "name": "Charibari"
+    },
+    {
+      "id": 869,
+      "name": "Charmilly"
+    },
+    {
+      "id": 1023,
+      "name": "Chef-de-Fer"
+    },
+    {
+      "id": 1001,
+      "name": "Chongjian"
+    },
+    {
+      "id": 868,
+      "name": "Crèmy"
+    },
+    {
+      "id": 976,
+      "name": "Délestin"
+    },
+    {
+      "id": 1003,
+      "name": "Dinglu"
+    },
+    {
+      "id": 963,
+      "name": "Dofin"
+    },
+    {
+      "id": 943,
+      "name": "Dogrino"
+    },
+    {
+      "id": 995,
+      "name": "Épine-de-Fer"
+    },
+    {
+      "id": 981,
+      "name": "Farigiraf"
+    },
+    {
+      "id": 1016,
+      "name": "Favianos"
+    },
+    {
+      "id": 1014,
+      "name": "Félicanis"
+    },
+    {
+      "id": 1020,
+      "name": "Feu-Perçant"
+    },
+    {
+      "id": 987,
+      "name": "Flotte-Mèche"
+    },
+    {
+      "id": 986,
+      "name": "Fongus-Furie"
+    },
+    {
+      "id": 984,
+      "name": "Fort-Ivoire"
+    },
+    {
+      "id": 1015,
+      "name": "Fortusimia"
+    },
+    {
+      "id": 881,
+      "name": "Galvagla"
+    },
+    {
+      "id": 880,
+      "name": "Galvagon"
+    },
+    {
+      "id": 1006,
+      "name": "Garde-de-Fer"
+    },
+    {
+      "id": 942,
+      "name": "Grondogue"
+    },
+    {
+      "id": 991,
+      "name": "Hotte-de-Fer"
+    },
+    {
+      "id": 985,
+      "name": "Hurle-Queue"
+    },
+    {
+      "id": 883,
+      "name": "Hydragla"
+    },
+    {
+      "id": 882,
+      "name": "Hydragon"
+    },
+    {
+      "id": 1021,
+      "name": "Ire-Foudre"
+    },
+    {
+      "id": 833,
+      "name": "Khélocrok"
+    },
+    {
+      "id": 1007,
+      "name": "Koraidon"
+    },
+    {
+      "id": 953,
+      "name": "Léboulérou"
+    },
+    {
+      "id": 801,
+      "name": "Magearna"
+    },
+    {
+      "id": 774,
+      "name": "Météno"
+    },
+    {
+      "id": 1008,
+      "name": "Miraidon"
+    },
+    {
+      "id": 994,
+      "name": "Mite-de-Fer"
+    },
+    {
+      "id": 967,
+      "name": "Motorizard"
+    },
+    {
+      "id": 1017,
+      "name": "Ogerpon"
+    },
+    {
+      "id": 879,
+      "name": "Pachyradjah"
+    },
+    {
+      "id": 902,
+      "name": "Paragruel"
+    },
+    {
+      "id": 992,
+      "name": "Paume-de-Fer"
+    },
+    {
+      "id": 1025,
+      "name": "Pêchaminus"
+    },
+    {
+      "id": 989,
+      "name": "Pelage-Sablé"
+    },
+    {
+      "id": 951,
+      "name": "Pimito"
+    },
+    {
+      "id": 1018,
+      "name": "Pondralugon"
+    },
+    {
+      "id": 988,
+      "name": "Rampe-Ailes"
+    },
+    {
+      "id": 1022,
+      "name": "Roc-de-Fer"
+    },
+    {
+      "id": 990,
+      "name": "Roue-de-Fer"
+    },
+    {
+      "id": 1005,
+      "name": "Rugit-Lune"
+    },
+    {
+      "id": 952,
+      "name": "Scovilain"
+    },
+    {
+      "id": 1009,
+      "name": "Serpente-Eau"
+    },
+    {
+      "id": 773,
+      "name": "Silvallié"
+    },
+    {
+      "id": 897,
+      "name": "Spectreval"
+    },
+    {
+      "id": 964,
+      "name": "Superdofin"
+    },
+    {
+      "id": 898,
+      "name": "Sylveroy"
+    },
+    {
+      "id": 1024,
+      "name": "Terapagos"
+    },
+    {
+      "id": 993,
+      "name": "Têtes-de-Fer"
+    },
+    {
+      "id": 834,
+      "name": "Torgamord"
+    },
+    {
+      "id": 772,
+      "name": "Type:0"
+    },
+    {
+      "id": 1010,
+      "name": "Vert-de-Fer"
+    },
+    {
+      "id": 947,
+      "name": "Virevorreur"
+    },
+    {
+      "id": 946,
+      "name": "Virovent"
+    },
+    {
+      "id": 871,
+      "name": "Wattapik"
+    },
+    {
+      "id": 1004,
+      "name": "Yuyu"
+    }
+  ],
+  "missingShiny": [
+    {
+      "id": 905,
+      "name": "Amovénus"
+    },
+    {
+      "id": 789,
+      "name": "Cosmog"
+    },
+    {
+      "id": 487,
+      "name": "Giratina"
+    },
+    {
+      "id": 720,
+      "name": "Hoopa"
+    },
+    {
+      "id": 648,
+      "name": "Meloetta"
+    },
+    {
+      "id": 877,
+      "name": "Morpeko"
+    },
+    {
+      "id": 492,
+      "name": "Shaymin"
+    },
+    {
+      "id": 721,
+      "name": "Volcanion"
+    },
+    {
+      "id": 891,
+      "name": "Wushours"
+    },
+    {
+      "id": 888,
+      "name": "Zacian"
+    },
+    {
+      "id": 889,
+      "name": "Zamazenta"
+    },
+    {
+      "id": 893,
+      "name": "Zarude"
+    }
+  ],
+  "missingGigantamax": [
+    {
+      "id": 826,
+      "name": "Astronelle"
+    },
+    {
+      "id": 869,
+      "name": "Charmilly"
+    },
+    {
+      "id": 823,
+      "name": "Corvaillus"
+    },
+    {
+      "id": 842,
+      "name": "Dratatin"
+    },
+    {
+      "id": 844,
+      "name": "Dunaconda"
+    },
+    {
+      "id": 884,
+      "name": "Duralugon"
+    },
+    {
+      "id": 133,
+      "name": "Évoli"
+    },
+    {
+      "id": 809,
+      "name": "Melmetal"
+    },
+    {
+      "id": 839,
+      "name": "Monthracite"
+    },
+    {
+      "id": 879,
+      "name": "Pachyradjah"
+    },
+    {
+      "id": 841,
+      "name": "Pomdrapi"
+    },
+    {
+      "id": 851,
+      "name": "Scolocendre"
+    },
+    {
+      "id": 892,
+      "name": "Shifours"
+    },
+    {
+      "id": 858,
+      "name": "Sorcilence"
+    },
+    {
+      "id": 834,
+      "name": "Torgamord"
+    }
+  ]
+}

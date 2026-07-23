@@ -4,12 +4,22 @@ import { useEffect, useState } from "react";
 import ParticleBackground from "@/components/ParticleBackground";
 import PokemonCard from "@/components/PokemonCard";
 import CardSkeleton from "@/components/CardSkeleton";
+import PokemonSprite from "@/components/PokemonSprite";
+import missingInGo from "@/data/missing-in-go.json";
 import type { PokemonEntry, EntryCategory } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 
-type ActiveTab = EntryCategory;
+type ActiveTab = EntryCategory | "missing";
 
-const TABS = CATEGORY_DISPLAY_ORDER.map((key) => ({ key, ...CATEGORIES[key] }));
+const MISSING_COLOR = "#ff6b6b";
+
+const TABS = [
+  ...CATEGORY_DISPLAY_ORDER.map((key) => ({ key: key as ActiveTab, ...CATEGORIES[key] })),
+  { key: "missing" as const, label: "Pas encore sortis", icon: "🚧", color: MISSING_COLOR },
+];
+
+const MISSING_TOTAL =
+  missingInGo.missingEntirely.length + missingInGo.missingShiny.length + missingInGo.missingGigantamax.length;
 
 function sortEntries(entries: PokemonEntry[]): PokemonEntry[] {
   return [...entries].sort((a, b) => {
@@ -51,12 +61,14 @@ export default function Home() {
     mirror: mirrors.length,
     want: wants.length,
     give: gives.length,
+    missing: MISSING_TOTAL,
   };
 
   const entriesByTab: Record<ActiveTab, PokemonEntry[]> = {
     mirror: mirrors,
     want: wants,
     give: gives,
+    missing: [],
   };
 
   const activeColor = TABS.find((t) => t.key === activeTab)?.color ?? "#0affe0";
@@ -270,7 +282,9 @@ export default function Home() {
             scrollbarColor: `${activeColor}30 transparent`,
           }}
         >
-          {loading ? (
+          {activeTab === "missing" ? (
+            <MissingPokemonPanel />
+          ) : loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
               {Array.from({ length: 12 }).map((_, i) => <CardSkeleton key={i} />)}
             </div>
@@ -288,6 +302,94 @@ export default function Home() {
         <footer className="text-center mt-10" style={{ fontSize: "0.7rem", opacity: 0.18 }}>
           <a href="/admin" style={{ color: "#0affe0", textDecoration: "none", letterSpacing: "0.1em", fontFamily: "Exo 2, sans-serif", fontWeight: 700 }}>ADMINISTRATION</a>
         </footer>
+      </div>
+    </div>
+  );
+}
+
+type MissingEntry = { id: number; name: string };
+
+const MISSING_SECTIONS: { key: keyof typeof missingInGo; title: string; hint: string }[] = [
+  {
+    key: "missingEntirely",
+    title: "Absents du jeu",
+    hint: "Aucune apparition dans Pokémon GO pour l'instant.",
+  },
+  {
+    key: "missingShiny",
+    title: "Sans version shiny",
+    hint: "Présents dans le jeu, mais leur version chromatique n'est pas encore sortie.",
+  },
+  {
+    key: "missingGigantamax",
+    title: "Sans Gigamax",
+    hint: "Espèce pouvant Gigamax dans les jeux principaux, mais pas encore dans GO. (Le Dynamax n'a pas de liste d'espèces éligibles fixe : impossible à calculer de la même façon.)",
+  },
+];
+
+function MissingPokemonPanel() {
+  const [search, setSearch] = useState("");
+  const q = search.trim().toLowerCase();
+
+  const filterList = (list: MissingEntry[]) =>
+    q ? list.filter((p) => p.name.toLowerCase().includes(q)) : list;
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Chercher un Pokémon..."
+        className="glass-input"
+        style={{ marginBottom: 24, maxWidth: 320 }}
+      />
+      <div className="space-y-8">
+        {MISSING_SECTIONS.map(({ key, title, hint }) => {
+          const list = filterList(missingInGo[key] as MissingEntry[]);
+          return (
+            <div key={key}>
+              <h3
+                style={{
+                  fontFamily: "Exo 2, sans-serif",
+                  fontWeight: 700,
+                  color: MISSING_COLOR,
+                  fontSize: "1rem",
+                  marginBottom: 4,
+                }}
+              >
+                {title} ({list.length})
+              </h3>
+              <p style={{ fontSize: "0.72rem", color: "rgba(232,237,245,0.4)", marginBottom: 12 }}>
+                {hint}
+              </p>
+              {list.length === 0 ? (
+                <p style={{ fontSize: "0.8rem", color: "rgba(232,237,245,0.3)", padding: "8px 0" }}>
+                  Aucun résultat.
+                </p>
+              ) : (
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+                  {list.map((p) => (
+                    <div key={p.id} className="flex flex-col items-center gap-1" style={{ padding: 6 }}>
+                      <PokemonSprite pokemonId={p.id} alt={p.name} size={56} />
+                      <span
+                        style={{
+                          fontSize: "0.65rem",
+                          color: "rgba(232,237,245,0.6)",
+                          textAlign: "center",
+                          textTransform: "capitalize",
+                          lineHeight: 1.2,
+                        }}
+                      >
+                        {p.name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
