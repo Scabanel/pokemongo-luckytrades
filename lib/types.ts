@@ -3,9 +3,13 @@
 // AdminPanel.tsx, PokemonCard.tsx et app/page.tsx : un champ ajouté au modèle
 // Prisma demandait de le répercuter à la main dans 3 endroits.
 
+export type Team = "instinct" | "mystic" | "valor";
+
 export interface Trainer {
   id: string;
   name: string;
+  team?: Team | null;
+  level?: number | null;
   // Présent uniquement quand l'API renvoie le compte d'entrées (liste des dresseurs en admin).
   _count?: { entries: number };
 }
