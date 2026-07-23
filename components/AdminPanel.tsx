@@ -49,6 +49,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [loadingEntries, setLoadingEntries] = useState(true);
   const [newTrainerName, setNewTrainerName] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
 
   const fetchData = useCallback(async () => {
     const [eRes, tRes] = await Promise.all([
@@ -67,6 +69,16 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     // `npm run gen:pokemon` si une nouvelle génération de Pokémon sort.
     setPokeOptions(pokemonList as PokeOption[]);
   }, [fetchData]);
+
+  // Retire de la sélection les entrées qui ont disparu de la liste (marquées
+  // échangées ou supprimées individuellement pendant qu'elles étaient sélectionnées).
+  useEffect(() => {
+    setSelectedIds((prev) => {
+      const validIds = new Set(entries.map((e) => e.id));
+      const next = new Set(Array.from(prev).filter((id) => validIds.has(id)));
+      return next.size === prev.size ? prev : next;
+    });
+  }, [entries]);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -120,6 +132,75 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     } catch {
       setEntries(prev);
       toast.error("Erreur");
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectSection = (ids: string[]) => {
+    setSelectedIds((prev) => {
+      const allSelected = ids.length > 0 && ids.every((id) => prev.has(id));
+      const next = new Set(prev);
+      ids.forEach((id) => (allSelected ? next.delete(id) : next.add(id)));
+      return next;
+    });
+  };
+
+  const clearSelection = () => {
+    setSelectedIds(new Set());
+    setBulkDeleteConfirm(false);
+  };
+
+  const handleBulkComplete = async () => {
+    const ids = Array.from(selectedIds);
+    setEntries((e) => e.filter((x) => !selectedIds.has(x.id)));
+    clearSelection();
+
+    const results = await Promise.allSettled(
+      ids.map((id) =>
+        fetch(`/api/entries/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ completed: true }),
+        }).then((res) => {
+          if (!res.ok) throw new Error();
+        })
+      )
+    );
+    const failed = results.filter((r) => r.status === "rejected").length;
+    if (failed > 0) {
+      toast.error(`${failed} entrée${failed > 1 ? "s n'ont" : " n'a"} pas pu être marquée${failed > 1 ? "s" : ""} échangée${failed > 1 ? "s" : ""}`);
+      fetchData();
+    } else {
+      toast.success(`${ids.length} entrée${ids.length > 1 ? "s" : ""} marquée${ids.length > 1 ? "s" : ""} échangée${ids.length > 1 ? "s" : ""} ✓`);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    const ids = Array.from(selectedIds);
+    setEntries((e) => e.filter((x) => !selectedIds.has(x.id)));
+    clearSelection();
+
+    const results = await Promise.allSettled(
+      ids.map((id) =>
+        fetch(`/api/entries/${id}`, { method: "DELETE" }).then((res) => {
+          if (!res.ok) throw new Error();
+        })
+      )
+    );
+    const failed = results.filter((r) => r.status === "rejected").length;
+    if (failed > 0) {
+      toast.error(`${failed} entrée${failed > 1 ? "s n'ont" : " n'a"} pas pu être supprimée${failed > 1 ? "s" : ""}`);
+      fetchData();
+    } else {
+      toast.success(`${ids.length} entrée${ids.length > 1 ? "s" : ""} supprimée${ids.length > 1 ? "s" : ""}`);
     }
   };
 
@@ -252,6 +333,44 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       {/* Entries tab */}
       {activeTab === "entries" && (
         <div className="space-y-8">
+          {selectedIds.size > 0 && (
+            <div
+              className="flex items-center gap-3 flex-wrap p-3"
+              style={{
+                background: "rgba(10,255,224,0.06)",
+                border: "1px solid rgba(10,255,224,0.25)",
+                borderRadius: 12,
+              }}
+            >
+              <span style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#0affe0", fontSize: "0.85rem" }}>
+                {selectedIds.size} sélectionné{selectedIds.size > 1 ? "s" : ""}
+              </span>
+              <button onClick={handleBulkComplete} className="btn-success">
+                ✓ Marquer échangé{selectedIds.size > 1 ? "s" : ""}
+              </button>
+              {bulkDeleteConfirm ? (
+                <>
+                  <span style={{ fontSize: "0.8rem", color: "#ff6b6b" }}>
+                    Supprimer {selectedIds.size} entrée{selectedIds.size > 1 ? "s" : ""} ?
+                  </span>
+                  <button onClick={handleBulkDelete} className="btn-danger">
+                    Oui
+                  </button>
+                  <button onClick={() => setBulkDeleteConfirm(false)} className="btn-secondary" style={{ padding: "6px 12px" }}>
+                    Non
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => setBulkDeleteConfirm(true)} className="btn-danger">
+                  🗑️ Supprimer
+                </button>
+              )}
+              <button onClick={clearSelection} className="btn-secondary" style={{ padding: "6px 12px", marginLeft: "auto" }}>
+                Annuler la sélection
+              </button>
+            </div>
+          )}
+
           {CATEGORY_DISPLAY_ORDER.map((key) => ({
             title: `${CATEGORIES[key].icon} ${CATEGORIES[key].label}`,
             color: CATEGORIES[key].color,
@@ -266,6 +385,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               trainers={trainers}
               pokeOptions={pokeOptions}
               deleteConfirm={deleteConfirm}
+              selectedIds={selectedIds}
+              onToggleSelect={toggleSelect}
+              onToggleSelectAll={toggleSelectSection}
               onDelete={handleDelete}
               onComplete={handleComplete}
               onEdit={setEditingEntry}
@@ -413,6 +535,9 @@ function EntrySection({
   onComplete,
   onEdit,
   onDeleteConfirmChange,
+  selectedIds,
+  onToggleSelect,
+  onToggleSelectAll,
 }: {
   title: string;
   color: string;
@@ -426,20 +551,35 @@ function EntrySection({
   onEdit: (entry: PokemonEntry) => void;
   onDeleteConfirmChange: (id: string | null) => void;
   onUpdate: (entry: PokemonEntry) => void;
+  selectedIds: Set<string>;
+  onToggleSelect: (id: string) => void;
+  onToggleSelectAll: (ids: string[]) => void;
 }) {
+  const ids = entries.map((e) => e.id);
+  const allSelected = ids.length > 0 && ids.every((id) => selectedIds.has(id));
+  const someSelected = !allSelected && ids.some((id) => selectedIds.has(id));
+
   return (
     <div>
-      <h2
-        style={{
-          fontFamily: "Exo 2, sans-serif",
-          fontWeight: 700,
-          color,
-          marginBottom: 12,
-          fontSize: "1.1rem",
-        }}
-      >
-        {title} ({entries.length})
-      </h2>
+      <div className="flex items-center gap-2 mb-3">
+        {entries.length > 0 && (
+          <SelectAllCheckbox
+            checked={allSelected}
+            indeterminate={someSelected}
+            onChange={() => onToggleSelectAll(ids)}
+          />
+        )}
+        <h2
+          style={{
+            fontFamily: "Exo 2, sans-serif",
+            fontWeight: 700,
+            color,
+            fontSize: "1.1rem",
+          }}
+        >
+          {title} ({entries.length})
+        </h2>
+      </div>
 
       {loading ? (
         <div className="skeleton" style={{ height: 80, borderRadius: 16 }} />
@@ -465,11 +605,13 @@ function EntrySection({
               trainers={trainers}
               color={color}
               isDeleteConfirm={deleteConfirm === entry.id}
+              isSelected={selectedIds.has(entry.id)}
               onDelete={() => onDelete(entry.id)}
               onComplete={() => onComplete(entry)}
               onEdit={() => onEdit(entry)}
               onDeleteConfirm={() => onDeleteConfirmChange(entry.id)}
               onDeleteCancel={() => onDeleteConfirmChange(null)}
+              onToggleSelect={() => onToggleSelect(entry.id)}
             />
           ))}
         </div>
@@ -478,38 +620,77 @@ function EntrySection({
   );
 }
 
+function SelectAllCheckbox({
+  checked,
+  indeterminate,
+  onChange,
+}: {
+  checked: boolean;
+  indeterminate: boolean;
+  onChange: () => void;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (ref.current) ref.current.indeterminate = indeterminate;
+  }, [indeterminate]);
+
+  return (
+    <input
+      ref={ref}
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+      style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#0affe0" }}
+      aria-label="Tout sélectionner"
+    />
+  );
+}
+
 function AdminEntryRow({
   entry,
   trainers: _trainers,
   color,
   isDeleteConfirm,
+  isSelected,
   onDelete,
   onComplete,
   onEdit,
   onDeleteConfirm,
   onDeleteCancel,
+  onToggleSelect,
 }: {
   entry: PokemonEntry;
   trainers: Trainer[];
   color: string;
   isDeleteConfirm: boolean;
+  isSelected: boolean;
   onDelete: () => void;
   onComplete: () => void;
   onEdit: () => void;
   onDeleteConfirm: () => void;
   onDeleteCancel: () => void;
+  onToggleSelect: () => void;
 }) {
   return (
     <div
       className="flex items-center gap-4 p-4"
       style={{
-        background: "rgba(255,255,255,0.03)",
+        background: isSelected ? "rgba(10,255,224,0.05)" : "rgba(255,255,255,0.03)",
         borderRadius: 16,
-        border: "1px solid rgba(255,255,255,0.07)",
+        border: `1px solid ${isSelected ? "rgba(10,255,224,0.3)" : "rgba(255,255,255,0.07)"}`,
         flexWrap: "wrap",
-        transition: "border-color 0.2s",
+        transition: "border-color 0.2s, background 0.2s",
       }}
     >
+      {/* Selection checkbox */}
+      <input
+        type="checkbox"
+        checked={isSelected}
+        onChange={onToggleSelect}
+        style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#0affe0", flexShrink: 0 }}
+        aria-label={`Sélectionner ${entry.pokemonName}`}
+      />
+
       {/* Priority badge */}
       {entry.priority != null && (
         <div style={{
