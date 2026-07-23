@@ -315,7 +315,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           </p>
         </div>
         <div className="flex gap-3 flex-wrap">
-          <a href="/" className="btn-secondary" style={{ textDecoration: "none" }}>
+          <a href="/catalogue" className="btn-secondary" style={{ textDecoration: "none" }}>
             ← Catalogue
           </a>
           <button
@@ -633,13 +633,13 @@ function MyAccountPanel({
   return (
     <div className="glass-card p-6" style={{ maxWidth: 500 }}>
       <h2 style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#0affe0", marginBottom: 16 }}>
-        Mon compte — {trainer.name}
+        Mon compte ({trainer.name})
       </h2>
       <form onSubmit={handleSave} className="flex flex-col gap-4">
         <div>
           <label className="field-label">ÉQUIPE</label>
           <select value={team} onChange={(e) => setTeam(e.target.value)} className="glass-input mt-1" required>
-            <option value="" disabled>— Choisis ton équipe —</option>
+            <option value="" disabled>Choisis ton équipe</option>
             <option value="instinct">⚡ Instinct</option>
             <option value="mystic">💧 Mystic</option>
             <option value="valor">🔥 Valor</option>
@@ -1282,7 +1282,7 @@ function EntryForm(props: EntryFormProps) {
             className="glass-input mt-1"
             disabled={!isAdmin}
           >
-            <option value="">— Aucun dresseur —</option>
+            <option value="">Aucun dresseur</option>
             {trainers.map((t) => (
               <option key={t.id} value={t.id}>
                 {t.name}
@@ -1547,7 +1547,7 @@ function getByPath(obj: Record<string, unknown>, path: string): string | null {
 
 function extractSprites(sprites: Record<string, unknown>, prefix: string): { url: string; label: string }[] {
   return SPRITE_PATHS
-    .map(({ path, label }) => ({ url: getByPath(sprites, path), label: prefix ? `${prefix} — ${label}` : label }))
+    .map(({ path, label }) => ({ url: getByPath(sprites, path), label: prefix ? `${prefix} (${label})` : label }))
     .filter((s): s is { url: string; label: string } => s.url !== null);
 }
 
@@ -1693,7 +1693,7 @@ function SpritePicker({
           >
             <div className="flex items-center justify-between mb-4">
               <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#0affe0", fontWeight: 700, fontSize: "1.1rem" }}>
-                Sprites — <span style={{ textTransform: "capitalize" }}>{pokemonName}</span>
+                Sprites : <span style={{ textTransform: "capitalize" }}>{pokemonName}</span>
               </h3>
               <button onClick={() => setOpen(false)} style={{ background: "none", border: "none", color: "#e8edf5", cursor: "pointer", fontSize: "1.1rem" }}>✕</button>
             </div>
@@ -1952,7 +1952,7 @@ function BackgroundPicker({
             {validated.length > 0 && (
               <p style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", marginBottom: 10 }}>
                 {showAll
-                  ? "Liste complète — rien ne garantit que ce Pokémon a réellement eu ce fond."
+                  ? "Liste complète : rien ne garantit que ce Pokémon a réellement eu ce fond."
                   : "Confirmés événement par événement (source : margxt.fr)."}
                 {" "}
                 <button

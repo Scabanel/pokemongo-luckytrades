@@ -137,9 +137,10 @@ Deux mécanismes complémentaires :
 
 ## Structure
 
-- `app/page.tsx` — catalogue public (3 onglets : miroir / recherche / donne)
-- `app/admin/` — interface de gestion (auth par cookie JWT, voir `lib/auth.ts`)
-- `components/AdminPanel.tsx` — CRUD des échanges et dresseurs
+- `app/page.tsx` — landing (explication du site, boutons connexion/inscription et catalogue)
+- `app/catalogue/page.tsx` — catalogue public (3 onglets : miroir / recherche / donne, + onglet "pas encore sortis")
+- `app/admin/` — interface de gestion (auth Supabase, voir `lib/auth.ts` et `components/AuthForm.tsx`)
+- `components/AdminPanel.tsx` — CRUD des échanges et dresseurs, filtré selon le compte connecté
 - `components/PokemonCard.tsx` — carte affichée sur le catalogue public
 - `lib/types.ts` — types partagés (`Trainer`, `PokemonEntry`)
 - `lib/categories.ts` — source unique couleur/icône/glow par catégorie

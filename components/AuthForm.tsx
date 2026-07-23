@@ -214,7 +214,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
             <div>
               <label style={labelStyle}>ÉQUIPE</label>
               <select value={team} onChange={(e) => setTeam(e.target.value)} className="glass-input" required>
-                <option value="" disabled>— Choisis ton équipe —</option>
+                <option value="" disabled>Choisis ton équipe</option>
                 <option value="instinct">⚡ Instinct</option>
                 <option value="mystic">💧 Mystic</option>
                 <option value="valor">🔥 Valor</option>
@@ -280,7 +280,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
         )}
 
         <div className="text-center mt-6">
-          <a href="/" style={{ color: "rgba(232,237,245,0.3)", fontSize: "0.75rem" }}>
+          <a href="/catalogue" style={{ color: "rgba(232,237,245,0.3)", fontSize: "0.75rem" }}>
             ← Retour au catalogue
           </a>
         </div>
