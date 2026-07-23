@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import toast from "react-hot-toast";
 import PokemonSprite from "./PokemonSprite";
 import pokemonList from "@/data/pokemon.json";
-import type { Trainer, PokemonEntry as SharedPokemonEntry } from "@/lib/types";
+import type { Trainer, PokemonEntry as SharedPokemonEntry, EntryCategory } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 
 // La liste des dresseurs en admin inclut toujours le compte d'entrées
@@ -366,12 +366,13 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
       {/* Add form modal */}
       {showAddForm && (
-        <AddEntryModal
+        <EntryForm
+          mode="add"
           trainers={trainers}
           pokeOptions={pokeOptions}
           existingEntries={entries}
           onClose={() => setShowAddForm(false)}
-          onAdded={(entry) => {
+          onSaved={(entry) => {
             setEntries((prev) => [entry, ...prev]);
             toast.success(`${entry.pokemonName} ajouté !`);
             // La modale reste ouverte pour enchaîner les ajouts (ex: après une
@@ -383,12 +384,13 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
       {/* Edit modal */}
       {editingEntry && (
-        <EditEntryModal
+        <EntryForm
+          mode="edit"
           entry={editingEntry}
           trainers={trainers}
           pokeOptions={pokeOptions}
           onClose={() => setEditingEntry(null)}
-          onUpdated={(updated) => {
+          onSaved={(updated) => {
             setEntries((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
             toast.success("Échange mis à jour");
             setEditingEntry(null);
@@ -600,35 +602,68 @@ function AdminEntryRow({
   );
 }
 
-function AddEntryModal({
-  trainers,
-  pokeOptions,
-  existingEntries,
-  onClose,
-  onAdded,
-}: {
-  trainers: Trainer[];
-  pokeOptions: PokeOption[];
-  existingEntries: PokemonEntry[];
-  onClose: () => void;
-  onAdded: (entry: PokemonEntry) => void;
-}) {
-  const [form, setForm] = useState({
-    pokemonName: "",
-    pokemonId: 0,
-    category: "want" as "want" | "give" | "mirror",
-    trainerId: "",
-    tradeForPokemonName: "",
-    tradeForPokemonId: 0,
-    notes: "",
-    shiny: false,
-    customSpriteUrl: null as string | null,
-    priority: null as number | null,
-    tags: [] as string[],
-  });
+// Formulaire unique pour l'ajout et la modification d'un échange : avant cette
+// fusion, AddEntryModal et EditEntryModal étaient ~85% identiques (catégorie,
+// dresseur, en-échange-de, notes, tags, priorité, shiny, sprite) et toute
+// modification d'un champ devait être répercutée à la main dans les deux.
+// Seuls diffèrent : le sélecteur de Pokémon (uniquement à l'ajout, on ne
+// change pas le Pokémon d'une entrée existante), le endpoint POST/PATCH,
+// et le comportement "reste ouvert pour enchaîner" propre à l'ajout.
+type EntryFormProps =
+  | {
+      mode: "add";
+      trainers: Trainer[];
+      pokeOptions: PokeOption[];
+      existingEntries: PokemonEntry[];
+      onClose: () => void;
+      onSaved: (entry: PokemonEntry) => void;
+    }
+  | {
+      mode: "edit";
+      entry: PokemonEntry;
+      trainers: Trainer[];
+      pokeOptions: PokeOption[];
+      onClose: () => void;
+      onSaved: (entry: PokemonEntry) => void;
+    };
+
+function EntryForm(props: EntryFormProps) {
+  const { mode, trainers, pokeOptions, onClose, onSaved } = props;
+  const entry = mode === "edit" ? props.entry : undefined;
+  const existingEntries = mode === "add" ? props.existingEntries : undefined;
+
+  const [form, setForm] = useState(() =>
+    entry
+      ? {
+          pokemonName: entry.pokemonName,
+          pokemonId: entry.pokemonId,
+          category: entry.category as EntryCategory,
+          trainerId: entry.trainer?.id ?? "",
+          tradeForPokemonName: entry.tradeForPokemonName ?? "",
+          tradeForPokemonId: entry.tradeForPokemonId ?? 0,
+          notes: entry.notes ?? "",
+          shiny: entry.shiny ?? false,
+          customSpriteUrl: entry.customSpriteUrl ?? (null as string | null),
+          priority: entry.priority ?? (null as number | null),
+          tags: parseTags(entry.tags),
+        }
+      : {
+          pokemonName: "",
+          pokemonId: 0,
+          category: "want" as EntryCategory,
+          trainerId: "",
+          tradeForPokemonName: "",
+          tradeForPokemonId: 0,
+          notes: "",
+          shiny: false,
+          customSpriteUrl: null as string | null,
+          priority: null as number | null,
+          tags: [] as string[],
+        }
+  );
   const [loading, setLoading] = useState(false);
   const [pokeSearch, setPokeSearch] = useState("");
-  const [tradeSearch, setTradeSearch] = useState("");
+  const [tradeSearch, setTradeSearch] = useState(entry?.tradeForPokemonName ?? "");
   const [showPokeSuggestions, setShowPokeSuggestions] = useState(false);
   const [showTradeSuggestions, setShowTradeSuggestions] = useState(false);
   const [addedCount, setAddedCount] = useState(0);
@@ -646,60 +681,77 @@ function AddEntryModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.pokemonId || !form.pokemonName) {
-      toast.error("Sélectionne un Pokémon valide");
-      return;
-    }
-    if (form.category === "want") {
-      const duplicate = existingEntries.find(
-        (e) => e.category === "want" && e.pokemonId === form.pokemonId && !!e.shiny === form.shiny
-      );
-      if (duplicate) {
-        toast.error(`${form.pokemonName}${form.shiny ? " ✨ Shiny" : ""} est déjà dans "Je recherche"`);
+
+    if (mode === "add") {
+      if (!form.pokemonId || !form.pokemonName) {
+        toast.error("Sélectionne un Pokémon valide");
         return;
       }
+      if (form.category === "want") {
+        const duplicate = existingEntries!.find(
+          (x) => x.category === "want" && x.pokemonId === form.pokemonId && !!x.shiny === form.shiny
+        );
+        if (duplicate) {
+          toast.error(`${form.pokemonName}${form.shiny ? " ✨ Shiny" : ""} est déjà dans "Je recherche"`);
+          return;
+        }
+      }
     }
-    setLoading(true);
 
+    setLoading(true);
     try {
-      const res = await fetch("/api/entries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          trainerId: form.trainerId || null,
-          tradeForPokemonName: form.tradeForPokemonName || null,
-          tradeForPokemonId: form.tradeForPokemonId || null,
-          notes: form.notes || null,
-          priority: form.priority || null,
-          tags: form.tags,
-        }),
-      });
+      const payload = {
+        pokemonName: form.pokemonName,
+        pokemonId: form.pokemonId,
+        category: form.category,
+        shiny: form.shiny,
+        customSpriteUrl: form.customSpriteUrl,
+        trainerId: form.trainerId || null,
+        tradeForPokemonName: form.tradeForPokemonName || null,
+        tradeForPokemonId: form.tradeForPokemonId || null,
+        notes: form.notes || null,
+        priority: form.priority || null,
+        tags: form.tags,
+      };
+      const res = mode === "add"
+        ? await fetch("/api/entries", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          })
+        : await fetch(`/api/entries/${entry!.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
       if (!res.ok) throw new Error();
-      const entry = await res.json();
-      onAdded(entry);
-      setAddedCount((n) => n + 1);
-      // Garde la catégorie + le dresseur (souvent identiques pour plusieurs Pokémon
-      // d'affilée après une session de jeu) et ne réinitialise que le reste, pour
-      // enchaîner les ajouts sans rouvrir la modale à chaque fois.
-      setForm((f) => ({
-        pokemonName: "",
-        pokemonId: 0,
-        category: f.category,
-        trainerId: f.trainerId,
-        tradeForPokemonName: "",
-        tradeForPokemonId: 0,
-        notes: "",
-        shiny: false,
-        customSpriteUrl: null,
-        priority: null,
-        tags: [],
-      }));
-      setPokeSearch("");
-      setTradeSearch("");
-      pokeInputRef.current?.focus();
+      const saved = await res.json();
+      onSaved(saved);
+
+      if (mode === "add") {
+        setAddedCount((n) => n + 1);
+        // Garde la catégorie + le dresseur (souvent identiques pour plusieurs
+        // Pokémon d'affilée après une session de jeu) et ne réinitialise que
+        // le reste, pour enchaîner les ajouts sans rouvrir la modale.
+        setForm((f) => ({
+          pokemonName: "",
+          pokemonId: 0,
+          category: f.category,
+          trainerId: f.trainerId,
+          tradeForPokemonName: "",
+          tradeForPokemonId: 0,
+          notes: "",
+          shiny: false,
+          customSpriteUrl: null,
+          priority: null,
+          tags: [],
+        }));
+        setPokeSearch("");
+        setTradeSearch("");
+        pokeInputRef.current?.focus();
+      }
     } catch {
-      toast.error("Erreur lors de l'ajout");
+      toast.error(mode === "add" ? "Erreur lors de l'ajout" : "Erreur lors de la mise à jour");
     } finally {
       setLoading(false);
     }
@@ -707,35 +759,64 @@ function AddEntryModal({
 
   return (
     <ModalOverlay onClose={onClose}>
-      <div className="flex items-center justify-between flex-wrap gap-2" style={{ marginBottom: 20 }}>
-        <h2
-          style={{
-            fontFamily: "Exo 2, sans-serif",
-            fontWeight: 800,
-            color: "#0affe0",
-            fontSize: "1.3rem",
-          }}
-        >
-          Ajouter un échange
-        </h2>
-        {addedCount > 0 && (
-          <span
-            className="animate-fade-in-up"
+      {mode === "add" ? (
+        <div className="flex items-center justify-between flex-wrap gap-2" style={{ marginBottom: 20 }}>
+          <h2
             style={{
-              background: "rgba(10,255,224,0.12)",
-              border: "1px solid rgba(10,255,224,0.35)",
-              borderRadius: 999,
-              padding: "3px 12px",
-              fontSize: "0.75rem",
+              fontFamily: "Exo 2, sans-serif",
               fontWeight: 800,
               color: "#0affe0",
-              fontFamily: "Exo 2, sans-serif",
+              fontSize: "1.3rem",
             }}
           >
-            ✓ {addedCount} ajouté{addedCount > 1 ? "s" : ""}
-          </span>
-        )}
-      </div>
+            Ajouter un échange
+          </h2>
+          {addedCount > 0 && (
+            <span
+              className="animate-fade-in-up"
+              style={{
+                background: "rgba(10,255,224,0.12)",
+                border: "1px solid rgba(10,255,224,0.35)",
+                borderRadius: 999,
+                padding: "3px 12px",
+                fontSize: "0.75rem",
+                fontWeight: 800,
+                color: "#0affe0",
+                fontFamily: "Exo 2, sans-serif",
+              }}
+            >
+              ✓ {addedCount} ajouté{addedCount > 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
+      ) : (
+        <div className="flex items-center gap-3 mb-5">
+          <PokemonSprite pokemonId={entry!.pokemonId} alt={entry!.pokemonName} size={48} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
+          <div>
+            <h2
+              style={{
+                fontFamily: "Exo 2, sans-serif",
+                fontWeight: 800,
+                color: "#0affe0",
+                fontSize: "1.2rem",
+                textTransform: "capitalize",
+              }}
+            >
+              Modifier: {entry!.pokemonName}
+            </h2>
+            <span
+              style={{
+                fontSize: "0.75rem",
+                color: form.category === "want" ? "#0affe0" : form.category === "mirror" ? "#b464ff" : "#ffd93d",
+                fontWeight: 600,
+                fontFamily: "Exo 2, sans-serif",
+              }}
+            >
+              {form.category === "want" ? "Je recherche" : form.category === "mirror" ? "Miroir ✨" : "Je peux donner"}
+            </span>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Category */}
@@ -762,42 +843,44 @@ function AddEntryModal({
           </div>
         </div>
 
-        {/* Pokémon selector */}
-        <div ref={pokeRef} style={{ position: "relative" }}>
-          <label className="field-label">POKÉMON</label>
-          <div className="flex gap-2 items-center mt-1">
-            {form.pokemonId > 0 && (
-              <PokemonSprite pokemonId={form.pokemonId} alt={form.pokemonName} size={40} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
-            )}
-            <div style={{ flex: 1, position: "relative" }}>
-              <input
-                ref={pokeInputRef}
-                type="text"
-                value={pokeSearch}
-                onChange={(e) => {
-                  setPokeSearch(e.target.value);
-                  setShowPokeSuggestions(true);
-                  if (!e.target.value) setForm((f) => ({ ...f, pokemonName: "", pokemonId: 0 }));
-                }}
-                onFocus={() => setShowPokeSuggestions(true)}
-                className="glass-input"
-                placeholder="Chercher un Pokémon..."
-                autoComplete="off"
-                autoFocus
-              />
-              {showPokeSuggestions && pokeSuggestions.length > 0 && (
-                <SuggestionDropdown
-                  options={pokeSuggestions}
-                  onSelect={(p) => {
-                    setForm((f) => ({ ...f, pokemonName: p.frenchName, pokemonId: p.id }));
-                    setPokeSearch(p.frenchName);
-                    setShowPokeSuggestions(false);
-                  }}
-                />
+        {/* Pokémon selector — uniquement à l'ajout, le Pokémon d'une entrée existante ne change pas */}
+        {mode === "add" && (
+          <div ref={pokeRef} style={{ position: "relative" }}>
+            <label className="field-label">POKÉMON</label>
+            <div className="flex gap-2 items-center mt-1">
+              {form.pokemonId > 0 && (
+                <PokemonSprite pokemonId={form.pokemonId} alt={form.pokemonName} size={40} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
               )}
+              <div style={{ flex: 1, position: "relative" }}>
+                <input
+                  ref={pokeInputRef}
+                  type="text"
+                  value={pokeSearch}
+                  onChange={(e) => {
+                    setPokeSearch(e.target.value);
+                    setShowPokeSuggestions(true);
+                    if (!e.target.value) setForm((f) => ({ ...f, pokemonName: "", pokemonId: 0 }));
+                  }}
+                  onFocus={() => setShowPokeSuggestions(true)}
+                  className="glass-input"
+                  placeholder="Chercher un Pokémon..."
+                  autoComplete="off"
+                  autoFocus
+                />
+                {showPokeSuggestions && pokeSuggestions.length > 0 && (
+                  <SuggestionDropdown
+                    options={pokeSuggestions}
+                    onSelect={(p) => {
+                      setForm((f) => ({ ...f, pokemonName: p.frenchName, pokemonId: p.id }));
+                      setPokeSearch(p.frenchName);
+                      setShowPokeSuggestions(false);
+                    }}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Trainer */}
         <div>
@@ -834,7 +917,7 @@ function AddEntryModal({
                 }}
                 onFocus={() => setShowTradeSuggestions(true)}
                 className="glass-input"
-                placeholder="Pokémon en échange (optionnel)..."
+                placeholder={mode === "add" ? "Pokémon en échange (optionnel)..." : "Pokémon en échange..."}
                 autoComplete="off"
               />
               {showTradeSuggestions && tradeSuggestions.length > 0 && (
@@ -853,7 +936,7 @@ function AddEntryModal({
 
         {/* Notes */}
         <div>
-          <label className="field-label">NOTES (optionnel)</label>
+          <label className="field-label">{mode === "add" ? "NOTES (optionnel)" : "NOTES"}</label>
           <input
             type="text"
             value={form.notes}
@@ -915,12 +998,12 @@ function AddEntryModal({
         </div>
 
         {/* Sprite personnalisé */}
-        {form.pokemonId > 0 && (
+        {(mode === "edit" || form.pokemonId > 0) && (
           <div>
             <label className="field-label">SPRITE PERSONNALISÉ (optionnel)</label>
             <SpritePicker
-              pokemonId={form.pokemonId}
-              pokemonName={form.pokemonName}
+              pokemonId={mode === "edit" ? entry!.pokemonId : form.pokemonId}
+              pokemonName={mode === "edit" ? entry!.pokemonName : form.pokemonName}
               currentUrl={form.customSpriteUrl}
               onSelect={(url) => setForm((f) => ({ ...f, customSpriteUrl: url }))}
             />
@@ -929,269 +1012,17 @@ function AddEntryModal({
 
         <div className="flex gap-2 justify-end mt-2">
           <button type="button" onClick={onClose} className="btn-secondary">
-            {addedCount > 0 ? "Terminé" : "Annuler"}
+            {mode === "add" ? (addedCount > 0 ? "Terminé" : "Annuler") : "Annuler"}
           </button>
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? "Ajout…" : "✓ Ajouter"}
+            {mode === "add" ? (loading ? "Ajout…" : "✓ Ajouter") : (loading ? "Sauvegarde…" : "✓ Sauvegarder")}
           </button>
         </div>
-        {addedCount > 0 && (
+        {mode === "add" && addedCount > 0 && (
           <p style={{ textAlign: "center", fontSize: "0.75rem", color: "rgba(232,237,245,0.35)", margin: 0 }}>
             Continue à chercher pour enchaîner les ajouts, ou clique sur « Terminé ».
           </p>
         )}
-      </form>
-    </ModalOverlay>
-  );
-}
-
-function EditEntryModal({
-  entry,
-  trainers,
-  pokeOptions,
-  onClose,
-  onUpdated,
-}: {
-  entry: PokemonEntry;
-  trainers: Trainer[];
-  pokeOptions: PokeOption[];
-  onClose: () => void;
-  onUpdated: (entry: PokemonEntry) => void;
-}) {
-  const [form, setForm] = useState({
-    category: entry.category as "want" | "give" | "mirror",
-    trainerId: entry.trainer?.id ?? "",
-    tradeForPokemonName: entry.tradeForPokemonName ?? "",
-    tradeForPokemonId: entry.tradeForPokemonId ?? 0,
-    notes: entry.notes ?? "",
-    shiny: entry.shiny,
-    customSpriteUrl: entry.customSpriteUrl ?? null as string | null,
-    priority: entry.priority ?? null as number | null,
-    tags: parseTags(entry.tags),
-  });
-  const [tradeSearch, setTradeSearch] = useState(entry.tradeForPokemonName ?? "");
-  const [showTradeSuggestions, setShowTradeSuggestions] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const tradeSuggestions = tradeSearch.length >= 2
-    ? pokeOptions.filter((p) => p.frenchName.toLowerCase().includes(tradeSearch.toLowerCase())).slice(0, 8)
-    : [];
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const res = await fetch(`/api/entries/${entry.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          category: form.category,
-          shiny: form.shiny,
-          customSpriteUrl: form.customSpriteUrl,
-          trainerId: form.trainerId || null,
-          tradeForPokemonName: form.tradeForPokemonName || null,
-          tradeForPokemonId: form.tradeForPokemonId || null,
-          notes: form.notes || null,
-          priority: form.priority || null,
-          tags: form.tags,
-        }),
-      });
-      if (!res.ok) throw new Error();
-      const updated = await res.json();
-      onUpdated(updated);
-    } catch {
-      toast.error("Erreur lors de la mise à jour");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <ModalOverlay onClose={onClose}>
-      <div className="flex items-center gap-3 mb-5">
-        <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={48} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
-        <div>
-          <h2
-            style={{
-              fontFamily: "Exo 2, sans-serif",
-              fontWeight: 800,
-              color: "#0affe0",
-              fontSize: "1.2rem",
-              textTransform: "capitalize",
-            }}
-          >
-            Modifier: {entry.pokemonName}
-          </h2>
-          <span
-            style={{
-              fontSize: "0.75rem",
-              color: form.category === "want" ? "#0affe0" : form.category === "mirror" ? "#b464ff" : "#ffd93d",
-              fontWeight: 600,
-              fontFamily: "Exo 2, sans-serif",
-            }}
-          >
-            {form.category === "want" ? "Je recherche" : form.category === "mirror" ? "Miroir ✨" : "Je peux donner"}
-          </span>
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* Category */}
-        <div>
-          <label className="field-label">CATÉGORIE</label>
-          <div className="flex gap-2 mt-1 flex-wrap">
-            {CATEGORY_PICKER_OPTIONS.map(({ val, label, active, c }) => (
-              <button
-                key={val}
-                type="button"
-                onClick={() => setForm((f) => ({ ...f, category: val }))}
-                style={{
-                  flex: 1, minWidth: 100, padding: "8px 6px", borderRadius: 10,
-                  border: "1px solid", cursor: "pointer", fontFamily: "Exo 2, sans-serif",
-                  fontWeight: 600, fontSize: "0.8rem", transition: "all 0.2s",
-                  ...(form.category === val
-                    ? { background: active, borderColor: c, color: c }
-                    : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
-                }}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="field-label">DRESSEUR</label>
-          <select
-            value={form.trainerId}
-            onChange={(e) => setForm((f) => ({ ...f, trainerId: e.target.value }))}
-            className="glass-input mt-1"
-          >
-            <option value="">— Aucun dresseur —</option>
-            {trainers.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div style={{ position: "relative" }}>
-          <label className="field-label">EN ÉCHANGE DE</label>
-          <div className="flex gap-2 items-center mt-1">
-            {form.tradeForPokemonId > 0 && (
-              <PokemonSprite pokemonId={form.tradeForPokemonId} alt={form.tradeForPokemonName} size={40} />
-            )}
-            <div style={{ flex: 1, position: "relative" }}>
-              <input
-                type="text"
-                value={tradeSearch}
-                onChange={(e) => {
-                  setTradeSearch(e.target.value);
-                  setShowTradeSuggestions(true);
-                  if (!e.target.value) setForm((f) => ({ ...f, tradeForPokemonName: "", tradeForPokemonId: 0 }));
-                }}
-                onFocus={() => setShowTradeSuggestions(true)}
-                className="glass-input"
-                placeholder="Pokémon en échange..."
-                autoComplete="off"
-              />
-              {showTradeSuggestions && tradeSuggestions.length > 0 && (
-                <SuggestionDropdown
-                  options={tradeSuggestions}
-                  onSelect={(p) => {
-                    setForm((f) => ({ ...f, tradeForPokemonName: p.frenchName, tradeForPokemonId: p.id }));
-                    setTradeSearch(p.frenchName);
-                    setShowTradeSuggestions(false);
-                  }}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <label className="field-label">NOTES</label>
-          <input
-            type="text"
-            value={form.notes}
-            onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-            className="glass-input mt-1"
-            placeholder="Notes..."
-          />
-        </div>
-
-        {/* Tags */}
-        <div>
-          <label className="field-label">TAGS (optionnel)</label>
-          <TagInput tags={form.tags} onChange={(tags) => setForm((f) => ({ ...f, tags }))} />
-        </div>
-
-        {/* Priority (want only) */}
-        {form.category === "want" && (
-          <div>
-            <label className="field-label">PRIORITÉ (1–10, optionnel)</label>
-            <input
-              type="number"
-              min={1}
-              max={10}
-              value={form.priority ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value ? Number(e.target.value) : null }))}
-              className="glass-input mt-1"
-              placeholder="Ex : 1 = priorité max"
-              style={{ width: 180 }}
-            />
-          </div>
-        )}
-
-        {/* Shiny */}
-        <div>
-          <label className="field-label">SHINY</label>
-          <button
-            type="button"
-            onClick={() => setForm((f) => ({ ...f, shiny: !f.shiny }))}
-            style={{
-              marginTop: 4,
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "8px 16px",
-              borderRadius: 10,
-              border: "1px solid",
-              cursor: "pointer",
-              fontFamily: "Exo 2, sans-serif",
-              fontWeight: 600,
-              fontSize: "0.85rem",
-              transition: "all 0.2s",
-              ...(form.shiny
-                ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.5)", color: "#ffd700" }
-                : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
-            }}
-          >
-            ✨ {form.shiny ? "Shiny activé" : "Pas shiny"}
-          </button>
-        </div>
-
-        {/* Sprite personnalisé */}
-        <div>
-          <label className="field-label">SPRITE PERSONNALISÉ (optionnel)</label>
-          <SpritePicker
-            pokemonId={entry.pokemonId}
-            pokemonName={entry.pokemonName}
-            currentUrl={form.customSpriteUrl}
-            onSelect={(url) => setForm((f) => ({ ...f, customSpriteUrl: url }))}
-          />
-        </div>
-
-        <div className="flex gap-2 justify-end mt-2">
-          <button type="button" onClick={onClose} className="btn-secondary">
-            Annuler
-          </button>
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? "Sauvegarde…" : "✓ Sauvegarder"}
-          </button>
-        </div>
       </form>
     </ModalOverlay>
   );
