@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import toast from "react-hot-toast";
 import PokemonSprite from "./PokemonSprite";
+import pokemonList from "@/data/pokemon.json";
 
 interface Trainer {
   id: string;
@@ -28,7 +29,6 @@ interface PokemonEntry {
 
 interface PokeOption {
   name: string;       // English (internal, for pokemonId resolution)
-  url: string;
   id: number;
   frenchName: string; // French (displayed + stored as pokemonName)
 }
@@ -60,35 +60,10 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
   useEffect(() => {
     fetchData();
-    // Fetch Pokémon list + French names in parallel
-    Promise.all([
-      fetch("https://pokeapi.co/api/v2/pokemon?limit=1025").then((r) => r.json()),
-      fetch("https://beta.pokeapi.co/graphql/v1beta", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          query: `{ pokemon_v2_pokemonspeciesname(where: {language_id: {_eq: 5}}) { name pokemon_species_id } }`,
-        }),
-      })
-        .then((r) => r.json())
-        .catch(() => ({ data: { pokemon_v2_pokemonspeciesname: [] } })),
-    ])
-      .then(([listData, gqlData]) => {
-        const frenchMap = new Map<number, string>(
-          ((gqlData.data?.pokemon_v2_pokemonspeciesname ?? []) as { name: string; pokemon_species_id: number }[])
-            .map(({ name, pokemon_species_id }) => [pokemon_species_id, name])
-        );
-        const options: PokeOption[] = listData.results.map(
-          (p: { name: string; url: string }, i: number) => ({
-            name: p.name,
-            url: p.url,
-            id: i + 1,
-            frenchName: frenchMap.get(i + 1) ?? p.name,
-          })
-        );
-        setPokeOptions(options);
-      })
-      .catch(() => {});
+    // Liste des Pokémon (FR/EN) figée dans le repo (data/pokemon.json) : plus besoin
+    // d'appeler PokeAPI + GraphQL à chaque ouverture de l'admin. Regénérer avec
+    // `npm run gen:pokemon` si une nouvelle génération de Pokémon sort.
+    setPokeOptions(pokemonList as PokeOption[]);
   }, [fetchData]);
 
   const handleLogout = async () => {
