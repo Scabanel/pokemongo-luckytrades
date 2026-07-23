@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lucky Trades — Pokémon GO
 
-## Getting Started
+Catalogue public + admin pour organiser mes échanges chanceux dans Pokémon GO.
+Les amis consultent `/` pour voir ce que je recherche / peux donner / propose
+en miroir ; je gère la liste depuis `/admin`.
 
-First, run the development server:
+## Stack
+
+- [Next.js 16](https://nextjs.org) (App Router) + React 19 + TypeScript
+- [Prisma 7](https://www.prisma.io) + [Postgres](https://neon.tech) (Neon, provisionné via Vercel Postgres)
+- Déployé sur [Vercel](https://vercel.com)
+
+## Base de données — un seul chemin
+
+**Le projet utilise Postgres (Neon) en local comme en production.** Le SQLite
+et Turso qu'on voit encore mentionnés dans l'historique git ont été abandonnés
+lors du passage à Vercel Postgres — s'il reste des scripts ou variables qui y
+font référence quelque part, ils sont morts, à supprimer.
+
+`lib/prisma.ts` lit `POSTGRES_PRISMA_URL` en priorité, avec repli sur
+`DATABASE_URL`. Ce sont les variables que Vercel Postgres/Neon fournit
+automatiquement.
+
+### Setup local
 
 ```bash
+npm install
+vercel link          # une fois, pour lier ce dossier au projet Vercel
+vercel env pull .env.local   # récupère les vraies variables Postgres/Neon
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`.env` contient les identifiants admin (voir `.env.example`) — ils ne changent
+pas entre environnements, contrairement aux variables Postgres qui vivent dans
+`.env.local` (ignoré par git, généré par `vercel env pull`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Commandes utiles
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run dev            # serveur de dev (localhost:3000)
+npm run build           # build de prod (inclut `prisma generate`)
+npm run db:migrate      # applique une migration Prisma en local
+npm run db:generate     # régénère le client Prisma après un changement de schema.prisma
+npm run seed            # (re)seed la base depuis prisma/seed.ts
+npm run gen:pokemon     # régénère data/pokemon.json (liste FR/EN des Pokémon, voir plus bas)
+```
 
-## Learn More
+Les migrations Prisma (`prisma/migrations/`) sont la seule source de vérité
+pour l'évolution du schéma — éviter de modifier la structure de la table
+directement dans le dashboard Neon.
 
-To learn more about Next.js, take a look at the following resources:
+## Liste des Pokémon (autocomplete admin)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`data/pokemon.json` est une liste figée des 1025 Pokémon (nom EN + nom FR)
+utilisée par l'autocomplete de `/admin`. Elle est générée une fois via
+`npm run gen:pokemon` (appelle PokeAPI) et commitée — l'admin ne fait plus
+d'appel réseau à PokeAPI au chargement. À relancer seulement si une nouvelle
+génération de Pokémon sort.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Sauvegarde
 
-## Deploy on Vercel
+`/admin` propose un export JSON manuel (bouton "⬇ Export JSON") via
+`app/api/export`. C'est actuellement le seul backup — pas d'automatisation.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Structure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/page.tsx` — catalogue public (3 onglets : miroir / recherche / donne)
+- `app/admin/` — interface de gestion (auth par cookie JWT, voir `lib/auth.ts`)
+- `components/AdminPanel.tsx` — CRUD des échanges et dresseurs
+- `components/PokemonCard.tsx` — carte affichée sur le catalogue public
+- `lib/types.ts` — types partagés (`Trainer`, `PokemonEntry`)
+- `lib/categories.ts` — source unique couleur/icône/glow par catégorie
+- `prisma/schema.prisma` — modèle de données (`Trainer`, `PokemonEntry`)
