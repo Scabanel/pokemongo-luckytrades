@@ -47,7 +47,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [entries, setEntries] = useState<PokemonEntry[]>([]);
   const [trainers, setTrainers] = useState<TrainerWithCount[]>([]);
   const [pokeOptions, setPokeOptions] = useState<PokeOption[]>([]);
-  const [activeTab, setActiveTab] = useState<"entries" | "trainers">("entries");
+  const [me, setMe] = useState<{ trainer: Trainer | null; isAdmin: boolean }>({ trainer: null, isAdmin: false });
+  const [activeTab, setActiveTab] = useState<"entries" | "trainers" | "account">("entries");
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState<PokemonEntry | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -56,13 +57,25 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
 
+  const isAdmin = me.isAdmin;
+  const myTrainerId = me.trainer?.id ?? null;
+  const canEditEntry = useCallback(
+    (entry: PokemonEntry) => isAdmin || entry.trainer?.id === myTrainerId,
+    [isAdmin, myTrainerId]
+  );
+
   const fetchData = useCallback(async () => {
-    const [eRes, tRes] = await Promise.all([
+    const [eRes, tRes, meRes] = await Promise.all([
       fetch("/api/entries?completed=false"),
       fetch("/api/trainers"),
+      fetch("/api/auth/me"),
     ]);
     setEntries(await eRes.json());
     setTrainers(await tRes.json());
+    if (meRes.ok) {
+      const meData = await meRes.json();
+      setMe({ trainer: meData.trainer, isAdmin: meData.isAdmin });
+    }
     setLoadingEntries(false);
   }, []);
 
@@ -329,7 +342,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6">
-        {(["entries", "trainers"] as const).map((tab) => (
+        {(["entries", ...(isAdmin ? (["trainers"] as const) : []), "account"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -357,7 +370,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           >
             {tab === "entries"
             ? `Échanges (${entries.length}) · Miroir ${mirrors.length} · Want ${wants.length} · Give ${gives.length}`
-            : `Dresseurs (${trainers.length})`}
+            : tab === "trainers"
+            ? `Dresseurs (${trainers.length})`
+            : "Mon compte"}
           </button>
         ))}
       </div>
@@ -425,6 +440,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               onQuantityChange={handleQuantityChange}
               onEdit={setEditingEntry}
               onDeleteConfirmChange={setDeleteConfirm}
+              canEditEntry={canEditEntry}
               onUpdate={(updated) =>
                 setEntries((prev) => prev.map((e) => (e.id === updated.id ? updated : e)))
               }
@@ -519,6 +535,14 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
         </div>
       )}
 
+      {/* Account tab */}
+      {activeTab === "account" && (
+        <MyAccountPanel
+          trainer={me.trainer}
+          onSaved={(updated) => setMe((m) => ({ ...m, trainer: updated }))}
+        />
+      )}
+
       {/* Add form modal */}
       {showAddForm && (
         <EntryForm
@@ -526,6 +550,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           trainers={trainers}
           pokeOptions={pokeOptions}
           existingEntries={entries}
+          isAdmin={isAdmin}
+          myTrainerId={myTrainerId}
           onClose={() => setShowAddForm(false)}
           onSaved={(entry) => {
             setEntries((prev) => [entry, ...prev]);
@@ -544,6 +570,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           entry={editingEntry}
           trainers={trainers}
           pokeOptions={pokeOptions}
+          isAdmin={isAdmin}
+          myTrainerId={myTrainerId}
           onClose={() => setEditingEntry(null)}
           onSaved={(updated) => {
             setEntries((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
@@ -552,6 +580,88 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           }}
         />
       )}
+    </div>
+  );
+}
+
+function MyAccountPanel({
+  trainer,
+  onSaved,
+}: {
+  trainer: Trainer | null;
+  onSaved: (trainer: Trainer) => void;
+}) {
+  const [team, setTeam] = useState(trainer?.team ?? "");
+  const [level, setLevel] = useState(trainer?.level != null ? String(trainer.level) : "");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setTeam(trainer?.team ?? "");
+    setLevel(trainer?.level != null ? String(trainer.level) : "");
+  }, [trainer]);
+
+  if (!trainer) {
+    return (
+      <div className="glass-card p-6" style={{ maxWidth: 500 }}>
+        <p style={{ color: "rgba(232,237,245,0.4)" }}>
+          Ton compte n&apos;est rattaché à aucun dresseur pour le moment. Contacte l&apos;admin.
+        </p>
+      </div>
+    );
+  }
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await fetch("/api/trainers/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ team: team || null, level: level ? Number(level) : null }),
+      });
+      if (!res.ok) throw new Error();
+      const updated = await res.json();
+      onSaved(updated);
+      toast.success("Profil mis à jour ✓");
+    } catch {
+      toast.error("Erreur lors de la mise à jour");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="glass-card p-6" style={{ maxWidth: 500 }}>
+      <h2 style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#0affe0", marginBottom: 16 }}>
+        Mon compte — {trainer.name}
+      </h2>
+      <form onSubmit={handleSave} className="flex flex-col gap-4">
+        <div>
+          <label className="field-label">ÉQUIPE</label>
+          <select value={team} onChange={(e) => setTeam(e.target.value)} className="glass-input mt-1">
+            <option value="">— Aucune —</option>
+            <option value="instinct">⚡ Instinct</option>
+            <option value="mystic">💧 Mystic</option>
+            <option value="valor">🔥 Valor</option>
+          </select>
+        </div>
+        <div>
+          <label className="field-label">NIVEAU</label>
+          <input
+            type="number"
+            value={level}
+            onChange={(e) => setLevel(e.target.value)}
+            className="glass-input mt-1"
+            placeholder="1-50"
+            min={1}
+            max={50}
+            style={{ width: 120 }}
+          />
+        </div>
+        <button type="submit" className="btn-primary" disabled={loading} style={{ alignSelf: "flex-start" }}>
+          {loading ? "Sauvegarde…" : "✓ Sauvegarder"}
+        </button>
+      </form>
     </div>
   );
 }
@@ -572,6 +682,7 @@ function EntrySection({
   selectedIds,
   onToggleSelect,
   onToggleSelectAll,
+  canEditEntry,
 }: {
   title: string;
   color: string;
@@ -589,15 +700,16 @@ function EntrySection({
   selectedIds: Set<string>;
   onToggleSelect: (id: string) => void;
   onToggleSelectAll: (ids: string[]) => void;
+  canEditEntry: (entry: PokemonEntry) => boolean;
 }) {
-  const ids = entries.map((e) => e.id);
+  const ids = entries.filter(canEditEntry).map((e) => e.id);
   const allSelected = ids.length > 0 && ids.every((id) => selectedIds.has(id));
   const someSelected = !allSelected && ids.some((id) => selectedIds.has(id));
 
   return (
     <div>
       <div className="flex items-center gap-2 mb-3">
-        {entries.length > 0 && (
+        {ids.length > 0 && (
           <SelectAllCheckbox
             checked={allSelected}
             indeterminate={someSelected}
@@ -648,6 +760,7 @@ function EntrySection({
               onDeleteConfirm={() => onDeleteConfirmChange(entry.id)}
               onDeleteCancel={() => onDeleteConfirmChange(null)}
               onToggleSelect={() => onToggleSelect(entry.id)}
+              canEdit={canEditEntry(entry)}
             />
           ))}
         </div>
@@ -695,6 +808,7 @@ function AdminEntryRow({
   onDeleteConfirm,
   onDeleteCancel,
   onToggleSelect,
+  canEdit,
 }: {
   entry: PokemonEntry;
   trainers: Trainer[];
@@ -708,6 +822,7 @@ function AdminEntryRow({
   onDeleteConfirm: () => void;
   onDeleteCancel: () => void;
   onToggleSelect: () => void;
+  canEdit: boolean;
 }) {
   const quantity = entry.quantity ?? 1;
   return (
@@ -721,14 +836,16 @@ function AdminEntryRow({
         transition: "border-color 0.2s, background 0.2s",
       }}
     >
-      {/* Selection checkbox */}
-      <input
-        type="checkbox"
-        checked={isSelected}
-        onChange={onToggleSelect}
-        style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#0affe0", flexShrink: 0 }}
-        aria-label={`Sélectionner ${entry.pokemonName}`}
-      />
+      {/* Selection checkbox — masquée si le compte ne peut pas agir sur cette entrée */}
+      {canEdit && (
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={onToggleSelect}
+          style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#0affe0", flexShrink: 0 }}
+          aria-label={`Sélectionner ${entry.pokemonName}`}
+        />
+      )}
 
       {/* Priority badge */}
       {entry.priority != null && (
@@ -814,7 +931,8 @@ function AdminEntryRow({
         </div>
       </div>
 
-      {/* Actions */}
+      {/* Actions — masquées si le compte connecté n'est pas propriétaire de cette entrée (ni admin) */}
+      {canEdit && (
       <div className="flex items-center gap-2 flex-wrap">
         {isDeleteConfirm ? (
           <>
@@ -854,6 +972,7 @@ function AdminEntryRow({
           </>
         )}
       </div>
+      )}
     </div>
   );
 }
@@ -871,6 +990,8 @@ type EntryFormProps =
       trainers: Trainer[];
       pokeOptions: PokeOption[];
       existingEntries: PokemonEntry[];
+      isAdmin: boolean;
+      myTrainerId: string | null;
       onClose: () => void;
       onSaved: (entry: PokemonEntry) => void;
     }
@@ -879,12 +1000,14 @@ type EntryFormProps =
       entry: PokemonEntry;
       trainers: Trainer[];
       pokeOptions: PokeOption[];
+      isAdmin: boolean;
+      myTrainerId: string | null;
       onClose: () => void;
       onSaved: (entry: PokemonEntry) => void;
     };
 
 function EntryForm(props: EntryFormProps) {
-  const { mode, trainers, pokeOptions, onClose, onSaved } = props;
+  const { mode, trainers, pokeOptions, isAdmin, myTrainerId, onClose, onSaved } = props;
   const entry = mode === "edit" ? props.entry : undefined;
   const existingEntries = mode === "add" ? props.existingEntries : undefined;
 
@@ -909,7 +1032,9 @@ function EntryForm(props: EntryFormProps) {
           pokemonName: "",
           pokemonId: 0,
           category: "want" as EntryCategory,
-          trainerId: "",
+          // Un compte non-admin ne peut créer que sous son propre dresseur
+          // (de toute façon forcé côté serveur, voir app/api/entries/route.ts).
+          trainerId: isAdmin ? "" : myTrainerId ?? "",
           tradeForPokemonName: "",
           tradeForPokemonId: 0,
           notes: "",
@@ -1146,13 +1271,15 @@ function EntryForm(props: EntryFormProps) {
           </div>
         )}
 
-        {/* Trainer */}
+        {/* Trainer — figé au dresseur du compte connecté pour un non-admin
+            (déjà forcé côté serveur, le disabled est ici du confort/clarté UI) */}
         <div>
           <label className="field-label">DRESSEUR</label>
           <select
             value={form.trainerId}
             onChange={(e) => setForm((f) => ({ ...f, trainerId: e.target.value }))}
             className="glass-input mt-1"
+            disabled={!isAdmin}
           >
             <option value="">— Aucun dresseur —</option>
             {trainers.map((t) => (
