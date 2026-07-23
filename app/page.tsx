@@ -4,30 +4,12 @@ import { useEffect, useState } from "react";
 import ParticleBackground from "@/components/ParticleBackground";
 import PokemonCard from "@/components/PokemonCard";
 import CardSkeleton from "@/components/CardSkeleton";
+import type { PokemonEntry, EntryCategory } from "@/lib/types";
+import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 
-interface PokemonEntry {
-  id: string;
-  pokemonName: string;
-  pokemonId: number;
-  category: string;
-  shiny?: boolean;
-  customSpriteUrl?: string | null;
-  tradeForPokemonName?: string | null;
-  tradeForPokemonId?: number | null;
-  notes?: string | null;
-  priority?: number | null;
-  tags?: string | null;
-  updatedAt?: string;
-  trainer?: { id: string; name: string } | null;
-}
+type ActiveTab = EntryCategory;
 
-type ActiveTab = "mirror" | "want" | "give";
-
-const TABS: { key: ActiveTab; label: string; icon: string; color: string }[] = [
-  { key: "mirror", label: "Échanges miroir", icon: "🔮", color: "#b464ff" },
-  { key: "want",   label: "Je recherche",    icon: "🔍", color: "#0affe0" },
-  { key: "give",   label: "Je peux donner",  icon: "🎁", color: "#ffd93d" },
-];
+const TABS = CATEGORY_DISPLAY_ORDER.map((key) => ({ key, ...CATEGORIES[key] }));
 
 function sortEntries(entries: PokemonEntry[]): PokemonEntry[] {
   return [...entries].sort((a, b) => {

@@ -3,21 +3,8 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import PokemonSprite from "./PokemonSprite";
-
-interface PokemonEntry {
-  id: string;
-  pokemonName: string;
-  pokemonId: number;
-  category: string;
-  shiny?: boolean;
-  customSpriteUrl?: string | null;
-  tradeForPokemonName?: string | null;
-  tradeForPokemonId?: number | null;
-  notes?: string | null;
-  priority?: number | null;
-  tags?: string | null;
-  trainer?: { id: string; name: string } | null;
-}
+import type { PokemonEntry } from "@/lib/types";
+import { CATEGORIES, getCategory } from "@/lib/categories";
 
 function parseTags(raw: string | null | undefined): string[] {
   if (!raw) return [];
@@ -84,22 +71,12 @@ interface PokemonCardProps {
 }
 
 
-const CATEGORY_GLOW: Record<string, string> = {
-  want:   "radial-gradient(circle, #0affe0 0%, transparent 70%)",
-  give:   "radial-gradient(circle, #ffd93d 0%, transparent 70%)",
-  mirror: "radial-gradient(circle, #b464ff 0%, transparent 70%)",
-};
-
+// Libellé spécifique à cette carte (diffère volontairement de "Échanges miroir"
+// utilisé ailleurs) — couleur et glow, eux, viennent de lib/categories.ts.
 const CATEGORY_LABEL: Record<string, string> = {
   want: "Je recherche",
   give: "Je peux donner",
   mirror: "Échange miroir ✨",
-};
-
-const CATEGORY_COLOR: Record<string, string> = {
-  want: "#0affe0",
-  give: "#ffd93d",
-  mirror: "#b464ff",
 };
 
 function getPriorityStyle(priority: number): { bg: string; border: string; color: string; shadow: string } {
@@ -121,6 +98,8 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
   const isDynamax = entry.pokemonName.toLowerCase().includes("dynamax") && !entry.pokemonName.toLowerCase().includes("gigamax");
   const isGigamax = entry.pokemonName.toLowerCase().includes("gigamax");
   const eventTheme = getEventTheme(entry.pokemonName, tags);
+  const categoryColor = getCategory(entry.category)?.color ?? CATEGORIES.want.color;
+  const categoryGlow = getCategory(entry.category)?.glow ?? CATEGORIES.give.glow;
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -186,11 +165,11 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
         {/* Category + shiny + special badges */}
         <div className="flex gap-2 flex-wrap justify-center" style={{ marginBottom: 12 }}>
           <span style={{
-            background: `${CATEGORY_COLOR[entry.category] ?? "#0affe0"}18`,
-            border: `1px solid ${CATEGORY_COLOR[entry.category] ?? "#0affe0"}40`,
+            background: `${categoryColor}18`,
+            border: `1px solid ${categoryColor}40`,
             borderRadius: 999, padding: "3px 12px",
             fontSize: "0.72rem", fontWeight: 700,
-            color: CATEGORY_COLOR[entry.category] ?? "#0affe0",
+            color: categoryColor,
             fontFamily: "Exo 2, sans-serif",
           }}>
             {CATEGORY_LABEL[entry.category] ?? entry.category}
@@ -266,7 +245,7 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
         <div className="relative mb-4">
           <div
             className="absolute inset-0 rounded-full blur-2xl opacity-30"
-            style={{ background: eventTheme?.glow ?? CATEGORY_GLOW[entry.category] ?? CATEGORY_GLOW.give }}
+            style={{ background: eventTheme?.glow ?? categoryGlow }}
           />
           <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={140} shiny={isShiny} customSpriteUrl={entry.customSpriteUrl} />
         </div>

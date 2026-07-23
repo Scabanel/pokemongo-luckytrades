@@ -4,27 +4,19 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import toast from "react-hot-toast";
 import PokemonSprite from "./PokemonSprite";
 import pokemonList from "@/data/pokemon.json";
+import type { Trainer, PokemonEntry as SharedPokemonEntry } from "@/lib/types";
+import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 
-interface Trainer {
-  id: string;
-  name: string;
-  _count: { entries: number };
-}
+// La liste des dresseurs en admin inclut toujours le compte d'entrées
+// (contrairement à PokemonEntry.trainer ailleurs, qui n'en a pas besoin).
+type TrainerWithCount = Trainer & { _count: { entries: number } };
 
-interface PokemonEntry {
-  id: string;
-  pokemonName: string;
-  pokemonId: number;
-  category: string;
+// Les champs requis ici (shiny/completed) sont optionnels dans le type
+// partagé mais toujours renvoyés par l'API entries — on les rend requis
+// localement pour éviter des vérifications `?? false` partout dans ce fichier.
+interface PokemonEntry extends SharedPokemonEntry {
   shiny: boolean;
-  customSpriteUrl?: string | null;
-  tradeForPokemonName?: string | null;
-  tradeForPokemonId?: number | null;
-  notes?: string | null;
-  priority?: number | null;
-  tags?: string | null;
   completed: boolean;
-  trainer?: Trainer | null;
 }
 
 interface PokeOption {
@@ -37,9 +29,19 @@ interface AdminPanelProps {
   onLogout: () => void;
 }
 
+// Options du sélecteur de catégorie dans les formulaires d'ajout/modification
+// (dupliqué à l'identique dans les deux modales avant cette extraction).
+// La couleur vient de lib/categories.ts ; le libellé compact ("Miroir ✨") et
+// la teinte "active" restent spécifiques à ce composant.
+const CATEGORY_PICKER_OPTIONS = [
+  { val: "want" as const, label: "🔍 Je recherche", active: "rgba(10,255,224,0.15)", c: CATEGORIES.want.color },
+  { val: "give" as const, label: "🎁 Je peux donner", active: "rgba(255,217,61,0.15)", c: CATEGORIES.give.color },
+  { val: "mirror" as const, label: "🔮 Miroir ✨", active: "rgba(180,100,255,0.15)", c: CATEGORIES.mirror.color },
+];
+
 export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [entries, setEntries] = useState<PokemonEntry[]>([]);
-  const [trainers, setTrainers] = useState<Trainer[]>([]);
+  const [trainers, setTrainers] = useState<TrainerWithCount[]>([]);
   const [pokeOptions, setPokeOptions] = useState<PokeOption[]>([]);
   const [activeTab, setActiveTab] = useState<"entries" | "trainers">("entries");
   const [showAddForm, setShowAddForm] = useState(false);
@@ -250,11 +252,11 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       {/* Entries tab */}
       {activeTab === "entries" && (
         <div className="space-y-8">
-          {[
-            { title: "🔮 Échanges miroir", color: "#b464ff", list: mirrors },
-            { title: "🔍 Je recherche", color: "#0affe0", list: wants },
-            { title: "🎁 Je peux donner", color: "#ffd93d", list: gives },
-          ].map(({ title, color, list }) => (
+          {CATEGORY_DISPLAY_ORDER.map((key) => ({
+            title: `${CATEGORIES[key].icon} ${CATEGORIES[key].label}`,
+            color: CATEGORIES[key].color,
+            list: { mirror: mirrors, want: wants, give: gives }[key],
+          })).map(({ title, color, list }) => (
             <EntrySection
               key={title}
               title={title}
@@ -740,11 +742,7 @@ function AddEntryModal({
         <div>
           <label className="field-label">CATÉGORIE</label>
           <div className="flex gap-2 mt-1 flex-wrap">
-            {([
-              { val: "want", label: "🔍 Je recherche", active: "rgba(10,255,224,0.15)", c: "#0affe0" },
-              { val: "give", label: "🎁 Je peux donner", active: "rgba(255,217,61,0.15)", c: "#ffd93d" },
-              { val: "mirror", label: "🔮 Miroir ✨", active: "rgba(180,100,255,0.15)", c: "#b464ff" },
-            ] as const).map(({ val, label, active, c }) => (
+            {CATEGORY_PICKER_OPTIONS.map(({ val, label, active, c }) => (
               <button
                 key={val}
                 type="button"
@@ -1043,11 +1041,7 @@ function EditEntryModal({
         <div>
           <label className="field-label">CATÉGORIE</label>
           <div className="flex gap-2 mt-1 flex-wrap">
-            {([
-              { val: "want", label: "🔍 Je recherche", active: "rgba(10,255,224,0.15)", c: "#0affe0" },
-              { val: "give", label: "🎁 Je peux donner", active: "rgba(255,217,61,0.15)", c: "#ffd93d" },
-              { val: "mirror", label: "🔮 Miroir ✨", active: "rgba(180,100,255,0.15)", c: "#b464ff" },
-            ] as const).map(({ val, label, active, c }) => (
+            {CATEGORY_PICKER_OPTIONS.map(({ val, label, active, c }) => (
               <button
                 key={val}
                 type="button"
