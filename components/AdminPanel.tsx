@@ -638,8 +638,8 @@ function MyAccountPanel({
       <form onSubmit={handleSave} className="flex flex-col gap-4">
         <div>
           <label className="field-label">ÉQUIPE</label>
-          <select value={team} onChange={(e) => setTeam(e.target.value)} className="glass-input mt-1">
-            <option value="">— Aucune —</option>
+          <select value={team} onChange={(e) => setTeam(e.target.value)} className="glass-input mt-1" required>
+            <option value="" disabled>— Choisis ton équipe —</option>
             <option value="instinct">⚡ Instinct</option>
             <option value="mystic">💧 Mystic</option>
             <option value="valor">🔥 Valor</option>
@@ -652,9 +652,10 @@ function MyAccountPanel({
             value={level}
             onChange={(e) => setLevel(e.target.value)}
             className="glass-input mt-1"
-            placeholder="1-50"
+            placeholder="1-80"
             min={1}
-            max={50}
+            max={80}
+            required
             style={{ width: 120 }}
           />
         </div>
