@@ -79,9 +79,25 @@ générés par `npm run gen:costumes` :
   principaux — pas de section "Dynamax manquant" pour cette raison.
 
 À relancer périodiquement pour récupérer les nouveaux costumes ajoutés au jeu.
-Les "fonds" promotionnels ponctuels (ex: variantes une seule ville/événement,
-pas un vrai costume du jeu) ne sont pas dans ce dépôt — l'URL manuelle du
-sélecteur de sprite reste la solution pour ces cas.
+
+## Fonds d'événement (Pokémon posant devant un décor promotionnel)
+
+Deux niveaux, générés séparément (voir `docs/research-fond-backgrounds.md`
+pour le détail de la recherche qui a mené à ces deux sources) :
+
+- `npm run gen:costumes` génère aussi `data/backgrounds.json` (~230 fonds,
+  génériques, depuis `Images/LocationCards` de PokeMiners) — n'importe quel
+  fond sur n'importe quel Pokémon, sans garantie que la paire ait existé.
+- `npm run gen:backgrounds` génère `data/pokemon-backgrounds.json` +
+  `public/event-backgrounds/*.webp` — fonds **confirmés** par Pokémon,
+  scrapés depuis margxt.fr (un fan-site qui documente événement par
+  événement quel Pokémon a reçu quel fond ; cette info n'existe dans aucune
+  donnée jeu extractible, voir le doc de recherche). Images auto-hébergées,
+  ne dépend plus du site source en production.
+
+Le sélecteur de fond dans `/admin` affiche en priorité les fonds confirmés
+pour le Pokémon sélectionné, avec un bouton pour basculer sur le catalogue
+générique complet si besoin.
 
 ## Sauvegarde
 

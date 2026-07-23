@@ -28,6 +28,7 @@ model PokemonEntry {
   notes               String?
   shiny               Boolean  @default(false)
   customSpriteUrl     String?
+  backgroundUrl       String?
   priority            Int?
   quantity            Int      @default(1)
   tags                String?

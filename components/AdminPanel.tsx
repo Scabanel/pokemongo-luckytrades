@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import PokemonSprite from "./PokemonSprite";
 import pokemonList from "@/data/pokemon.json";
 import costumeCatalog from "@/data/costumes.json";
+import backgroundCatalog from "@/data/backgrounds.json";
+import validatedBackgrounds from "@/data/pokemon-backgrounds.json";
 import type { Trainer, PokemonEntry as SharedPokemonEntry, EntryCategory } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 
@@ -741,8 +743,18 @@ function AdminEntryRow({
         </div>
       )}
 
-      {/* Sprite */}
-      <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={48} shiny={entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false)} customSpriteUrl={entry.customSpriteUrl} />
+      {/* Sprite (+ fond d'événement en arrière-plan si défini) */}
+      <div style={{
+        width: 48, height: 48, borderRadius: 10, flexShrink: 0,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        ...(entry.backgroundUrl && {
+          backgroundImage: `url(${entry.backgroundUrl})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }),
+      }}>
+        <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={48} shiny={entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false)} customSpriteUrl={entry.customSpriteUrl} />
+      </div>
 
       {/* Info */}
       <div className="flex-1 min-w-0">
@@ -886,6 +898,7 @@ function EntryForm(props: EntryFormProps) {
           notes: entry.notes ?? "",
           shiny: entry.shiny ?? false,
           customSpriteUrl: entry.customSpriteUrl ?? (null as string | null),
+          backgroundUrl: entry.backgroundUrl ?? (null as string | null),
           priority: entry.priority ?? (null as number | null),
           tags: parseTags(entry.tags),
           quantity: entry.quantity ?? 1,
@@ -900,6 +913,7 @@ function EntryForm(props: EntryFormProps) {
           notes: "",
           shiny: false,
           customSpriteUrl: null as string | null,
+          backgroundUrl: null as string | null,
           priority: null as number | null,
           tags: [] as string[],
           quantity: 1,
@@ -950,6 +964,7 @@ function EntryForm(props: EntryFormProps) {
         category: form.category,
         shiny: form.shiny,
         customSpriteUrl: form.customSpriteUrl,
+        backgroundUrl: form.backgroundUrl,
         trainerId: form.trainerId || null,
         tradeForPokemonName: form.tradeForPokemonName || null,
         tradeForPokemonId: form.tradeForPokemonId || null,
@@ -988,6 +1003,7 @@ function EntryForm(props: EntryFormProps) {
           notes: "",
           shiny: false,
           customSpriteUrl: null,
+          backgroundUrl: null,
           priority: null,
           tags: [],
           quantity: 1,
@@ -1271,6 +1287,16 @@ function EntryForm(props: EntryFormProps) {
             />
           </div>
         )}
+
+        {/* Fond d'événement (optionnel) */}
+        <div>
+          <label className="field-label">FOND D'ÉVÉNEMENT (optionnel)</label>
+          <BackgroundPicker
+            pokemonId={mode === "edit" ? entry!.pokemonId : form.pokemonId}
+            currentUrl={form.backgroundUrl}
+            onSelect={(url) => setForm((f) => ({ ...f, backgroundUrl: url }))}
+          />
+        </div>
 
         <div className="flex gap-2 justify-end mt-2">
           <button type="button" onClick={onClose} className="btn-secondary">
@@ -1704,6 +1730,158 @@ function CostumeGrid({
         )}
       </div>
     </div>
+  );
+}
+
+// ─── Fonds d'événement ────────────────────────────────────────────────────────
+// Catalogue généré depuis PokeMiners/pogo_assets (Images/LocationCards) : voir
+// docs/research-fond-backgrounds.md pour le détail de la recherche. Génériques
+// (pas liés à un Pokémon précis dans les données du jeu), donc affichés en
+// popup à part plutôt que dans le sélecteur de sprite du Pokémon.
+
+type BackgroundEntry = { label: string; url: string };
+const BACKGROUND_CATALOG = backgroundCatalog as BackgroundEntry[];
+// dexId -> fonds confirmés pour ce Pokémon précis (source : margxt.fr, voir
+// docs/research-fond-backgrounds.md). Contrairement à BACKGROUND_CATALOG
+// (générique, n'importe quel fond sur n'importe quel Pokémon), cette liste
+// est validée événement par événement — priorité à afficher en premier.
+const VALIDATED_BACKGROUNDS = validatedBackgrounds as Record<string, BackgroundEntry[]>;
+
+function BackgroundPicker({
+  pokemonId,
+  currentUrl,
+  onSelect,
+}: {
+  pokemonId: number;
+  currentUrl: string | null;
+  onSelect: (url: string | null) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [showAll, setShowAll] = useState(false);
+
+  const validated = VALIDATED_BACKGROUNDS[String(pokemonId)] ?? [];
+  const source = showAll || validated.length === 0 ? BACKGROUND_CATALOG : validated;
+  const filtered = search.trim()
+    ? source.filter((b) => b.label.toLowerCase().includes(search.trim().toLowerCase()))
+    : source;
+
+  return (
+    <>
+      <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: 4 }}>
+        {currentUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={currentUrl} alt="fond" style={{ width: 48, height: 48, objectFit: "cover", background: "rgba(255,255,255,0.05)", borderRadius: 8 }} />
+        )}
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          style={{
+            padding: "6px 14px", borderRadius: 10, cursor: "pointer",
+            background: "rgba(180,100,255,0.08)", border: "1px solid rgba(180,100,255,0.25)",
+            color: "#b464ff", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
+          }}
+        >
+          🖼️ Sélectionner un fond{validated.length > 0 ? ` (${validated.length} confirmés)` : ""}
+        </button>
+        {currentUrl && (
+          <button
+            type="button"
+            onClick={() => onSelect(null)}
+            style={{
+              padding: "6px 10px", borderRadius: 10, cursor: "pointer",
+              background: "rgba(255,107,107,0.08)", border: "1px solid rgba(255,107,107,0.25)",
+              color: "#ff6b6b", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
+            }}
+          >
+            ✕ Retirer
+          </button>
+        )}
+      </div>
+
+      {open && (
+        <div
+          className="fixed inset-0 flex items-center justify-center p-4"
+          style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 400 }}
+          onClick={(e) => e.target === e.currentTarget && setOpen(false)}
+        >
+          <div
+            className="glass-card"
+            style={{ maxWidth: 580, width: "100%", maxHeight: "88vh", padding: 24, overflowY: "auto" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#b464ff", fontWeight: 700, fontSize: "1.1rem" }}>
+                {showAll || validated.length === 0
+                  ? `Tous les fonds (${BACKGROUND_CATALOG.length})`
+                  : `Fonds confirmés pour ce Pokémon (${validated.length})`}
+              </h3>
+              <button onClick={() => setOpen(false)} style={{ background: "none", border: "none", color: "#e8edf5", cursor: "pointer", fontSize: "1.1rem" }}>✕</button>
+            </div>
+
+            {validated.length > 0 && (
+              <p style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", marginBottom: 10 }}>
+                {showAll
+                  ? "Liste complète — rien ne garantit que ce Pokémon a réellement eu ce fond."
+                  : "Confirmés événement par événement (source : margxt.fr)."}
+                {" "}
+                <button
+                  type="button"
+                  onClick={() => setShowAll((v) => !v)}
+                  style={{ background: "none", border: "none", color: "#b464ff", cursor: "pointer", textDecoration: "underline", fontSize: "0.7rem", padding: 0 }}
+                >
+                  {showAll ? "← Revenir aux fonds confirmés" : "Voir tous les fonds à la place →"}
+                </button>
+              </p>
+            )}
+
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="glass-input"
+              placeholder="Chercher (ex: paris, anniversary, team leader...)"
+              style={{ marginBottom: 12 }}
+            />
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: 8, maxHeight: 420, overflowY: "auto" }}>
+              {filtered.map(({ url, label }) => (
+                <button
+                  key={url + label}
+                  type="button"
+                  onClick={() => { onSelect(url); setOpen(false); }}
+                  style={{
+                    background: currentUrl === url ? "rgba(180,100,255,0.15)" : "rgba(255,255,255,0.04)",
+                    border: `1px solid ${currentUrl === url ? "rgba(180,100,255,0.4)" : "rgba(255,255,255,0.08)"}`,
+                    borderRadius: 10, padding: 6, cursor: "pointer",
+                    display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={url}
+                    alt={label}
+                    style={{ width: 90, height: 60, objectFit: "cover", borderRadius: 6 }}
+                    onError={(e) => {
+                      const btn = (e.currentTarget as HTMLImageElement).closest("button");
+                      if (btn) btn.style.display = "none";
+                    }}
+                  />
+                  <span style={{ fontSize: "0.6rem", color: "rgba(232,237,245,0.6)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+                    {label}
+                  </span>
+                </button>
+              ))}
+              {filtered.length === 0 && (
+                <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.35)", gridColumn: "1 / -1" }}>
+                  Aucun fond ne correspond à « {search} ».
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

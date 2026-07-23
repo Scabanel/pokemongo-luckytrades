@@ -24,6 +24,7 @@ export interface PokemonEntry {
   notes?: string | null;
   shiny?: boolean;
   customSpriteUrl?: string | null;
+  backgroundUrl?: string | null;
   priority?: number | null;
   tags?: string | null;
   quantity?: number;

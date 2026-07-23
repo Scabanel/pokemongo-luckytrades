@@ -30,6 +30,13 @@ const ICONS_OUT_PATH = path.join(__dirname, "..", "data", "go-icons.json");
 // Gigamax a une liste d'espèces éligibles fixe dans les jeux principaux,
 // contrairement au Dynamax qui n'en a pas et n'est donc pas calculable ici).
 const MISSING_OUT_PATH = path.join(__dirname, "..", "data", "missing-in-go.json");
+// Fonds d'événement (GO Fest villes, anniversaires, équipes...) — génériques,
+// pas liés à un Pokémon précis dans les données du jeu (contrairement aux
+// costumes). Voir docs/research-fond-backgrounds.md pour le détail de la
+// recherche qui a mené à cette source.
+const BACKGROUNDS_OUT_PATH = path.join(__dirname, "..", "data", "backgrounds.json");
+const BACKGROUNDS_PREFIX = "Images/LocationCards/";
+const BACKGROUNDS_RAW_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards";
 
 // Espèces pouvant Gigamax dans les jeux principaux (Épée/Bouclier + DLC),
 // retiré depuis Écarlate/Violet — liste fixe, ne changera plus.
@@ -50,6 +57,22 @@ function humanizeCode(code) {
   const stripped = code.replace(/^[cf]/, "").replace(/_NOEVOLVE$/, "");
   return stripped
     .split("_")
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
+}
+
+function humanizeBackgroundFilename(filename) {
+  const stripped = filename.replace(/\.png$/i, "").replace(/^(sb_|lc_)/, "");
+  const spaced = stripped
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2") // camelCase
+    .replace(/([a-zA-Z])(\d)/g, "$1 $2")     // lettre → chiffre
+    .replace(/(\d)([a-zA-Z])/g, "$1 $2")     // chiffre → lettre
+    .replace(/_/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  return spaced
+    .split(" ")
     .filter(Boolean)
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
     .join(" ");
@@ -186,6 +209,23 @@ async function main() {
   console.log(
     `✓ Pas encore sortis : ${missingEntirely.length} absents, ${missingShiny.length} sans shiny, ${missingGigantamax.length} sans Gigamax → ${path.relative(process.cwd(), MISSING_OUT_PATH)}`
   );
+
+  const backgroundPaths = data.tree
+    .map((t) => t.path)
+    .filter((p) => p.startsWith(BACKGROUNDS_PREFIX) && /^(sb_|lc_)/i.test(p.slice(BACKGROUNDS_PREFIX.length)));
+
+  const backgrounds = backgroundPaths
+    .map((p) => {
+      const filename = p.slice(BACKGROUNDS_PREFIX.length);
+      return {
+        label: humanizeBackgroundFilename(filename),
+        url: `${BACKGROUNDS_RAW_BASE}/${encodeURIComponent(filename)}`,
+      };
+    })
+    .sort((a, b) => a.label.localeCompare(b.label, "fr"));
+
+  await writeFile(BACKGROUNDS_OUT_PATH, JSON.stringify(backgrounds, null, 2) + "\n", "utf-8");
+  console.log(`✓ ${backgrounds.length} fonds d'événement → ${path.relative(process.cwd(), BACKGROUNDS_OUT_PATH)}`);
 }
 
 main().catch((err) => {

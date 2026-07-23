@@ -119,6 +119,11 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
           maxWidth: 340,
           width: "100%",
           padding: 32,
+          ...(entry.backgroundUrl && {
+            backgroundImage: `linear-gradient(rgba(8,11,20,0.55), rgba(8,11,20,0.8)), url(${entry.backgroundUrl})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }),
           ...(isMirror && {
             borderColor: "rgba(180,100,255,0.3)",
             boxShadow: "0 16px 64px rgba(180,100,255,0.15)",
@@ -310,6 +315,11 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
         className="glass-card animate-scale-in p-4 flex flex-col items-center relative cursor-pointer select-none"
         style={{
           ...style,
+          ...(entry.backgroundUrl && {
+            backgroundImage: `linear-gradient(rgba(8,11,20,0.55), rgba(8,11,20,0.75)), url(${entry.backgroundUrl})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }),
           ...(hasPriority && entry.priority === 1 && {
             borderColor: "rgba(255,215,0,0.5)",
             boxShadow: "0 8px 32px rgba(255,215,0,0.22), 0 0 0 1px rgba(255,215,0,0.2)",

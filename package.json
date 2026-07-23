@@ -10,6 +10,7 @@
     "seed": "tsx prisma/seed.ts",
     "gen:pokemon": "node scripts/generate-pokemon-list.mjs",
     "gen:costumes": "node scripts/generate-costume-catalog.mjs",
+    "gen:backgrounds": "node scripts/generate-pokemon-backgrounds.mjs",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate"
   },
@@ -32,6 +33,7 @@
     "@types/pg": "^8.18.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cheerio": "^1.2.0",
     "dotenv": "^17.3.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",

@@ -13,7 +13,7 @@ export async function PATCH(
 
   const { id } = await params;
   const body = await request.json();
-  const { trainerId, tradeForPokemonName, tradeForPokemonId, notes, completed, category, shiny, customSpriteUrl, priority, tags, quantity } =
+  const { trainerId, tradeForPokemonName, tradeForPokemonId, notes, completed, category, shiny, customSpriteUrl, backgroundUrl, priority, tags, quantity } =
     body;
 
   try {
@@ -32,6 +32,7 @@ export async function PATCH(
         ...(category !== undefined && { category }),
         ...(shiny !== undefined && { shiny: shiny === true }),
         ...(customSpriteUrl !== undefined && { customSpriteUrl: customSpriteUrl || null }),
+        ...(backgroundUrl !== undefined && { backgroundUrl: backgroundUrl || null }),
         ...(priority !== undefined && { priority: priority != null ? Number(priority) : null }),
         ...(tags !== undefined && { tags: Array.isArray(tags) && tags.length > 0 ? JSON.stringify(tags) : null }),
         ...(quantity !== undefined && { quantity: Math.max(1, Number(quantity) || 1) }),
