@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { isAuthenticated } from "@/lib/auth";
+import { buildBackupPayload } from "@/lib/backup";
 
 export async function GET() {
   const authed = await isAuthenticated();
@@ -8,20 +8,7 @@ export async function GET() {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
-  const [entries, trainers] = await Promise.all([
-    prisma.pokemonEntry.findMany({
-      include: { trainer: true },
-      orderBy: { createdAt: "asc" },
-    }),
-    prisma.trainer.findMany({ orderBy: { name: "asc" } }),
-  ]);
-
-  const payload = {
-    exportedAt: new Date().toISOString(),
-    version: 1,
-    trainers,
-    entries,
-  };
+  const payload = await buildBackupPayload();
 
   const date = new Date().toISOString().slice(0, 10);
   const filename = `luckytrades-backup-${date}.json`;

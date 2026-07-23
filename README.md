@@ -59,8 +59,28 @@ génération de Pokémon sort.
 
 ## Sauvegarde
 
-`/admin` propose un export JSON manuel (bouton "⬇ Export JSON") via
-`app/api/export`. C'est actuellement le seul backup — pas d'automatisation.
+Deux mécanismes complémentaires :
+
+- **Export manuel** — bouton "⬇ Export JSON" dans `/admin` (`app/api/export`),
+  à tout moment.
+- **Backup automatique quotidien** — `app/api/cron/backup`, déclenché par un
+  Vercel Cron (`vercel.json`), commit un snapshot dans `backups/latest.json`
+  sur GitHub. L'historique git de ce fichier sert de journal des sauvegardes
+  successives (pas de service de stockage supplémentaire à payer/gérer).
+
+  Setup à faire une fois dans le dashboard Vercel (Settings → Environment
+  Variables) :
+  1. `CRON_SECRET` — une chaîne aléatoire (ex: générée avec
+     `openssl rand -hex 32`). Vercel l'envoie automatiquement en
+     `Authorization: Bearer <CRON_SECRET>` sur les requêtes cron dès qu'elle
+     est définie — aucune autre config nécessaire côté Vercel.
+  2. `GITHUB_TOKEN` — un Personal Access Token GitHub *fine-grained*
+     (github.com → Settings → Developer settings → Personal access tokens),
+     limité à ce seul repo, avec la permission **Contents: Read and write**.
+  3. `GITHUB_BACKUP_REPO` — `owner/repo` (ex: `Scabanel/pokemongo-luckytrades`).
+
+  Sans ces 3 variables, la route répond 401/500 sans rien casser — le cron
+  échoue silencieusement plutôt que de planter le site.
 
 ## Structure
 
