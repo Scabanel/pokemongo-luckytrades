@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { isAuthenticated } from "@/lib/auth";
+import { getCurrentTrainer } from "@/lib/auth";
 import { buildBackupPayload } from "@/lib/backup";
 
 export async function GET() {
-  const authed = await isAuthenticated();
-  if (!authed) {
+  const { isAdmin } = await getCurrentTrainer();
+  if (!isAdmin) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 

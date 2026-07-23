@@ -19,8 +19,3 @@ export async function getCurrentTrainer() {
 
   return { user, trainer, isAdmin };
 }
-
-export async function isAuthenticated() {
-  const { user } = await getCurrentTrainer();
-  return user !== null;
-}

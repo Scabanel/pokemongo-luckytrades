@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { isAuthenticated, getCurrentTrainer } from "@/lib/auth";
+import { getCurrentTrainer } from "@/lib/auth";
 
 // Filet de rattrapage admin : délier ou réassigner un authUserId en cas de
 // rattachement erroné à l'inscription (voir app/api/auth/signup/route.ts).
@@ -32,8 +32,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const authed = await isAuthenticated();
-  if (!authed) {
+  const { isAdmin } = await getCurrentTrainer();
+  if (!isAdmin) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
