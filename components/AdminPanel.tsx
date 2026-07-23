@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import toast from "react-hot-toast";
 import PokemonSprite from "./PokemonSprite";
 import pokemonList from "@/data/pokemon.json";
+import costumeCatalog from "@/data/costumes.json";
 import type { Trainer, PokemonEntry as SharedPokemonEntry, EntryCategory } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 
@@ -1351,56 +1352,16 @@ async function fetchAllSprites(pokemonId: number): Promise<{ url: string; label:
   });
 }
 
-// ─── Pokekalos GO sprites ─────────────────────────────────────────────────────
+// ─── Costumes officiels Pokémon GO ────────────────────────────────────────────
+// Catalogue généré depuis PokeMiners/pogo_assets (npm run gen:costumes) :
+// remplace l'ancien système qui devinait ~24 suffixes Pokekalos à la main —
+// ici ce sont les vraies icônes du jeu, avec tous les costumes historiques.
 
-const POKEKALOS_BASE = "https://www.media.pokekalos.fr/img/pokemon/pokego";
+type CostumeEntry = { label: string; url: string };
+const COSTUME_CATALOG = costumeCatalog as Record<string, CostumeEntry[]>;
 
-const POKEKALOS_SUFFIXES: { slug: string; label: string }[] = [
-  { slug: "", label: "Normal GO" },
-  { slug: "-halloween", label: "Halloween" },
-  { slug: "-halloween2021", label: "Halloween '21" },
-  { slug: "-halloween2022", label: "Halloween '22" },
-  { slug: "-halloween2023", label: "Halloween '23" },
-  { slug: "-halloween2024", label: "Halloween '24" },
-  { slug: "-noel", label: "Noël" },
-  { slug: "-noel-2023", label: "Noël '23" },
-  { slug: "-noel24", label: "Noël '24" },
-  { slug: "-holiday2020", label: "Holiday '20" },
-  { slug: "-holiday2021", label: "Holiday '21" },
-  { slug: "-anniversaire", label: "Anniversaire" },
-  { slug: "-capitaine", label: "Capitaine" },
-  { slug: "-summer", label: "Summer" },
-  { slug: "-costume-2022", label: "Costume '22" },
-  { slug: "-gigamax", label: "Gigamax" },
-  { slug: "-a", label: "Alolan" },
-  { slug: "-h", label: "Hisuian" },
-  { slug: "-g", label: "Galarian" },
-  { slug: "-detective", label: "Détective" },
-  { slug: "-pokemonday20", label: "Pokémon Day '20" },
-  { slug: "-pokemonday21", label: "Pokémon Day '21" },
-  { slug: "-libre", label: "Libre" },
-  { slug: "-flying", label: "Vol" },
-  { slug: "-original", label: "Original" },
-];
-
-function toPokekalosSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .split(" ")[0]
-    .replace(/[^a-z0-9]/g, "");
-}
-
-function generatePokekalosSprites(pokemonName: string): { url: string; label: string }[] {
-  const base = toPokekalosSlug(pokemonName);
-  if (!base) return [];
-  const results: { url: string; label: string }[] = [];
-  for (const { slug, label } of POKEKALOS_SUFFIXES) {
-    results.push({ url: `${POKEKALOS_BASE}/${base}${slug}.png`, label });
-    results.push({ url: `${POKEKALOS_BASE}/${base}${slug}-s.png`, label: `${label} ✨` });
-  }
-  return results;
+function getOfficialCostumes(pokemonId: number): CostumeEntry[] {
+  return COSTUME_CATALOG[String(pokemonId)] ?? [];
 }
 
 function SpritePicker({
@@ -1419,8 +1380,8 @@ function SpritePicker({
   const [fetched, setFetched] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [manualUrl, setManualUrl] = useState("");
-  const [showPokekalos, setShowPokekalos] = useState(false);
-  const pokekalosSprites = generatePokekalosSprites(pokemonName);
+  const [showCostumes, setShowCostumes] = useState(false);
+  const officialCostumes = getOfficialCostumes(pokemonId);
 
   // Reset cache when Pokémon changes
   useEffect(() => {
@@ -1540,11 +1501,11 @@ function SpritePicker({
               </p>
             ) : null}
 
-            {/* Pokekalos GO section */}
+            {/* Costumes officiels Pokémon GO */}
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 16, marginBottom: 16 }}>
               <button
                 type="button"
-                onClick={() => setShowPokekalos((v) => !v)}
+                onClick={() => setShowCostumes((v) => !v)}
                 style={{
                   display: "flex", alignItems: "center", gap: 8,
                   background: "rgba(255,153,0,0.08)", border: "1px solid rgba(255,153,0,0.3)",
@@ -1553,44 +1514,15 @@ function SpritePicker({
                   width: "100%", justifyContent: "space-between",
                 }}
               >
-                <span>🎮 Sprites Pokémon GO (Pokekalos) — variantes événement</span>
-                <span style={{ opacity: 0.7 }}>{showPokekalos ? "▲" : "▼"}</span>
+                <span>🎭 Costumes officiels Pokémon GO ({officialCostumes.length})</span>
+                <span style={{ opacity: 0.7 }}>{showCostumes ? "▲" : "▼"}</span>
               </button>
-              {showPokekalos && (
-                <div style={{ marginTop: 10 }}>
-                  <p style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", marginBottom: 8 }}>
-                    Les tuiles cassées sont masquées automatiquement. Basé sur : <strong style={{ color: "rgba(232,237,245,0.6)" }}>{toPokekalosSlug(pokemonName)}</strong>
-                  </p>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 6 }}>
-                    {pokekalosSprites.map(({ url, label }) => (
-                      <button
-                        key={url}
-                        type="button"
-                        onClick={() => { onSelect(url); setOpen(false); }}
-                        style={{
-                          background: currentUrl === url ? "rgba(255,153,0,0.2)" : "rgba(255,255,255,0.03)",
-                          border: `1px solid ${currentUrl === url ? "rgba(255,153,0,0.5)" : "rgba(255,255,255,0.07)"}`,
-                          borderRadius: 10, padding: 8, cursor: "pointer",
-                          display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
-                        }}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={url}
-                          alt={label}
-                          style={{ width: 72, height: 72, objectFit: "contain", imageRendering: "pixelated" }}
-                          onError={(e) => {
-                            const btn = (e.currentTarget as HTMLImageElement).closest("button");
-                            if (btn) btn.style.display = "none";
-                          }}
-                        />
-                        <span style={{ fontSize: "0.58rem", color: "rgba(255,153,0,0.8)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
-                          {label}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+              {showCostumes && (
+                <CostumeGrid
+                  costumes={officialCostumes}
+                  currentUrl={currentUrl}
+                  onSelect={(url) => { onSelect(url); setOpen(false); }}
+                />
               )}
             </div>
 
@@ -1620,6 +1552,78 @@ function SpritePicker({
         </div>
       )}
     </>
+  );
+}
+
+function CostumeGrid({
+  costumes,
+  currentUrl,
+  onSelect,
+}: {
+  costumes: { label: string; url: string }[];
+  currentUrl: string | null;
+  onSelect: (url: string) => void;
+}) {
+  const [search, setSearch] = useState("");
+  const filtered = search.trim()
+    ? costumes.filter((c) => c.label.toLowerCase().includes(search.trim().toLowerCase()))
+    : costumes;
+
+  if (costumes.length === 0) {
+    return (
+      <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)", marginTop: 10 }}>
+        Aucun costume officiel connu pour ce Pokémon (pas encore sorti dans Pokémon GO, ou pas de costume).
+      </p>
+    );
+  }
+
+  return (
+    <div style={{ marginTop: 10 }}>
+      {costumes.length > 12 && (
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="glass-input"
+          placeholder="Chercher (ex: halloween, gofest, anniversary...)"
+          style={{ marginBottom: 8, fontSize: "0.8rem" }}
+        />
+      )}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 6, maxHeight: 360, overflowY: "auto" }}>
+        {filtered.map(({ url, label }) => (
+          <button
+            key={url}
+            type="button"
+            onClick={() => onSelect(url)}
+            style={{
+              background: currentUrl === url ? "rgba(255,153,0,0.2)" : "rgba(255,255,255,0.03)",
+              border: `1px solid ${currentUrl === url ? "rgba(255,153,0,0.5)" : "rgba(255,255,255,0.07)"}`,
+              borderRadius: 10, padding: 8, cursor: "pointer",
+              display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={url}
+              alt={label}
+              style={{ width: 72, height: 72, objectFit: "contain", imageRendering: "pixelated" }}
+              onError={(e) => {
+                const btn = (e.currentTarget as HTMLImageElement).closest("button");
+                if (btn) btn.style.display = "none";
+              }}
+            />
+            <span style={{ fontSize: "0.58rem", color: "rgba(255,153,0,0.8)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+              {label}
+            </span>
+          </button>
+        ))}
+        {filtered.length === 0 && (
+          <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.35)", gridColumn: "1 / -1" }}>
+            Aucun costume ne correspond à « {search} ».
+          </p>
+        )}
+      </div>
+    </div>
   );
 }
 

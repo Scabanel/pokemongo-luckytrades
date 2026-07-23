@@ -1,27 +1,43 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import goIcons from "@/data/go-icons.json";
 
 const BASE = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
+const GO_ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
+
+// data/go-icons.json (léger, ~40 Ko : juste les noms de fichiers, pas les
+// costumes) contient l'icône officielle Pokémon GO de chaque Pokémon connu
+// de PokeMiners/pogo_assets — plus fidèle au jeu que les sprites génériques
+// PokeAPI (style jeux principaux). Utilisée en priorité, avec repli sur
+// PokeAPI pour les ~66 Pokémon pas encore sortis dans GO et pour toute image
+// cassée. Le catalogue complet des costumes (data/costumes.json, ~700 Ko)
+// n'est chargé que côté admin (SpritePicker), pas ici.
+const GO_ICONS = goIcons as Record<string, string[]>;
+
+function getOfficialGoIcon(pokemonId: number, shiny: boolean): string | null {
+  const files = GO_ICONS[String(pokemonId)];
+  if (!files) return null;
+  const filename = shiny ? files[1] : files[0];
+  return filename ? `${GO_ICON_BASE}/${encodeURIComponent(filename)}` : null;
+}
 
 function buildUrls(pokemonId: number, shiny: boolean): string[] {
-  if (shiny) {
-    return [
-      // 1. Animated shiny Gen V
-      `${BASE}/versions/generation-v/black-white/animated/shiny/${pokemonId}.gif`,
-      // 2. Showdown shiny animated
-      `${BASE}/other/showdown/shiny/${pokemonId}.gif`,
-      // 3. Static shiny PNG
-      `${BASE}/shiny/${pokemonId}.png`,
-      // 4. Fallback to normal PNG (when no shiny sprite exists)
-      `${BASE}/${pokemonId}.png`,
-    ];
-  }
-  return [
-    `${BASE}/versions/generation-v/black-white/animated/${pokemonId}.gif`,
-    `${BASE}/other/showdown/${pokemonId}.gif`,
-    `${BASE}/${pokemonId}.png`,
-  ];
+  const goIcon = getOfficialGoIcon(pokemonId, shiny);
+  const pokeApiChain = shiny
+    ? [
+        // Animé shiny Gen V, puis Showdown shiny, puis statique shiny/normal
+        `${BASE}/versions/generation-v/black-white/animated/shiny/${pokemonId}.gif`,
+        `${BASE}/other/showdown/shiny/${pokemonId}.gif`,
+        `${BASE}/shiny/${pokemonId}.png`,
+        `${BASE}/${pokemonId}.png`,
+      ]
+    : [
+        `${BASE}/versions/generation-v/black-white/animated/${pokemonId}.gif`,
+        `${BASE}/other/showdown/${pokemonId}.gif`,
+        `${BASE}/${pokemonId}.png`,
+      ];
+  return goIcon ? [goIcon, ...pokeApiChain] : pokeApiChain;
 }
 
 interface PokemonSpriteProps {

@@ -9,6 +9,7 @@
     "lint": "eslint",
     "seed": "tsx prisma/seed.ts",
     "gen:pokemon": "node scripts/generate-pokemon-list.mjs",
+    "gen:costumes": "node scripts/generate-costume-catalog.mjs",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate"
   },

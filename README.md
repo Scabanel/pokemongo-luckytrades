@@ -43,6 +43,7 @@ npm run db:migrate      # applique une migration Prisma en local
 npm run db:generate     # régénère le client Prisma après un changement de schema.prisma
 npm run seed            # (re)seed la base depuis prisma/seed.ts
 npm run gen:pokemon     # régénère data/pokemon.json (liste FR/EN des Pokémon, voir plus bas)
+npm run gen:costumes    # régénère data/costumes.json + data/go-icons.json (voir plus bas)
 ```
 
 Les migrations Prisma (`prisma/migrations/`) sont la seule source de vérité
@@ -56,6 +57,25 @@ utilisée par l'autocomplete de `/admin`. Elle est générée une fois via
 `npm run gen:pokemon` (appelle PokeAPI) et commitée — l'admin ne fait plus
 d'appel réseau à PokeAPI au chargement. À relancer seulement si une nouvelle
 génération de Pokémon sort.
+
+## Sprites et costumes officiels Pokémon GO
+
+Source : [PokeMiners/pogo_assets](https://github.com/PokeMiners/pogo_assets), qui
+extrait les assets du jeu (maintenu activement par la communauté). Deux fichiers
+générés par `npm run gen:costumes` :
+
+- `data/go-icons.json` (léger, ~40 Ko) — l'icône officielle Pokémon GO de
+  chaque Pokémon (normal + shiny), utilisée en priorité par
+  `components/PokemonSprite.tsx` sur chaque carte (avec repli sur PokeAPI pour
+  les Pokémon pas encore sortis dans GO).
+- `data/costumes.json` (~700 Ko, admin uniquement) — tous les costumes
+  historiques par Pokémon (Halloween, GO Fest, anniversaires...) avec libellé
+  lisible, utilisé par le sélecteur de sprite dans `/admin`.
+
+À relancer périodiquement pour récupérer les nouveaux costumes ajoutés au jeu.
+Les "fonds" promotionnels ponctuels (ex: variantes une seule ville/événement,
+pas un vrai costume du jeu) ne sont pas dans ce dépôt — l'URL manuelle du
+sélecteur de sprite reste la solution pour ces cas.
 
 ## Sauvegarde
 
