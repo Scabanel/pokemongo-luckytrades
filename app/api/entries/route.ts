@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { isAuthenticated } from "@/lib/auth";
+import { getCurrentTrainer } from "@/lib/auth";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -16,8 +16,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const authed = await isAuthenticated();
-  if (!authed) {
+  const { trainer, isAdmin } = await getCurrentTrainer();
+  if (!trainer && !isAdmin) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
@@ -32,8 +32,10 @@ export async function POST(request: NextRequest) {
     notes,
     shiny,
     customSpriteUrl,
+    backgroundUrl,
     priority,
     tags,
+    quantity,
   } = body;
 
   if (!pokemonName || !pokemonId || !category) {
@@ -50,19 +52,25 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  // Un compte non-admin ne peut créer une entrée que sous son propre
+  // dresseur, quelle que soit la valeur envoyée par le client.
+  const effectiveTrainerId = isAdmin ? trainerId || null : trainer!.id;
+
   const entry = await prisma.pokemonEntry.create({
     data: {
       pokemonName,
       pokemonId: Number(pokemonId),
       category,
-      trainerId: trainerId || null,
+      trainerId: effectiveTrainerId,
       tradeForPokemonName: tradeForPokemonName || null,
       tradeForPokemonId: tradeForPokemonId ? Number(tradeForPokemonId) : null,
       notes: notes || null,
       shiny: shiny === true,
       customSpriteUrl: customSpriteUrl || null,
+      backgroundUrl: backgroundUrl || null,
       priority: priority != null ? Number(priority) : null,
       tags: Array.isArray(tags) && tags.length > 0 ? JSON.stringify(tags) : null,
+      quantity: quantity != null && Number(quantity) > 0 ? Number(quantity) : 1,
     },
     include: { trainer: true },
   });

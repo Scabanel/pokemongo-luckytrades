@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { isAuthenticated } from "@/lib/auth";
+import { getCurrentTrainer } from "@/lib/auth";
 
 export async function GET() {
   const trainers = await prisma.trainer.findMany({
@@ -14,8 +14,8 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const authed = await isAuthenticated();
-  if (!authed) {
+  const { isAdmin } = await getCurrentTrainer();
+  if (!isAdmin) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 

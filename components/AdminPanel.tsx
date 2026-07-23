@@ -3,32 +3,28 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import toast from "react-hot-toast";
 import PokemonSprite from "./PokemonSprite";
+import pokemonList from "@/data/pokemon.json";
+import costumeCatalog from "@/data/costumes.json";
+import backgroundCatalog from "@/data/backgrounds.json";
+import validatedBackgrounds from "@/data/pokemon-backgrounds.json";
+import type { Trainer, PokemonEntry as SharedPokemonEntry, EntryCategory } from "@/lib/types";
+import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
+import { createClient } from "@/lib/supabase/client";
 
-interface Trainer {
-  id: string;
-  name: string;
-  _count: { entries: number };
-}
+// La liste des dresseurs en admin inclut toujours le compte d'entrées
+// (contrairement à PokemonEntry.trainer ailleurs, qui n'en a pas besoin).
+type TrainerWithCount = Trainer & { _count: { entries: number } };
 
-interface PokemonEntry {
-  id: string;
-  pokemonName: string;
-  pokemonId: number;
-  category: string;
+// Les champs requis ici (shiny/completed) sont optionnels dans le type
+// partagé mais toujours renvoyés par l'API entries — on les rend requis
+// localement pour éviter des vérifications `?? false` partout dans ce fichier.
+interface PokemonEntry extends SharedPokemonEntry {
   shiny: boolean;
-  customSpriteUrl?: string | null;
-  tradeForPokemonName?: string | null;
-  tradeForPokemonId?: number | null;
-  notes?: string | null;
-  priority?: number | null;
-  tags?: string | null;
   completed: boolean;
-  trainer?: Trainer | null;
 }
 
 interface PokeOption {
   name: string;       // English (internal, for pokemonId resolution)
-  url: string;
   id: number;
   frenchName: string; // French (displayed + stored as pokemonName)
 }
@@ -37,62 +33,73 @@ interface AdminPanelProps {
   onLogout: () => void;
 }
 
+// Options du sélecteur de catégorie dans les formulaires d'ajout/modification
+// (dupliqué à l'identique dans les deux modales avant cette extraction).
+// La couleur vient de lib/categories.ts ; le libellé compact ("Miroir ✨") et
+// la teinte "active" restent spécifiques à ce composant.
+const CATEGORY_PICKER_OPTIONS = [
+  { val: "want" as const, label: "🔍 Je recherche", active: "rgba(10,255,224,0.15)", c: CATEGORIES.want.color },
+  { val: "give" as const, label: "🎁 Je peux donner", active: "rgba(255,217,61,0.15)", c: CATEGORIES.give.color },
+  { val: "mirror" as const, label: "🔮 Miroir ✨", active: "rgba(180,100,255,0.15)", c: CATEGORIES.mirror.color },
+];
+
 export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [entries, setEntries] = useState<PokemonEntry[]>([]);
-  const [trainers, setTrainers] = useState<Trainer[]>([]);
+  const [trainers, setTrainers] = useState<TrainerWithCount[]>([]);
   const [pokeOptions, setPokeOptions] = useState<PokeOption[]>([]);
-  const [activeTab, setActiveTab] = useState<"entries" | "trainers">("entries");
+  const [me, setMe] = useState<{ trainer: Trainer | null; isAdmin: boolean }>({ trainer: null, isAdmin: false });
+  const [activeTab, setActiveTab] = useState<"entries" | "trainers" | "account">("entries");
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState<PokemonEntry | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [loadingEntries, setLoadingEntries] = useState(true);
   const [newTrainerName, setNewTrainerName] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
+
+  const isAdmin = me.isAdmin;
+  const myTrainerId = me.trainer?.id ?? null;
+  const canEditEntry = useCallback(
+    (entry: PokemonEntry) => isAdmin || entry.trainer?.id === myTrainerId,
+    [isAdmin, myTrainerId]
+  );
 
   const fetchData = useCallback(async () => {
-    const [eRes, tRes] = await Promise.all([
+    const [eRes, tRes, meRes] = await Promise.all([
       fetch("/api/entries?completed=false"),
       fetch("/api/trainers"),
+      fetch("/api/auth/me"),
     ]);
     setEntries(await eRes.json());
     setTrainers(await tRes.json());
+    if (meRes.ok) {
+      const meData = await meRes.json();
+      setMe({ trainer: meData.trainer, isAdmin: meData.isAdmin });
+    }
     setLoadingEntries(false);
   }, []);
 
   useEffect(() => {
     fetchData();
-    // Fetch Pokémon list + French names in parallel
-    Promise.all([
-      fetch("https://pokeapi.co/api/v2/pokemon?limit=1025").then((r) => r.json()),
-      fetch("https://beta.pokeapi.co/graphql/v1beta", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          query: `{ pokemon_v2_pokemonspeciesname(where: {language_id: {_eq: 5}}) { name pokemon_species_id } }`,
-        }),
-      })
-        .then((r) => r.json())
-        .catch(() => ({ data: { pokemon_v2_pokemonspeciesname: [] } })),
-    ])
-      .then(([listData, gqlData]) => {
-        const frenchMap = new Map<number, string>(
-          ((gqlData.data?.pokemon_v2_pokemonspeciesname ?? []) as { name: string; pokemon_species_id: number }[])
-            .map(({ name, pokemon_species_id }) => [pokemon_species_id, name])
-        );
-        const options: PokeOption[] = listData.results.map(
-          (p: { name: string; url: string }, i: number) => ({
-            name: p.name,
-            url: p.url,
-            id: i + 1,
-            frenchName: frenchMap.get(i + 1) ?? p.name,
-          })
-        );
-        setPokeOptions(options);
-      })
-      .catch(() => {});
+    // Liste des Pokémon (FR/EN) figée dans le repo (data/pokemon.json) : plus besoin
+    // d'appeler PokeAPI + GraphQL à chaque ouverture de l'admin. Regénérer avec
+    // `npm run gen:pokemon` si une nouvelle génération de Pokémon sort.
+    setPokeOptions(pokemonList as PokeOption[]);
   }, [fetchData]);
 
+  // Retire de la sélection les entrées qui ont disparu de la liste (marquées
+  // échangées ou supprimées individuellement pendant qu'elles étaient sélectionnées).
+  useEffect(() => {
+    setSelectedIds((prev) => {
+      const validIds = new Set(entries.map((e) => e.id));
+      const next = new Set(Array.from(prev).filter((id) => validIds.has(id)));
+      return next.size === prev.size ? prev : next;
+    });
+  }, [entries]);
+
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    const supabase = createClient();
+    await supabase.auth.signOut();
     onLogout();
   };
 
@@ -143,6 +150,102 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     } catch {
       setEntries(prev);
       toast.error("Erreur");
+    }
+  };
+
+  // Décrémente/incrémente la quantité directement depuis la liste (ex: donner
+  // 1 des 20 Mewtwo restants) sans ouvrir la modale d'édition. À 0, propose
+  // de marquer l'entrée comme échangée plutôt que de laisser une quantité
+  // négative ou nulle affichée.
+  const handleQuantityChange = async (entry: PokemonEntry, delta: number) => {
+    const current = entry.quantity ?? 1;
+    const next = current + delta;
+    if (next < 1) {
+      handleComplete(entry);
+      return;
+    }
+    const prev = entries;
+    setEntries((es) => es.map((e) => (e.id === entry.id ? { ...e, quantity: next } : e)));
+
+    try {
+      const res = await fetch(`/api/entries/${entry.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity: next }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setEntries(prev);
+      toast.error("Erreur lors de la mise à jour de la quantité");
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectSection = (ids: string[]) => {
+    setSelectedIds((prev) => {
+      const allSelected = ids.length > 0 && ids.every((id) => prev.has(id));
+      const next = new Set(prev);
+      ids.forEach((id) => (allSelected ? next.delete(id) : next.add(id)));
+      return next;
+    });
+  };
+
+  const clearSelection = () => {
+    setSelectedIds(new Set());
+    setBulkDeleteConfirm(false);
+  };
+
+  const handleBulkComplete = async () => {
+    const ids = Array.from(selectedIds);
+    setEntries((e) => e.filter((x) => !selectedIds.has(x.id)));
+    clearSelection();
+
+    const results = await Promise.allSettled(
+      ids.map((id) =>
+        fetch(`/api/entries/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ completed: true }),
+        }).then((res) => {
+          if (!res.ok) throw new Error();
+        })
+      )
+    );
+    const failed = results.filter((r) => r.status === "rejected").length;
+    if (failed > 0) {
+      toast.error(`${failed} entrée${failed > 1 ? "s n'ont" : " n'a"} pas pu être marquée${failed > 1 ? "s" : ""} échangée${failed > 1 ? "s" : ""}`);
+      fetchData();
+    } else {
+      toast.success(`${ids.length} entrée${ids.length > 1 ? "s" : ""} marquée${ids.length > 1 ? "s" : ""} échangée${ids.length > 1 ? "s" : ""} ✓`);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    const ids = Array.from(selectedIds);
+    setEntries((e) => e.filter((x) => !selectedIds.has(x.id)));
+    clearSelection();
+
+    const results = await Promise.allSettled(
+      ids.map((id) =>
+        fetch(`/api/entries/${id}`, { method: "DELETE" }).then((res) => {
+          if (!res.ok) throw new Error();
+        })
+      )
+    );
+    const failed = results.filter((r) => r.status === "rejected").length;
+    if (failed > 0) {
+      toast.error(`${failed} entrée${failed > 1 ? "s n'ont" : " n'a"} pas pu être supprimée${failed > 1 ? "s" : ""}`);
+      fetchData();
+    } else {
+      toast.success(`${ids.length} entrée${ids.length > 1 ? "s" : ""} supprimée${ids.length > 1 ? "s" : ""}`);
     }
   };
 
@@ -239,7 +342,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6">
-        {(["entries", "trainers"] as const).map((tab) => (
+        {(["entries", ...(isAdmin ? (["trainers"] as const) : []), "account"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -267,7 +370,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           >
             {tab === "entries"
             ? `Échanges (${entries.length}) · Miroir ${mirrors.length} · Want ${wants.length} · Give ${gives.length}`
-            : `Dresseurs (${trainers.length})`}
+            : tab === "trainers"
+            ? `Dresseurs (${trainers.length})`
+            : "Mon compte"}
           </button>
         ))}
       </div>
@@ -275,11 +380,49 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       {/* Entries tab */}
       {activeTab === "entries" && (
         <div className="space-y-8">
-          {[
-            { title: "🔮 Échanges miroir", color: "#b464ff", list: mirrors },
-            { title: "🔍 Je recherche", color: "#0affe0", list: wants },
-            { title: "🎁 Je peux donner", color: "#ffd93d", list: gives },
-          ].map(({ title, color, list }) => (
+          {selectedIds.size > 0 && (
+            <div
+              className="flex items-center gap-3 flex-wrap p-3"
+              style={{
+                background: "rgba(10,255,224,0.06)",
+                border: "1px solid rgba(10,255,224,0.25)",
+                borderRadius: 12,
+              }}
+            >
+              <span style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#0affe0", fontSize: "0.85rem" }}>
+                {selectedIds.size} sélectionné{selectedIds.size > 1 ? "s" : ""}
+              </span>
+              <button onClick={handleBulkComplete} className="btn-success">
+                ✓ Marquer échangé{selectedIds.size > 1 ? "s" : ""}
+              </button>
+              {bulkDeleteConfirm ? (
+                <>
+                  <span style={{ fontSize: "0.8rem", color: "#ff6b6b" }}>
+                    Supprimer {selectedIds.size} entrée{selectedIds.size > 1 ? "s" : ""} ?
+                  </span>
+                  <button onClick={handleBulkDelete} className="btn-danger">
+                    Oui
+                  </button>
+                  <button onClick={() => setBulkDeleteConfirm(false)} className="btn-secondary" style={{ padding: "6px 12px" }}>
+                    Non
+                  </button>
+                </>
+              ) : (
+                <button onClick={() => setBulkDeleteConfirm(true)} className="btn-danger">
+                  🗑️ Supprimer
+                </button>
+              )}
+              <button onClick={clearSelection} className="btn-secondary" style={{ padding: "6px 12px", marginLeft: "auto" }}>
+                Annuler la sélection
+              </button>
+            </div>
+          )}
+
+          {CATEGORY_DISPLAY_ORDER.map((key) => ({
+            title: `${CATEGORIES[key].icon} ${CATEGORIES[key].label}`,
+            color: CATEGORIES[key].color,
+            list: { mirror: mirrors, want: wants, give: gives }[key],
+          })).map(({ title, color, list }) => (
             <EntrySection
               key={title}
               title={title}
@@ -289,10 +432,15 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               trainers={trainers}
               pokeOptions={pokeOptions}
               deleteConfirm={deleteConfirm}
+              selectedIds={selectedIds}
+              onToggleSelect={toggleSelect}
+              onToggleSelectAll={toggleSelectSection}
               onDelete={handleDelete}
               onComplete={handleComplete}
+              onQuantityChange={handleQuantityChange}
               onEdit={setEditingEntry}
               onDeleteConfirmChange={setDeleteConfirm}
+              canEditEntry={canEditEntry}
               onUpdate={(updated) =>
                 setEntries((prev) => prev.map((e) => (e.id === updated.id ? updated : e)))
               }
@@ -387,35 +535,133 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
         </div>
       )}
 
+      {/* Account tab */}
+      {activeTab === "account" && (
+        <MyAccountPanel
+          trainer={me.trainer}
+          onSaved={(updated) => setMe((m) => ({ ...m, trainer: updated }))}
+        />
+      )}
+
       {/* Add form modal */}
       {showAddForm && (
-        <AddEntryModal
+        <EntryForm
+          mode="add"
           trainers={trainers}
           pokeOptions={pokeOptions}
           existingEntries={entries}
+          isAdmin={isAdmin}
+          myTrainerId={myTrainerId}
           onClose={() => setShowAddForm(false)}
-          onAdded={(entry) => {
+          onSaved={(entry) => {
             setEntries((prev) => [entry, ...prev]);
             toast.success(`${entry.pokemonName} ajouté !`);
-            setShowAddForm(false);
+            // La modale reste ouverte pour enchaîner les ajouts (ex: après une
+            // session de jeu avec plusieurs échanges) — elle se ferme via
+            // le bouton "Terminé" ou le clic en dehors.
           }}
         />
       )}
 
       {/* Edit modal */}
       {editingEntry && (
-        <EditEntryModal
+        <EntryForm
+          mode="edit"
           entry={editingEntry}
           trainers={trainers}
           pokeOptions={pokeOptions}
+          isAdmin={isAdmin}
+          myTrainerId={myTrainerId}
           onClose={() => setEditingEntry(null)}
-          onUpdated={(updated) => {
+          onSaved={(updated) => {
             setEntries((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
             toast.success("Échange mis à jour");
             setEditingEntry(null);
           }}
         />
       )}
+    </div>
+  );
+}
+
+function MyAccountPanel({
+  trainer,
+  onSaved,
+}: {
+  trainer: Trainer | null;
+  onSaved: (trainer: Trainer) => void;
+}) {
+  const [team, setTeam] = useState(trainer?.team ?? "");
+  const [level, setLevel] = useState(trainer?.level != null ? String(trainer.level) : "");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setTeam(trainer?.team ?? "");
+    setLevel(trainer?.level != null ? String(trainer.level) : "");
+  }, [trainer]);
+
+  if (!trainer) {
+    return (
+      <div className="glass-card p-6" style={{ maxWidth: 500 }}>
+        <p style={{ color: "rgba(232,237,245,0.4)" }}>
+          Ton compte n&apos;est rattaché à aucun dresseur pour le moment. Contacte l&apos;admin.
+        </p>
+      </div>
+    );
+  }
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await fetch("/api/trainers/me", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ team: team || null, level: level ? Number(level) : null }),
+      });
+      if (!res.ok) throw new Error();
+      const updated = await res.json();
+      onSaved(updated);
+      toast.success("Profil mis à jour ✓");
+    } catch {
+      toast.error("Erreur lors de la mise à jour");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="glass-card p-6" style={{ maxWidth: 500 }}>
+      <h2 style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#0affe0", marginBottom: 16 }}>
+        Mon compte — {trainer.name}
+      </h2>
+      <form onSubmit={handleSave} className="flex flex-col gap-4">
+        <div>
+          <label className="field-label">ÉQUIPE</label>
+          <select value={team} onChange={(e) => setTeam(e.target.value)} className="glass-input mt-1">
+            <option value="">— Aucune —</option>
+            <option value="instinct">⚡ Instinct</option>
+            <option value="mystic">💧 Mystic</option>
+            <option value="valor">🔥 Valor</option>
+          </select>
+        </div>
+        <div>
+          <label className="field-label">NIVEAU</label>
+          <input
+            type="number"
+            value={level}
+            onChange={(e) => setLevel(e.target.value)}
+            className="glass-input mt-1"
+            placeholder="1-50"
+            min={1}
+            max={50}
+            style={{ width: 120 }}
+          />
+        </div>
+        <button type="submit" className="btn-primary" disabled={loading} style={{ alignSelf: "flex-start" }}>
+          {loading ? "Sauvegarde…" : "✓ Sauvegarder"}
+        </button>
+      </form>
     </div>
   );
 }
@@ -430,8 +676,13 @@ function EntrySection({
   deleteConfirm,
   onDelete,
   onComplete,
+  onQuantityChange,
   onEdit,
   onDeleteConfirmChange,
+  selectedIds,
+  onToggleSelect,
+  onToggleSelectAll,
+  canEditEntry,
 }: {
   title: string;
   color: string;
@@ -442,23 +693,40 @@ function EntrySection({
   deleteConfirm: string | null;
   onDelete: (id: string) => void;
   onComplete: (entry: PokemonEntry) => void;
+  onQuantityChange: (entry: PokemonEntry, delta: number) => void;
   onEdit: (entry: PokemonEntry) => void;
   onDeleteConfirmChange: (id: string | null) => void;
   onUpdate: (entry: PokemonEntry) => void;
+  selectedIds: Set<string>;
+  onToggleSelect: (id: string) => void;
+  onToggleSelectAll: (ids: string[]) => void;
+  canEditEntry: (entry: PokemonEntry) => boolean;
 }) {
+  const ids = entries.filter(canEditEntry).map((e) => e.id);
+  const allSelected = ids.length > 0 && ids.every((id) => selectedIds.has(id));
+  const someSelected = !allSelected && ids.some((id) => selectedIds.has(id));
+
   return (
     <div>
-      <h2
-        style={{
-          fontFamily: "Exo 2, sans-serif",
-          fontWeight: 700,
-          color,
-          marginBottom: 12,
-          fontSize: "1.1rem",
-        }}
-      >
-        {title} ({entries.length})
-      </h2>
+      <div className="flex items-center gap-2 mb-3">
+        {ids.length > 0 && (
+          <SelectAllCheckbox
+            checked={allSelected}
+            indeterminate={someSelected}
+            onChange={() => onToggleSelectAll(ids)}
+          />
+        )}
+        <h2
+          style={{
+            fontFamily: "Exo 2, sans-serif",
+            fontWeight: 700,
+            color,
+            fontSize: "1.1rem",
+          }}
+        >
+          {title} ({entries.length})
+        </h2>
+      </div>
 
       {loading ? (
         <div className="skeleton" style={{ height: 80, borderRadius: 16 }} />
@@ -484,11 +752,15 @@ function EntrySection({
               trainers={trainers}
               color={color}
               isDeleteConfirm={deleteConfirm === entry.id}
+              isSelected={selectedIds.has(entry.id)}
               onDelete={() => onDelete(entry.id)}
               onComplete={() => onComplete(entry)}
+              onQuantityChange={(delta) => onQuantityChange(entry, delta)}
               onEdit={() => onEdit(entry)}
               onDeleteConfirm={() => onDeleteConfirmChange(entry.id)}
               onDeleteCancel={() => onDeleteConfirmChange(null)}
+              onToggleSelect={() => onToggleSelect(entry.id)}
+              canEdit={canEditEntry(entry)}
             />
           ))}
         </div>
@@ -497,38 +769,84 @@ function EntrySection({
   );
 }
 
+function SelectAllCheckbox({
+  checked,
+  indeterminate,
+  onChange,
+}: {
+  checked: boolean;
+  indeterminate: boolean;
+  onChange: () => void;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (ref.current) ref.current.indeterminate = indeterminate;
+  }, [indeterminate]);
+
+  return (
+    <input
+      ref={ref}
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+      style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#0affe0" }}
+      aria-label="Tout sélectionner"
+    />
+  );
+}
+
 function AdminEntryRow({
   entry,
   trainers: _trainers,
   color,
   isDeleteConfirm,
+  isSelected,
   onDelete,
   onComplete,
+  onQuantityChange,
   onEdit,
   onDeleteConfirm,
   onDeleteCancel,
+  onToggleSelect,
+  canEdit,
 }: {
   entry: PokemonEntry;
   trainers: Trainer[];
   color: string;
   isDeleteConfirm: boolean;
+  isSelected: boolean;
   onDelete: () => void;
   onComplete: () => void;
+  onQuantityChange: (delta: number) => void;
   onEdit: () => void;
   onDeleteConfirm: () => void;
   onDeleteCancel: () => void;
+  onToggleSelect: () => void;
+  canEdit: boolean;
 }) {
+  const quantity = entry.quantity ?? 1;
   return (
     <div
       className="flex items-center gap-4 p-4"
       style={{
-        background: "rgba(255,255,255,0.03)",
+        background: isSelected ? "rgba(10,255,224,0.05)" : "rgba(255,255,255,0.03)",
         borderRadius: 16,
-        border: "1px solid rgba(255,255,255,0.07)",
+        border: `1px solid ${isSelected ? "rgba(10,255,224,0.3)" : "rgba(255,255,255,0.07)"}`,
         flexWrap: "wrap",
-        transition: "border-color 0.2s",
+        transition: "border-color 0.2s, background 0.2s",
       }}
     >
+      {/* Selection checkbox — masquée si le compte ne peut pas agir sur cette entrée */}
+      {canEdit && (
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={onToggleSelect}
+          style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#0affe0", flexShrink: 0 }}
+          aria-label={`Sélectionner ${entry.pokemonName}`}
+        />
+      )}
+
       {/* Priority badge */}
       {entry.priority != null && (
         <div style={{
@@ -544,8 +862,18 @@ function AdminEntryRow({
         </div>
       )}
 
-      {/* Sprite */}
-      <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={48} shiny={entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false)} customSpriteUrl={entry.customSpriteUrl} />
+      {/* Sprite (+ fond d'événement en arrière-plan si défini) */}
+      <div style={{
+        width: 48, height: 48, borderRadius: 10, flexShrink: 0,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        ...(entry.backgroundUrl && {
+          backgroundImage: `url(${entry.backgroundUrl})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }),
+      }}>
+        <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={48} shiny={entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false)} customSpriteUrl={entry.customSpriteUrl} />
+      </div>
 
       {/* Info */}
       <div className="flex-1 min-w-0">
@@ -576,6 +904,18 @@ function AdminEntryRow({
           {entry.trainer && (
             <span className="trainer-pill">{entry.trainer.name}</span>
           )}
+          {quantity > 1 && (
+            <span style={{
+              background: "rgba(100,180,255,0.15)",
+              border: "1px solid rgba(100,180,255,0.5)",
+              borderRadius: 999,
+              padding: "1px 8px",
+              fontSize: "0.65rem",
+              fontWeight: 800,
+              color: "#64b4ff",
+              fontFamily: "Exo 2, sans-serif",
+            }}>×{quantity}</span>
+          )}
         </div>
         <div
           style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.75rem", marginTop: 2 }}
@@ -591,7 +931,8 @@ function AdminEntryRow({
         </div>
       </div>
 
-      {/* Actions */}
+      {/* Actions — masquées si le compte connecté n'est pas propriétaire de cette entrée (ni admin) */}
+      {canEdit && (
       <div className="flex items-center gap-2 flex-wrap">
         {isDeleteConfirm ? (
           <>
@@ -605,9 +946,23 @@ function AdminEntryRow({
           </>
         ) : (
           <>
-            <button onClick={onComplete} className="btn-secondary" style={{ padding: "6px 12px", fontSize: "0.8rem" }}>
-              ✓ Échangé
+            <button
+              onClick={quantity > 1 ? () => onQuantityChange(-1) : onComplete}
+              className="btn-success"
+            >
+              {quantity > 1 ? "✓ −1 (donné)" : "✓ Échangé"}
             </button>
+            {quantity > 1 && (
+              <button
+                onClick={() => onQuantityChange(1)}
+                className="btn-secondary"
+                style={{ padding: "6px 10px", fontSize: "0.85rem", fontWeight: 800 }}
+                aria-label="Ajouter un exemplaire"
+                title="Corriger : +1 exemplaire"
+              >
+                +1
+              </button>
+            )}
             <button onClick={onEdit} className="btn-secondary" style={{ padding: "6px 12px", fontSize: "0.8rem" }}>
               ✏️ Modifier
             </button>
@@ -617,43 +972,89 @@ function AdminEntryRow({
           </>
         )}
       </div>
+      )}
     </div>
   );
 }
 
-function AddEntryModal({
-  trainers,
-  pokeOptions,
-  existingEntries,
-  onClose,
-  onAdded,
-}: {
-  trainers: Trainer[];
-  pokeOptions: PokeOption[];
-  existingEntries: PokemonEntry[];
-  onClose: () => void;
-  onAdded: (entry: PokemonEntry) => void;
-}) {
-  const [form, setForm] = useState({
-    pokemonName: "",
-    pokemonId: 0,
-    category: "want" as "want" | "give" | "mirror",
-    trainerId: "",
-    tradeForPokemonName: "",
-    tradeForPokemonId: 0,
-    notes: "",
-    shiny: false,
-    customSpriteUrl: null as string | null,
-    priority: null as number | null,
-    tags: [] as string[],
-  });
+// Formulaire unique pour l'ajout et la modification d'un échange : avant cette
+// fusion, AddEntryModal et EditEntryModal étaient ~85% identiques (catégorie,
+// dresseur, en-échange-de, notes, tags, priorité, shiny, sprite) et toute
+// modification d'un champ devait être répercutée à la main dans les deux.
+// Seuls diffèrent : le sélecteur de Pokémon (uniquement à l'ajout, on ne
+// change pas le Pokémon d'une entrée existante), le endpoint POST/PATCH,
+// et le comportement "reste ouvert pour enchaîner" propre à l'ajout.
+type EntryFormProps =
+  | {
+      mode: "add";
+      trainers: Trainer[];
+      pokeOptions: PokeOption[];
+      existingEntries: PokemonEntry[];
+      isAdmin: boolean;
+      myTrainerId: string | null;
+      onClose: () => void;
+      onSaved: (entry: PokemonEntry) => void;
+    }
+  | {
+      mode: "edit";
+      entry: PokemonEntry;
+      trainers: Trainer[];
+      pokeOptions: PokeOption[];
+      isAdmin: boolean;
+      myTrainerId: string | null;
+      onClose: () => void;
+      onSaved: (entry: PokemonEntry) => void;
+    };
+
+function EntryForm(props: EntryFormProps) {
+  const { mode, trainers, pokeOptions, isAdmin, myTrainerId, onClose, onSaved } = props;
+  const entry = mode === "edit" ? props.entry : undefined;
+  const existingEntries = mode === "add" ? props.existingEntries : undefined;
+
+  const [form, setForm] = useState(() =>
+    entry
+      ? {
+          pokemonName: entry.pokemonName,
+          pokemonId: entry.pokemonId,
+          category: entry.category as EntryCategory,
+          trainerId: entry.trainer?.id ?? "",
+          tradeForPokemonName: entry.tradeForPokemonName ?? "",
+          tradeForPokemonId: entry.tradeForPokemonId ?? 0,
+          notes: entry.notes ?? "",
+          shiny: entry.shiny ?? false,
+          customSpriteUrl: entry.customSpriteUrl ?? (null as string | null),
+          backgroundUrl: entry.backgroundUrl ?? (null as string | null),
+          priority: entry.priority ?? (null as number | null),
+          tags: parseTags(entry.tags),
+          quantity: entry.quantity ?? 1,
+        }
+      : {
+          pokemonName: "",
+          pokemonId: 0,
+          category: "want" as EntryCategory,
+          // Un compte non-admin ne peut créer que sous son propre dresseur
+          // (de toute façon forcé côté serveur, voir app/api/entries/route.ts).
+          trainerId: isAdmin ? "" : myTrainerId ?? "",
+          tradeForPokemonName: "",
+          tradeForPokemonId: 0,
+          notes: "",
+          shiny: false,
+          customSpriteUrl: null as string | null,
+          backgroundUrl: null as string | null,
+          priority: null as number | null,
+          tags: [] as string[],
+          quantity: 1,
+        }
+  );
   const [loading, setLoading] = useState(false);
   const [pokeSearch, setPokeSearch] = useState("");
-  const [tradeSearch, setTradeSearch] = useState("");
+  const [tradeSearch, setTradeSearch] = useState(entry?.tradeForPokemonName ?? "");
   const [showPokeSuggestions, setShowPokeSuggestions] = useState(false);
   const [showTradeSuggestions, setShowTradeSuggestions] = useState(false);
+  const [addedCount, setAddedCount] = useState(0);
   const pokeRef = useRef<HTMLDivElement>(null);
   const tradeRef = useRef<HTMLDivElement>(null);
+  const pokeInputRef = useRef<HTMLInputElement>(null);
 
   const pokeSuggestions = pokeSearch.length >= 2
     ? pokeOptions.filter((p) => p.frenchName.toLowerCase().includes(pokeSearch.toLowerCase())).slice(0, 8)
@@ -665,40 +1066,81 @@ function AddEntryModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.pokemonId || !form.pokemonName) {
-      toast.error("Sélectionne un Pokémon valide");
-      return;
-    }
-    if (form.category === "want") {
-      const duplicate = existingEntries.find(
-        (e) => e.category === "want" && e.pokemonId === form.pokemonId && !!e.shiny === form.shiny
-      );
-      if (duplicate) {
-        toast.error(`${form.pokemonName}${form.shiny ? " ✨ Shiny" : ""} est déjà dans "Je recherche"`);
+
+    if (mode === "add") {
+      if (!form.pokemonId || !form.pokemonName) {
+        toast.error("Sélectionne un Pokémon valide");
         return;
       }
+      if (form.category === "want") {
+        const duplicate = existingEntries!.find(
+          (x) => x.category === "want" && x.pokemonId === form.pokemonId && !!x.shiny === form.shiny
+        );
+        if (duplicate) {
+          toast.error(`${form.pokemonName}${form.shiny ? " ✨ Shiny" : ""} est déjà dans "Je recherche"`);
+          return;
+        }
+      }
     }
-    setLoading(true);
 
+    setLoading(true);
     try {
-      const res = await fetch("/api/entries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          trainerId: form.trainerId || null,
-          tradeForPokemonName: form.tradeForPokemonName || null,
-          tradeForPokemonId: form.tradeForPokemonId || null,
-          notes: form.notes || null,
-          priority: form.priority || null,
-          tags: form.tags,
-        }),
-      });
+      const payload = {
+        pokemonName: form.pokemonName,
+        pokemonId: form.pokemonId,
+        category: form.category,
+        shiny: form.shiny,
+        customSpriteUrl: form.customSpriteUrl,
+        backgroundUrl: form.backgroundUrl,
+        trainerId: form.trainerId || null,
+        tradeForPokemonName: form.tradeForPokemonName || null,
+        tradeForPokemonId: form.tradeForPokemonId || null,
+        notes: form.notes || null,
+        priority: form.priority || null,
+        tags: form.tags,
+        quantity: form.quantity,
+      };
+      const res = mode === "add"
+        ? await fetch("/api/entries", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          })
+        : await fetch(`/api/entries/${entry!.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
       if (!res.ok) throw new Error();
-      const entry = await res.json();
-      onAdded(entry);
+      const saved = await res.json();
+      onSaved(saved);
+
+      if (mode === "add") {
+        setAddedCount((n) => n + 1);
+        // Garde la catégorie + le dresseur (souvent identiques pour plusieurs
+        // Pokémon d'affilée après une session de jeu) et ne réinitialise que
+        // le reste, pour enchaîner les ajouts sans rouvrir la modale.
+        setForm((f) => ({
+          pokemonName: "",
+          pokemonId: 0,
+          category: f.category,
+          trainerId: f.trainerId,
+          tradeForPokemonName: "",
+          tradeForPokemonId: 0,
+          notes: "",
+          shiny: false,
+          customSpriteUrl: null,
+          backgroundUrl: null,
+          priority: null,
+          tags: [],
+          quantity: 1,
+        }));
+        setPokeSearch("");
+        setTradeSearch("");
+        pokeInputRef.current?.focus();
+      }
     } catch {
-      toast.error("Erreur lors de l'ajout");
+      toast.error(mode === "add" ? "Erreur lors de l'ajout" : "Erreur lors de la mise à jour");
     } finally {
       setLoading(false);
     }
@@ -706,28 +1148,71 @@ function AddEntryModal({
 
   return (
     <ModalOverlay onClose={onClose}>
-      <h2
-        style={{
-          fontFamily: "Exo 2, sans-serif",
-          fontWeight: 800,
-          color: "#0affe0",
-          fontSize: "1.3rem",
-          marginBottom: 20,
-        }}
-      >
-        Ajouter un échange
-      </h2>
+      {mode === "add" ? (
+        <div className="flex items-center justify-between flex-wrap gap-2" style={{ marginBottom: 20 }}>
+          <h2
+            style={{
+              fontFamily: "Exo 2, sans-serif",
+              fontWeight: 800,
+              color: "#0affe0",
+              fontSize: "1.3rem",
+            }}
+          >
+            Ajouter un échange
+          </h2>
+          {addedCount > 0 && (
+            <span
+              className="animate-fade-in-up"
+              style={{
+                background: "rgba(10,255,224,0.12)",
+                border: "1px solid rgba(10,255,224,0.35)",
+                borderRadius: 999,
+                padding: "3px 12px",
+                fontSize: "0.75rem",
+                fontWeight: 800,
+                color: "#0affe0",
+                fontFamily: "Exo 2, sans-serif",
+              }}
+            >
+              ✓ {addedCount} ajouté{addedCount > 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
+      ) : (
+        <div className="flex items-center gap-3 mb-5">
+          <PokemonSprite pokemonId={entry!.pokemonId} alt={entry!.pokemonName} size={48} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
+          <div>
+            <h2
+              style={{
+                fontFamily: "Exo 2, sans-serif",
+                fontWeight: 800,
+                color: "#0affe0",
+                fontSize: "1.2rem",
+                textTransform: "capitalize",
+              }}
+            >
+              Modifier: {entry!.pokemonName}
+            </h2>
+            <span
+              style={{
+                fontSize: "0.75rem",
+                color: form.category === "want" ? "#0affe0" : form.category === "mirror" ? "#b464ff" : "#ffd93d",
+                fontWeight: 600,
+                fontFamily: "Exo 2, sans-serif",
+              }}
+            >
+              {form.category === "want" ? "Je recherche" : form.category === "mirror" ? "Miroir ✨" : "Je peux donner"}
+            </span>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Category */}
         <div>
           <label className="field-label">CATÉGORIE</label>
           <div className="flex gap-2 mt-1 flex-wrap">
-            {([
-              { val: "want", label: "🔍 Je recherche", active: "rgba(10,255,224,0.15)", c: "#0affe0" },
-              { val: "give", label: "🎁 Je peux donner", active: "rgba(255,217,61,0.15)", c: "#ffd93d" },
-              { val: "mirror", label: "🔮 Miroir ✨", active: "rgba(180,100,255,0.15)", c: "#b464ff" },
-            ] as const).map(({ val, label, active, c }) => (
+            {CATEGORY_PICKER_OPTIONS.map(({ val, label, active, c }) => (
               <button
                 key={val}
                 type="button"
@@ -747,48 +1232,54 @@ function AddEntryModal({
           </div>
         </div>
 
-        {/* Pokémon selector */}
-        <div ref={pokeRef} style={{ position: "relative" }}>
-          <label className="field-label">POKÉMON</label>
-          <div className="flex gap-2 items-center mt-1">
-            {form.pokemonId > 0 && (
-              <PokemonSprite pokemonId={form.pokemonId} alt={form.pokemonName} size={40} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
-            )}
-            <div style={{ flex: 1, position: "relative" }}>
-              <input
-                type="text"
-                value={pokeSearch}
-                onChange={(e) => {
-                  setPokeSearch(e.target.value);
-                  setShowPokeSuggestions(true);
-                  if (!e.target.value) setForm((f) => ({ ...f, pokemonName: "", pokemonId: 0 }));
-                }}
-                onFocus={() => setShowPokeSuggestions(true)}
-                className="glass-input"
-                placeholder="Chercher un Pokémon..."
-                autoComplete="off"
-              />
-              {showPokeSuggestions && pokeSuggestions.length > 0 && (
-                <SuggestionDropdown
-                  options={pokeSuggestions}
-                  onSelect={(p) => {
-                    setForm((f) => ({ ...f, pokemonName: p.frenchName, pokemonId: p.id }));
-                    setPokeSearch(p.frenchName);
-                    setShowPokeSuggestions(false);
-                  }}
-                />
+        {/* Pokémon selector — uniquement à l'ajout, le Pokémon d'une entrée existante ne change pas */}
+        {mode === "add" && (
+          <div ref={pokeRef} style={{ position: "relative" }}>
+            <label className="field-label">POKÉMON</label>
+            <div className="flex gap-2 items-center mt-1">
+              {form.pokemonId > 0 && (
+                <PokemonSprite pokemonId={form.pokemonId} alt={form.pokemonName} size={40} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
               )}
+              <div style={{ flex: 1, position: "relative" }}>
+                <input
+                  ref={pokeInputRef}
+                  type="text"
+                  value={pokeSearch}
+                  onChange={(e) => {
+                    setPokeSearch(e.target.value);
+                    setShowPokeSuggestions(true);
+                    if (!e.target.value) setForm((f) => ({ ...f, pokemonName: "", pokemonId: 0 }));
+                  }}
+                  onFocus={() => setShowPokeSuggestions(true)}
+                  className="glass-input"
+                  placeholder="Chercher un Pokémon..."
+                  autoComplete="off"
+                  autoFocus
+                />
+                {showPokeSuggestions && pokeSuggestions.length > 0 && (
+                  <SuggestionDropdown
+                    options={pokeSuggestions}
+                    onSelect={(p) => {
+                      setForm((f) => ({ ...f, pokemonName: p.frenchName, pokemonId: p.id }));
+                      setPokeSearch(p.frenchName);
+                      setShowPokeSuggestions(false);
+                    }}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Trainer */}
+        {/* Trainer — figé au dresseur du compte connecté pour un non-admin
+            (déjà forcé côté serveur, le disabled est ici du confort/clarté UI) */}
         <div>
           <label className="field-label">DRESSEUR</label>
           <select
             value={form.trainerId}
             onChange={(e) => setForm((f) => ({ ...f, trainerId: e.target.value }))}
             className="glass-input mt-1"
+            disabled={!isAdmin}
           >
             <option value="">— Aucun dresseur —</option>
             {trainers.map((t) => (
@@ -817,7 +1308,7 @@ function AddEntryModal({
                 }}
                 onFocus={() => setShowTradeSuggestions(true)}
                 className="glass-input"
-                placeholder="Pokémon en échange (optionnel)..."
+                placeholder={mode === "add" ? "Pokémon en échange (optionnel)..." : "Pokémon en échange..."}
                 autoComplete="off"
               />
               {showTradeSuggestions && tradeSuggestions.length > 0 && (
@@ -836,7 +1327,7 @@ function AddEntryModal({
 
         {/* Notes */}
         <div>
-          <label className="field-label">NOTES (optionnel)</label>
+          <label className="field-label">{mode === "add" ? "NOTES (optionnel)" : "NOTES"}</label>
           <input
             type="text"
             value={form.notes}
@@ -865,6 +1356,22 @@ function AddEntryModal({
               className="glass-input mt-1"
               placeholder="Ex : 1 = priorité max"
               style={{ width: 180 }}
+            />
+          </div>
+        )}
+
+        {/* Quantité (give/mirror) — évite de dupliquer la même entrée N fois
+            quand on a plusieurs exemplaires du même Pokémon à donner. */}
+        {form.category !== "want" && (
+          <div>
+            <label className="field-label">QUANTITÉ</label>
+            <input
+              type="number"
+              min={1}
+              value={form.quantity}
+              onChange={(e) => setForm((f) => ({ ...f, quantity: Math.max(1, Number(e.target.value) || 1) }))}
+              className="glass-input mt-1"
+              style={{ width: 120 }}
             />
           </div>
         )}
@@ -898,282 +1405,41 @@ function AddEntryModal({
         </div>
 
         {/* Sprite personnalisé */}
-        {form.pokemonId > 0 && (
+        {(mode === "edit" || form.pokemonId > 0) && (
           <div>
             <label className="field-label">SPRITE PERSONNALISÉ (optionnel)</label>
             <SpritePicker
-              pokemonId={form.pokemonId}
-              pokemonName={form.pokemonName}
+              pokemonId={mode === "edit" ? entry!.pokemonId : form.pokemonId}
+              pokemonName={mode === "edit" ? entry!.pokemonName : form.pokemonName}
               currentUrl={form.customSpriteUrl}
               onSelect={(url) => setForm((f) => ({ ...f, customSpriteUrl: url }))}
             />
           </div>
         )}
 
-        <div className="flex gap-2 justify-end mt-2">
-          <button type="button" onClick={onClose} className="btn-secondary">
-            Annuler
-          </button>
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? "Ajout…" : "✓ Ajouter"}
-          </button>
-        </div>
-      </form>
-    </ModalOverlay>
-  );
-}
-
-function EditEntryModal({
-  entry,
-  trainers,
-  pokeOptions,
-  onClose,
-  onUpdated,
-}: {
-  entry: PokemonEntry;
-  trainers: Trainer[];
-  pokeOptions: PokeOption[];
-  onClose: () => void;
-  onUpdated: (entry: PokemonEntry) => void;
-}) {
-  const [form, setForm] = useState({
-    category: entry.category as "want" | "give" | "mirror",
-    trainerId: entry.trainer?.id ?? "",
-    tradeForPokemonName: entry.tradeForPokemonName ?? "",
-    tradeForPokemonId: entry.tradeForPokemonId ?? 0,
-    notes: entry.notes ?? "",
-    shiny: entry.shiny,
-    customSpriteUrl: entry.customSpriteUrl ?? null as string | null,
-    priority: entry.priority ?? null as number | null,
-    tags: parseTags(entry.tags),
-  });
-  const [tradeSearch, setTradeSearch] = useState(entry.tradeForPokemonName ?? "");
-  const [showTradeSuggestions, setShowTradeSuggestions] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const tradeSuggestions = tradeSearch.length >= 2
-    ? pokeOptions.filter((p) => p.frenchName.toLowerCase().includes(tradeSearch.toLowerCase())).slice(0, 8)
-    : [];
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const res = await fetch(`/api/entries/${entry.id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          category: form.category,
-          shiny: form.shiny,
-          customSpriteUrl: form.customSpriteUrl,
-          trainerId: form.trainerId || null,
-          tradeForPokemonName: form.tradeForPokemonName || null,
-          tradeForPokemonId: form.tradeForPokemonId || null,
-          notes: form.notes || null,
-          priority: form.priority || null,
-          tags: form.tags,
-        }),
-      });
-      if (!res.ok) throw new Error();
-      const updated = await res.json();
-      onUpdated(updated);
-    } catch {
-      toast.error("Erreur lors de la mise à jour");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <ModalOverlay onClose={onClose}>
-      <div className="flex items-center gap-3 mb-5">
-        <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={48} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
+        {/* Fond d'événement (optionnel) */}
         <div>
-          <h2
-            style={{
-              fontFamily: "Exo 2, sans-serif",
-              fontWeight: 800,
-              color: "#0affe0",
-              fontSize: "1.2rem",
-              textTransform: "capitalize",
-            }}
-          >
-            Modifier: {entry.pokemonName}
-          </h2>
-          <span
-            style={{
-              fontSize: "0.75rem",
-              color: form.category === "want" ? "#0affe0" : form.category === "mirror" ? "#b464ff" : "#ffd93d",
-              fontWeight: 600,
-              fontFamily: "Exo 2, sans-serif",
-            }}
-          >
-            {form.category === "want" ? "Je recherche" : form.category === "mirror" ? "Miroir ✨" : "Je peux donner"}
-          </span>
-        </div>
-      </div>
-
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* Category */}
-        <div>
-          <label className="field-label">CATÉGORIE</label>
-          <div className="flex gap-2 mt-1 flex-wrap">
-            {([
-              { val: "want", label: "🔍 Je recherche", active: "rgba(10,255,224,0.15)", c: "#0affe0" },
-              { val: "give", label: "🎁 Je peux donner", active: "rgba(255,217,61,0.15)", c: "#ffd93d" },
-              { val: "mirror", label: "🔮 Miroir ✨", active: "rgba(180,100,255,0.15)", c: "#b464ff" },
-            ] as const).map(({ val, label, active, c }) => (
-              <button
-                key={val}
-                type="button"
-                onClick={() => setForm((f) => ({ ...f, category: val }))}
-                style={{
-                  flex: 1, minWidth: 100, padding: "8px 6px", borderRadius: 10,
-                  border: "1px solid", cursor: "pointer", fontFamily: "Exo 2, sans-serif",
-                  fontWeight: 600, fontSize: "0.8rem", transition: "all 0.2s",
-                  ...(form.category === val
-                    ? { background: active, borderColor: c, color: c }
-                    : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
-                }}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="field-label">DRESSEUR</label>
-          <select
-            value={form.trainerId}
-            onChange={(e) => setForm((f) => ({ ...f, trainerId: e.target.value }))}
-            className="glass-input mt-1"
-          >
-            <option value="">— Aucun dresseur —</option>
-            {trainers.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div style={{ position: "relative" }}>
-          <label className="field-label">EN ÉCHANGE DE</label>
-          <div className="flex gap-2 items-center mt-1">
-            {form.tradeForPokemonId > 0 && (
-              <PokemonSprite pokemonId={form.tradeForPokemonId} alt={form.tradeForPokemonName} size={40} />
-            )}
-            <div style={{ flex: 1, position: "relative" }}>
-              <input
-                type="text"
-                value={tradeSearch}
-                onChange={(e) => {
-                  setTradeSearch(e.target.value);
-                  setShowTradeSuggestions(true);
-                  if (!e.target.value) setForm((f) => ({ ...f, tradeForPokemonName: "", tradeForPokemonId: 0 }));
-                }}
-                onFocus={() => setShowTradeSuggestions(true)}
-                className="glass-input"
-                placeholder="Pokémon en échange..."
-                autoComplete="off"
-              />
-              {showTradeSuggestions && tradeSuggestions.length > 0 && (
-                <SuggestionDropdown
-                  options={tradeSuggestions}
-                  onSelect={(p) => {
-                    setForm((f) => ({ ...f, tradeForPokemonName: p.frenchName, tradeForPokemonId: p.id }));
-                    setTradeSearch(p.frenchName);
-                    setShowTradeSuggestions(false);
-                  }}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <label className="field-label">NOTES</label>
-          <input
-            type="text"
-            value={form.notes}
-            onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-            className="glass-input mt-1"
-            placeholder="Notes..."
+          <label className="field-label">FOND D'ÉVÉNEMENT (optionnel)</label>
+          <BackgroundPicker
+            pokemonId={mode === "edit" ? entry!.pokemonId : form.pokemonId}
+            currentUrl={form.backgroundUrl}
+            onSelect={(url) => setForm((f) => ({ ...f, backgroundUrl: url }))}
           />
         </div>
 
-        {/* Tags */}
-        <div>
-          <label className="field-label">TAGS (optionnel)</label>
-          <TagInput tags={form.tags} onChange={(tags) => setForm((f) => ({ ...f, tags }))} />
+        <div className="flex gap-2 justify-end mt-2">
+          <button type="button" onClick={onClose} className="btn-secondary">
+            {mode === "add" ? (addedCount > 0 ? "Terminé" : "Annuler") : "Annuler"}
+          </button>
+          <button type="submit" className="btn-primary" disabled={loading}>
+            {mode === "add" ? (loading ? "Ajout…" : "✓ Ajouter") : (loading ? "Sauvegarde…" : "✓ Sauvegarder")}
+          </button>
         </div>
-
-        {/* Priority (want only) */}
-        {form.category === "want" && (
-          <div>
-            <label className="field-label">PRIORITÉ (1–10, optionnel)</label>
-            <input
-              type="number"
-              min={1}
-              max={10}
-              value={form.priority ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value ? Number(e.target.value) : null }))}
-              className="glass-input mt-1"
-              placeholder="Ex : 1 = priorité max"
-              style={{ width: 180 }}
-            />
-          </div>
+        {mode === "add" && addedCount > 0 && (
+          <p style={{ textAlign: "center", fontSize: "0.75rem", color: "rgba(232,237,245,0.35)", margin: 0 }}>
+            Continue à chercher pour enchaîner les ajouts, ou clique sur « Terminé ».
+          </p>
         )}
-
-        {/* Shiny */}
-        <div>
-          <label className="field-label">SHINY</label>
-          <button
-            type="button"
-            onClick={() => setForm((f) => ({ ...f, shiny: !f.shiny }))}
-            style={{
-              marginTop: 4,
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              padding: "8px 16px",
-              borderRadius: 10,
-              border: "1px solid",
-              cursor: "pointer",
-              fontFamily: "Exo 2, sans-serif",
-              fontWeight: 600,
-              fontSize: "0.85rem",
-              transition: "all 0.2s",
-              ...(form.shiny
-                ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.5)", color: "#ffd700" }
-                : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
-            }}
-          >
-            ✨ {form.shiny ? "Shiny activé" : "Pas shiny"}
-          </button>
-        </div>
-
-        {/* Sprite personnalisé */}
-        <div>
-          <label className="field-label">SPRITE PERSONNALISÉ (optionnel)</label>
-          <SpritePicker
-            pokemonId={entry.pokemonId}
-            pokemonName={entry.pokemonName}
-            currentUrl={form.customSpriteUrl}
-            onSelect={(url) => setForm((f) => ({ ...f, customSpriteUrl: url }))}
-          />
-        </div>
-
-        <div className="flex gap-2 justify-end mt-2">
-          <button type="button" onClick={onClose} className="btn-secondary">
-            Annuler
-          </button>
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? "Sauvegarde…" : "✓ Sauvegarder"}
-          </button>
-        </div>
       </form>
     </ModalOverlay>
   );
@@ -1321,56 +1587,16 @@ async function fetchAllSprites(pokemonId: number): Promise<{ url: string; label:
   });
 }
 
-// ─── Pokekalos GO sprites ─────────────────────────────────────────────────────
+// ─── Costumes officiels Pokémon GO ────────────────────────────────────────────
+// Catalogue généré depuis PokeMiners/pogo_assets (npm run gen:costumes) :
+// remplace l'ancien système qui devinait ~24 suffixes Pokekalos à la main —
+// ici ce sont les vraies icônes du jeu, avec tous les costumes historiques.
 
-const POKEKALOS_BASE = "https://www.media.pokekalos.fr/img/pokemon/pokego";
+type CostumeEntry = { label: string; url: string };
+const COSTUME_CATALOG = costumeCatalog as Record<string, CostumeEntry[]>;
 
-const POKEKALOS_SUFFIXES: { slug: string; label: string }[] = [
-  { slug: "", label: "Normal GO" },
-  { slug: "-halloween", label: "Halloween" },
-  { slug: "-halloween2021", label: "Halloween '21" },
-  { slug: "-halloween2022", label: "Halloween '22" },
-  { slug: "-halloween2023", label: "Halloween '23" },
-  { slug: "-halloween2024", label: "Halloween '24" },
-  { slug: "-noel", label: "Noël" },
-  { slug: "-noel-2023", label: "Noël '23" },
-  { slug: "-noel24", label: "Noël '24" },
-  { slug: "-holiday2020", label: "Holiday '20" },
-  { slug: "-holiday2021", label: "Holiday '21" },
-  { slug: "-anniversaire", label: "Anniversaire" },
-  { slug: "-capitaine", label: "Capitaine" },
-  { slug: "-summer", label: "Summer" },
-  { slug: "-costume-2022", label: "Costume '22" },
-  { slug: "-gigamax", label: "Gigamax" },
-  { slug: "-a", label: "Alolan" },
-  { slug: "-h", label: "Hisuian" },
-  { slug: "-g", label: "Galarian" },
-  { slug: "-detective", label: "Détective" },
-  { slug: "-pokemonday20", label: "Pokémon Day '20" },
-  { slug: "-pokemonday21", label: "Pokémon Day '21" },
-  { slug: "-libre", label: "Libre" },
-  { slug: "-flying", label: "Vol" },
-  { slug: "-original", label: "Original" },
-];
-
-function toPokekalosSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .split(" ")[0]
-    .replace(/[^a-z0-9]/g, "");
-}
-
-function generatePokekalosSprites(pokemonName: string): { url: string; label: string }[] {
-  const base = toPokekalosSlug(pokemonName);
-  if (!base) return [];
-  const results: { url: string; label: string }[] = [];
-  for (const { slug, label } of POKEKALOS_SUFFIXES) {
-    results.push({ url: `${POKEKALOS_BASE}/${base}${slug}.png`, label });
-    results.push({ url: `${POKEKALOS_BASE}/${base}${slug}-s.png`, label: `${label} ✨` });
-  }
-  return results;
+function getOfficialCostumes(pokemonId: number): CostumeEntry[] {
+  return COSTUME_CATALOG[String(pokemonId)] ?? [];
 }
 
 function SpritePicker({
@@ -1389,8 +1615,8 @@ function SpritePicker({
   const [fetched, setFetched] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [manualUrl, setManualUrl] = useState("");
-  const [showPokekalos, setShowPokekalos] = useState(false);
-  const pokekalosSprites = generatePokekalosSprites(pokemonName);
+  const [showCostumes, setShowCostumes] = useState(false);
+  const officialCostumes = getOfficialCostumes(pokemonId);
 
   // Reset cache when Pokémon changes
   useEffect(() => {
@@ -1510,11 +1736,11 @@ function SpritePicker({
               </p>
             ) : null}
 
-            {/* Pokekalos GO section */}
+            {/* Costumes officiels Pokémon GO */}
             <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 16, marginBottom: 16 }}>
               <button
                 type="button"
-                onClick={() => setShowPokekalos((v) => !v)}
+                onClick={() => setShowCostumes((v) => !v)}
                 style={{
                   display: "flex", alignItems: "center", gap: 8,
                   background: "rgba(255,153,0,0.08)", border: "1px solid rgba(255,153,0,0.3)",
@@ -1523,44 +1749,15 @@ function SpritePicker({
                   width: "100%", justifyContent: "space-between",
                 }}
               >
-                <span>🎮 Sprites Pokémon GO (Pokekalos) — variantes événement</span>
-                <span style={{ opacity: 0.7 }}>{showPokekalos ? "▲" : "▼"}</span>
+                <span>🎭 Costumes officiels Pokémon GO ({officialCostumes.length})</span>
+                <span style={{ opacity: 0.7 }}>{showCostumes ? "▲" : "▼"}</span>
               </button>
-              {showPokekalos && (
-                <div style={{ marginTop: 10 }}>
-                  <p style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", marginBottom: 8 }}>
-                    Les tuiles cassées sont masquées automatiquement. Basé sur : <strong style={{ color: "rgba(232,237,245,0.6)" }}>{toPokekalosSlug(pokemonName)}</strong>
-                  </p>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 6 }}>
-                    {pokekalosSprites.map(({ url, label }) => (
-                      <button
-                        key={url}
-                        type="button"
-                        onClick={() => { onSelect(url); setOpen(false); }}
-                        style={{
-                          background: currentUrl === url ? "rgba(255,153,0,0.2)" : "rgba(255,255,255,0.03)",
-                          border: `1px solid ${currentUrl === url ? "rgba(255,153,0,0.5)" : "rgba(255,255,255,0.07)"}`,
-                          borderRadius: 10, padding: 8, cursor: "pointer",
-                          display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
-                        }}
-                      >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={url}
-                          alt={label}
-                          style={{ width: 72, height: 72, objectFit: "contain", imageRendering: "pixelated" }}
-                          onError={(e) => {
-                            const btn = (e.currentTarget as HTMLImageElement).closest("button");
-                            if (btn) btn.style.display = "none";
-                          }}
-                        />
-                        <span style={{ fontSize: "0.58rem", color: "rgba(255,153,0,0.8)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
-                          {label}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+              {showCostumes && (
+                <CostumeGrid
+                  costumes={officialCostumes}
+                  currentUrl={currentUrl}
+                  onSelect={(url) => { onSelect(url); setOpen(false); }}
+                />
               )}
             </div>
 
@@ -1585,6 +1782,230 @@ function SpritePicker({
                   ✓ Utiliser
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function CostumeGrid({
+  costumes,
+  currentUrl,
+  onSelect,
+}: {
+  costumes: { label: string; url: string }[];
+  currentUrl: string | null;
+  onSelect: (url: string) => void;
+}) {
+  const [search, setSearch] = useState("");
+  const filtered = search.trim()
+    ? costumes.filter((c) => c.label.toLowerCase().includes(search.trim().toLowerCase()))
+    : costumes;
+
+  if (costumes.length === 0) {
+    return (
+      <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)", marginTop: 10 }}>
+        Aucun costume officiel connu pour ce Pokémon (pas encore sorti dans Pokémon GO, ou pas de costume).
+      </p>
+    );
+  }
+
+  return (
+    <div style={{ marginTop: 10 }}>
+      {costumes.length > 12 && (
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="glass-input"
+          placeholder="Chercher (ex: halloween, gofest, anniversary...)"
+          style={{ marginBottom: 8, fontSize: "0.8rem" }}
+        />
+      )}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 6, maxHeight: 360, overflowY: "auto" }}>
+        {filtered.map(({ url, label }) => (
+          <button
+            key={url}
+            type="button"
+            onClick={() => onSelect(url)}
+            style={{
+              background: currentUrl === url ? "rgba(255,153,0,0.2)" : "rgba(255,255,255,0.03)",
+              border: `1px solid ${currentUrl === url ? "rgba(255,153,0,0.5)" : "rgba(255,255,255,0.07)"}`,
+              borderRadius: 10, padding: 8, cursor: "pointer",
+              display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={url}
+              alt={label}
+              style={{ width: 72, height: 72, objectFit: "contain", imageRendering: "pixelated" }}
+              onError={(e) => {
+                const btn = (e.currentTarget as HTMLImageElement).closest("button");
+                if (btn) btn.style.display = "none";
+              }}
+            />
+            <span style={{ fontSize: "0.58rem", color: "rgba(255,153,0,0.8)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+              {label}
+            </span>
+          </button>
+        ))}
+        {filtered.length === 0 && (
+          <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.35)", gridColumn: "1 / -1" }}>
+            Aucun costume ne correspond à « {search} ».
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Fonds d'événement ────────────────────────────────────────────────────────
+// Catalogue généré depuis PokeMiners/pogo_assets (Images/LocationCards) : voir
+// docs/research-fond-backgrounds.md pour le détail de la recherche. Génériques
+// (pas liés à un Pokémon précis dans les données du jeu), donc affichés en
+// popup à part plutôt que dans le sélecteur de sprite du Pokémon.
+
+type BackgroundEntry = { label: string; url: string };
+const BACKGROUND_CATALOG = backgroundCatalog as BackgroundEntry[];
+// dexId -> fonds confirmés pour ce Pokémon précis (source : margxt.fr, voir
+// docs/research-fond-backgrounds.md). Contrairement à BACKGROUND_CATALOG
+// (générique, n'importe quel fond sur n'importe quel Pokémon), cette liste
+// est validée événement par événement — priorité à afficher en premier.
+const VALIDATED_BACKGROUNDS = validatedBackgrounds as Record<string, BackgroundEntry[]>;
+
+function BackgroundPicker({
+  pokemonId,
+  currentUrl,
+  onSelect,
+}: {
+  pokemonId: number;
+  currentUrl: string | null;
+  onSelect: (url: string | null) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const [showAll, setShowAll] = useState(false);
+
+  const validated = VALIDATED_BACKGROUNDS[String(pokemonId)] ?? [];
+  const source = showAll || validated.length === 0 ? BACKGROUND_CATALOG : validated;
+  const filtered = search.trim()
+    ? source.filter((b) => b.label.toLowerCase().includes(search.trim().toLowerCase()))
+    : source;
+
+  return (
+    <>
+      <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: 4 }}>
+        {currentUrl && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={currentUrl} alt="fond" style={{ width: 48, height: 48, objectFit: "cover", background: "rgba(255,255,255,0.05)", borderRadius: 8 }} />
+        )}
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          style={{
+            padding: "6px 14px", borderRadius: 10, cursor: "pointer",
+            background: "rgba(180,100,255,0.08)", border: "1px solid rgba(180,100,255,0.25)",
+            color: "#b464ff", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
+          }}
+        >
+          🖼️ Sélectionner un fond{validated.length > 0 ? ` (${validated.length} confirmés)` : ""}
+        </button>
+        {currentUrl && (
+          <button
+            type="button"
+            onClick={() => onSelect(null)}
+            style={{
+              padding: "6px 10px", borderRadius: 10, cursor: "pointer",
+              background: "rgba(255,107,107,0.08)", border: "1px solid rgba(255,107,107,0.25)",
+              color: "#ff6b6b", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
+            }}
+          >
+            ✕ Retirer
+          </button>
+        )}
+      </div>
+
+      {open && (
+        <div
+          className="fixed inset-0 flex items-center justify-center p-4"
+          style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 400 }}
+          onClick={(e) => e.target === e.currentTarget && setOpen(false)}
+        >
+          <div
+            className="glass-card"
+            style={{ maxWidth: 580, width: "100%", maxHeight: "88vh", padding: 24, overflowY: "auto" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#b464ff", fontWeight: 700, fontSize: "1.1rem" }}>
+                {showAll || validated.length === 0
+                  ? `Tous les fonds (${BACKGROUND_CATALOG.length})`
+                  : `Fonds confirmés pour ce Pokémon (${validated.length})`}
+              </h3>
+              <button onClick={() => setOpen(false)} style={{ background: "none", border: "none", color: "#e8edf5", cursor: "pointer", fontSize: "1.1rem" }}>✕</button>
+            </div>
+
+            {validated.length > 0 && (
+              <p style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", marginBottom: 10 }}>
+                {showAll
+                  ? "Liste complète — rien ne garantit que ce Pokémon a réellement eu ce fond."
+                  : "Confirmés événement par événement (source : margxt.fr)."}
+                {" "}
+                <button
+                  type="button"
+                  onClick={() => setShowAll((v) => !v)}
+                  style={{ background: "none", border: "none", color: "#b464ff", cursor: "pointer", textDecoration: "underline", fontSize: "0.7rem", padding: 0 }}
+                >
+                  {showAll ? "← Revenir aux fonds confirmés" : "Voir tous les fonds à la place →"}
+                </button>
+              </p>
+            )}
+
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="glass-input"
+              placeholder="Chercher (ex: paris, anniversary, team leader...)"
+              style={{ marginBottom: 12 }}
+            />
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: 8, maxHeight: 420, overflowY: "auto" }}>
+              {filtered.map(({ url, label }) => (
+                <button
+                  key={url + label}
+                  type="button"
+                  onClick={() => { onSelect(url); setOpen(false); }}
+                  style={{
+                    background: currentUrl === url ? "rgba(180,100,255,0.15)" : "rgba(255,255,255,0.04)",
+                    border: `1px solid ${currentUrl === url ? "rgba(180,100,255,0.4)" : "rgba(255,255,255,0.08)"}`,
+                    borderRadius: 10, padding: 6, cursor: "pointer",
+                    display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
+                  }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={url}
+                    alt={label}
+                    style={{ width: 90, height: 60, objectFit: "cover", borderRadius: 6 }}
+                    onError={(e) => {
+                      const btn = (e.currentTarget as HTMLImageElement).closest("button");
+                      if (btn) btn.style.display = "none";
+                    }}
+                  />
+                  <span style={{ fontSize: "0.6rem", color: "rgba(232,237,245,0.6)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+                    {label}
+                  </span>
+                </button>
+              ))}
+              {filtered.length === 0 && (
+                <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.35)", gridColumn: "1 / -1" }}>
+                  Aucun fond ne correspond à « {search} ».
+                </p>
+              )}
             </div>
           </div>
         </div>
