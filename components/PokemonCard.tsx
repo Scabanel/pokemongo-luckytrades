@@ -174,6 +174,14 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
           }}>
             {CATEGORY_LABEL[entry.category] ?? entry.category}
           </span>
+          {(entry.quantity ?? 1) > 1 && (
+            <span style={{
+              background: "rgba(100,180,255,0.15)", border: "1px solid rgba(100,180,255,0.5)",
+              borderRadius: 999, padding: "3px 12px",
+              fontSize: "0.72rem", fontWeight: 800, color: "#64b4ff",
+              fontFamily: "Exo 2, sans-serif",
+            }}>×{entry.quantity} disponibles</span>
+          )}
           {isGigamax && (
             <span style={{
               background: "rgba(255,40,140,0.18)", border: "1px solid rgba(255,40,140,0.5)",
@@ -350,6 +358,13 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
 
         {/* Top-right badges */}
         <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
+          {(entry.quantity ?? 1) > 1 && (
+            <div style={{
+              background: "rgba(100,180,255,0.2)", border: "1px solid rgba(100,180,255,0.55)",
+              borderRadius: 8, padding: "1px 6px", fontSize: "0.6rem", fontWeight: 800,
+              color: "#64b4ff", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
+            }}>×{entry.quantity}</div>
+          )}
           {isGigamax && (
             <div style={{
               background: "rgba(255,40,140,0.2)", border: "1px solid rgba(255,40,140,0.55)",

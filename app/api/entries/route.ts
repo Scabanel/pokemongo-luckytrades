@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
     customSpriteUrl,
     priority,
     tags,
+    quantity,
   } = body;
 
   if (!pokemonName || !pokemonId || !category) {
@@ -63,6 +64,7 @@ export async function POST(request: NextRequest) {
       customSpriteUrl: customSpriteUrl || null,
       priority: priority != null ? Number(priority) : null,
       tags: Array.isArray(tags) && tags.length > 0 ? JSON.stringify(tags) : null,
+      quantity: quantity != null && Number(quantity) > 0 ? Number(quantity) : 1,
     },
     include: { trainer: true },
   });

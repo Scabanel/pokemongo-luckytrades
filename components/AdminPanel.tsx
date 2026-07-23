@@ -136,6 +136,33 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     }
   };
 
+  // Décrémente/incrémente la quantité directement depuis la liste (ex: donner
+  // 1 des 20 Mewtwo restants) sans ouvrir la modale d'édition. À 0, propose
+  // de marquer l'entrée comme échangée plutôt que de laisser une quantité
+  // négative ou nulle affichée.
+  const handleQuantityChange = async (entry: PokemonEntry, delta: number) => {
+    const current = entry.quantity ?? 1;
+    const next = current + delta;
+    if (next < 1) {
+      handleComplete(entry);
+      return;
+    }
+    const prev = entries;
+    setEntries((es) => es.map((e) => (e.id === entry.id ? { ...e, quantity: next } : e)));
+
+    try {
+      const res = await fetch(`/api/entries/${entry.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity: next }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setEntries(prev);
+      toast.error("Erreur lors de la mise à jour de la quantité");
+    }
+  };
+
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
@@ -391,6 +418,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               onToggleSelectAll={toggleSelectSection}
               onDelete={handleDelete}
               onComplete={handleComplete}
+              onQuantityChange={handleQuantityChange}
               onEdit={setEditingEntry}
               onDeleteConfirmChange={setDeleteConfirm}
               onUpdate={(updated) =>
@@ -534,6 +562,7 @@ function EntrySection({
   deleteConfirm,
   onDelete,
   onComplete,
+  onQuantityChange,
   onEdit,
   onDeleteConfirmChange,
   selectedIds,
@@ -549,6 +578,7 @@ function EntrySection({
   deleteConfirm: string | null;
   onDelete: (id: string) => void;
   onComplete: (entry: PokemonEntry) => void;
+  onQuantityChange: (entry: PokemonEntry, delta: number) => void;
   onEdit: (entry: PokemonEntry) => void;
   onDeleteConfirmChange: (id: string | null) => void;
   onUpdate: (entry: PokemonEntry) => void;
@@ -609,6 +639,7 @@ function EntrySection({
               isSelected={selectedIds.has(entry.id)}
               onDelete={() => onDelete(entry.id)}
               onComplete={() => onComplete(entry)}
+              onQuantityChange={(delta) => onQuantityChange(entry, delta)}
               onEdit={() => onEdit(entry)}
               onDeleteConfirm={() => onDeleteConfirmChange(entry.id)}
               onDeleteCancel={() => onDeleteConfirmChange(null)}
@@ -655,6 +686,7 @@ function AdminEntryRow({
   isSelected,
   onDelete,
   onComplete,
+  onQuantityChange,
   onEdit,
   onDeleteConfirm,
   onDeleteCancel,
@@ -667,11 +699,13 @@ function AdminEntryRow({
   isSelected: boolean;
   onDelete: () => void;
   onComplete: () => void;
+  onQuantityChange: (delta: number) => void;
   onEdit: () => void;
   onDeleteConfirm: () => void;
   onDeleteCancel: () => void;
   onToggleSelect: () => void;
 }) {
+  const quantity = entry.quantity ?? 1;
   return (
     <div
       className="flex items-center gap-4 p-4"
@@ -739,6 +773,18 @@ function AdminEntryRow({
           {entry.trainer && (
             <span className="trainer-pill">{entry.trainer.name}</span>
           )}
+          {quantity > 1 && (
+            <span style={{
+              background: "rgba(100,180,255,0.15)",
+              border: "1px solid rgba(100,180,255,0.5)",
+              borderRadius: 999,
+              padding: "1px 8px",
+              fontSize: "0.65rem",
+              fontWeight: 800,
+              color: "#64b4ff",
+              fontFamily: "Exo 2, sans-serif",
+            }}>×{quantity}</span>
+          )}
         </div>
         <div
           style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.75rem", marginTop: 2 }}
@@ -768,9 +814,23 @@ function AdminEntryRow({
           </>
         ) : (
           <>
-            <button onClick={onComplete} className="btn-success">
-              ✓ Échangé
+            <button
+              onClick={quantity > 1 ? () => onQuantityChange(-1) : onComplete}
+              className="btn-success"
+            >
+              {quantity > 1 ? "✓ −1 (donné)" : "✓ Échangé"}
             </button>
+            {quantity > 1 && (
+              <button
+                onClick={() => onQuantityChange(1)}
+                className="btn-secondary"
+                style={{ padding: "6px 10px", fontSize: "0.85rem", fontWeight: 800 }}
+                aria-label="Ajouter un exemplaire"
+                title="Corriger : +1 exemplaire"
+              >
+                +1
+              </button>
+            )}
             <button onClick={onEdit} className="btn-secondary" style={{ padding: "6px 12px", fontSize: "0.8rem" }}>
               ✏️ Modifier
             </button>
@@ -828,6 +888,7 @@ function EntryForm(props: EntryFormProps) {
           customSpriteUrl: entry.customSpriteUrl ?? (null as string | null),
           priority: entry.priority ?? (null as number | null),
           tags: parseTags(entry.tags),
+          quantity: entry.quantity ?? 1,
         }
       : {
           pokemonName: "",
@@ -841,6 +902,7 @@ function EntryForm(props: EntryFormProps) {
           customSpriteUrl: null as string | null,
           priority: null as number | null,
           tags: [] as string[],
+          quantity: 1,
         }
   );
   const [loading, setLoading] = useState(false);
@@ -894,6 +956,7 @@ function EntryForm(props: EntryFormProps) {
         notes: form.notes || null,
         priority: form.priority || null,
         tags: form.tags,
+        quantity: form.quantity,
       };
       const res = mode === "add"
         ? await fetch("/api/entries", {
@@ -927,6 +990,7 @@ function EntryForm(props: EntryFormProps) {
           customSpriteUrl: null,
           priority: null,
           tags: [],
+          quantity: 1,
         }));
         setPokeSearch("");
         setTradeSearch("");
@@ -1147,6 +1211,22 @@ function EntryForm(props: EntryFormProps) {
               className="glass-input mt-1"
               placeholder="Ex : 1 = priorité max"
               style={{ width: 180 }}
+            />
+          </div>
+        )}
+
+        {/* Quantité (give/mirror) — évite de dupliquer la même entrée N fois
+            quand on a plusieurs exemplaires du même Pokémon à donner. */}
+        {form.category !== "want" && (
+          <div>
+            <label className="field-label">QUANTITÉ</label>
+            <input
+              type="number"
+              min={1}
+              value={form.quantity}
+              onChange={(e) => setForm((f) => ({ ...f, quantity: Math.max(1, Number(e.target.value) || 1) }))}
+              className="glass-input mt-1"
+              style={{ width: 120 }}
             />
           </div>
         )}

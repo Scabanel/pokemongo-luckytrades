@@ -26,6 +26,7 @@ export interface PokemonEntry {
   customSpriteUrl?: string | null;
   priority?: number | null;
   tags?: string | null;
+  quantity?: number;
   completed?: boolean;
   updatedAt?: string;
 }
