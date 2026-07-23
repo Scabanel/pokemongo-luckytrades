@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ParticleBackground from "@/components/ParticleBackground";
 import AdminPanel from "@/components/AdminPanel";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AdminPage() {
   const router = useRouter();
@@ -57,7 +58,7 @@ export default function AdminPage() {
 }
 
 function LoginForm({ onSuccess }: { onSuccess: () => void }) {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -68,17 +69,16 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+      const supabase = createClient();
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
-      if (res.ok) {
+      if (!authError) {
         onSuccess();
       } else {
-        const data = await res.json();
-        setError(data.error ?? "Erreur de connexion");
+        setError(authError.message ?? "Erreur de connexion");
       }
     } catch {
       setError("Erreur réseau");
@@ -137,15 +137,15 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
                 fontFamily: "Exo 2, sans-serif",
               }}
             >
-              IDENTIFIANT
+              EMAIL
             </label>
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="glass-input"
-              placeholder="admin"
-              autoComplete="username"
+              placeholder="toi@exemple.com"
+              autoComplete="email"
               required
             />
           </div>

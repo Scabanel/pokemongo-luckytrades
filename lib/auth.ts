@@ -1,39 +1,26 @@
-import { SignJWT, jwtVerify } from "jose";
-import { cookies } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
+import { prisma } from "@/lib/prisma";
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? "fallback-secret-change-in-production"
-);
+export async function getCurrentTrainer() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-const COOKIE_NAME = "admin_token";
-
-export async function signToken(payload: { user: string }) {
-  return await new SignJWT(payload)
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime("7d")
-    .sign(JWT_SECRET);
-}
-
-export async function verifyToken(token: string) {
-  try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload;
-  } catch {
-    return null;
+  if (!user) {
+    return { user: null, trainer: null, isAdmin: false };
   }
-}
 
-export async function getSession() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value;
-  if (!token) return null;
-  return verifyToken(token);
+  const trainer = await prisma.trainer.findUnique({
+    where: { authUserId: user.id },
+  });
+
+  const isAdmin = user.email === process.env.ADMIN_EMAIL;
+
+  return { user, trainer, isAdmin };
 }
 
 export async function isAuthenticated() {
-  const session = await getSession();
-  return session !== null;
+  const { user } = await getCurrentTrainer();
+  return user !== null;
 }
-
-export { COOKIE_NAME };

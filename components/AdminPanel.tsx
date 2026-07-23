@@ -9,6 +9,7 @@ import backgroundCatalog from "@/data/backgrounds.json";
 import validatedBackgrounds from "@/data/pokemon-backgrounds.json";
 import type { Trainer, PokemonEntry as SharedPokemonEntry, EntryCategory } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
+import { createClient } from "@/lib/supabase/client";
 
 // La liste des dresseurs en admin inclut toujours le compte d'entrées
 // (contrairement à PokemonEntry.trainer ailleurs, qui n'en a pas besoin).
@@ -84,7 +85,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   }, [entries]);
 
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    const supabase = createClient();
+    await supabase.auth.signOut();
     onLogout();
   };
 
