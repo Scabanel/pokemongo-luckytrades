@@ -4,6 +4,7 @@
   --teal: #0affe0;
   --yellow: #ffd93d;
   --coral: #ff6b6b;
+  --success: #4ade80;
   --navy: #0b0700;
   --navy-mid: #180d03;
   --navy-light: #251505;
@@ -329,6 +330,43 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(255, 255, 255, 0.09);
   color: #e8edf5;
   border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Action "marquer comme échangé" : le geste le plus fréquent en session de jeu,
+   mis en avant visuellement (vert succès) plutôt qu'un bouton secondaire neutre. */
+.btn-success {
+  background: rgba(74, 222, 128, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.03em;
+  transition: all 0.12s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-success:hover {
+  background: rgba(74, 222, 128, 0.2);
+  border-color: var(--success);
+  box-shadow: 2px 2px 0 rgba(74, 222, 128, 0.2);
+}
+
+/* Zones tactiles agrandies sur mobile : ajouter/marquer échangé sont les gestes
+   répétés le plus souvent en jouant, ils doivent être confortables au pouce. */
+@media (max-width: 640px) {
+  .btn-success,
+  .btn-secondary,
+  .btn-danger,
+  .btn-primary {
+    min-height: 44px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
 }
 
 /* ── Input styles ── */

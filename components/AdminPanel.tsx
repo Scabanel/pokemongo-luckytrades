@@ -372,7 +372,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           onAdded={(entry) => {
             setEntries((prev) => [entry, ...prev]);
             toast.success(`${entry.pokemonName} ajouté !`);
-            setShowAddForm(false);
+            // La modale reste ouverte pour enchaîner les ajouts (ex: après une
+            // session de jeu avec plusieurs échanges) — elle se ferme via
+            // le bouton "Terminé" ou le clic en dehors.
           }}
         />
       )}
@@ -580,7 +582,7 @@ function AdminEntryRow({
           </>
         ) : (
           <>
-            <button onClick={onComplete} className="btn-secondary" style={{ padding: "6px 12px", fontSize: "0.8rem" }}>
+            <button onClick={onComplete} className="btn-success">
               ✓ Échangé
             </button>
             <button onClick={onEdit} className="btn-secondary" style={{ padding: "6px 12px", fontSize: "0.8rem" }}>
@@ -627,8 +629,10 @@ function AddEntryModal({
   const [tradeSearch, setTradeSearch] = useState("");
   const [showPokeSuggestions, setShowPokeSuggestions] = useState(false);
   const [showTradeSuggestions, setShowTradeSuggestions] = useState(false);
+  const [addedCount, setAddedCount] = useState(0);
   const pokeRef = useRef<HTMLDivElement>(null);
   const tradeRef = useRef<HTMLDivElement>(null);
+  const pokeInputRef = useRef<HTMLInputElement>(null);
 
   const pokeSuggestions = pokeSearch.length >= 2
     ? pokeOptions.filter((p) => p.frenchName.toLowerCase().includes(pokeSearch.toLowerCase())).slice(0, 8)
@@ -672,6 +676,26 @@ function AddEntryModal({
       if (!res.ok) throw new Error();
       const entry = await res.json();
       onAdded(entry);
+      setAddedCount((n) => n + 1);
+      // Garde la catégorie + le dresseur (souvent identiques pour plusieurs Pokémon
+      // d'affilée après une session de jeu) et ne réinitialise que le reste, pour
+      // enchaîner les ajouts sans rouvrir la modale à chaque fois.
+      setForm((f) => ({
+        pokemonName: "",
+        pokemonId: 0,
+        category: f.category,
+        trainerId: f.trainerId,
+        tradeForPokemonName: "",
+        tradeForPokemonId: 0,
+        notes: "",
+        shiny: false,
+        customSpriteUrl: null,
+        priority: null,
+        tags: [],
+      }));
+      setPokeSearch("");
+      setTradeSearch("");
+      pokeInputRef.current?.focus();
     } catch {
       toast.error("Erreur lors de l'ajout");
     } finally {
@@ -681,17 +705,35 @@ function AddEntryModal({
 
   return (
     <ModalOverlay onClose={onClose}>
-      <h2
-        style={{
-          fontFamily: "Exo 2, sans-serif",
-          fontWeight: 800,
-          color: "#0affe0",
-          fontSize: "1.3rem",
-          marginBottom: 20,
-        }}
-      >
-        Ajouter un échange
-      </h2>
+      <div className="flex items-center justify-between flex-wrap gap-2" style={{ marginBottom: 20 }}>
+        <h2
+          style={{
+            fontFamily: "Exo 2, sans-serif",
+            fontWeight: 800,
+            color: "#0affe0",
+            fontSize: "1.3rem",
+          }}
+        >
+          Ajouter un échange
+        </h2>
+        {addedCount > 0 && (
+          <span
+            className="animate-fade-in-up"
+            style={{
+              background: "rgba(10,255,224,0.12)",
+              border: "1px solid rgba(10,255,224,0.35)",
+              borderRadius: 999,
+              padding: "3px 12px",
+              fontSize: "0.75rem",
+              fontWeight: 800,
+              color: "#0affe0",
+              fontFamily: "Exo 2, sans-serif",
+            }}
+          >
+            ✓ {addedCount} ajouté{addedCount > 1 ? "s" : ""}
+          </span>
+        )}
+      </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Category */}
@@ -731,6 +773,7 @@ function AddEntryModal({
             )}
             <div style={{ flex: 1, position: "relative" }}>
               <input
+                ref={pokeInputRef}
                 type="text"
                 value={pokeSearch}
                 onChange={(e) => {
@@ -742,6 +785,7 @@ function AddEntryModal({
                 className="glass-input"
                 placeholder="Chercher un Pokémon..."
                 autoComplete="off"
+                autoFocus
               />
               {showPokeSuggestions && pokeSuggestions.length > 0 && (
                 <SuggestionDropdown
@@ -887,12 +931,17 @@ function AddEntryModal({
 
         <div className="flex gap-2 justify-end mt-2">
           <button type="button" onClick={onClose} className="btn-secondary">
-            Annuler
+            {addedCount > 0 ? "Terminé" : "Annuler"}
           </button>
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? "Ajout…" : "✓ Ajouter"}
           </button>
         </div>
+        {addedCount > 0 && (
+          <p style={{ textAlign: "center", fontSize: "0.75rem", color: "rgba(232,237,245,0.35)", margin: 0 }}>
+            Continue à chercher pour enchaîner les ajouts, ou clique sur « Terminé ».
+          </p>
+        )}
       </form>
     </ModalOverlay>
   );
