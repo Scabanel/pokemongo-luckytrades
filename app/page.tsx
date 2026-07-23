@@ -78,7 +78,7 @@ export default function LandingPage() {
           <a href="/admin" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.95rem", padding: "12px 28px" }}>
             Se connecter / S&apos;inscrire
           </a>
-          <a href="/catalogue" className="btn-secondary" style={{ textDecoration: "none", fontSize: "0.95rem", padding: "12px 28px" }}>
+          <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none", fontSize: "0.95rem", padding: "12px 28px" }}>
             Voir les listes des dresseurs
           </a>
         </div>

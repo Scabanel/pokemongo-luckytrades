@@ -315,8 +315,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           </p>
         </div>
         <div className="flex gap-3 flex-wrap">
-          <a href="/catalogue" className="btn-secondary" style={{ textDecoration: "none" }}>
-            ← Catalogue
+          <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none" }}>
+            ← Dresseurs
           </a>
           <button
             onClick={() => setShowAddForm(true)}

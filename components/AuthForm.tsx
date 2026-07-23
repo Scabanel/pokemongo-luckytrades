@@ -280,8 +280,8 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
         )}
 
         <div className="text-center mt-6">
-          <a href="/catalogue" style={{ color: "rgba(232,237,245,0.3)", fontSize: "0.75rem" }}>
-            ← Retour au catalogue
+          <a href="/dresseurs" style={{ color: "rgba(232,237,245,0.3)", fontSize: "0.75rem" }}>
+            ← Voir les dresseurs
           </a>
         </div>
       </div>

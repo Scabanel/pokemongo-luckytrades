@@ -2,6 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentTrainer } from "@/lib/auth";
 
+// Public, comme GET /api/trainers : alimente la page de profil d'un dresseur.
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+
+  const trainer = await prisma.trainer.findUnique({ where: { id } });
+  if (!trainer) {
+    return NextResponse.json({ error: "Dresseur introuvable" }, { status: 404 });
+  }
+
+  return NextResponse.json(trainer);
+}
+
 // Filet de rattrapage admin : délier ou réassigner un authUserId en cas de
 // rattachement erroné à l'inscription (voir app/api/auth/signup/route.ts).
 export async function PATCH(

@@ -137,11 +137,14 @@ Deux mécanismes complémentaires :
 
 ## Structure
 
-- `app/page.tsx` — landing (explication du site, boutons connexion/inscription et catalogue)
-- `app/catalogue/page.tsx` — catalogue public (3 onglets : miroir / recherche / donne, + onglet "pas encore sortis")
+- `app/page.tsx` — landing (explication du site, boutons connexion/inscription et dresseurs)
+- `app/dresseurs/page.tsx` — annuaire public de tous les dresseurs inscrits
+- `app/dresseurs/[id]/page.tsx` — liste publique d'un dresseur (miroir / recherche / donne)
+- `app/pas-encore-sortis/page.tsx` — Pokémon/formes/shiny pas encore sortis dans GO
+- `components/SiteNav.tsx` — navigation partagée entre ces pages publiques
 - `app/admin/` — interface de gestion (auth Supabase, voir `lib/auth.ts` et `components/AuthForm.tsx`)
 - `components/AdminPanel.tsx` — CRUD des échanges et dresseurs, filtré selon le compte connecté
-- `components/PokemonCard.tsx` — carte affichée sur le catalogue public
+- `components/PokemonCard.tsx` — carte affichée sur les pages publiques
 - `lib/types.ts` — types partagés (`Trainer`, `PokemonEntry`)
 - `lib/categories.ts` — source unique couleur/icône/glow par catégorie
 - `prisma/schema.prisma` — modèle de données (`Trainer`, `PokemonEntry`)
