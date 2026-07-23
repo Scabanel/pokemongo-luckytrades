@@ -12,6 +12,9 @@ datasource db {
 model Trainer {
   id         String         @id @default(uuid())
   name       String         @unique
+  authUserId String?        @unique
+  team       String?
+  level      Int?
   createdAt  DateTime       @default(now())
   entries    PokemonEntry[]
 }
