@@ -19,8 +19,8 @@ export async function PATCH(request: NextRequest) {
   }
 
   const parsedLevel = level != null ? Number(level) : null;
-  if (parsedLevel !== null && (!Number.isInteger(parsedLevel) || parsedLevel < 1 || parsedLevel > 50)) {
-    return NextResponse.json({ error: "Niveau invalide (1-50)" }, { status: 400 });
+  if (parsedLevel !== null && (!Number.isInteger(parsedLevel) || parsedLevel < 1 || parsedLevel > 80)) {
+    return NextResponse.json({ error: "Niveau invalide (1-80)" }, { status: 400 });
   }
 
   const updated = await prisma.trainer.update({

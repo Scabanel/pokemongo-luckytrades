@@ -69,7 +69,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
       });
       const data = await res.json();
       if (res.ok) {
-        setInfo("Compte créé ! Vérifie tes emails pour confirmer ton adresse avant de te connecter.");
+        setInfo("Compte créé ! Tu peux te connecter directement.");
         setMode("login");
       } else {
         setError(data.error ?? "Erreur lors de l'inscription");
@@ -212,24 +212,25 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               />
             </div>
             <div>
-              <label style={labelStyle}>ÉQUIPE (OPTIONNEL)</label>
-              <select value={team} onChange={(e) => setTeam(e.target.value)} className="glass-input">
-                <option value="">— Aucune —</option>
+              <label style={labelStyle}>ÉQUIPE</label>
+              <select value={team} onChange={(e) => setTeam(e.target.value)} className="glass-input" required>
+                <option value="" disabled>— Choisis ton équipe —</option>
                 <option value="instinct">⚡ Instinct</option>
                 <option value="mystic">💧 Mystic</option>
                 <option value="valor">🔥 Valor</option>
               </select>
             </div>
             <div>
-              <label style={labelStyle}>NIVEAU (OPTIONNEL)</label>
+              <label style={labelStyle}>NIVEAU</label>
               <input
                 type="number"
                 value={level}
                 onChange={(e) => setLevel(e.target.value)}
                 className="glass-input"
-                placeholder="1-50"
+                placeholder="1-80"
                 min={1}
-                max={50}
+                max={80}
+                required
               />
             </div>
             <Messages error={error} info={info} />

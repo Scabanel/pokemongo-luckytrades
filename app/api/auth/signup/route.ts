@@ -7,20 +7,20 @@ const TEAMS = ["instinct", "mystic", "valor"];
 export async function POST(request: NextRequest) {
   const { email, password, displayName, team, level } = await request.json();
 
-  if (!email || !password || !displayName?.trim()) {
+  if (!email || !password || !displayName?.trim() || !team || level == null) {
     return NextResponse.json(
       { error: "Champs obligatoires manquants" },
       { status: 400 }
     );
   }
 
-  if (team !== undefined && team !== null && !TEAMS.includes(team)) {
+  if (!TEAMS.includes(team)) {
     return NextResponse.json({ error: "Équipe invalide" }, { status: 400 });
   }
 
-  const parsedLevel = level != null ? Number(level) : null;
-  if (parsedLevel !== null && (!Number.isInteger(parsedLevel) || parsedLevel < 1 || parsedLevel > 50)) {
-    return NextResponse.json({ error: "Niveau invalide (1-50)" }, { status: 400 });
+  const parsedLevel = Number(level);
+  if (!Number.isInteger(parsedLevel) || parsedLevel < 1 || parsedLevel > 80) {
+    return NextResponse.json({ error: "Niveau invalide (1-80)" }, { status: 400 });
   }
 
   const normalizedName = displayName.trim();
