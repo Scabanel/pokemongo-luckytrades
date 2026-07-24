@@ -52,6 +52,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [pokeOptions, setPokeOptions] = useState<PokeOption[]>([]);
   const [me, setMe] = useState<{ trainer: Trainer | null; isAdmin: boolean }>({ trainer: null, isAdmin: false });
   const [activeTab, setActiveTab] = useState<"entries" | "all" | "trainers" | "account">("entries");
+  const [activeCategory, setActiveCategory] = useState<EntryCategory>("mirror");
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState<PokemonEntry | null>(null);
   const [loadingEntries, setLoadingEntries] = useState(true);
@@ -310,96 +311,161 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const listMirrors = (isAllTab ? mirrors : myMirrors).filter((e) => matchesEntryFilters(e, search, filters));
   const anyFilterActive = search.trim() !== "" || Object.values(filters).some(Boolean);
 
+  // Une seule catégorie visible à la fois (mirror/want/give), comme sur la
+  // page publique d'un dresseur : plus lisible qu'empiler les 3 sections.
+  const listByCategory: Record<EntryCategory, PokemonEntry[]> = { mirror: listMirrors, want: listWants, give: listGives };
+  const countByCategory: Record<EntryCategory, number> = {
+    mirror: (isAllTab ? mirrors : myMirrors).length,
+    want: (isAllTab ? wants : myWants).length,
+    give: (isAllTab ? gives : myGives).length,
+  };
+  const activeCategoryColor = CATEGORIES[activeCategory].color;
+
   return (
     <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
-      {/* Header */}
-      <header className="flex items-center justify-between mb-8 flex-wrap gap-4">
-        <div>
-          <h1
-            className="neon-text"
-            style={{
-              fontFamily: "Exo 2, sans-serif",
-              fontSize: "1.8rem",
-              fontWeight: 800,
-              color: "#0affe0",
-            }}
-          >
-            {isAllTab ? "Tous les dresseurs" : "Mon espace"}
-          </h1>
-          <p style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.85rem" }}>
-            {isAllTab ? "Vue globale admin, tous les échanges" : "Gère ta liste d'échanges"}
-          </p>
+      {/* Barre d'outils admin : onglets de section + actions de compte.
+          Volontairement discrète (petits boutons compacts) pour laisser la
+          place à l'en-tête façon page publique juste en dessous. */}
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+        <div className="flex gap-2 flex-wrap">
+          {(["entries", ...(isAdmin ? (["all", "trainers"] as const) : []), "account"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                padding: "7px 16px",
+                borderRadius: 10,
+                fontFamily: "Exo 2, sans-serif",
+                fontWeight: 600,
+                fontSize: "0.78rem",
+                cursor: "pointer",
+                border: "1px solid",
+                transition: "all 0.2s",
+                ...(activeTab === tab
+                  ? {
+                      background: "rgba(10,255,224,0.15)",
+                      borderColor: "rgba(10,255,224,0.4)",
+                      color: "#0affe0",
+                    }
+                  : {
+                      background: "rgba(255,255,255,0.04)",
+                      borderColor: "rgba(255,255,255,0.1)",
+                      color: "#b0bac8",
+                    }),
+              }}
+            >
+              {tab === "entries"
+              ? `Mes échanges (${myMirrors.length + myWants.length + myGives.length})`
+              : tab === "all"
+              ? `Tous les dresseurs (${entries.length})`
+              : tab === "trainers"
+              ? `Dresseurs (${trainers.length})`
+              : "Mon compte"}
+            </button>
+          ))}
         </div>
-        <div className="flex gap-3 flex-wrap">
-          <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none" }}>
+        <div className="flex gap-2 flex-wrap">
+          <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "7px 14px" }}>
             Dresseurs
           </a>
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="btn-primary"
-          >
+          <button onClick={() => setShowAddForm(true)} className="btn-primary" style={{ fontSize: "0.8rem", padding: "7px 14px" }}>
             + Ajouter un échange
           </button>
           <button
             onClick={handleExport}
             style={{
-              padding: "8px 16px", borderRadius: 12, cursor: "pointer",
+              padding: "7px 14px", borderRadius: 12, cursor: "pointer",
               background: "rgba(100,180,255,0.08)", border: "1px solid rgba(100,180,255,0.25)",
-              color: "#64b4ff", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem",
+              color: "#64b4ff", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
             }}
           >
             Export JSON
           </button>
-          <button onClick={handleLogout} className="btn-danger">
+          <button onClick={handleLogout} className="btn-danger" style={{ fontSize: "0.8rem", padding: "7px 14px" }}>
             Déconnexion
           </button>
         </div>
-      </header>
-
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6">
-        {(["entries", ...(isAdmin ? (["all", "trainers"] as const) : []), "account"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            style={{
-              padding: "8px 20px",
-              borderRadius: 12,
-              fontFamily: "Exo 2, sans-serif",
-              fontWeight: 600,
-              fontSize: "0.85rem",
-              cursor: "pointer",
-              border: "1px solid",
-              transition: "all 0.2s",
-              ...(activeTab === tab
-                ? {
-                    background: "rgba(10,255,224,0.15)",
-                    borderColor: "rgba(10,255,224,0.4)",
-                    color: "#0affe0",
-                  }
-                : {
-                    background: "rgba(255,255,255,0.04)",
-                    borderColor: "rgba(255,255,255,0.1)",
-                    color: "#b0bac8",
-                  }),
-            }}
-          >
-            {tab === "entries"
-            ? `Mes échanges (${myMirrors.length + myWants.length + myGives.length})`
-            : tab === "all"
-            ? `Tous les dresseurs (${entries.length})`
-            : tab === "trainers"
-            ? `Dresseurs (${trainers.length})`
-            : "Mon compte"}
-          </button>
-        ))}
       </div>
 
-      {/* Entries tab (mes échanges / vue globale admin) */}
+      {/* Entries tab (mes échanges / vue globale admin) : en-tête et disposition
+          reprennent la page publique d'un dresseur (app/dresseurs/[id]) pour
+          que "Mon espace" ressemble à ce que voit n'importe quel visiteur. */}
       {(activeTab === "entries" || activeTab === "all") && (
-        <div className="space-y-8">
+        <>
+          <header className="text-center mb-8">
+            <h1
+              style={{
+                fontFamily: "Exo 2, sans-serif",
+                fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
+                fontWeight: 900,
+                color: "#ffd700",
+                textTransform: "uppercase",
+                textShadow: "0 0 20px rgba(255,215,0,0.4)",
+              }}
+            >
+              {isAllTab ? "Tous les dresseurs" : me.trainer?.name ?? "Mon espace"}
+            </h1>
+            <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 4 }}>
+              {isAllTab
+                ? "Vue globale admin, tous les échanges"
+                : me.trainer?.team
+                ? `${me.trainer.team.charAt(0).toUpperCase() + me.trainer.team.slice(1)} · Niveau ${me.trainer.level ?? "?"}`
+                : "Gère ta liste d'échanges"}
+            </p>
+          </header>
+
+          <div className="flex gap-2 mb-5 flex-wrap justify-center">
+            {CATEGORY_DISPLAY_ORDER.map((key) => (
+              <button
+                key={key}
+                onClick={() => { setActiveCategory(key); clearSelection(); }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "9px 20px",
+                  borderRadius: 6,
+                  fontFamily: "Exo 2, sans-serif",
+                  fontWeight: 800,
+                  fontSize: "0.82rem",
+                  letterSpacing: "0.05em",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                  border: "1px solid",
+                  transition: "all 0.12s",
+                  ...(activeCategory === key
+                    ? {
+                        background: `${CATEGORIES[key].color}15`,
+                        borderColor: `${CATEGORIES[key].color}55`,
+                        color: CATEGORIES[key].color,
+                      }
+                    : {
+                        background: "rgba(255,255,255,0.03)",
+                        borderColor: "rgba(255,255,255,0.07)",
+                        color: "rgba(232,237,245,0.38)",
+                      }),
+                }}
+              >
+                <span>{CATEGORIES[key].label}</span>
+                <span
+                  style={{
+                    background: activeCategory === key ? `${CATEGORIES[key].color}18` : "rgba(255,255,255,0.05)",
+                    border: `1px solid ${activeCategory === key ? `${CATEGORIES[key].color}38` : "rgba(255,255,255,0.08)"}`,
+                    borderRadius: 4,
+                    padding: "1px 7px",
+                    fontSize: "0.72rem",
+                    fontWeight: 800,
+                    color: activeCategory === key ? CATEGORIES[key].color : "rgba(232,237,245,0.3)",
+                  }}
+                >
+                  {loadingEntries ? "…" : countByCategory[key]}
+                </span>
+              </button>
+            ))}
+          </div>
+
           {!loadingEntries && (
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2 mb-5 justify-center">
               <input
                 type="text"
                 value={search}
@@ -423,7 +489,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                     transition: "all 0.12s",
                     ...(filters[key]
                       ? { background: "rgba(10,255,224,0.15)", borderColor: "rgba(10,255,224,0.4)", color: "#0affe0" }
-                      : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                      : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "rgba(232,237,245,0.5)" }),
                   }}
                 >
                   {label}
@@ -440,9 +506,10 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               )}
             </div>
           )}
+
           {selectedIds.size > 0 && (
             <div
-              className="flex items-center gap-3 flex-wrap p-3"
+              className="flex items-center gap-3 flex-wrap p-3 mb-5"
               style={{
                 background: "rgba(10,255,224,0.06)",
                 border: "1px solid rgba(10,255,224,0.25)",
@@ -478,16 +545,19 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             </div>
           )}
 
-          {CATEGORY_DISPLAY_ORDER.map((key) => ({
-            title: CATEGORIES[key].label,
-            color: CATEGORIES[key].color,
-            list: { mirror: listMirrors, want: listWants, give: listGives }[key],
-          })).map(({ title, color, list }) => (
+          <div
+            style={{
+              background: "rgba(8,11,20,0.5)",
+              backdropFilter: "blur(10px)",
+              border: `1px solid ${activeCategoryColor}18`,
+              borderTop: `2px solid ${activeCategoryColor}`,
+              borderRadius: 10,
+              padding: 20,
+              minHeight: 300,
+            }}
+          >
             <EntrySection
-              key={title}
-              title={title}
-              color={color}
-              entries={list}
+              entries={listByCategory[activeCategory]}
               loading={loadingEntries}
               showTrainerBadge={isAllTab}
               selectedIds={selectedIds}
@@ -499,8 +569,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               onEdit={setEditingEntry}
               canEditEntry={canEditEntry}
             />
-          ))}
-        </div>
+          </div>
+        </>
       )}
 
       {/* Trainers tab */}
@@ -722,8 +792,6 @@ function MyAccountPanel({
 }
 
 function EntrySection({
-  title,
-  color,
   entries,
   loading,
   showTrainerBadge,
@@ -736,8 +804,6 @@ function EntrySection({
   onEdit,
   canEditEntry,
 }: {
-  title: string;
-  color: string;
   entries: PokemonEntry[];
   loading: boolean;
   showTrainerBadge: boolean;
@@ -756,25 +822,20 @@ function EntrySection({
 
   return (
     <div>
-      <div className="flex items-center gap-2 mb-3">
-        {ids.length > 0 && (
+      {/* Le nom + le compte de la catégorie active sont déjà affichés dans
+          l'onglet de catégorie au-dessus : ici uniquement la sélection groupée. */}
+      {ids.length > 0 && (
+        <div className="flex items-center gap-2 mb-3">
           <SelectAllCheckbox
             checked={allSelected}
             indeterminate={someSelected}
             onChange={() => onToggleSelectAll(ids)}
           />
-        )}
-        <h2
-          style={{
-            fontFamily: "Exo 2, sans-serif",
-            fontWeight: 700,
-            color,
-            fontSize: "1.1rem",
-          }}
-        >
-          {title} ({entries.length})
-        </h2>
-      </div>
+          <span style={{ fontFamily: "Exo 2, sans-serif", fontSize: "0.78rem", color: "rgba(232,237,245,0.4)" }}>
+            Tout sélectionner
+          </span>
+        </div>
+      )}
 
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">

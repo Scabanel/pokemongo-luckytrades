@@ -240,7 +240,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
               {visibleEntries.map((entry, i) => (
-                <PokemonCard key={entry.id} entry={entry} style={{ animationDelay: `${i * 0.04}s` }} />
+                <PokemonCard key={entry.id} entry={entry} showTrainerBadge={false} style={{ animationDelay: `${i * 0.04}s` }} />
               ))}
             </div>
           )}
