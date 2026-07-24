@@ -12,12 +12,7 @@ import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
 
 function sortEntries(entries: PokemonEntry[]): PokemonEntry[] {
-  return [...entries].sort((a, b) => {
-    const pa = a.priority ?? 9999;
-    const pb = b.priority ?? 9999;
-    if (pa !== pb) return pa - pb;
-    return a.pokemonId - b.pokemonId;
-  });
+  return [...entries].sort((a, b) => a.pokemonId - b.pokemonId);
 }
 
 // Le nom du dresseur remplace le "je" générique de lib/categories.ts sur
