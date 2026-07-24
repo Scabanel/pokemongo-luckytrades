@@ -34,6 +34,19 @@ model MissingPokemonExclusion {
   @@unique([category, pokemonId])
 }
 
+// Pokémon ajoutés à la main par l'admin à une section de la même page
+// (symétrique de MissingPokemonExclusion ci-dessus) - ex : une espèce que les
+// données de jeu (data/go-icons.json) donnent à tort comme présente. Le nom
+// se résout depuis data/pokemon.json via pokemonId, pas besoin de le stocker.
+model MissingPokemonInclusion {
+  id        String   @id @default(uuid())
+  category  String   // "missingEntirely" | "missingShiny" | "missingGigantamax" | "missingMega"
+  pokemonId Int
+  createdAt DateTime @default(now())
+
+  @@unique([category, pokemonId])
+}
+
 model PokemonEntry {
   id                  String   @id @default(uuid())
   pokemonName         String
