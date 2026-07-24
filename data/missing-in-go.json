@@ -1,270 +1,4 @@
 {
-  "missingEntirely": [
-    {
-      "id": 1002,
-      "name": "Baojian"
-    },
-    {
-      "id": 875,
-      "name": "Bekaglaçon"
-    },
-    {
-      "id": 954,
-      "name": "Bérasca"
-    },
-    {
-      "id": 896,
-      "name": "Blizzeval"
-    },
-    {
-      "id": 878,
-      "name": "Charibari"
-    },
-    {
-      "id": 869,
-      "name": "Charmilly"
-    },
-    {
-      "id": 1023,
-      "name": "Chef-de-Fer"
-    },
-    {
-      "id": 1001,
-      "name": "Chongjian"
-    },
-    {
-      "id": 868,
-      "name": "Crèmy"
-    },
-    {
-      "id": 976,
-      "name": "Délestin"
-    },
-    {
-      "id": 1003,
-      "name": "Dinglu"
-    },
-    {
-      "id": 963,
-      "name": "Dofin"
-    },
-    {
-      "id": 943,
-      "name": "Dogrino"
-    },
-    {
-      "id": 995,
-      "name": "Épine-de-Fer"
-    },
-    {
-      "id": 981,
-      "name": "Farigiraf"
-    },
-    {
-      "id": 1016,
-      "name": "Favianos"
-    },
-    {
-      "id": 1014,
-      "name": "Félicanis"
-    },
-    {
-      "id": 1020,
-      "name": "Feu-Perçant"
-    },
-    {
-      "id": 987,
-      "name": "Flotte-Mèche"
-    },
-    {
-      "id": 986,
-      "name": "Fongus-Furie"
-    },
-    {
-      "id": 984,
-      "name": "Fort-Ivoire"
-    },
-    {
-      "id": 1015,
-      "name": "Fortusimia"
-    },
-    {
-      "id": 881,
-      "name": "Galvagla"
-    },
-    {
-      "id": 880,
-      "name": "Galvagon"
-    },
-    {
-      "id": 1006,
-      "name": "Garde-de-Fer"
-    },
-    {
-      "id": 942,
-      "name": "Grondogue"
-    },
-    {
-      "id": 991,
-      "name": "Hotte-de-Fer"
-    },
-    {
-      "id": 985,
-      "name": "Hurle-Queue"
-    },
-    {
-      "id": 883,
-      "name": "Hydragla"
-    },
-    {
-      "id": 882,
-      "name": "Hydragon"
-    },
-    {
-      "id": 1021,
-      "name": "Ire-Foudre"
-    },
-    {
-      "id": 833,
-      "name": "Khélocrok"
-    },
-    {
-      "id": 1007,
-      "name": "Koraidon"
-    },
-    {
-      "id": 953,
-      "name": "Léboulérou"
-    },
-    {
-      "id": 801,
-      "name": "Magearna"
-    },
-    {
-      "id": 774,
-      "name": "Météno"
-    },
-    {
-      "id": 1008,
-      "name": "Miraidon"
-    },
-    {
-      "id": 994,
-      "name": "Mite-de-Fer"
-    },
-    {
-      "id": 967,
-      "name": "Motorizard"
-    },
-    {
-      "id": 1017,
-      "name": "Ogerpon"
-    },
-    {
-      "id": 879,
-      "name": "Pachyradjah"
-    },
-    {
-      "id": 902,
-      "name": "Paragruel"
-    },
-    {
-      "id": 992,
-      "name": "Paume-de-Fer"
-    },
-    {
-      "id": 1025,
-      "name": "Pêchaminus"
-    },
-    {
-      "id": 989,
-      "name": "Pelage-Sablé"
-    },
-    {
-      "id": 951,
-      "name": "Pimito"
-    },
-    {
-      "id": 1018,
-      "name": "Pondralugon"
-    },
-    {
-      "id": 988,
-      "name": "Rampe-Ailes"
-    },
-    {
-      "id": 1022,
-      "name": "Roc-de-Fer"
-    },
-    {
-      "id": 990,
-      "name": "Roue-de-Fer"
-    },
-    {
-      "id": 1005,
-      "name": "Rugit-Lune"
-    },
-    {
-      "id": 952,
-      "name": "Scovilain"
-    },
-    {
-      "id": 1009,
-      "name": "Serpente-Eau"
-    },
-    {
-      "id": 773,
-      "name": "Silvallié"
-    },
-    {
-      "id": 897,
-      "name": "Spectreval"
-    },
-    {
-      "id": 964,
-      "name": "Superdofin"
-    },
-    {
-      "id": 898,
-      "name": "Sylveroy"
-    },
-    {
-      "id": 1024,
-      "name": "Terapagos"
-    },
-    {
-      "id": 993,
-      "name": "Têtes-de-Fer"
-    },
-    {
-      "id": 834,
-      "name": "Torgamord"
-    },
-    {
-      "id": 772,
-      "name": "Type:0"
-    },
-    {
-      "id": 1010,
-      "name": "Vert-de-Fer"
-    },
-    {
-      "id": 947,
-      "name": "Virevorreur"
-    },
-    {
-      "id": 946,
-      "name": "Virovent"
-    },
-    {
-      "id": 871,
-      "name": "Wattapik"
-    },
-    {
-      "id": 1004,
-      "name": "Yuyu"
-    }
-  ],
   "missingShiny": [
     {
       "id": 905,
@@ -315,66 +49,618 @@
       "name": "Zarude"
     }
   ],
-  "missingGigantamax": [
+  "missingEntirely": [
     {
-      "id": 826,
-      "name": "Astronelle"
+      "id": 905,
+      "name": "Amovénus Forme Totémique"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Acier"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Combat"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Dragon"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Eau"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Électrik"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Fée"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Feu"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Glace"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Insecte"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Normal"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Plante"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Poison"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Psy"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Roche"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Sol"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Spectre"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Ténèbres"
+    },
+    {
+      "id": 493,
+      "name": "Arceus Vol"
+    },
+    {
+      "id": 1002,
+      "name": "Baojian"
+    },
+    {
+      "id": 875,
+      "name": "Bekaglaçon"
+    },
+    {
+      "id": 954,
+      "name": "Bérasca"
+    },
+    {
+      "id": 896,
+      "name": "Blizzeval"
+    },
+    {
+      "id": 878,
+      "name": "Charibari"
     },
     {
       "id": 869,
       "name": "Charmilly"
     },
     {
-      "id": 823,
-      "name": "Corvaillus"
+      "id": 1023,
+      "name": "Chef-de-Fer"
     },
     {
-      "id": 842,
-      "name": "Dratatin"
+      "id": 1001,
+      "name": "Chongjian"
     },
     {
-      "id": 844,
-      "name": "Dunaconda"
+      "id": 705,
+      "name": "Colimucus de Hisui"
     },
     {
-      "id": 884,
-      "name": "Duralugon"
+      "id": 771,
+      "name": "Concombaffe"
     },
     {
-      "id": 133,
-      "name": "Évoli"
+      "id": 868,
+      "name": "Crèmy"
     },
     {
-      "id": 809,
-      "name": "Melmetal"
+      "id": 555,
+      "name": "Darumacho"
     },
     {
-      "id": 839,
-      "name": "Monthracite"
+      "id": 555,
+      "name": "Darumacho de Galar Mode Transe"
+    },
+    {
+      "id": 976,
+      "name": "Délestin"
+    },
+    {
+      "id": 1003,
+      "name": "Dinglu"
+    },
+    {
+      "id": 963,
+      "name": "Dofin"
+    },
+    {
+      "id": 943,
+      "name": "Dogrino"
+    },
+    {
+      "id": 846,
+      "name": "Embrochet"
+    },
+    {
+      "id": 995,
+      "name": "Épine-de-Fer"
+    },
+    {
+      "id": 981,
+      "name": "Farigiraf"
+    },
+    {
+      "id": 1016,
+      "name": "Favianos"
+    },
+    {
+      "id": 1014,
+      "name": "Félicanis"
+    },
+    {
+      "id": 1020,
+      "name": "Feu-Perçant"
+    },
+    {
+      "id": 987,
+      "name": "Flotte-Mèche"
+    },
+    {
+      "id": 986,
+      "name": "Fongus-Furie"
+    },
+    {
+      "id": 984,
+      "name": "Fort-Ivoire"
+    },
+    {
+      "id": 1015,
+      "name": "Fortusimia"
+    },
+    {
+      "id": 746,
+      "name": "Froussardine Forme Banc"
+    },
+    {
+      "id": 746,
+      "name": "Froussardine Forme Solitaire"
+    },
+    {
+      "id": 881,
+      "name": "Galvagla"
+    },
+    {
+      "id": 880,
+      "name": "Galvagon"
+    },
+    {
+      "id": 1006,
+      "name": "Garde-de-Fer"
+    },
+    {
+      "id": 942,
+      "name": "Grondogue"
+    },
+    {
+      "id": 847,
+      "name": "Hastacuda"
+    },
+    {
+      "id": 991,
+      "name": "Hotte-de-Fer"
+    },
+    {
+      "id": 985,
+      "name": "Hurle-Queue"
+    },
+    {
+      "id": 883,
+      "name": "Hydragla"
+    },
+    {
+      "id": 882,
+      "name": "Hydragon"
+    },
+    {
+      "id": 1021,
+      "name": "Ire-Foudre"
+    },
+    {
+      "id": 833,
+      "name": "Khélocrok"
+    },
+    {
+      "id": 1007,
+      "name": "Koraidon"
+    },
+    {
+      "id": 953,
+      "name": "Léboulérou"
+    },
+    {
+      "id": 801,
+      "name": "Magearna"
+    },
+    {
+      "id": 490,
+      "name": "Manaphy"
+    },
+    {
+      "id": 648,
+      "name": "Meloetta Forme Danse"
+    },
+    {
+      "id": 774,
+      "name": "Météno Forme Météore"
+    },
+    {
+      "id": 774,
+      "name": "Météno Forme Noyau (Bleu)"
+    },
+    {
+      "id": 774,
+      "name": "Météno Forme Noyau (Indigo)"
+    },
+    {
+      "id": 774,
+      "name": "Météno Forme Noyau (Jaune)"
+    },
+    {
+      "id": 774,
+      "name": "Météno Forme Noyau (Orange)"
+    },
+    {
+      "id": 774,
+      "name": "Météno Forme Noyau (Rouge)"
+    },
+    {
+      "id": 774,
+      "name": "Météno Forme Noyau (Vert)"
+    },
+    {
+      "id": 774,
+      "name": "Météno Forme Noyau (Violet)"
+    },
+    {
+      "id": 1008,
+      "name": "Miraidon"
+    },
+    {
+      "id": 994,
+      "name": "Mite-de-Fer"
+    },
+    {
+      "id": 999,
+      "name": "Mordudor Forme Coffre"
+    },
+    {
+      "id": 479,
+      "name": "Motisma Chaîne HI-FI"
+    },
+    {
+      "id": 967,
+      "name": "Motorizard"
+    },
+    {
+      "id": 706,
+      "name": "Muplodocus de Hisui"
+    },
+    {
+      "id": 845,
+      "name": "Nigosier"
+    },
+    {
+      "id": 1017,
+      "name": "Ogerpon Masque de la Pierre"
+    },
+    {
+      "id": 1017,
+      "name": "Ogerpon Masque du Fourneau"
+    },
+    {
+      "id": 1017,
+      "name": "Ogerpon Masque du Puits"
+    },
+    {
+      "id": 1017,
+      "name": "Ogerpon Masque Turquoise"
     },
     {
       "id": 879,
       "name": "Pachyradjah"
     },
     {
-      "id": 841,
-      "name": "Pomdrapi"
+      "id": 902,
+      "name": "Paragruel"
     },
     {
-      "id": 851,
-      "name": "Scolocendre"
+      "id": 992,
+      "name": "Paume-de-Fer"
     },
     {
-      "id": 892,
-      "name": "Shifours"
+      "id": 1025,
+      "name": "Pêchaminus"
     },
     {
-      "id": 858,
-      "name": "Sorcilence"
+      "id": 989,
+      "name": "Pelage-Sablé"
+    },
+    {
+      "id": 489,
+      "name": "Phione"
+    },
+    {
+      "id": 951,
+      "name": "Pimito"
+    },
+    {
+      "id": 666,
+      "name": "Prismillon Motif Poké Ball"
+    },
+    {
+      "id": 1018,
+      "name": "Qwilfish"
+    },
+    {
+      "id": 988,
+      "name": "Rampe-Ailes"
+    },
+    {
+      "id": 1022,
+      "name": "Roc-de-Fer"
+    },
+    {
+      "id": 990,
+      "name": "Roue-de-Fer"
+    },
+    {
+      "id": 1005,
+      "name": "Rugit-Lune"
+    },
+    {
+      "id": 952,
+      "name": "Scovilain"
+    },
+    {
+      "id": 1009,
+      "name": "Serpente-Eau"
+    },
+    {
+      "id": 773,
+      "name": "Silvallié"
+    },
+    {
+      "id": 897,
+      "name": "Spectreval"
+    },
+    {
+      "id": 964,
+      "name": "Superdofin"
+    },
+    {
+      "id": 898,
+      "name": "Sylveroy"
+    },
+    {
+      "id": 898,
+      "name": "Sylveroy, le Cavalier d’Effroi"
+    },
+    {
+      "id": 898,
+      "name": "Sylveroy, le Cavalier du Froid"
+    },
+    {
+      "id": 1024,
+      "name": "Terapagos Forme Normale"
+    },
+    {
+      "id": 1024,
+      "name": "Terapagos Forme Stellaire"
+    },
+    {
+      "id": 1024,
+      "name": "Terapagos Forme Téracristal"
+    },
+    {
+      "id": 993,
+      "name": "Têtes-de-Fer"
     },
     {
       "id": 834,
       "name": "Torgamord"
+    },
+    {
+      "id": 772,
+      "name": "type:0"
+    },
+    {
+      "id": 800,
+      "name": "Ultra-Necrozma"
+    },
+    {
+      "id": 901,
+      "name": "Ursaking Lune Vermeille"
+    },
+    {
+      "id": 1010,
+      "name": "Vert-de-Fer"
+    },
+    {
+      "id": 947,
+      "name": "Virevorreur"
+    },
+    {
+      "id": 946,
+      "name": "Virovent"
+    },
+    {
+      "id": 871,
+      "name": "Wattapik"
+    },
+    {
+      "id": 1004,
+      "name": "Yuyu"
+    }
+  ],
+  "missingGigantamax": [
+    {
+      "id": 826,
+      "name": "Astronelle Gigamax"
+    },
+    {
+      "id": 869,
+      "name": "Charmilly Gigamax"
+    },
+    {
+      "id": 823,
+      "name": "Corvaillus Gigamax"
+    },
+    {
+      "id": 842,
+      "name": "Dratatin Gigamax"
+    },
+    {
+      "id": 844,
+      "name": "Dunaconda Gigamax"
+    },
+    {
+      "id": 884,
+      "name": "Duralugon Gigamax"
+    },
+    {
+      "id": 133,
+      "name": "Évoli Gigamax"
+    },
+    {
+      "id": 809,
+      "name": "Melmetal Gigamax"
+    },
+    {
+      "id": 839,
+      "name": "Monthracite Gigamax"
+    },
+    {
+      "id": 879,
+      "name": "Pachyradjah Gigamax"
+    },
+    {
+      "id": 841,
+      "name": "Pomdrapi Gigamax"
+    },
+    {
+      "id": 851,
+      "name": "Scolocendre Gigamax"
+    },
+    {
+      "id": 858,
+      "name": "Sorcilence Gigamax"
+    },
+    {
+      "id": 834,
+      "name": "Torgamord Gigamax"
+    }
+  ],
+  "missingMega": [
+    {
+      "id": 160,
+      "name": "Méga-Aligatueur"
+    },
+    {
+      "id": 658,
+      "name": "Méga-Amphinobi"
+    },
+    {
+      "id": 560,
+      "name": "Méga-Baggaïd"
+    },
+    {
+      "id": 652,
+      "name": "Méga-Blindépique"
+    },
+    {
+      "id": 701,
+      "name": "Méga-Brutalibré"
+    },
+    {
+      "id": 545,
+      "name": "Méga-Brutapode"
+    },
+    {
+      "id": 780,
+      "name": "Méga-Draïeul"
+    },
+    {
+      "id": 670,
+      "name": "Méga-Floette"
+    },
+    {
+      "id": 689,
+      "name": "Méga-Golgopathe"
+    },
+    {
+      "id": 655,
+      "name": "Méga-Goupelin"
+    },
+    {
+      "id": 691,
+      "name": "Méga-Kravarech"
+    },
+    {
+      "id": 609,
+      "name": "Méga-Lugulabre"
+    },
+    {
+      "id": 154,
+      "name": "Méga-Méganium"
+    },
+    {
+      "id": 36,
+      "name": "Méga-Mélodelfe"
+    },
+    {
+      "id": 530,
+      "name": "Méga-Minotaupe"
+    },
+    {
+      "id": 478,
+      "name": "Méga-Momartik"
+    },
+    {
+      "id": 668,
+      "name": "Méga-Némélios"
+    },
+    {
+      "id": 604,
+      "name": "Méga-Ohmassacre"
+    },
+    {
+      "id": 500,
+      "name": "Méga-Roitiflam"
+    },
+    {
+      "id": 121,
+      "name": "Méga-Staross"
+    },
+    {
+      "id": 718,
+      "name": "Méga-Zygarde"
     }
   ]
 }

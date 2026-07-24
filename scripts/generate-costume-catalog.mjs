@@ -25,10 +25,11 @@ const OUT_PATH = path.join(__dirname, "..", "data", "costumes.json");
 // utilisé sur chaque carte du catalogue public — costumes.json (tous les
 // costumes historiques, ~700 Ko) ne doit être chargé que côté admin.
 const ICONS_OUT_PATH = path.join(__dirname, "..", "data", "go-icons.json");
-// Petit fichier pour l'onglet public "Pas encore sortis dans GO" : Pokémon
-// absents du jeu, sans shiny, ou sans Gigamax (liste figée ci-dessous — le
-// Gigamax a une liste d'espèces éligibles fixe dans les jeux principaux,
-// contrairement au Dynamax qui n'en a pas et n'est donc pas calculable ici).
+// Fichier pour la page publique "Pas encore sortis dans GO". Ce script ne
+// calcule ici que missingShiny (heuristique de sprite chromatique manquant) ;
+// missingEntirely/missingGigantamax/missingMega viennent de
+// scripts/generate-missing-pokemon.mjs (source margxt.fr), préservés lors de
+// l'écriture.
 const MISSING_OUT_PATH = path.join(__dirname, "..", "data", "missing-in-go.json");
 // Fonds d'événement (GO Fest villes, anniversaires, équipes...) — génériques,
 // pas liés à un Pokémon précis dans les données du jeu (contrairement aux
@@ -37,14 +38,6 @@ const MISSING_OUT_PATH = path.join(__dirname, "..", "data", "missing-in-go.json"
 const BACKGROUNDS_OUT_PATH = path.join(__dirname, "..", "data", "backgrounds.json");
 const BACKGROUNDS_PREFIX = "Images/LocationCards/";
 const BACKGROUNDS_RAW_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards";
-
-// Espèces pouvant Gigamax dans les jeux principaux (Épée/Bouclier + DLC),
-// retiré depuis Écarlate/Violet — liste fixe, ne changera plus.
-// Source : https://bulbapedia.bulbagarden.net/wiki/Gigantamax
-const GIGANTAMAX_ELIGIBLE_DEX_IDS = [
-  3, 6, 9, 12, 25, 52, 68, 94, 99, 131, 133, 143, 569, 809, 812, 815, 818, 823,
-  826, 834, 839, 841, 842, 844, 849, 851, 858, 861, 869, 879, 884, 892,
-];
 
 const TREE_URL = "https://api.github.com/repos/PokeMiners/pogo_assets/git/trees/master?recursive=1";
 const ASSET_PREFIX = "Images/Pokemon - 256x256/Addressable Assets/";
@@ -185,30 +178,28 @@ async function main() {
   const nameById = new Map(pokemonList.map((p) => [p.id, p.frenchName]));
   const withName = (id) => ({ id, name: nameById.get(id) ?? `#${id}` });
 
-  const missingEntirelyIds = [];
-  for (let id = 1; id <= 1025; id++) {
-    if (!icons[id]) missingEntirelyIds.push(id);
-  }
+  // missingEntirely/missingGigantamax/missingMega viennent de
+  // scripts/generate-missing-pokemon.mjs (source margxt.fr, plus fiable que
+  // cette heuristique de présence de costume) - on ne calcule ici que
+  // missingShiny et on préserve le reste du fichier tel quel.
   const missingShinyIds = Object.entries(icons)
     .filter(([, files]) => files.length === 1)
     .map(([id]) => Number(id));
-  const missingGigantamaxIds = GIGANTAMAX_ELIGIBLE_DEX_IDS.filter((id) => {
-    const list = catalog[id];
-    return !list || !list.some((e) => e.label.toLowerCase().includes("gigantamax"));
-  });
-
-  const missingEntirely = missingEntirelyIds.map(withName).sort((a, b) => a.name.localeCompare(b.name, "fr"));
   const missingShiny = missingShinyIds.map(withName).sort((a, b) => a.name.localeCompare(b.name, "fr"));
-  const missingGigantamax = missingGigantamaxIds.map(withName).sort((a, b) => a.name.localeCompare(b.name, "fr"));
+
+  let existingMissing = {};
+  try {
+    existingMissing = JSON.parse(await readFile(MISSING_OUT_PATH, "utf-8"));
+  } catch {
+    // Pas encore généré par generate-missing-pokemon.mjs, tant pis.
+  }
 
   await writeFile(
     MISSING_OUT_PATH,
-    JSON.stringify({ missingEntirely, missingShiny, missingGigantamax }, null, 2) + "\n",
+    JSON.stringify({ ...existingMissing, missingShiny }, null, 2) + "\n",
     "utf-8"
   );
-  console.log(
-    `✓ Pas encore sortis : ${missingEntirely.length} absents, ${missingShiny.length} sans shiny, ${missingGigantamax.length} sans Gigamax → ${path.relative(process.cwd(), MISSING_OUT_PATH)}`
-  );
+  console.log(`✓ ${missingShiny.length} sans shiny → ${path.relative(process.cwd(), MISSING_OUT_PATH)}`);
 
   const backgroundPaths = data.tree
     .map((t) => t.path)

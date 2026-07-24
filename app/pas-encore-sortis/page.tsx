@@ -24,7 +24,12 @@ const MISSING_SECTIONS: { key: keyof typeof missingInGo; title: string; hint: st
   {
     key: "missingGigantamax",
     title: "Sans Gigamax",
-    hint: "Espèce pouvant Gigamax dans les jeux principaux, mais pas encore dans GO. (Le Dynamax n'a pas de liste d'espèces éligibles fixe : impossible à calculer de la même façon.)",
+    hint: "Espèce pouvant Gigamax dans les jeux principaux, mais pas encore dans GO.",
+  },
+  {
+    key: "missingMega",
+    title: "Sans Méga-Évolution",
+    hint: "Méga-Évolution existante dans les jeux principaux, mais pas encore disponible dans GO.",
   },
 ];
 
