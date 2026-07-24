@@ -68,6 +68,17 @@ function getEventTheme(name: string, tags: string[]): {
 interface PokemonCardProps {
   entry: PokemonEntry;
   style?: React.CSSProperties;
+  // Props ci-dessous optionnelles : uniquement utilisées par la vue "Mon espace"
+  // (components/AdminPanel.tsx). Les pages publiques (catalogue d'un dresseur)
+  // n'en passent aucune et gardent une carte purement en lecture seule.
+  selectable?: boolean;
+  selected?: boolean;
+  onToggleSelect?: () => void;
+  canEdit?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  onComplete?: () => void;
+  onQuantityChange?: (delta: number) => void;
 }
 
 
@@ -86,9 +97,26 @@ function getPriorityStyle(priority: number): { bg: string; border: string; color
   return { bg: "rgba(100,180,255,0.15)", border: "#64b4ff", color: "#64b4ff", shadow: "none" };
 }
 
-export default function PokemonCard({ entry, style }: PokemonCardProps) {
+export default function PokemonCard({
+  entry,
+  style,
+  selectable,
+  selected,
+  onToggleSelect,
+  canEdit,
+  onEdit,
+  onDelete,
+  onComplete,
+  onQuantityChange,
+}: PokemonCardProps) {
   const [showDetail, setShowDetail] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const quantity = entry.quantity ?? 1;
+  const closeDetail = () => {
+    setShowDetail(false);
+    setConfirmDelete(false);
+  };
   const trainerColor = entry.trainer ? "#00dc64" : "#0affe0";
   const isMirror = entry.category === "mirror";
   const isShiny = entry.shiny === true || (entry.notes?.toLowerCase().includes("shiny") ?? false);
@@ -111,7 +139,7 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
         backdropFilter: "blur(12px)",
         zIndex: 300,
       }}
-      onClick={() => setShowDetail(false)}
+      onClick={closeDetail}
     >
       <div
         className="glass-card animate-scale-in flex flex-col items-center relative"
@@ -137,7 +165,7 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
       >
         {/* Close */}
         <button
-          onClick={() => setShowDetail(false)}
+          onClick={closeDetail}
           style={{
             position: "absolute", top: 12, right: 12,
             background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
@@ -305,6 +333,53 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
             </span>
           </div>
         )}
+
+        {/* Actions (Mon espace uniquement) */}
+        {canEdit && (
+          <div
+            className="w-full flex flex-col items-center gap-2 mt-4 pt-4"
+            style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
+          >
+            {confirmDelete ? (
+              <div className="flex items-center gap-2 flex-wrap justify-center">
+                <span style={{ fontSize: "0.8rem", color: "#ff6b6b" }}>Supprimer cette entrée ?</span>
+                <button onClick={() => onDelete?.()} className="btn-danger">Oui</button>
+                <button onClick={() => setConfirmDelete(false)} className="btn-secondary" style={{ padding: "6px 12px" }}>
+                  Non
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 flex-wrap justify-center">
+                <button
+                  onClick={() => (quantity > 1 ? onQuantityChange?.(-1) : onComplete?.())}
+                  className="btn-success"
+                >
+                  {quantity > 1 ? "✓ −1 (donné)" : "✓ Échangé"}
+                </button>
+                {quantity > 1 && (
+                  <button
+                    onClick={() => onQuantityChange?.(1)}
+                    className="btn-secondary"
+                    style={{ padding: "6px 10px", fontSize: "0.85rem", fontWeight: 800 }}
+                    title="Corriger : +1 exemplaire"
+                  >
+                    +1
+                  </button>
+                )}
+                <button
+                  onClick={() => { closeDetail(); onEdit?.(); }}
+                  className="btn-secondary"
+                  style={{ padding: "6px 12px", fontSize: "0.8rem" }}
+                >
+                  ✏️ Modifier
+                </button>
+                <button onClick={() => setConfirmDelete(true)} className="btn-danger">
+                  🗑️ Supprimer
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -336,6 +411,10 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
             borderColor: "rgba(0, 220, 100, 0.5)",
             boxShadow: "0 8px 32px rgba(0, 200, 80, 0.28), 0 0 0 1px rgba(0, 220, 100, 0.2), inset 0 1px 0 rgba(0, 220, 100, 0.06)",
           }),
+          ...(selected && {
+            borderColor: "rgba(10,255,224,0.6)",
+            boxShadow: "0 8px 32px rgba(10,255,224,0.25), 0 0 0 2px rgba(10,255,224,0.35)",
+          }),
           transition: "transform 0.15s, box-shadow 0.15s",
         }}
         onClick={() => setShowDetail(true)}
@@ -364,6 +443,29 @@ export default function PokemonCard({ entry, style }: PokemonCardProps) {
           >
             {entry.priority}
           </div>
+        )}
+
+        {/* Sélection multiple (Mon espace uniquement) */}
+        {selectable && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onToggleSelect?.(); }}
+            aria-label={selected ? `Désélectionner ${entry.pokemonName}` : `Sélectionner ${entry.pokemonName}`}
+            style={{
+              position: "absolute", top: -8, right: -8, zIndex: 10,
+              width: 26, height: 26, borderRadius: "50%",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "pointer",
+              background: selected ? "#0affe0" : "rgba(8,11,20,0.7)",
+              border: `2px solid ${selected ? "#0affe0" : "rgba(255,255,255,0.3)"}`,
+              color: selected ? "#0b0f1a" : "rgba(232,237,245,0.4)",
+              fontSize: "0.75rem",
+              fontWeight: 900,
+              boxShadow: selected ? "0 0 12px rgba(10,255,224,0.5)" : "none",
+              transition: "all 0.12s",
+            }}
+          >
+            {selected ? "✓" : ""}
+          </button>
         )}
 
         {/* Top-right badges */}

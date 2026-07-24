@@ -3,6 +3,8 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import toast from "react-hot-toast";
 import PokemonSprite from "./PokemonSprite";
+import PokemonCard from "./PokemonCard";
+import CardSkeleton from "./CardSkeleton";
 import pokemonList from "@/data/pokemon.json";
 import costumeCatalog from "@/data/costumes.json";
 import backgroundCatalog from "@/data/backgrounds.json";
@@ -52,7 +54,6 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState<"entries" | "all" | "trainers" | "account">("entries");
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState<PokemonEntry | null>(null);
-  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [loadingEntries, setLoadingEntries] = useState(true);
   const [newTrainerName, setNewTrainerName] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -126,7 +127,6 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const handleDelete = async (id: string) => {
     const prev = entries;
     setEntries((e) => e.filter((x) => x.id !== id));
-    setDeleteConfirm(null);
 
     try {
       const res = await fetch(`/api/entries/${id}`, { method: "DELETE" });
@@ -489,9 +489,6 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               color={color}
               entries={list}
               loading={loadingEntries}
-              trainers={trainers}
-              pokeOptions={pokeOptions}
-              deleteConfirm={deleteConfirm}
               selectedIds={selectedIds}
               onToggleSelect={toggleSelect}
               onToggleSelectAll={toggleSelectSection}
@@ -499,11 +496,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               onComplete={handleComplete}
               onQuantityChange={handleQuantityChange}
               onEdit={setEditingEntry}
-              onDeleteConfirmChange={setDeleteConfirm}
               canEditEntry={canEditEntry}
-              onUpdate={(updated) =>
-                setEntries((prev) => prev.map((e) => (e.id === updated.id ? updated : e)))
-              }
             />
           ))}
         </div>
@@ -732,35 +725,26 @@ function EntrySection({
   color,
   entries,
   loading,
-  trainers,
-  pokeOptions,
-  deleteConfirm,
+  selectedIds,
+  onToggleSelect,
+  onToggleSelectAll,
   onDelete,
   onComplete,
   onQuantityChange,
   onEdit,
-  onDeleteConfirmChange,
-  selectedIds,
-  onToggleSelect,
-  onToggleSelectAll,
   canEditEntry,
 }: {
   title: string;
   color: string;
   entries: PokemonEntry[];
   loading: boolean;
-  trainers: Trainer[];
-  pokeOptions: PokeOption[];
-  deleteConfirm: string | null;
+  selectedIds: Set<string>;
+  onToggleSelect: (id: string) => void;
+  onToggleSelectAll: (ids: string[]) => void;
   onDelete: (id: string) => void;
   onComplete: (entry: PokemonEntry) => void;
   onQuantityChange: (entry: PokemonEntry, delta: number) => void;
   onEdit: (entry: PokemonEntry) => void;
-  onDeleteConfirmChange: (id: string | null) => void;
-  onUpdate: (entry: PokemonEntry) => void;
-  selectedIds: Set<string>;
-  onToggleSelect: (id: string) => void;
-  onToggleSelectAll: (ids: string[]) => void;
   canEditEntry: (entry: PokemonEntry) => boolean;
 }) {
   const ids = entries.filter(canEditEntry).map((e) => e.id);
@@ -790,7 +774,9 @@ function EntrySection({
       </div>
 
       {loading ? (
-        <div className="skeleton" style={{ height: 80, borderRadius: 16 }} />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+          {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
+        </div>
       ) : entries.length === 0 ? (
         <div
           style={{
@@ -805,25 +791,24 @@ function EntrySection({
           Aucune entrée
         </div>
       ) : (
-        <div className="space-y-3">
-          {entries.map((entry) => (
-            <AdminEntryRow
-              key={entry.id}
-              entry={entry}
-              trainers={trainers}
-              color={color}
-              isDeleteConfirm={deleteConfirm === entry.id}
-              isSelected={selectedIds.has(entry.id)}
-              onDelete={() => onDelete(entry.id)}
-              onComplete={() => onComplete(entry)}
-              onQuantityChange={(delta) => onQuantityChange(entry, delta)}
-              onEdit={() => onEdit(entry)}
-              onDeleteConfirm={() => onDeleteConfirmChange(entry.id)}
-              onDeleteCancel={() => onDeleteConfirmChange(null)}
-              onToggleSelect={() => onToggleSelect(entry.id)}
-              canEdit={canEditEntry(entry)}
-            />
-          ))}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+          {entries.map((entry) => {
+            const editable = canEditEntry(entry);
+            return (
+              <PokemonCard
+                key={entry.id}
+                entry={entry}
+                selectable={editable}
+                selected={selectedIds.has(entry.id)}
+                onToggleSelect={() => onToggleSelect(entry.id)}
+                canEdit={editable}
+                onEdit={() => onEdit(entry)}
+                onDelete={() => onDelete(entry.id)}
+                onComplete={() => onComplete(entry)}
+                onQuantityChange={(delta) => onQuantityChange(entry, delta)}
+              />
+            );
+          })}
         </div>
       )}
     </div>
@@ -853,188 +838,6 @@ function SelectAllCheckbox({
       style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#0affe0" }}
       aria-label="Tout sélectionner"
     />
-  );
-}
-
-function AdminEntryRow({
-  entry,
-  trainers: _trainers,
-  color,
-  isDeleteConfirm,
-  isSelected,
-  onDelete,
-  onComplete,
-  onQuantityChange,
-  onEdit,
-  onDeleteConfirm,
-  onDeleteCancel,
-  onToggleSelect,
-  canEdit,
-}: {
-  entry: PokemonEntry;
-  trainers: Trainer[];
-  color: string;
-  isDeleteConfirm: boolean;
-  isSelected: boolean;
-  onDelete: () => void;
-  onComplete: () => void;
-  onQuantityChange: (delta: number) => void;
-  onEdit: () => void;
-  onDeleteConfirm: () => void;
-  onDeleteCancel: () => void;
-  onToggleSelect: () => void;
-  canEdit: boolean;
-}) {
-  const quantity = entry.quantity ?? 1;
-  return (
-    <div
-      className="flex items-center gap-4 p-5"
-      style={{
-        background: isSelected ? "rgba(10,255,224,0.05)" : "rgba(255,255,255,0.03)",
-        borderRadius: 16,
-        border: `1px solid ${isSelected ? "rgba(10,255,224,0.3)" : "rgba(255,255,255,0.07)"}`,
-        flexWrap: "wrap",
-        transition: "border-color 0.2s, background 0.2s",
-      }}
-    >
-      {/* Selection checkbox — masquée si le compte ne peut pas agir sur cette entrée */}
-      {canEdit && (
-        <input
-          type="checkbox"
-          checked={isSelected}
-          onChange={onToggleSelect}
-          style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#0affe0", flexShrink: 0 }}
-          aria-label={`Sélectionner ${entry.pokemonName}`}
-        />
-      )}
-
-      {/* Priority badge */}
-      {entry.priority != null && (
-        <div style={{
-          width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-          background: entry.priority === 1 ? "rgba(255,215,0,0.2)" : entry.priority === 2 ? "rgba(192,192,192,0.15)" : entry.priority === 3 ? "rgba(205,127,50,0.15)" : "rgba(100,180,255,0.12)",
-          border: `2px solid ${entry.priority === 1 ? "#ffd700" : entry.priority === 2 ? "#c0c0c0" : entry.priority === 3 ? "#cd7f32" : "#64b4ff"}`,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: "0.7rem", fontWeight: 800,
-          color: entry.priority === 1 ? "#ffd700" : entry.priority === 2 ? "#d4d4d4" : entry.priority === 3 ? "#e09850" : "#64b4ff",
-          fontFamily: "Exo 2, sans-serif",
-        }}>
-          {entry.priority}
-        </div>
-      )}
-
-      {/* Sprite (+ fond d'événement en arrière-plan si défini) */}
-      <div style={{
-        width: 60, height: 60, borderRadius: 12, flexShrink: 0,
-        display: "flex", alignItems: "center", justifyContent: "center",
-        ...(entry.backgroundUrl && {
-          backgroundImage: `url(${entry.backgroundUrl})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }),
-      }}>
-        <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={56} shiny={entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false)} customSpriteUrl={entry.customSpriteUrl} />
-      </div>
-
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span
-            style={{
-              fontFamily: "Exo 2, sans-serif",
-              fontWeight: 700,
-              textTransform: "capitalize",
-              fontSize: "1.05rem",
-              color: color,
-            }}
-          >
-            {entry.pokemonName}
-          </span>
-          {(entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false)) && (
-            <span style={{
-              background: "rgba(255,215,0,0.15)",
-              border: "1px solid rgba(255,215,0,0.5)",
-              borderRadius: 999,
-              padding: "1px 7px",
-              fontSize: "0.65rem",
-              fontWeight: 700,
-              color: "#ffd700",
-              fontFamily: "Exo 2, sans-serif",
-            }}>✨ Shiny</span>
-          )}
-          {entry.trainer && (
-            <span className="trainer-pill">{entry.trainer.name}</span>
-          )}
-          {quantity > 1 && (
-            <span style={{
-              background: "rgba(100,180,255,0.15)",
-              border: "1px solid rgba(100,180,255,0.5)",
-              borderRadius: 999,
-              padding: "1px 8px",
-              fontSize: "0.65rem",
-              fontWeight: 800,
-              color: "#64b4ff",
-              fontFamily: "Exo 2, sans-serif",
-            }}>×{quantity}</span>
-          )}
-        </div>
-        <div
-          style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.75rem", marginTop: 2 }}
-        >
-          {entry.tradeForPokemonName ? (
-            <>
-              ⇄ <span style={{ textTransform: "capitalize" }}>{entry.tradeForPokemonName}</span>
-            </>
-          ) : (
-            "Pas d'échange spécifié"
-          )}
-          {entry.notes && ` · ${entry.notes}`}
-        </div>
-      </div>
-
-      {/* Actions — masquées si le compte connecté n'est pas propriétaire de cette entrée (ni admin) */}
-      {canEdit && (
-      <div className="flex items-center gap-2 flex-wrap">
-        {isDeleteConfirm ? (
-          <>
-            <span style={{ fontSize: "0.8rem", color: "#ff6b6b" }}>Confirmer ?</span>
-            <button onClick={onDelete} className="btn-danger">
-              Oui
-            </button>
-            <button onClick={onDeleteCancel} className="btn-secondary" style={{ padding: "6px 12px" }}>
-              Non
-            </button>
-          </>
-        ) : (
-          <>
-            <button
-              onClick={quantity > 1 ? () => onQuantityChange(-1) : onComplete}
-              className="btn-success"
-            >
-              {quantity > 1 ? "✓ −1 (donné)" : "✓ Échangé"}
-            </button>
-            {quantity > 1 && (
-              <button
-                onClick={() => onQuantityChange(1)}
-                className="btn-secondary"
-                style={{ padding: "6px 10px", fontSize: "0.85rem", fontWeight: 800 }}
-                aria-label="Ajouter un exemplaire"
-                title="Corriger : +1 exemplaire"
-              >
-                +1
-              </button>
-            )}
-            <button onClick={onEdit} className="btn-secondary" style={{ padding: "6px 12px", fontSize: "0.8rem" }}>
-              ✏️ Modifier
-            </button>
-            <button onClick={onDeleteConfirm} className="btn-danger">
-              🗑️ Supprimer
-            </button>
-          </>
-        )}
-      </div>
-      )}
-    </div>
   );
 }
 
