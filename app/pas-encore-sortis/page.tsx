@@ -316,10 +316,10 @@ export default function PasEncoreSortisPage() {
                           <img
                             src={p.spriteUrl ?? `${FALLBACK_SPRITE_BASE}/${p.id}.png`}
                             alt={p.name}
-                            width={56}
-                            height={56}
+                            width={76}
+                            height={76}
                             loading="lazy"
-                            style={{ width: 56, height: 56, objectFit: "contain", imageRendering: "pixelated" }}
+                            style={{ width: 76, height: 76, objectFit: "contain", imageRendering: "pixelated" }}
                             onError={(e) => {
                               const img = e.currentTarget;
                               const fallback = `${FALLBACK_SPRITE_BASE}/${p.id}.png`;

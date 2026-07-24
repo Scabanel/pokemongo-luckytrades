@@ -320,7 +320,7 @@ export default function PokemonCard({
             className="absolute inset-0 rounded-full blur-2xl opacity-30"
             style={{ background: eventTheme?.glow ?? categoryGlow }}
           />
-          <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={140} shiny={isShiny} customSpriteUrl={effectiveSpriteUrl} />
+          <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={168} shiny={isShiny} customSpriteUrl={effectiveSpriteUrl} />
         </div>
 
         {/* Name */}
@@ -596,7 +596,7 @@ export default function PokemonCard({
               undefined
             }}
           />
-          <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={88} shiny={isShiny} customSpriteUrl={effectiveSpriteUrl} />
+          <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={112} shiny={isShiny} customSpriteUrl={effectiveSpriteUrl} />
         </div>
 
         {/* Name */}
