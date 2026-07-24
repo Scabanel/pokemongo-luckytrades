@@ -207,7 +207,7 @@ export async function buildCostumeCatalog(pokemonList, githubToken) {
   const missingShinyIds = Object.entries(icons)
     .filter(([, files]) => files.length === 1)
     .map(([id]) => Number(id));
-  const missingShinyBase = missingShinyIds.map(withName).sort((a, b) => a.name.localeCompare(b.name, "fr"));
+  const missingShinyBase = missingShinyIds.map(withName).sort((a, b) => a.id - b.id);
   // Sprite résolu et figé une fois pour toutes (voir scripts/resolve-sprite.mjs) :
   // le navigateur affiche l'URL déjà vérifiée au lieu de retenter plusieurs
   // sources à chaque affichage, ce qui s'est révélé peu fiable en pratique.
@@ -224,7 +224,7 @@ export async function buildCostumeCatalog(pokemonList, githubToken) {
   const missingEntirelyIds = pokemonList
     .map((p) => p.id)
     .filter((id) => !icons[id]);
-  const missingEntirelyBase = missingEntirelyIds.map(withName).sort((a, b) => a.name.localeCompare(b.name, "fr"));
+  const missingEntirelyBase = missingEntirelyIds.map(withName).sort((a, b) => a.id - b.id);
   const missingEntirely = await attachResolvedSprites(missingEntirelyBase);
   console.log(`✓ ${missingEntirely.length} absents du jeu`);
 

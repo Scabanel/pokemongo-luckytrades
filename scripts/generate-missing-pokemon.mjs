@@ -111,7 +111,7 @@ export async function scrapeMissingPokemon() {
   });
 
   for (const key of Object.keys(result)) {
-    result[key].sort((a, b) => a.name.localeCompare(b.name, "fr", { sensitivity: "base" }));
+    result[key].sort((a, b) => a.id - b.id);
   }
 
   // Sprite résolu et figé une fois pour toutes (voir scripts/resolve-sprite.mjs).
