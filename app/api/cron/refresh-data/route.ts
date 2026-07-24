@@ -52,9 +52,16 @@ export async function GET(request: NextRequest) {
 
   // Les deux sources (margxt.fr et PokeMiners) sont indépendantes : on les
   // récupère en parallèle, chacune alimente une partie de missing-in-go.json.
+  //
+  // buildCostumeCatalog n'a PAS le GITHUB_TOKEN : ce token est un PAT
+  // finement scopé au seul dépôt de ce projet (Contents: read/write), il
+  // n'a aucune autorité sur PokeMiners/pogo_assets (un dépôt public
+  // différent) et GitHub rejette l'appel si on l'envoie quand même. Le
+  // dépôt étant public, un appel anonyme fonctionne très bien (limite de
+  // 60/h largement suffisante pour un seul appel hebdomadaire).
   const [missingRes, costumeRes] = await Promise.allSettled([
     scrapeMissingPokemon(),
-    buildCostumeCatalog(pokemonList, process.env.GITHUB_TOKEN),
+    buildCostumeCatalog(pokemonList),
   ]);
 
   if (missingRes.status === "rejected") {
