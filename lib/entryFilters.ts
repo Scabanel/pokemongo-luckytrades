@@ -1,4 +1,5 @@
 import type { PokemonEntry } from "./types";
+import { parseTags } from "./tags";
 
 // Partagé entre la page publique d'un dresseur (DresseurPageClient) et son
 // propre espace (AdminPanel), pour que la recherche/les filtres se comportent
@@ -27,8 +28,11 @@ export function matchesEntryFilters(entry: PokemonEntry, search: string, filters
   const name = entry.pokemonName.toLowerCase();
   if (search && !name.includes(search.toLowerCase())) return false;
 
-  const isGigamax = name.includes("gigamax");
-  const isDynamax = name.includes("dynamax") && !isGigamax;
+  // Le nom seul ne suffit pas : un tag "dynamax"/"gigamax" ajouté à la main
+  // sans renommer l'entrée (ex: "Duralugon" + tag "dynamax") doit aussi compter.
+  const nameAndTags = (name + " " + parseTags(entry.tags).join(" ")).toLowerCase();
+  const isGigamax = nameAndTags.includes("gigamax");
+  const isDynamax = nameAndTags.includes("dynamax") && !isGigamax;
   const isCostume = !isGigamax && !isDynamax && name.trim().includes(" ");
   const isShiny = entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false);
   const hasFond = !!entry.backgroundUrl;

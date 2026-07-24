@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import PokemonSprite from "./PokemonSprite";
 import type { PokemonEntry } from "@/lib/types";
 import { CATEGORIES, getCategory } from "@/lib/categories";
+import { parseTags } from "@/lib/tags";
 import gigantamaxIcons from "@/data/gigantamax-icons.json";
 
 // Sprite officiel de forme Gigamax (aspect réellement différent en jeu), pour
@@ -18,11 +19,6 @@ function getGigantamaxSpriteUrl(pokemonId: number, shiny: boolean): string | nul
   if (!files) return null;
   const filename = shiny && files[1] ? files[1] : files[0];
   return `${GIGANTAMAX_ICON_BASE}/${encodeURIComponent(filename)}`;
-}
-
-function parseTags(raw: string | null | undefined): string[] {
-  if (!raw) return [];
-  try { return JSON.parse(raw) as string[]; } catch { return []; }
 }
 
 const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> = {
@@ -150,8 +146,12 @@ export default function PokemonCard({
   const hasPriority = entry.priority != null && entry.priority >= 1 && entry.priority <= 10;
   const priorityStyle = hasPriority ? getPriorityStyle(entry.priority!) : null;
   const tags = parseTags(entry.tags);
-  const isDynamax = entry.pokemonName.toLowerCase().includes("dynamax") && !entry.pokemonName.toLowerCase().includes("gigamax");
-  const isGigamax = entry.pokemonName.toLowerCase().includes("gigamax");
+  // Le nom du Pokémon ne contient pas toujours "Dynamax"/"Gigamax" (ex: un
+  // tag "dynamax" ajouté à la main sur "Duralugon" sans renommer l'entrée) :
+  // vérifie aussi les tags, pas seulement le nom.
+  const nameAndTags = (entry.pokemonName + " " + tags.join(" ")).toLowerCase();
+  const isDynamax = nameAndTags.includes("dynamax") && !nameAndTags.includes("gigamax");
+  const isGigamax = nameAndTags.includes("gigamax");
   // Respecte un sprite choisi à la main (entry.customSpriteUrl) ; sinon, pour
   // les espèces qui Gigamax réellement dans GO, utilise leur vrai visuel
   // Gigamax officiel au lieu du sprite de base.
