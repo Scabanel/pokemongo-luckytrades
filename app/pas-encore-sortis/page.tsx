@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import ParticleBackground from "@/components/ParticleBackground";
 import PokemonSprite from "@/components/PokemonSprite";
 import SiteNav from "@/components/SiteNav";
@@ -10,8 +11,10 @@ import missingInGo from "@/data/missing-in-go.json";
 const MISSING_COLOR = "#ff6b6b";
 
 type MissingEntry = { id: number; name: string };
+type MissingCategory = keyof typeof missingInGo;
+type Exclusion = { id: string; category: string; pokemonId: number };
 
-const MISSING_SECTIONS: { key: keyof typeof missingInGo; title: string; hint: string }[] = [
+const MISSING_SECTIONS: { key: MissingCategory; title: string; hint: string }[] = [
   {
     key: "missingEntirely",
     title: "Absents du jeu",
@@ -36,10 +39,44 @@ const MISSING_SECTIONS: { key: keyof typeof missingInGo; title: string; hint: st
 
 export default function PasEncoreSortisPage() {
   const [search, setSearch] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [exclusions, setExclusions] = useState<Exclusion[]>([]);
   const q = search.trim().toLowerCase();
 
-  const filterList = (list: MissingEntry[]) =>
-    q ? list.filter((p) => p.name.toLowerCase().includes(q)) : list;
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => setIsAdmin(!!data?.isAdmin))
+      .catch(() => {});
+    fetch("/api/missing-exclusions")
+      .then((r) => (r.ok ? r.json() : []))
+      .then(setExclusions)
+      .catch(() => {});
+  }, []);
+
+  const isExcluded = (category: MissingCategory, pokemonId: number) =>
+    exclusions.some((e) => e.category === category && e.pokemonId === pokemonId);
+
+  const filterList = (category: MissingCategory, list: MissingEntry[]) =>
+    list
+      .filter((p) => !isExcluded(category, p.id))
+      .filter((p) => (q ? p.name.toLowerCase().includes(q) : true));
+
+  const handleExclude = async (category: MissingCategory, entry: MissingEntry) => {
+    try {
+      const res = await fetch("/api/missing-exclusions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category, pokemonId: entry.id }),
+      });
+      if (!res.ok) throw new Error();
+      const created = await res.json();
+      setExclusions((prev) => [...prev, created]);
+      toast.success(`${entry.name} retiré de la liste`);
+    } catch {
+      toast.error("Erreur lors de la suppression");
+    }
+  };
 
   return (
     <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
@@ -87,7 +124,7 @@ export default function PasEncoreSortisPage() {
           />
           <div className="space-y-8">
             {MISSING_SECTIONS.map(({ key, title, hint }) => {
-              const list = filterList(missingInGo[key] as MissingEntry[]);
+              const list = filterList(key, missingInGo[key] as MissingEntry[]);
               return (
                 <div key={key}>
                   <h3
@@ -111,7 +148,37 @@ export default function PasEncoreSortisPage() {
                   ) : (
                     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
                       {list.map((p) => (
-                        <div key={p.id} className="flex flex-col items-center gap-1" style={{ padding: 6 }}>
+                        <div
+                          key={p.id}
+                          className="relative flex flex-col items-center gap-1"
+                          style={{ padding: 6 }}
+                        >
+                          {isAdmin && (
+                            <button
+                              onClick={() => handleExclude(key, p)}
+                              title="Retirer ce Pokémon de la liste"
+                              style={{
+                                position: "absolute",
+                                top: -2,
+                                right: -2,
+                                width: 18,
+                                height: 18,
+                                borderRadius: "50%",
+                                background: "rgba(255,107,107,0.15)",
+                                border: "1px solid rgba(255,107,107,0.5)",
+                                color: "#ff6b6b",
+                                fontSize: "0.65rem",
+                                fontWeight: 700,
+                                lineHeight: 1,
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              x
+                            </button>
+                          )}
                           <PokemonSprite pokemonId={p.id} alt={p.name} size={56} />
                           <span
                             style={{

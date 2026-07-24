@@ -82,12 +82,20 @@ générés par `npm run gen:costumes` :
 - `data/costumes.json` (~700 Ko, admin uniquement) — tous les costumes
   historiques par Pokémon (Halloween, GO Fest, anniversaires...) avec libellé
   lisible, utilisé par le sélecteur de sprite dans `/mon-espace`.
-- `data/missing-in-go.json` (léger, noms FR déjà attachés) — Pokémon absents
-  du jeu, sans version shiny, ou sans Gigamax (liste fixe des 32 espèces
-  éligibles au Gigamax dans les jeux principaux, croisée avec les costumes
-  effectivement présents). Alimente l'onglet public "🚧 Pas encore sortis".
-  Le Dynamax n'a pas de liste d'espèces éligibles fixe dans les jeux
-  principaux — pas de section "Dynamax manquant" pour cette raison.
+- `data/missing-in-go.json` (léger, noms FR déjà attachés) : Pokémon absents
+  du jeu, sans version shiny, sans Gigamax ou sans Méga-Évolution. Alimente
+  la page publique "Pokémon pas encore disponibles"
+  (`app/pas-encore-sortis`). `missingEntirely`/`missingShiny` sont calculés
+  directement depuis les données du jeu (`icons` ci-dessus : absent de
+  `go-icons.json` = absent du jeu), pas depuis margxt.fr, pour ne jamais
+  lister à tort une espèce déjà présente. `missingGigantamax`/`missingMega`
+  restent scrapés sur margxt.fr, faute d'équivalent local (aucune trace de
+  jeu n'existe pour une forme jamais implémentée). Le Dynamax n'a pas de
+  section dédiée : aucune icône de forme n'existe pour lui dans GO.
+  L'admin peut exclure manuellement une entrée listée à tort (bouton "x" sur
+  chaque tuile de `/pas-encore-sortis`) via la table `MissingPokemonExclusion`
+  (`app/api/missing-exclusions`), un filtre appliqué à la lecture, qui ne
+  modifie jamais ce fichier JSON lui-même.
 
 À relancer périodiquement pour récupérer les nouveaux costumes ajoutés au jeu.
 

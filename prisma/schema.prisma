@@ -19,6 +19,21 @@ model Trainer {
   entries    PokemonEntry[]
 }
 
+// Pokémon retirés à la main par l'admin d'une section de la page publique
+// "Pokémon pas encore disponibles" (app/pas-encore-sortis) - ex: une entrée
+// listée à tort par les données de jeu générées (data/missing-in-go.json).
+// Ne modifie jamais ces fichiers JSON eux-mêmes (régénérés périodiquement par
+// le cron de rafraîchissement, voir README.md) : l'exclusion s'applique en
+// filtre par-dessus, à la lecture.
+model MissingPokemonExclusion {
+  id        String   @id @default(uuid())
+  category  String   // "missingEntirely" | "missingShiny" | "missingGigantamax" | "missingMega"
+  pokemonId Int
+  createdAt DateTime @default(now())
+
+  @@unique([category, pokemonId])
+}
+
 model PokemonEntry {
   id                  String   @id @default(uuid())
   pokemonName         String
