@@ -79,6 +79,12 @@ interface PokemonCardProps {
   onDelete?: () => void;
   onComplete?: () => void;
   onQuantityChange?: (delta: number) => void;
+  // Le bord vert + pastille dresseur signalent "cette entrée est assignée à
+  // un dresseur précis" dans une liste qui en mélange plusieurs (catalogue
+  // partagé, vue "Tous les dresseurs"). Inutile et redondant sur une liste
+  // qui n'appartient déjà qu'à une seule personne (page publique d'un
+  // dresseur, "Mes échanges") : `false` masque ce badge dans ce cas.
+  showTrainerBadge?: boolean;
 }
 
 
@@ -108,11 +114,13 @@ export default function PokemonCard({
   onDelete,
   onComplete,
   onQuantityChange,
+  showTrainerBadge = true,
 }: PokemonCardProps) {
   const [showDetail, setShowDetail] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const quantity = entry.quantity ?? 1;
+  const hasTrainerBadge = showTrainerBadge && !!entry.trainer;
   const closeDetail = () => {
     setShowDetail(false);
     setConfirmDelete(false);
@@ -156,7 +164,7 @@ export default function PokemonCard({
             borderColor: "rgba(180,100,255,0.3)",
             boxShadow: "0 16px 64px rgba(180,100,255,0.15)",
           }),
-          ...(entry.trainer && {
+          ...(hasTrainerBadge && {
             borderColor: "rgba(0,220,100,0.5)",
             boxShadow: "0 16px 64px rgba(0,200,80,0.25), 0 0 0 1px rgba(0,220,100,0.2)",
           }),
@@ -259,7 +267,7 @@ export default function PokemonCard({
         )}
 
         {/* Trainer */}
-        {entry.trainer && (
+        {hasTrainerBadge && entry.trainer && (
           <div className="flex items-center gap-2 mb-3">
             <div
               style={{
@@ -317,8 +325,8 @@ export default function PokemonCard({
           <div
             className="flex items-center gap-3 mt-2 p-3"
             style={{
-              background: entry.trainer ? "rgba(0,200,80,0.1)" : "rgba(255,217,61,0.07)",
-              border: entry.trainer ? "1px solid rgba(0,220,100,0.35)" : "1px solid rgba(255,217,61,0.2)",
+              background: hasTrainerBadge ? "rgba(0,200,80,0.1)" : "rgba(255,217,61,0.07)",
+              border: hasTrainerBadge ? "1px solid rgba(0,220,100,0.35)" : "1px solid rgba(255,217,61,0.2)",
               borderRadius: 12,
               width: "100%",
               justifyContent: "center",
@@ -407,7 +415,7 @@ export default function PokemonCard({
             borderColor: "rgba(205,127,50,0.5)",
             boxShadow: "0 8px 32px rgba(205,127,50,0.2), 0 0 0 1px rgba(205,127,50,0.18)",
           }),
-          ...(entry.trainer && {
+          ...(hasTrainerBadge && {
             borderColor: "rgba(0, 220, 100, 0.5)",
             boxShadow: "0 8px 32px rgba(0, 200, 80, 0.28), 0 0 0 1px rgba(0, 220, 100, 0.2), inset 0 1px 0 rgba(0, 220, 100, 0.06)",
           }),
@@ -528,7 +536,7 @@ export default function PokemonCard({
         </div>
 
         {/* Trainer pill */}
-        {entry.trainer && (
+        {hasTrainerBadge && entry.trainer && (
           <div className="absolute top-3 left-3 flex items-center gap-1" style={{ zIndex: 1, maxWidth: "60%" }}>
             <div
               style={{
@@ -559,7 +567,7 @@ export default function PokemonCard({
           <div
             className="absolute inset-0 rounded-full blur-xl opacity-25"
             style={{ background:
-              entry.trainer ? "radial-gradient(circle, #00dc64 0%, transparent 70%)" :
+              hasTrainerBadge ? "radial-gradient(circle, #00dc64 0%, transparent 70%)" :
               entry.priority === 1 ? "radial-gradient(circle, #ffd700 0%, transparent 70%)" :
               entry.priority === 2 ? "radial-gradient(circle, #c0c0c0 0%, transparent 70%)" :
               entry.priority === 3 ? "radial-gradient(circle, #cd7f32 0%, transparent 70%)" :
@@ -618,7 +626,7 @@ export default function PokemonCard({
 
         {/* Exchange badge */}
         {entry.tradeForPokemonName && entry.tradeForPokemonId && (
-          <div className="exchange-badge mt-auto" style={{ marginTop: "auto", paddingTop: 4, ...(entry.trainer && { background: "rgba(0,200,80,0.12)", borderColor: "rgba(0,220,100,0.4)" }) }}>
+          <div className="exchange-badge mt-auto" style={{ marginTop: "auto", paddingTop: 4, ...(hasTrainerBadge && { background: "rgba(0,200,80,0.12)", borderColor: "rgba(0,220,100,0.4)" }) }}>
             <span style={{ fontSize: "0.6rem", color: "#ffd93d", fontWeight: 600, whiteSpace: "nowrap" }}>
               {entry.category === "want" ? "Je donne" : entry.category === "mirror" ? "Échange" : "Je reçois"}
             </span>

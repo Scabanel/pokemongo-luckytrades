@@ -489,6 +489,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               color={color}
               entries={list}
               loading={loadingEntries}
+              showTrainerBadge={isAllTab}
               selectedIds={selectedIds}
               onToggleSelect={toggleSelect}
               onToggleSelectAll={toggleSelectSection}
@@ -725,6 +726,7 @@ function EntrySection({
   color,
   entries,
   loading,
+  showTrainerBadge,
   selectedIds,
   onToggleSelect,
   onToggleSelectAll,
@@ -738,6 +740,7 @@ function EntrySection({
   color: string;
   entries: PokemonEntry[];
   loading: boolean;
+  showTrainerBadge: boolean;
   selectedIds: Set<string>;
   onToggleSelect: (id: string) => void;
   onToggleSelectAll: (ids: string[]) => void;
@@ -798,6 +801,7 @@ function EntrySection({
               <PokemonCard
                 key={entry.id}
                 entry={entry}
+                showTrainerBadge={showTrainerBadge}
                 selectable={editable}
                 selected={selectedIds.has(entry.id)}
                 onToggleSelect={() => onToggleSelect(entry.id)}
