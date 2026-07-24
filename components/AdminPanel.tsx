@@ -51,7 +51,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [trainers, setTrainers] = useState<TrainerWithCount[]>([]);
   const [pokeOptions, setPokeOptions] = useState<PokeOption[]>([]);
   const [me, setMe] = useState<{ trainer: Trainer | null; isAdmin: boolean }>({ trainer: null, isAdmin: false });
-  const [activeTab, setActiveTab] = useState<"entries" | "all" | "trainers" | "account">("entries");
+  const [activeTab, setActiveTab] = useState<"entries" | "trainers" | "account">("entries");
   const [activeCategory, setActiveCategory] = useState<EntryCategory>("mirror");
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState<PokemonEntry | null>(null);
@@ -106,23 +106,6 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     const supabase = createClient();
     await supabase.auth.signOut();
     onLogout();
-  };
-
-  const handleExport = async () => {
-    try {
-      const res = await fetch("/api/export");
-      if (!res.ok) throw new Error();
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `luckytrades-backup-${new Date().toISOString().slice(0, 10)}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast.success("Export téléchargé");
-    } catch {
-      toast.error("Erreur lors de l'export");
-    }
   };
 
   const handleDelete = async (id: string) => {
@@ -298,26 +281,23 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const gives = sortEntries(entries.filter((e) => e.category === "give"));
   const mirrors = sortEntries(entries.filter((e) => e.category === "mirror"));
 
-  // Vue par défaut ("Mes échanges") : uniquement les entrées du dresseur
-  // connecté, même pour l'admin. La vue globale ("Tous les dresseurs")
-  // reste un onglet séparé, réservé à l'admin.
+  // Uniquement les entrées du dresseur connecté, même pour l'admin.
   const myWants = wants.filter((e) => e.trainer?.id === myTrainerId);
   const myGives = gives.filter((e) => e.trainer?.id === myTrainerId);
   const myMirrors = mirrors.filter((e) => e.trainer?.id === myTrainerId);
 
-  const isAllTab = activeTab === "all";
-  const listWants = (isAllTab ? wants : myWants).filter((e) => matchesEntryFilters(e, search, filters));
-  const listGives = (isAllTab ? gives : myGives).filter((e) => matchesEntryFilters(e, search, filters));
-  const listMirrors = (isAllTab ? mirrors : myMirrors).filter((e) => matchesEntryFilters(e, search, filters));
+  const listWants = myWants.filter((e) => matchesEntryFilters(e, search, filters));
+  const listGives = myGives.filter((e) => matchesEntryFilters(e, search, filters));
+  const listMirrors = myMirrors.filter((e) => matchesEntryFilters(e, search, filters));
   const anyFilterActive = search.trim() !== "" || Object.values(filters).some(Boolean);
 
   // Une seule catégorie visible à la fois (mirror/want/give), comme sur la
   // page publique d'un dresseur : plus lisible qu'empiler les 3 sections.
   const listByCategory: Record<EntryCategory, PokemonEntry[]> = { mirror: listMirrors, want: listWants, give: listGives };
   const countByCategory: Record<EntryCategory, number> = {
-    mirror: (isAllTab ? mirrors : myMirrors).length,
-    want: (isAllTab ? wants : myWants).length,
-    give: (isAllTab ? gives : myGives).length,
+    mirror: myMirrors.length,
+    want: myWants.length,
+    give: myGives.length,
   };
   const activeCategoryColor = CATEGORIES[activeCategory].color;
 
@@ -328,7 +308,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           place à l'en-tête façon page publique juste en dessous. */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div className="flex gap-2 flex-wrap">
-          {(["entries", ...(isAdmin ? (["all", "trainers"] as const) : []), "account"] as const).map((tab) => (
+          {(["entries", ...(isAdmin ? (["trainers"] as const) : []), "account"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -356,8 +336,6 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             >
               {tab === "entries"
               ? `Mes échanges (${myMirrors.length + myWants.length + myGives.length})`
-              : tab === "all"
-              ? `Tous les dresseurs (${entries.length})`
               : tab === "trainers"
               ? `Dresseurs (${trainers.length})`
               : "Mon compte"}
@@ -371,26 +349,16 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           <button onClick={() => setShowAddForm(true)} className="btn-primary" style={{ fontSize: "0.8rem", padding: "7px 14px" }}>
             + Ajouter un échange
           </button>
-          <button
-            onClick={handleExport}
-            style={{
-              padding: "7px 14px", borderRadius: 12, cursor: "pointer",
-              background: "rgba(100,180,255,0.08)", border: "1px solid rgba(100,180,255,0.25)",
-              color: "#64b4ff", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
-            }}
-          >
-            Export JSON
-          </button>
           <button onClick={handleLogout} className="btn-danger" style={{ fontSize: "0.8rem", padding: "7px 14px" }}>
             Déconnexion
           </button>
         </div>
       </div>
 
-      {/* Entries tab (mes échanges / vue globale admin) : en-tête et disposition
-          reprennent la page publique d'un dresseur (app/dresseurs/[id]) pour
-          que "Mon espace" ressemble à ce que voit n'importe quel visiteur. */}
-      {(activeTab === "entries" || activeTab === "all") && (
+      {/* Entries tab (mes échanges) : en-tête et disposition reprennent la
+          page publique d'un dresseur (app/dresseurs/[id]) pour que "Mon
+          espace" ressemble à ce que voit n'importe quel visiteur. */}
+      {activeTab === "entries" && (
         <>
           <header className="text-center mb-8">
             <h1
@@ -403,12 +371,10 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 textShadow: "0 0 20px rgba(255,215,0,0.4)",
               }}
             >
-              {isAllTab ? "Tous les dresseurs" : me.trainer?.name ?? "Mon espace"}
+              {me.trainer?.name ?? "Mon espace"}
             </h1>
             <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 4 }}>
-              {isAllTab
-                ? "Vue globale admin, tous les échanges"
-                : me.trainer?.team
+              {me.trainer?.team
                 ? `${me.trainer.team.charAt(0).toUpperCase() + me.trainer.team.slice(1)} · Niveau ${me.trainer.level ?? "?"}`
                 : "Gère ta liste d'échanges"}
             </p>
@@ -559,7 +525,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             <EntrySection
               entries={listByCategory[activeCategory]}
               loading={loadingEntries}
-              showTrainerBadge={isAllTab}
+              showTrainerBadge={false}
               selectedIds={selectedIds}
               onToggleSelect={toggleSelect}
               onToggleSelectAll={toggleSelectSection}
