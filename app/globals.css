@@ -10,6 +10,9 @@
   --navy-light: #251505;
   --glass-bg: rgba(16, 9, 1, 0.65);
   --glass-border: rgba(255, 140, 30, 0.13);
+  /* Hauteur du footer fixe (components/SiteFooter.tsx) : réservée en bas de
+     chaque page pour que le contenu ne passe jamais derrière. */
+  --footer-height: 48px;
 }
 
 * {
@@ -26,6 +29,7 @@ body {
   font-family: "Inter", sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
+  padding-bottom: var(--footer-height);
 }
 
 /* ── Grain overlay on body (static texture) ── */

@@ -3,7 +3,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
-  title: "Les échanges chanceux du V",
+  title: "Échanges Pokémon Go Strasbourg",
   description: "Catalogue de trades Pokémon GO",
   icons: {
     icon: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png",
@@ -29,6 +29,7 @@ export default function RootLayout({
         {children}
         <Toaster
           position="bottom-right"
+          containerStyle={{ bottom: 64 }}
           toastOptions={{
             style: {
               background: "#141926",

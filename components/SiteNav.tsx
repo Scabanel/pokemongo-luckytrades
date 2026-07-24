@@ -25,16 +25,30 @@ export default function SiteNav({ active }: { active: string }) {
     >
       <a
         href="/"
-        style={{
-          fontFamily: "Exo 2, sans-serif",
-          fontWeight: 800,
-          fontSize: "0.95rem",
-          letterSpacing: "0.02em",
-          color: "#ffd700",
-          textDecoration: "none",
-        }}
+        className="flex items-center gap-2"
+        style={{ textDecoration: "none" }}
       >
-        Lucky Trades
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+          alt=""
+          width={22}
+          height={22}
+          style={{ imageRendering: "pixelated" }}
+        />
+        <span
+          style={{
+            fontFamily: "Exo 2, sans-serif",
+            fontWeight: 900,
+            fontSize: "1.05rem",
+            letterSpacing: "0.04em",
+            textTransform: "uppercase",
+            color: "#ffd700",
+            textShadow: "0 0 12px rgba(255,215,0,0.35)",
+          }}
+        >
+          Lucky Trades
+        </span>
       </a>
       <nav className="flex gap-2 flex-wrap" style={{ marginLeft: "auto" }}>
         {LINKS.map(({ href, label }) => (
