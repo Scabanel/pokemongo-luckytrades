@@ -2,6 +2,7 @@
   "buildCommand": "prisma generate && next build",
   "framework": "nextjs",
   "crons": [
-    { "path": "/api/cron/backup", "schedule": "0 6 * * *" }
+    { "path": "/api/cron/backup", "schedule": "0 6 * * *" },
+    { "path": "/api/cron/refresh-data", "schedule": "0 2 * * 3" }
   ]
 }

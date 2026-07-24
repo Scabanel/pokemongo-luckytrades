@@ -85,18 +85,18 @@ function parseFilename(name) {
   return { dexId, code, g2, shiny };
 }
 
-async function main() {
-  console.log("Téléchargement de l'arborescence PokeMiners/pogo_assets…");
-  // Un token (même sans permissions particulières) évite la limite très
-  // basse des requêtes non-authentifiées (60/h) sur l'API GitHub. On tente
-  // `gh auth token` (CLI déjà connecté en local) et on retombe sur une
-  // requête anonyme si absent — ne bloque jamais la génération.
-  let token;
-  try {
-    const { execSync } = await import("node:child_process");
-    token = execSync("gh auth token", { encoding: "utf-8" }).trim();
-  } catch {
-    // gh non disponible/non connecté : requête anonyme (peut être limitée)
+// Récupère l'arborescence PokeMiners/pogo_assets. `githubToken` (optionnel)
+// évite la limite très basse des requêtes non-authentifiées (60/h) sur
+// l'API GitHub — en CLI local on retombe sur `gh auth token` si absent.
+async function fetchTree(githubToken) {
+  let token = githubToken;
+  if (!token) {
+    try {
+      const { execSync } = await import("node:child_process");
+      token = execSync("gh auth token", { encoding: "utf-8" }).trim();
+    } catch {
+      // gh non disponible/non connecté : requête anonyme (peut être limitée)
+    }
   }
   const res = await fetch(TREE_URL, {
     headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -106,6 +106,14 @@ async function main() {
   if (data.truncated) {
     console.warn("⚠ Réponse GitHub tronquée — certains costumes récents pourraient manquer.");
   }
+  return data;
+}
+
+// Calcul pur (aucune écriture disque) : réutilisé par le CLI ci-dessous et
+// par app/api/cron/refresh-data/route.ts. `pokemonList` = data/pokemon.json
+// déjà chargé (le CLI le lit du disque, la route l'importe directement).
+export async function buildCostumeCatalog(pokemonList, githubToken) {
+  const data = await fetchTree(githubToken);
 
   const paths = data.tree
     .map((t) => t.path)
@@ -148,9 +156,8 @@ async function main() {
     if (list.length > 0) catalog[dexId] = list;
   }
 
-  await writeFile(OUT_PATH, JSON.stringify(catalog, null, 2) + "\n", "utf-8");
   const totalCostumes = Object.values(catalog).reduce((sum, l) => sum + l.length, 0);
-  console.log(`✓ ${Object.keys(catalog).length} Pokémon avec costumes, ${totalCostumes} sprites au total → ${path.relative(process.cwd(), OUT_PATH)}`);
+  console.log(`✓ ${Object.keys(catalog).length} Pokémon avec costumes, ${totalCostumes} sprites au total`);
 
   // Ne stocke que le nom de fichier (pas l'URL complète, identique pour tous)
   // pour garder ce fichier léger — il est chargé sur chaque carte publique.
@@ -171,35 +178,16 @@ async function main() {
     const filename = (url) => decodeURIComponent(url.slice(RAW_BASE.length + 1));
     icons[dexId] = shiny ? [filename(normal), filename(shiny)] : [filename(normal)];
   }
-  await writeFile(ICONS_OUT_PATH, JSON.stringify(icons) + "\n", "utf-8");
-  console.log(`✓ ${Object.keys(icons).length} icônes de base → ${path.relative(process.cwd(), ICONS_OUT_PATH)}`);
+  console.log(`✓ ${Object.keys(icons).length} icônes de base`);
 
-  const pokemonList = JSON.parse(await readFile(POKEMON_LIST_PATH, "utf-8"));
   const nameById = new Map(pokemonList.map((p) => [p.id, p.frenchName]));
   const withName = (id) => ({ id, name: nameById.get(id) ?? `#${id}` });
 
-  // missingEntirely/missingGigantamax/missingMega viennent de
-  // scripts/generate-missing-pokemon.mjs (source margxt.fr, plus fiable que
-  // cette heuristique de présence de costume) - on ne calcule ici que
-  // missingShiny et on préserve le reste du fichier tel quel.
   const missingShinyIds = Object.entries(icons)
     .filter(([, files]) => files.length === 1)
     .map(([id]) => Number(id));
   const missingShiny = missingShinyIds.map(withName).sort((a, b) => a.name.localeCompare(b.name, "fr"));
-
-  let existingMissing = {};
-  try {
-    existingMissing = JSON.parse(await readFile(MISSING_OUT_PATH, "utf-8"));
-  } catch {
-    // Pas encore généré par generate-missing-pokemon.mjs, tant pis.
-  }
-
-  await writeFile(
-    MISSING_OUT_PATH,
-    JSON.stringify({ ...existingMissing, missingShiny }, null, 2) + "\n",
-    "utf-8"
-  );
-  console.log(`✓ ${missingShiny.length} sans shiny → ${path.relative(process.cwd(), MISSING_OUT_PATH)}`);
+  console.log(`✓ ${missingShiny.length} sans shiny`);
 
   const backgroundPaths = data.tree
     .map((t) => t.path)
@@ -214,12 +202,44 @@ async function main() {
       };
     })
     .sort((a, b) => a.label.localeCompare(b.label, "fr"));
+  console.log(`✓ ${backgrounds.length} fonds d'événement génériques`);
 
-  await writeFile(BACKGROUNDS_OUT_PATH, JSON.stringify(backgrounds, null, 2) + "\n", "utf-8");
-  console.log(`✓ ${backgrounds.length} fonds d'événement → ${path.relative(process.cwd(), BACKGROUNDS_OUT_PATH)}`);
+  return { catalog, icons, missingShiny, backgrounds };
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+async function main() {
+  console.log("Téléchargement de l'arborescence PokeMiners/pogo_assets…");
+  const pokemonList = JSON.parse(await readFile(POKEMON_LIST_PATH, "utf-8"));
+  const { catalog, icons, missingShiny, backgrounds } = await buildCostumeCatalog(pokemonList);
+
+  await writeFile(OUT_PATH, JSON.stringify(catalog, null, 2) + "\n", "utf-8");
+  console.log(`  → ${path.relative(process.cwd(), OUT_PATH)}`);
+
+  await writeFile(ICONS_OUT_PATH, JSON.stringify(icons) + "\n", "utf-8");
+  console.log(`  → ${path.relative(process.cwd(), ICONS_OUT_PATH)}`);
+
+  // missingEntirely/missingGigantamax/missingMega viennent de
+  // scripts/generate-missing-pokemon.mjs (source margxt.fr) - on les préserve.
+  let existingMissing = {};
+  try {
+    existingMissing = JSON.parse(await readFile(MISSING_OUT_PATH, "utf-8"));
+  } catch {
+    // Pas encore généré par generate-missing-pokemon.mjs, tant pis.
+  }
+  await writeFile(
+    MISSING_OUT_PATH,
+    JSON.stringify({ ...existingMissing, missingShiny }, null, 2) + "\n",
+    "utf-8"
+  );
+  console.log(`  → ${path.relative(process.cwd(), MISSING_OUT_PATH)}`);
+
+  await writeFile(BACKGROUNDS_OUT_PATH, JSON.stringify(backgrounds, null, 2) + "\n", "utf-8");
+  console.log(`  → ${path.relative(process.cwd(), BACKGROUNDS_OUT_PATH)}`);
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

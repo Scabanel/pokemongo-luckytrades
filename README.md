@@ -135,6 +135,28 @@ Deux mécanismes complémentaires :
   Sans ces 3 variables, la route répond 401/500 sans rien casser — le cron
   échoue silencieusement plutôt que de planter le site.
 
+## Rafraîchissement automatique des données de jeu
+
+`app/api/cron/refresh-data`, déclenché chaque semaine tard dans la nuit
+(mercredi 02h UTC, voir `vercel.json`), refait tourner les scrapes de
+`npm run gen:costumes`/`gen:missing`/`gen:backgrounds` et commit sur GitHub
+les fichiers qui ont changé (`data/costumes.json`, `data/go-icons.json`,
+`data/backgrounds.json`, `data/missing-in-go.json`, `data/pokemon-backgrounds.json`,
+et les nouvelles images dans `public/event-backgrounds/`), même mécanisme
+et mêmes variables d'environnement que le backup ci-dessus. Un commit sur
+`main` déclenche un redéploiement Vercel qui embarque les données à jour.
+
+**Important** : cette route ne touche jamais la base de données. Les
+listes d'échanges de chaque dresseur vivent dans Postgres (Supabase),
+entièrement séparé de ces fichiers JSON statiques (costumes, fonds,
+Pokémon manquants), donc aucun risque qu'un rafraîchissement écrase ou
+perde les données d'un utilisateur.
+
+Le nombre de nouvelles images de fond téléchargées par exécution est
+plafonné (`MAX_NEW_IMAGES_PER_RUN` dans la route) pour rester sous la
+limite de durée de la fonction et ne pas solliciter margxt.fr d'un coup ;
+le reste attend l'exécution suivante.
+
 ## Structure
 
 - `app/page.tsx` — landing (explication du site, boutons connexion/inscription et dresseurs)

@@ -33,7 +33,7 @@ const PAGES = [
 
 const DEX_RE = /\/(\d{3,4})-[^/]+\.(?:png|webp|jpg)$/i;
 
-function slugify(url) {
+export function slugify(url) {
   const name = url.split("/").pop();
   const dot = name.lastIndexOf(".");
   const base = name.slice(0, dot);
@@ -45,6 +45,16 @@ function slugify(url) {
     .replace(/^-+|-+$/g, "")
     .toLowerCase();
   return `${normalized}.${ext}`;
+}
+
+// Réutilisée par app/api/cron/refresh-data/route.ts pour re-télécharger une
+// image sans dépendre du disque local (pas de cache "déjà présent").
+export async function downloadImage(url) {
+  const res = await fetch(url, {
+    headers: { "User-Agent": "Mozilla/5.0", Referer: "https://www.margxt.fr/" },
+  });
+  if (!res.ok) throw new Error(`${url} → ${res.status}`);
+  return Buffer.from(await res.arrayBuffer());
 }
 
 async function parsePage(url) {
@@ -121,33 +131,11 @@ async function fileExists(p) {
   }
 }
 
-async function main() {
-  await mkdir(IMAGES_DIR, { recursive: true });
-
-  console.log("Téléchargement et analyse des pages margxt.fr…");
+// Scrape pur des deux pages margxt.fr (aucun téléchargement d'image, aucune
+// écriture disque) : réutilisé par le CLI ci-dessous et par
+// app/api/cron/refresh-data/route.ts.
+export async function scrapeValidatedBackgrounds() {
   const allEntries = (await Promise.all(PAGES.map(parsePage))).flat();
-  console.log(`${allEntries.length} associations Pokémon↔fond trouvées.`);
-
-  const uniqueImageUrls = [...new Set(allEntries.map((e) => e.url))];
-  console.log(`${uniqueImageUrls.length} images uniques à vérifier/télécharger…`);
-
-  let downloaded = 0;
-  for (const url of uniqueImageUrls) {
-    const slug = slugify(url);
-    const dest = path.join(IMAGES_DIR, slug);
-    if (await fileExists(dest)) continue;
-    const res = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0", Referer: "https://www.margxt.fr/" },
-    });
-    if (!res.ok) {
-      console.warn(`  ⚠ Échec téléchargement ${url} (${res.status})`);
-      continue;
-    }
-    const buf = Buffer.from(await res.arrayBuffer());
-    await writeFile(dest, buf);
-    downloaded++;
-  }
-  console.log(`✓ ${downloaded} nouvelles images téléchargées (${uniqueImageUrls.length - downloaded} déjà présentes).`);
 
   const byDex = {};
   const seenPerDex = new Map();
@@ -161,11 +149,41 @@ async function main() {
     byDex[key].push({ label: event, url: `/event-backgrounds/${slug}` });
   }
 
+  const uniqueImageUrls = [...new Set(allEntries.map((e) => e.url))];
+  return { byDex, uniqueImageUrls };
+}
+
+async function main() {
+  await mkdir(IMAGES_DIR, { recursive: true });
+
+  console.log("Téléchargement et analyse des pages margxt.fr…");
+  const { byDex, uniqueImageUrls } = await scrapeValidatedBackgrounds();
+  console.log(`${uniqueImageUrls.length} images uniques à vérifier/télécharger…`);
+
+  let downloaded = 0;
+  for (const url of uniqueImageUrls) {
+    const slug = slugify(url);
+    const dest = path.join(IMAGES_DIR, slug);
+    if (await fileExists(dest)) continue;
+    let buf;
+    try {
+      buf = await downloadImage(url);
+    } catch (err) {
+      console.warn(`  ⚠ Échec téléchargement ${url} (${err.message})`);
+      continue;
+    }
+    await writeFile(dest, buf);
+    downloaded++;
+  }
+  console.log(`✓ ${downloaded} nouvelles images téléchargées (${uniqueImageUrls.length - downloaded} déjà présentes).`);
+
   await writeFile(OUT_PATH, JSON.stringify(byDex, null, 2) + "\n", "utf-8");
   console.log(`✓ ${Object.keys(byDex).length} Pokémon avec fonds confirmés → ${path.relative(process.cwd(), OUT_PATH)}`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}

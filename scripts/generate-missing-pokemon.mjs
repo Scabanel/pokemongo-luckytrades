@@ -67,13 +67,15 @@ function spriteDexId($, td) {
   return m ? parseInt(m[1], 10) : null;
 }
 
-async function main() {
-  console.log("Téléchargement de la page margxt.fr…");
+// Scrape pur (aucune écriture disque) : réutilisé par le CLI ci-dessous et
+// par app/api/cron/refresh-data/route.ts. Ne renvoie pas missingShiny, qui
+// vient d'une source différente (voir generate-costume-catalog.mjs).
+export async function scrapeMissingPokemon() {
   const html = await fetchHtml(URL);
   const $ = cheerio.load(html);
 
-  const result = { missingEntirely: [], missingShiny: [], missingGigantamax: [], missingMega: [] };
-  const seen = { missingEntirely: new Set(), missingShiny: new Set(), missingGigantamax: new Set(), missingMega: new Set() };
+  const result = { missingEntirely: [], missingGigantamax: [], missingMega: [] };
+  const seen = { missingEntirely: new Set(), missingGigantamax: new Set(), missingMega: new Set() };
 
   let currentSection = null;
   let lastDexId = null;
@@ -113,6 +115,13 @@ async function main() {
     result[key].sort((a, b) => a.name.localeCompare(b.name, "fr", { sensitivity: "base" }));
   }
 
+  return result;
+}
+
+async function main() {
+  console.log("Téléchargement de la page margxt.fr…");
+  const result = await scrapeMissingPokemon();
+
   console.log(`Absents du jeu : ${result.missingEntirely.length}`);
   console.log(`Sans Méga-Évolution : ${result.missingMega.length}`);
   console.log(`Sans Gigamax : ${result.missingGigantamax.length}`);
@@ -125,13 +134,15 @@ async function main() {
   } catch {
     // Rien de généré encore, tant pis.
   }
-  delete result.missingShiny;
 
   await writeFile(OUT_PATH, JSON.stringify({ missingShiny: existing.missingShiny ?? [], ...result }, null, 2) + "\n", "utf-8");
   console.log(`✓ Écrit dans ${path.relative(process.cwd(), OUT_PATH)}`);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+// N'exécute le CLI que si le script est lancé directement (pas importé par la route cron).
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
