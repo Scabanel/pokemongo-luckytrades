@@ -104,9 +104,6 @@ export default function LandingPage() {
         </div>
       </div>
 
-      <footer className="relative z-10 text-center pb-6" style={{ fontSize: "0.7rem", opacity: 0.18 }}>
-        <a href="/admin" style={{ color: "#0affe0", textDecoration: "none", letterSpacing: "0.1em", fontFamily: "Exo 2, sans-serif", fontWeight: 700 }}>ADMINISTRATION</a>
-      </footer>
     </div>
   );
 }

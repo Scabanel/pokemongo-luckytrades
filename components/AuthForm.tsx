@@ -99,7 +99,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
   };
 
   const titles: Record<Mode, string> = {
-    login: "Administration",
+    login: "Connexion",
     signup: "Créer un compte",
     forgot: "Mot de passe oublié",
   };

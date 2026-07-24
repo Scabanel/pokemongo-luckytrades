@@ -308,10 +308,10 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               color: "#0affe0",
             }}
           >
-            ⚙️ Administration
+            {isAdmin ? "⚙️ Administration" : "🎒 Mon espace"}
           </h1>
           <p style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.85rem" }}>
-            Gestion des échanges chanceux du V
+            {isAdmin ? "Gestion des échanges chanceux du V" : "Gère ta liste d'échanges"}
           </p>
         </div>
         <div className="flex gap-3 flex-wrap">
