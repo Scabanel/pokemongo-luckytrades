@@ -4,6 +4,7 @@ import { useState } from "react";
 import ParticleBackground from "@/components/ParticleBackground";
 import PokemonSprite from "@/components/PokemonSprite";
 import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 import missingInGo from "@/data/missing-in-go.json";
 
 const MISSING_COLOR = "#ff6b6b";
@@ -41,13 +42,13 @@ export default function PasEncoreSortisPage() {
     q ? list.filter((p) => p.name.toLowerCase().includes(q)) : list;
 
   return (
-    <div className="relative min-h-screen" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
       <ParticleBackground />
       <div className="scanlines" />
 
       <SiteNav active="/pas-encore-sortis" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
         <header className="text-center mb-8">
           <h1
             style={{
@@ -133,6 +134,8 @@ export default function PasEncoreSortisPage() {
           </div>
         </div>
       </div>
+
+      <SiteFooter />
     </div>
   );
 }

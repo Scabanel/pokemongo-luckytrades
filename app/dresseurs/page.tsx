@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import ParticleBackground from "@/components/ParticleBackground";
 import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 import type { Trainer } from "@/lib/types";
 
 type TrainerWithCount = Trainer & { _count: { entries: number } };
@@ -19,13 +20,13 @@ export default function DresseursPage() {
   }, []);
 
   return (
-    <div className="relative min-h-screen" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
       <ParticleBackground />
       <div className="scanlines" />
 
       <SiteNav active="/dresseurs" />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 py-8">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 py-8 flex-1 w-full">
         <header className="text-center mb-10">
           <h1
             style={{
@@ -97,6 +98,8 @@ export default function DresseursPage() {
           </div>
         )}
       </div>
+
+      <SiteFooter />
     </div>
   );
 }

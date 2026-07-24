@@ -1,6 +1,8 @@
 "use client";
 
 import ParticleBackground from "@/components/ParticleBackground";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 
 const FEATURES = [
   {
@@ -22,6 +24,8 @@ export default function LandingPage() {
     <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
       <ParticleBackground />
       <div className="scanlines" />
+
+      <SiteNav active="/" />
 
       <div className="fixed pointer-events-none" style={{ top: "8%", left: "4%", width: 320, height: 320, borderRadius: "50%", background: "radial-gradient(circle, rgba(255,160,20,0.04) 0%, transparent 70%)", animation: "float-orb 8s ease-in-out infinite", zIndex: 0 }} />
       <div className="fixed pointer-events-none" style={{ bottom: "12%", right: "6%", width: 260, height: 260, borderRadius: "50%", background: "radial-gradient(circle, rgba(255,120,10,0.04) 0%, transparent 70%)", animation: "float-orb 10s ease-in-out infinite 2s", zIndex: 0 }} />
@@ -100,6 +104,7 @@ export default function LandingPage() {
         </div>
       </div>
 
+      <SiteFooter />
     </div>
   );
 }

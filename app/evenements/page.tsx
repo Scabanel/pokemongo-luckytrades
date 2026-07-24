@@ -2,6 +2,7 @@
 
 import ParticleBackground from "@/components/ParticleBackground";
 import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 import events from "@/data/upcoming-events.json";
 
 const EVENT_COLOR = "#ffd93d";
@@ -37,13 +38,13 @@ export default function EvenementsPage() {
   const upcoming = typed.filter((e) => e.start > now);
 
   return (
-    <div className="relative min-h-screen" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
       <ParticleBackground />
       <div className="scanlines" />
 
       <SiteNav active="/evenements" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
         <header className="text-center mb-8">
           <h1
             style={{
@@ -67,6 +68,8 @@ export default function EvenementsPage() {
           <EventSection title="À venir" events={upcoming} emptyText="Rien de prévu pour le moment." />
         </div>
       </div>
+
+      <SiteFooter />
     </div>
   );
 }

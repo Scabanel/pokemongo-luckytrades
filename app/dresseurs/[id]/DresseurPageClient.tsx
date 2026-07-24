@@ -6,6 +6,7 @@ import ParticleBackground from "@/components/ParticleBackground";
 import PokemonCard from "@/components/PokemonCard";
 import CardSkeleton from "@/components/CardSkeleton";
 import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 import type { PokemonEntry, EntryCategory, Trainer } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
@@ -83,13 +84,13 @@ export default function DresseurPageClient({ id }: { id: string }) {
   }
 
   return (
-    <div className="relative min-h-screen" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
       <ParticleBackground />
       <div className="scanlines" />
 
       <SiteNav active="/dresseurs" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
         <header className="text-center mb-8">
           <a href="/dresseurs" style={{ color: "rgba(232,237,245,0.35)", fontSize: "0.75rem", textDecoration: "none" }}>
             Tous les dresseurs
@@ -246,6 +247,8 @@ export default function DresseurPageClient({ id }: { id: string }) {
           )}
         </div>
       </div>
+
+      <SiteFooter />
     </div>
   );
 }

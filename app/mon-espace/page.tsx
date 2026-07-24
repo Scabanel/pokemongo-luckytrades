@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import ParticleBackground from "@/components/ParticleBackground";
 import AdminPanel from "@/components/AdminPanel";
 import AuthForm from "@/components/AuthForm";
+import SiteNav from "@/components/SiteNav";
+import SiteFooter from "@/components/SiteFooter";
 
 export default function MonEspacePage() {
   const router = useRouter();
@@ -47,12 +49,16 @@ export default function MonEspacePage() {
   }
 
   return (
-    <div className="relative min-h-screen" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
       <ParticleBackground />
-      <AdminPanel onLogout={() => {
-        setAuthenticated(false);
-        router.push("/mon-espace");
-      }} />
+      <SiteNav active="/mon-espace" />
+      <div className="flex-1">
+        <AdminPanel onLogout={() => {
+          setAuthenticated(false);
+          router.push("/mon-espace");
+        }} />
+      </div>
+      <SiteFooter />
     </div>
   );
 }
