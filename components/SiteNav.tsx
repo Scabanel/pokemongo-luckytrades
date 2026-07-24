@@ -4,6 +4,7 @@ const LINKS = [
   { href: "/", label: "Accueil" },
   { href: "/dresseurs", label: "Dresseurs" },
   { href: "/pas-encore-sortis", label: "Pas encore sortis" },
+  { href: "/evenements", label: "Événements" },
   { href: "/admin", label: "Administration" },
 ];
 

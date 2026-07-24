@@ -139,11 +139,12 @@ Deux mécanismes complémentaires :
 
 `app/api/cron/refresh-data`, déclenché chaque semaine tard dans la nuit
 (mercredi 02h UTC, voir `vercel.json`), refait tourner les scrapes de
-`npm run gen:costumes`/`gen:missing`/`gen:backgrounds` et commit sur GitHub
-les fichiers qui ont changé (`data/costumes.json`, `data/go-icons.json`,
-`data/backgrounds.json`, `data/missing-in-go.json`, `data/pokemon-backgrounds.json`,
-et les nouvelles images dans `public/event-backgrounds/`), même mécanisme
-et mêmes variables d'environnement que le backup ci-dessus. Un commit sur
+`npm run gen:costumes`/`gen:missing`/`gen:backgrounds`/`gen:events` et
+commit sur GitHub les fichiers qui ont changé (`data/costumes.json`,
+`data/go-icons.json`, `data/backgrounds.json`, `data/missing-in-go.json`,
+`data/pokemon-backgrounds.json`, `data/upcoming-events.json`, et les
+nouvelles images dans `public/event-backgrounds/`), même mécanisme et
+mêmes variables d'environnement que le backup ci-dessus. Un commit sur
 `main` déclenche un redéploiement Vercel qui embarque les données à jour.
 
 **Important** : cette route ne touche jamais la base de données. Les
@@ -163,6 +164,7 @@ le reste attend l'exécution suivante.
 - `app/dresseurs/page.tsx` — annuaire public de tous les dresseurs inscrits
 - `app/dresseurs/[id]/page.tsx` — liste publique d'un dresseur (miroir / recherche / donne)
 - `app/pas-encore-sortis/page.tsx` — Pokémon/formes/shiny pas encore sortis dans GO
+- `app/evenements/page.tsx` — événements Pokémon GO en cours et à venir (source margxt.fr)
 - `components/SiteNav.tsx` — navigation partagée entre ces pages publiques
 - `app/admin/` — interface de gestion (auth Supabase, voir `lib/auth.ts` et `components/AuthForm.tsx`)
 - `components/AdminPanel.tsx` — CRUD des échanges et dresseurs, filtré selon le compte connecté

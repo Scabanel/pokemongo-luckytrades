@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { scrapeMissingPokemon } from "@/scripts/generate-missing-pokemon.mjs";
 import { buildCostumeCatalog } from "@/scripts/generate-costume-catalog.mjs";
 import { scrapeValidatedBackgrounds, downloadImage, slugify } from "@/scripts/generate-pokemon-backgrounds.mjs";
+import { scrapeUpcomingEvents } from "@/scripts/generate-upcoming-events.mjs";
 import { putIfChangedText, createBinaryFile, listRepoDirectory, getExistingMissingInGo } from "@/lib/github-repo";
 import pokemonList from "@/data/pokemon.json";
 
@@ -153,6 +154,19 @@ export async function GET(request: NextRequest) {
     }
   } catch (err) {
     steps.pokemonBackgrounds = { error: err instanceof Error ? err.message : String(err) };
+  }
+
+  // Événements en cours/à venir (margxt.fr) : source indépendante des autres,
+  // une erreur ici n'empêche pas les autres rafraîchissements.
+  try {
+    const events = await scrapeUpcomingEvents();
+    steps.upcomingEvents = await putIfChangedText(
+      "data/upcoming-events.json",
+      JSON.stringify(events, null, 2) + "\n",
+      `Auto-refresh événements : ${runId}`
+    );
+  } catch (err) {
+    steps.upcomingEvents = { error: err instanceof Error ? err.message : String(err) };
   }
 
   const hasErrors = Object.values(steps).some((s) => "error" in s);

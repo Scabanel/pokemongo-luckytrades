@@ -12,6 +12,7 @@
     "gen:costumes": "node scripts/generate-costume-catalog.mjs",
     "gen:backgrounds": "node scripts/generate-pokemon-backgrounds.mjs",
     "gen:missing": "node scripts/generate-missing-pokemon.mjs",
+    "gen:events": "node scripts/generate-upcoming-events.mjs",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate"
   },
