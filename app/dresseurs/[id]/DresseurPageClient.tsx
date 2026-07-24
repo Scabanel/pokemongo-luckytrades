@@ -10,12 +10,6 @@ import type { PokemonEntry, EntryCategory, Trainer } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
 
-const TEAM_ICONS: Record<string, string> = {
-  instinct: "⚡",
-  mystic: "💧",
-  valor: "🔥",
-};
-
 function sortEntries(entries: PokemonEntry[]): PokemonEntry[] {
   return [...entries].sort((a, b) => {
     const pa = a.priority ?? 9999;
@@ -83,7 +77,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
       <div className="relative min-h-screen flex flex-col items-center justify-center" style={{ background: "#0b0700" }}>
         <ParticleBackground />
         <p style={{ color: "rgba(232,237,245,0.5)", marginBottom: 16 }}>Ce dresseur n&apos;existe pas.</p>
-        <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none" }}>← Dresseurs</a>
+        <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none" }}>Dresseurs</a>
       </div>
     );
   }
@@ -98,7 +92,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
         <header className="text-center mb-8">
           <a href="/dresseurs" style={{ color: "rgba(232,237,245,0.35)", fontSize: "0.75rem", textDecoration: "none" }}>
-            ← Tous les dresseurs
+            Tous les dresseurs
           </a>
           <div className="flex items-center justify-center gap-3 flex-wrap" style={{ marginTop: 6 }}>
             <h1
@@ -120,13 +114,13 @@ export default function DresseurPageClient({ id }: { id: string }) {
                 style={{ fontSize: "0.75rem", padding: "6px 12px" }}
                 title="Copier le lien de cette page"
               >
-                🔗 Partager
+                Partager
               </button>
             )}
           </div>
           {trainer?.team && (
             <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 4 }}>
-              {TEAM_ICONS[trainer.team]} {trainer.team.charAt(0).toUpperCase() + trainer.team.slice(1)} · Niveau {trainer.level ?? "?"}
+              {trainer.team.charAt(0).toUpperCase() + trainer.team.slice(1)} · Niveau {trainer.level ?? "?"}
             </p>
           )}
         </header>
@@ -163,7 +157,6 @@ export default function DresseurPageClient({ id }: { id: string }) {
                     }),
               }}
             >
-              <span>{CATEGORIES[key].icon}</span>
               <span>{tabLabel(key, trainer?.name ?? "…")}</span>
               <span
                 style={{
@@ -219,7 +212,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
                 className="btn-secondary"
                 style={{ padding: "7px 14px", fontSize: "0.78rem" }}
               >
-                ✕ Réinitialiser
+                Réinitialiser
               </button>
             )}
           </div>

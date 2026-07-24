@@ -7,12 +7,6 @@ import type { Trainer } from "@/lib/types";
 
 type TrainerWithCount = Trainer & { _count: { entries: number } };
 
-const TEAM_ICONS: Record<string, string> = {
-  instinct: "⚡",
-  mystic: "💧",
-  valor: "🔥",
-};
-
 export default function DresseursPage() {
   const [trainers, setTrainers] = useState<TrainerWithCount[]>([]);
   const [loading, setLoading] = useState(true);
@@ -94,7 +88,7 @@ export default function DresseursPage() {
                     {t.name}
                   </div>
                   <div style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.75rem", display: "flex", gap: 6, alignItems: "center" }}>
-                    {t.team && <span>{TEAM_ICONS[t.team]} Niveau {t.level ?? "?"}</span>}
+                    {t.team && <span>Niveau {t.level ?? "?"}</span>}
                     <span>{t._count.entries} échange{t._count.entries !== 1 ? "s" : ""}</span>
                   </div>
                 </div>

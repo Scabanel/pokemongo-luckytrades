@@ -5,16 +5,16 @@ export const alt = "Profil dresseur Lucky Trades";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const TEAM_STYLE: Record<string, { icon: string; color: string; label: string }> = {
-  instinct: { icon: "⚡", color: "#ffcc00", label: "Instinct" },
-  mystic: { icon: "💧", color: "#3a9bdc", label: "Mystic" },
-  valor: { icon: "🔥", color: "#ff6161", label: "Valor" },
+const TEAM_STYLE: Record<string, { color: string; label: string }> = {
+  instinct: { color: "#ffcc00", label: "Instinct" },
+  mystic: { color: "#3a9bdc", label: "Mystic" },
+  valor: { color: "#ff6161", label: "Valor" },
 };
 
 const CATEGORY_STYLE = [
-  { key: "mirror", icon: "🔮", label: "Miroir", color: "#b464ff" },
-  { key: "want", icon: "🔍", label: "Recherche", color: "#0affe0" },
-  { key: "give", icon: "🎁", label: "Donne", color: "#ffd93d" },
+  { key: "mirror", label: "Miroir", color: "#b464ff" },
+  { key: "want", label: "Recherche", color: "#0affe0" },
+  { key: "give", label: "Donne", color: "#ffd93d" },
 ] as const;
 
 export default async function Image({ params }: { params: Promise<{ id: string }> }) {
@@ -72,7 +72,6 @@ export default async function Image({ params }: { params: Promise<{ id: string }
             marginBottom: 14,
           }}
         >
-          <div style={{ display: "flex", fontSize: 72 }}>🎒</div>
           <div
             style={{
               display: "flex",
@@ -97,13 +96,12 @@ export default async function Image({ params }: { params: Promise<{ id: string }
               marginBottom: 36,
             }}
           >
-            <div style={{ display: "flex" }}>{team.icon}</div>
             <div style={{ display: "flex" }}>{team.label} · Niveau {trainer?.level ?? "?"}</div>
           </div>
         )}
 
         <div style={{ display: "flex", gap: 20 }}>
-          {CATEGORY_STYLE.map(({ key, icon, label, color }) => (
+          {CATEGORY_STYLE.map(({ key, label, color }) => (
             <div
               key={key}
               style={{
@@ -116,7 +114,6 @@ export default async function Image({ params }: { params: Promise<{ id: string }
                 border: `2px solid ${color}66`,
               }}
             >
-              <div style={{ display: "flex", fontSize: 36 }}>{icon}</div>
               <div style={{ display: "flex", fontSize: 40, fontWeight: 800, color }}>
                 {counts[key]}
               </div>

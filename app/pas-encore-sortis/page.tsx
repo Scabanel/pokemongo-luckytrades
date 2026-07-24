@@ -59,7 +59,7 @@ export default function PasEncoreSortisPage() {
               textShadow: "0 0 20px rgba(255,107,107,0.35)",
             }}
           >
-            🚧 Pas encore sortis dans GO
+            Pas encore sortis dans GO
           </h1>
           <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 6 }}>
             Pokémon, formes ou variantes chromatiques qui manquent encore à l&apos;appel.

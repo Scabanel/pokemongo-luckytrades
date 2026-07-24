@@ -344,20 +344,20 @@ const ENTRIES: SeedEntry[] = [
 
 // ────────────────────────────────────────────────────────────────────────────
 async function main() {
-  console.log("🧹 Suppression des données existantes...");
+  console.log("Suppression des données existantes...");
   await prisma.pokemonEntry.deleteMany();
   await prisma.trainer.deleteMany();
-  console.log("  ✓ Base vidée\n");
+  console.log("  Base vidée\n");
 
-  console.log("🌱 Création des dresseurs...");
+  console.log("Création des dresseurs...");
   const trainerMap: Record<string, string> = {};
   for (const name of TRAINERS) {
     const t = await prisma.trainer.create({ data: { name } });
     trainerMap[name] = t.id;
-    console.log(`  ✓ ${name}`);
+    console.log(`  ${name}`);
   }
 
-  console.log("\n📦 Insertion des entrées...");
+  console.log("\nInsertion des entrées...");
   let count = 0;
   for (const entry of ENTRIES) {
     await prisma.pokemonEntry.create({
@@ -374,7 +374,7 @@ async function main() {
     count++;
   }
 
-  console.log(`\n✅ ${count} entrées insérées · ${TRAINERS.length} dresseurs créés`);
+  console.log(`\n${count} entrées insérées · ${TRAINERS.length} dresseurs créés`);
   console.log(`   Miroir : ${ENTRIES.filter(e => e.category === "mirror").length}`);
   console.log(`   Recherche : ${ENTRIES.filter(e => e.category === "want").length}`);
   console.log(`   À donner : ${ENTRIES.filter(e => e.category === "give").length}`);

@@ -4,17 +4,14 @@ import ParticleBackground from "@/components/ParticleBackground";
 
 const FEATURES = [
   {
-    icon: "🎁",
     title: "Crée ta liste",
     text: "Indique ce que tu recherches, ce que tu peux donner, et tes échanges miroir. Toi seul peux la modifier.",
   },
   {
-    icon: "🔍",
     title: "Parcours les autres dresseurs",
     text: "Consulte librement ce que chaque dresseur inscrit recherche ou propose, sans même avoir de compte.",
   },
   {
-    icon: "🤝",
     title: "Organisez vos échanges",
     text: "Repérez une correspondance, contactez-vous en jeu, et marquez l'échange comme conclu une fois fait.",
   },
@@ -84,9 +81,8 @@ export default function LandingPage() {
         </div>
 
         <div className="grid gap-6 w-full" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
-          {FEATURES.map(({ icon, title, text }) => (
+          {FEATURES.map(({ title, text }) => (
             <div key={title} className="glass-card p-5" style={{ textAlign: "left" }}>
-              <div style={{ fontSize: "1.8rem", marginBottom: 10 }}>{icon}</div>
               <h2 style={{
                 fontFamily: "Exo 2, sans-serif",
                 fontWeight: 700,

@@ -38,12 +38,12 @@ interface AdminPanelProps {
 
 // Options du sélecteur de catégorie dans les formulaires d'ajout/modification
 // (dupliqué à l'identique dans les deux modales avant cette extraction).
-// La couleur vient de lib/categories.ts ; le libellé compact ("Miroir ✨") et
+// La couleur vient de lib/categories.ts ; le libellé compact ("Miroir") et
 // la teinte "active" restent spécifiques à ce composant.
 const CATEGORY_PICKER_OPTIONS = [
-  { val: "want" as const, label: "🔍 Je recherche", active: "rgba(10,255,224,0.15)", c: CATEGORIES.want.color },
-  { val: "give" as const, label: "🎁 Je peux donner", active: "rgba(255,217,61,0.15)", c: CATEGORIES.give.color },
-  { val: "mirror" as const, label: "🔮 Miroir ✨", active: "rgba(180,100,255,0.15)", c: CATEGORIES.mirror.color },
+  { val: "want" as const, label: "Je recherche", active: "rgba(10,255,224,0.15)", c: CATEGORIES.want.color },
+  { val: "give" as const, label: "Je peux donner", active: "rgba(255,217,61,0.15)", c: CATEGORIES.give.color },
+  { val: "mirror" as const, label: "Miroir", active: "rgba(180,100,255,0.15)", c: CATEGORIES.mirror.color },
 ];
 
 export default function AdminPanel({ onLogout }: AdminPanelProps) {
@@ -118,7 +118,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       a.download = `luckytrades-backup-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      toast.success("Export téléchargé ✓");
+      toast.success("Export téléchargé");
     } catch {
       toast.error("Erreur lors de l'export");
     }
@@ -149,7 +149,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
         body: JSON.stringify({ completed: true }),
       });
       if (!res.ok) throw new Error();
-      toast.success(`${entry.pokemonName} marqué comme échangé ✓`);
+      toast.success(`${entry.pokemonName} marqué comme échangé`);
     } catch {
       setEntries(prev);
       toast.error("Erreur");
@@ -227,7 +227,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       toast.error(`${failed} entrée${failed > 1 ? "s n'ont" : " n'a"} pas pu être marquée${failed > 1 ? "s" : ""} échangée${failed > 1 ? "s" : ""}`);
       fetchData();
     } else {
-      toast.success(`${ids.length} entrée${ids.length > 1 ? "s" : ""} marquée${ids.length > 1 ? "s" : ""} échangée${ids.length > 1 ? "s" : ""} ✓`);
+      toast.success(`${ids.length} entrée${ids.length > 1 ? "s" : ""} marquée${ids.length > 1 ? "s" : ""} échangée${ids.length > 1 ? "s" : ""}`);
     }
   };
 
@@ -324,7 +324,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               color: "#0affe0",
             }}
           >
-            {isAllTab ? "⚙️ Tous les dresseurs" : "🎒 Mon espace"}
+            {isAllTab ? "Tous les dresseurs" : "Mon espace"}
           </h1>
           <p style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.85rem" }}>
             {isAllTab ? "Vue globale admin, tous les échanges" : "Gère ta liste d'échanges"}
@@ -332,7 +332,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
         </div>
         <div className="flex gap-3 flex-wrap">
           <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none" }}>
-            ← Dresseurs
+            Dresseurs
           </a>
           <button
             onClick={() => setShowAddForm(true)}
@@ -348,7 +348,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               color: "#64b4ff", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem",
             }}
           >
-            ⬇ Export JSON
+            Export JSON
           </button>
           <button onClick={handleLogout} className="btn-danger">
             Déconnexion
@@ -435,7 +435,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   className="btn-secondary"
                   style={{ padding: "7px 14px", fontSize: "0.78rem" }}
                 >
-                  ✕ Réinitialiser
+                  Réinitialiser
                 </button>
               )}
             </div>
@@ -453,7 +453,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 {selectedIds.size} sélectionné{selectedIds.size > 1 ? "s" : ""}
               </span>
               <button onClick={handleBulkComplete} className="btn-success">
-                ✓ Marquer échangé{selectedIds.size > 1 ? "s" : ""}
+                Marquer échangé{selectedIds.size > 1 ? "s" : ""}
               </button>
               {bulkDeleteConfirm ? (
                 <>
@@ -469,7 +469,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 </>
               ) : (
                 <button onClick={() => setBulkDeleteConfirm(true)} className="btn-danger">
-                  🗑️ Supprimer
+                  Supprimer
                 </button>
               )}
               <button onClick={clearSelection} className="btn-secondary" style={{ padding: "6px 12px", marginLeft: "auto" }}>
@@ -479,7 +479,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           )}
 
           {CATEGORY_DISPLAY_ORDER.map((key) => ({
-            title: `${CATEGORIES[key].icon} ${CATEGORIES[key].label}`,
+            title: CATEGORIES[key].label,
             color: CATEGORIES[key].color,
             list: { mirror: listMirrors, want: listWants, give: listGives }[key],
           })).map(({ title, color, list }) => (
@@ -676,7 +676,7 @@ function MyAccountPanel({
       if (!res.ok) throw new Error();
       const updated = await res.json();
       onSaved(updated);
-      toast.success("Profil mis à jour ✓");
+      toast.success("Profil mis à jour");
     } catch {
       toast.error("Erreur lors de la mise à jour");
     } finally {
@@ -694,9 +694,9 @@ function MyAccountPanel({
           <label className="field-label">ÉQUIPE</label>
           <select value={team} onChange={(e) => setTeam(e.target.value)} className="glass-input mt-1" required>
             <option value="" disabled>Choisis ton équipe</option>
-            <option value="instinct">⚡ Instinct</option>
-            <option value="mystic">💧 Mystic</option>
-            <option value="valor">🔥 Valor</option>
+            <option value="instinct">Instinct</option>
+            <option value="mystic">Mystic</option>
+            <option value="valor">Valor</option>
           </select>
         </div>
         <div>
@@ -714,7 +714,7 @@ function MyAccountPanel({
           />
         </div>
         <button type="submit" className="btn-primary" disabled={loading} style={{ alignSelf: "flex-start" }}>
-          {loading ? "Sauvegarde…" : "✓ Sauvegarder"}
+          {loading ? "Sauvegarde…" : "Sauvegarder"}
         </button>
       </form>
     </div>
@@ -1058,7 +1058,7 @@ function EntryForm(props: EntryFormProps) {
                 fontFamily: "Exo 2, sans-serif",
               }}
             >
-              ✓ {addedCount} ajouté{addedCount > 1 ? "s" : ""}
+              {addedCount} ajouté{addedCount > 1 ? "s" : ""}
             </span>
           )}
         </div>
@@ -1085,7 +1085,7 @@ function EntryForm(props: EntryFormProps) {
                 fontFamily: "Exo 2, sans-serif",
               }}
             >
-              {form.category === "want" ? "Je recherche" : form.category === "mirror" ? "Miroir ✨" : "Je peux donner"}
+              {form.category === "want" ? "Je recherche" : form.category === "mirror" ? "Miroir" : "Je peux donner"}
             </span>
           </div>
         </div>
@@ -1347,7 +1347,7 @@ function EntryForm(props: EntryFormProps) {
             {mode === "add" ? (addedCount > 0 ? "Terminé" : "Annuler") : "Annuler"}
           </button>
           <button type="submit" className="btn-primary" disabled={loading}>
-            {mode === "add" ? (loading ? "Ajout…" : "✓ Ajouter") : (loading ? "Sauvegarde…" : "✓ Sauvegarder")}
+            {mode === "add" ? (loading ? "Ajout…" : "Ajouter") : (loading ? "Sauvegarde…" : "Sauvegarder")}
           </button>
         </div>
         {mode === "add" && addedCount > 0 && (
@@ -1577,7 +1577,7 @@ function SpritePicker({
             color: "#0affe0", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
           }}
         >
-          🎨 Sélectionner sprite
+          Sélectionner sprite
         </button>
         {currentUrl && (
           <button
@@ -1589,7 +1589,7 @@ function SpritePicker({
               color: "#ff6b6b", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
             }}
           >
-            ✕ Retirer
+            Retirer
           </button>
         )}
       </div>
@@ -1609,7 +1609,7 @@ function SpritePicker({
               <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#0affe0", fontWeight: 700, fontSize: "1.1rem" }}>
                 Sprites : <span style={{ textTransform: "capitalize" }}>{pokemonName}</span>
               </h3>
-              <button onClick={() => setOpen(false)} style={{ background: "none", border: "none", color: "#e8edf5", cursor: "pointer", fontSize: "1.1rem" }}>✕</button>
+              <button onClick={() => setOpen(false)} style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#e8edf5", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>Fermer</button>
             </div>
 
             {fetching ? (
@@ -1664,7 +1664,7 @@ function SpritePicker({
                   width: "100%", justifyContent: "space-between",
                 }}
               >
-                <span>🎭 Costumes officiels Pokémon GO ({officialCostumes.length})</span>
+                <span>Costumes officiels Pokémon GO ({officialCostumes.length})</span>
                 <span style={{ opacity: 0.7 }}>{showCostumes ? "▲" : "▼"}</span>
               </button>
               {showCostumes && (
@@ -1694,7 +1694,7 @@ function SpritePicker({
                   disabled={!manualUrl.startsWith("http")}
                   onClick={() => { onSelect(manualUrl); setOpen(false); setManualUrl(""); }}
                 >
-                  ✓ Utiliser
+                  Utiliser
                 </button>
               </div>
             </div>
@@ -1826,7 +1826,7 @@ function BackgroundPicker({
             color: "#b464ff", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
           }}
         >
-          🖼️ Sélectionner un fond{validated.length > 0 ? ` (${validated.length} confirmés)` : ""}
+          Sélectionner un fond{validated.length > 0 ? ` (${validated.length} confirmés)` : ""}
         </button>
         {currentUrl && (
           <button
@@ -1838,7 +1838,7 @@ function BackgroundPicker({
               color: "#ff6b6b", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
             }}
           >
-            ✕ Retirer
+            Retirer
           </button>
         )}
       </div>
@@ -1860,7 +1860,7 @@ function BackgroundPicker({
                   ? `Tous les fonds (${BACKGROUND_CATALOG.length})`
                   : `Fonds confirmés pour ce Pokémon (${validated.length})`}
               </h3>
-              <button onClick={() => setOpen(false)} style={{ background: "none", border: "none", color: "#e8edf5", cursor: "pointer", fontSize: "1.1rem" }}>✕</button>
+              <button onClick={() => setOpen(false)} style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#e8edf5", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>Fermer</button>
             </div>
 
             {validated.length > 0 && (
@@ -1874,7 +1874,7 @@ function BackgroundPicker({
                   onClick={() => setShowAll((v) => !v)}
                   style={{ background: "none", border: "none", color: "#b464ff", cursor: "pointer", textDecoration: "underline", fontSize: "0.7rem", padding: 0 }}
                 >
-                  {showAll ? "← Revenir aux fonds confirmés" : "Voir tous les fonds à la place →"}
+                  {showAll ? "Revenir aux fonds confirmés" : "Voir tous les fonds à la place"}
                 </button>
               </p>
             )}

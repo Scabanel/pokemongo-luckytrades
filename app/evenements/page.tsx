@@ -20,14 +20,14 @@ function formatRange(start: number, end: number) {
   const startDate = new Date(start);
   const endDate = new Date(end);
   // Précise l'année seulement si l'événement chevauche plusieurs années
-  // (sinon "22 mai → 12 avril" a l'air de finir avant de commencer).
+  // (sinon "22 mai au 12 avril" a l'air de finir avant de commencer).
   const sameYear = startDate.getFullYear() === endDate.getFullYear();
   const opts: Intl.DateTimeFormatOptions = sameYear
     ? { day: "2-digit", month: "long" }
     : { day: "2-digit", month: "long", year: "numeric" };
   const startStr = startDate.toLocaleDateString("fr-FR", opts);
   const endStr = endDate.toLocaleDateString("fr-FR", opts);
-  return startStr === endStr ? startStr : `${startStr} → ${endStr}`;
+  return startStr === endStr ? startStr : `${startStr} au ${endStr}`;
 }
 
 export default function EvenementsPage() {
@@ -55,7 +55,7 @@ export default function EvenementsPage() {
               textShadow: "0 0 20px rgba(255,217,61,0.35)",
             }}
           >
-            📅 Événements Pokémon GO
+            Événements Pokémon GO
           </h1>
           <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 6 }}>
             Community Day, raids spéciaux, saisons et événements locaux, en cours ou à venir.

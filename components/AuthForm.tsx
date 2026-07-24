@@ -110,12 +110,6 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
 
       <div className="glass-card animate-scale-in relative z-10 w-full max-w-sm p-8">
         <div className="text-center mb-8">
-          <div
-            className="mx-auto mb-4 w-16 h-16 rounded-full flex items-center justify-center animate-glow-pulse"
-            style={{ background: "rgba(10,255,224,0.1)", border: "1px solid rgba(10,255,224,0.3)", fontSize: "2rem" }}
-          >
-            🔐
-          </div>
           <h1 className="neon-text" style={{ fontFamily: "Exo 2, sans-serif", fontSize: "1.5rem", fontWeight: 800, color: "#0affe0" }}>
             {titles[mode]}
           </h1>
@@ -215,9 +209,9 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               <label style={labelStyle}>ÉQUIPE</label>
               <select value={team} onChange={(e) => setTeam(e.target.value)} className="glass-input" required>
                 <option value="" disabled>Choisis ton équipe</option>
-                <option value="instinct">⚡ Instinct</option>
-                <option value="mystic">💧 Mystic</option>
-                <option value="valor">🔥 Valor</option>
+                <option value="instinct">Instinct</option>
+                <option value="mystic">Mystic</option>
+                <option value="valor">Valor</option>
               </select>
             </div>
             <div>
@@ -273,7 +267,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
                 onClick={() => { resetMessages(); setMode("login"); }}
                 style={{ color: "#0affe0", fontSize: "0.8rem", background: "none" }}
               >
-                ← Retour à la connexion
+                Retour à la connexion
               </button>
             </div>
           </form>
@@ -281,7 +275,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
 
         <div className="text-center mt-6">
           <a href="/dresseurs" style={{ color: "rgba(232,237,245,0.3)", fontSize: "0.75rem" }}>
-            ← Voir les dresseurs
+            Voir les dresseurs
           </a>
         </div>
       </div>

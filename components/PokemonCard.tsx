@@ -93,7 +93,7 @@ interface PokemonCardProps {
 const CATEGORY_LABEL: Record<string, string> = {
   want: "Je recherche",
   give: "Je peux donner",
-  mirror: "Échange miroir ✨",
+  mirror: "Échange miroir",
 };
 
 function getPriorityStyle(priority: number): { bg: string; border: string; color: string; shadow: string } {
@@ -178,10 +178,10 @@ export default function PokemonCard({
             position: "absolute", top: 12, right: 12,
             background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
             borderRadius: 8, color: "#e8edf5", cursor: "pointer",
-            fontSize: "0.85rem", padding: "2px 8px",
+            fontSize: "0.75rem", padding: "4px 10px",
           }}
         >
-          ✕
+          Fermer
         </button>
 
         {/* Priority badge in modal */}
@@ -229,7 +229,7 @@ export default function PokemonCard({
               borderRadius: 999, padding: "3px 12px",
               fontSize: "0.72rem", fontWeight: 800, color: "#ff288c",
               fontFamily: "Exo 2, sans-serif",
-            }}>✦ Gigamax</span>
+            }}>Gigamax</span>
           )}
           {isDynamax && (
             <span style={{
@@ -237,7 +237,7 @@ export default function PokemonCard({
               borderRadius: 999, padding: "3px 12px",
               fontSize: "0.72rem", fontWeight: 800, color: "#e03030",
               fontFamily: "Exo 2, sans-serif",
-            }}>◈ Dynamax</span>
+            }}>Dynamax</span>
           )}
           {isShiny && (
             <span style={{
@@ -362,7 +362,7 @@ export default function PokemonCard({
                   onClick={() => (quantity > 1 ? onQuantityChange?.(-1) : onComplete?.())}
                   className="btn-success"
                 >
-                  {quantity > 1 ? "✓ −1 (donné)" : "✓ Échangé"}
+                  {quantity > 1 ? "−1 (donné)" : "Échangé"}
                 </button>
                 {quantity > 1 && (
                   <button
@@ -379,10 +379,10 @@ export default function PokemonCard({
                   className="btn-secondary"
                   style={{ padding: "6px 12px", fontSize: "0.8rem" }}
                 >
-                  ✏️ Modifier
+                  Modifier
                 </button>
                 <button onClick={() => setConfirmDelete(true)} className="btn-danger">
-                  🗑️ Supprimer
+                  Supprimer
                 </button>
               </div>
             )}
@@ -471,9 +471,7 @@ export default function PokemonCard({
               boxShadow: selected ? "0 0 12px rgba(10,255,224,0.5)" : "none",
               transition: "all 0.12s",
             }}
-          >
-            {selected ? "✓" : ""}
-          </button>
+          />
         )}
 
         {/* Top-right badges */}
@@ -490,14 +488,14 @@ export default function PokemonCard({
               background: "rgba(255,40,140,0.2)", border: "1px solid rgba(255,40,140,0.55)",
               borderRadius: 8, padding: "1px 6px", fontSize: "0.6rem", fontWeight: 800,
               color: "#ff288c", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
-            }}>✦ GMAX</div>
+            }}>GMAX</div>
           )}
           {isDynamax && (
             <div style={{
               background: "rgba(210,40,40,0.2)", border: "1px solid rgba(210,40,40,0.55)",
               borderRadius: 8, padding: "1px 6px", fontSize: "0.6rem", fontWeight: 800,
               color: "#e03030", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
-            }}>◈ DMAX</div>
+            }}>DMAX</div>
           )}
           {isMirror && (
             <div

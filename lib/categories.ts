@@ -5,30 +5,27 @@ import type { EntryCategory } from "./types";
 // Changer une couleur de catégorie ne demande plus qu'une seule modification ici.
 //
 // Note : le libellé "miroir" existe par ailleurs en 3 variantes légèrement
-// différentes selon l'écran ("Échanges miroir" / "Échange miroir ✨" / "Miroir ✨").
+// différentes selon l'écran ("Échanges miroir" / "Échange miroir" / "Miroir").
 // Elles ne sont pas unifiées ici pour ne pas changer du texte visible sans
-// que ce soit demandé — voir le label ci-dessous qui reprend la variante la
+// que ce soit demandé, voir le label ci-dessous qui reprend la variante la
 // plus répandue ; les écrans qui affichent un texte différent gardent leur
 // propre libellé local.
 export const CATEGORIES: Record<
   EntryCategory,
-  { label: string; icon: string; color: string; glow: string }
+  { label: string; color: string; glow: string }
 > = {
   mirror: {
     label: "Échanges miroir",
-    icon: "🔮",
     color: "#b464ff",
     glow: "radial-gradient(circle, #b464ff 0%, transparent 70%)",
   },
   want: {
     label: "Je recherche",
-    icon: "🔍",
     color: "#0affe0",
     glow: "radial-gradient(circle, #0affe0 0%, transparent 70%)",
   },
   give: {
     label: "Je peux donner",
-    icon: "🎁",
     color: "#ffd93d",
     glow: "radial-gradient(circle, #ffd93d 0%, transparent 70%)",
   },

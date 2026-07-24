@@ -15,10 +15,10 @@ export const EMPTY_ENTRY_FILTERS: EntryFilters = {
 
 export const ENTRY_FILTER_CHIPS: { key: keyof EntryFilters; label: string }[] = [
   { key: "shiny", label: "✨ Shiny" },
-  { key: "fond", label: "🖼️ Fond" },
-  { key: "gigamax", label: "✦ Gigamax" },
-  { key: "dynamax", label: "◈ Dynamax" },
-  { key: "costume", label: "🎭 Costume" },
+  { key: "fond", label: "Fond" },
+  { key: "gigamax", label: "Gigamax" },
+  { key: "dynamax", label: "Dynamax" },
+  { key: "costume", label: "Costume" },
 ];
 
 // Même heuristique que components/PokemonCard.tsx pour rester cohérent avec

@@ -50,12 +50,6 @@ export default function ResetPasswordPage() {
 
       <div className="glass-card animate-scale-in relative z-10 w-full max-w-sm p-8">
         <div className="text-center mb-8">
-          <div
-            className="mx-auto mb-4 w-16 h-16 rounded-full flex items-center justify-center animate-glow-pulse"
-            style={{ background: "rgba(10,255,224,0.1)", border: "1px solid rgba(10,255,224,0.3)", fontSize: "2rem" }}
-          >
-            🔑
-          </div>
           <h1 className="neon-text" style={{ fontFamily: "Exo 2, sans-serif", fontSize: "1.5rem", fontWeight: 800, color: "#0affe0" }}>
             Nouveau mot de passe
           </h1>
