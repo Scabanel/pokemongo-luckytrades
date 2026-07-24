@@ -34,6 +34,7 @@ const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> =
   costume:      { bg: "rgba(200,100,255,0.2)",  text: "#c864ff", border: "rgba(200,100,255,0.5)" },
   evenement:    { bg: "rgba(180,100,255,0.2)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
   "événement":  { bg: "rgba(180,100,255,0.2)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
+  fond:         { bg: "rgba(100,220,180,0.2)",  text: "#64dcb4", border: "rgba(100,220,180,0.5)" },
 };
 const DEFAULT_TAG_COLOR = { bg: "rgba(100,180,255,0.15)", text: "#64b4ff", border: "rgba(100,180,255,0.4)" };
 function getTagColor(tag: string) { return TAG_COLORS[tag.toLowerCase()] ?? DEFAULT_TAG_COLOR; }

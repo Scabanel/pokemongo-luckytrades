@@ -1227,7 +1227,47 @@ function EntryForm(props: EntryFormProps) {
           </button>
         </div>
 
-        {/* Le reste (en échange de, notes, tags, priorité, quantité, sprite,
+        {/* Tags : liste fermée (voir SELECTABLE_TAGS), à côté de SHINY pour
+            rester aussi accessible - ce sont les attributs les plus souvent
+            utilisés pour filtrer/reconnaître une entrée. */}
+        <div>
+          <label className="field-label">TAGS</label>
+          <div className="flex gap-2 flex-wrap mt-1">
+            {SELECTABLE_TAGS.map(({ key, label }) => {
+              const active = form.tags.includes(key);
+              const c = getTagColor(key);
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() =>
+                    setForm((f) => ({
+                      ...f,
+                      tags: active ? f.tags.filter((t) => t !== key) : [...f.tags, key],
+                    }))
+                  }
+                  style={{
+                    padding: "8px 16px",
+                    borderRadius: 10,
+                    border: "1px solid",
+                    cursor: "pointer",
+                    fontFamily: "Exo 2, sans-serif",
+                    fontWeight: 600,
+                    fontSize: "0.85rem",
+                    transition: "all 0.2s",
+                    ...(active
+                      ? { background: c.bg, borderColor: c.border, color: c.text }
+                      : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Le reste (en échange de, notes, priorité, quantité, sprite,
             fond) est replié par défaut : un ajout simple n'a besoin que de
             catégorie + Pokémon + shiny, le reste est occasionnel. */}
         <button
@@ -1299,12 +1339,6 @@ function EntryForm(props: EntryFormProps) {
                 className="glass-input mt-1"
                 placeholder="Notes..."
               />
-            </div>
-
-            {/* Tags */}
-            <div>
-              <label className="field-label">TAGS (optionnel)</label>
-              <TagInput tags={form.tags} onChange={(tags) => setForm((f) => ({ ...f, tags }))} />
             </div>
 
             {/* Priority (want only) */}
@@ -1952,7 +1986,7 @@ function BackgroundPicker({
   );
 }
 
-// ─── TagInput ─────────────────────────────────────────────────────────────────
+// ─── Tags ─────────────────────────────────────────────────────────────────────
 
 const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> = {
   halloween:    { bg: "rgba(255,107,0,0.18)",   text: "#ff6b00", border: "rgba(255,107,0,0.5)" },
@@ -1967,76 +2001,26 @@ const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> =
   costume:      { bg: "rgba(200,100,255,0.18)",  text: "#c864ff", border: "rgba(200,100,255,0.5)" },
   evenement:    { bg: "rgba(180,100,255,0.18)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
   "événement":  { bg: "rgba(180,100,255,0.18)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
+  fond:         { bg: "rgba(100,220,180,0.18)",  text: "#64dcb4", border: "rgba(100,220,180,0.5)" },
 };
 const DEFAULT_TAG_COLOR = { bg: "rgba(100,180,255,0.15)", text: "#64b4ff", border: "rgba(100,180,255,0.4)" };
 
+// Seuls tags proposés à la création/modification (voir le bloc TAGS à côté de
+// SHINY) : liste fermée plutôt que du texte libre, pour que gigamax/dynamax/
+// costume restent fiables (utilisés pour la détection sur PokemonCard.tsx et
+// les filtres de recherche) au lieu de dépendre d'une saisie manuelle
+// cohérente. D'anciens tags libres (halloween, noël...) peuvent encore exister
+// sur des entrées créées avant ce changement ; ce formulaire ne les propose
+// plus, mais ne les efface pas non plus.
+const SELECTABLE_TAGS: { key: string; label: string }[] = [
+  { key: "costume", label: "Costume" },
+  { key: "fond", label: "Fond" },
+  { key: "dynamax", label: "Dynamax" },
+  { key: "gigamax", label: "Gigamax" },
+];
+
 function getTagColor(tag: string) {
   return TAG_COLORS[tag.toLowerCase()] ?? DEFAULT_TAG_COLOR;
-}
-
-function TagInput({ tags, onChange }: { tags: string[]; onChange: (tags: string[]) => void }) {
-  const [input, setInput] = useState("");
-
-  const add = () => {
-    const trimmed = input.trim().toLowerCase();
-    if (trimmed && !tags.includes(trimmed)) onChange([...tags, trimmed]);
-    setInput("");
-  };
-
-  return (
-    <div style={{ marginTop: 6 }}>
-      {tags.length > 0 && (
-        <div className="flex gap-1 flex-wrap mb-2">
-          {tags.map((tag) => {
-            const c = getTagColor(tag);
-            return (
-              <span
-                key={tag}
-                style={{
-                  display: "inline-flex", alignItems: "center", gap: 4,
-                  background: c.bg, border: `1px solid ${c.border}`,
-                  borderRadius: 999, padding: "2px 8px 2px 10px",
-                  fontSize: "0.72rem", fontWeight: 700, color: c.text,
-                  fontFamily: "Exo 2, sans-serif",
-                }}
-              >
-                {tag}
-                <button
-                  type="button"
-                  onClick={() => onChange(tags.filter((t) => t !== tag))}
-                  style={{ background: "none", border: "none", cursor: "pointer", color: c.text, opacity: 0.7, padding: 0, lineHeight: 1, fontSize: "0.8rem" }}
-                >
-                  ×
-                </button>
-              </span>
-            );
-          })}
-        </div>
-      )}
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add(); } }}
-          className="glass-input"
-          placeholder="Ex: halloween, gigamax, costume..."
-          style={{ flex: 1, fontSize: "0.82rem" }}
-        />
-        <button
-          type="button"
-          onClick={add}
-          style={{
-            padding: "6px 12px", borderRadius: 10, cursor: "pointer",
-            background: "rgba(100,180,255,0.1)", border: "1px solid rgba(100,180,255,0.3)",
-            color: "#64b4ff", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.8rem",
-          }}
-        >
-          + Ajouter
-        </button>
-      </div>
-    </div>
-  );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
