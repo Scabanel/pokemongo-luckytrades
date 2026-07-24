@@ -828,7 +828,7 @@ function AdminEntryRow({
   const quantity = entry.quantity ?? 1;
   return (
     <div
-      className="flex items-center gap-4 p-4"
+      className="flex items-center gap-4 p-5"
       style={{
         background: isSelected ? "rgba(10,255,224,0.05)" : "rgba(255,255,255,0.03)",
         borderRadius: 16,
@@ -865,7 +865,7 @@ function AdminEntryRow({
 
       {/* Sprite (+ fond d'événement en arrière-plan si défini) */}
       <div style={{
-        width: 48, height: 48, borderRadius: 10, flexShrink: 0,
+        width: 60, height: 60, borderRadius: 12, flexShrink: 0,
         display: "flex", alignItems: "center", justifyContent: "center",
         ...(entry.backgroundUrl && {
           backgroundImage: `url(${entry.backgroundUrl})`,
@@ -873,7 +873,7 @@ function AdminEntryRow({
           backgroundPosition: "center",
         }),
       }}>
-        <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={48} shiny={entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false)} customSpriteUrl={entry.customSpriteUrl} />
+        <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={56} shiny={entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false)} customSpriteUrl={entry.customSpriteUrl} />
       </div>
 
       {/* Info */}
@@ -884,7 +884,7 @@ function AdminEntryRow({
               fontFamily: "Exo 2, sans-serif",
               fontWeight: 700,
               textTransform: "capitalize",
-              fontSize: "0.95rem",
+              fontSize: "1.05rem",
               color: color,
             }}
           >
@@ -1053,6 +1053,22 @@ function EntryForm(props: EntryFormProps) {
   const [showPokeSuggestions, setShowPokeSuggestions] = useState(false);
   const [showTradeSuggestions, setShowTradeSuggestions] = useState(false);
   const [addedCount, setAddedCount] = useState(0);
+  // "Plus d'options" reste replié par défaut pour réduire la friction d'un
+  // ajout simple (le cas le plus fréquent) ; s'ouvre automatiquement en
+  // modification si l'entrée a déjà l'un de ces champs renseigné, pour ne
+  // jamais cacher une donnée existante sans que ce soit visible.
+  const [showAdvanced, setShowAdvanced] = useState(() => {
+    if (!entry) return false;
+    return !!(
+      entry.tradeForPokemonName ||
+      entry.notes ||
+      parseTags(entry.tags).length > 0 ||
+      entry.priority ||
+      (entry.quantity ?? 1) > 1 ||
+      entry.customSpriteUrl ||
+      entry.backgroundUrl
+    );
+  });
   const pokeRef = useRef<HTMLDivElement>(null);
   const tradeRef = useRef<HTMLDivElement>(null);
   const pokeInputRef = useRef<HTMLInputElement>(null);
@@ -1272,112 +1288,28 @@ function EntryForm(props: EntryFormProps) {
           </div>
         )}
 
-        {/* Trainer — figé au dresseur du compte connecté pour un non-admin
-            (déjà forcé côté serveur, le disabled est ici du confort/clarté UI) */}
-        <div>
-          <label className="field-label">DRESSEUR</label>
-          <select
-            value={form.trainerId}
-            onChange={(e) => setForm((f) => ({ ...f, trainerId: e.target.value }))}
-            className="glass-input mt-1"
-            disabled={!isAdmin}
-          >
-            <option value="">Aucun dresseur</option>
-            {trainers.map((t) => (
-              <option key={t.id} value={t.id}>
-                {t.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Trade for */}
-        <div ref={tradeRef} style={{ position: "relative" }}>
-          <label className="field-label">EN ÉCHANGE DE</label>
-          <div className="flex gap-2 items-center mt-1">
-            {form.tradeForPokemonId > 0 && (
-              <PokemonSprite pokemonId={form.tradeForPokemonId} alt={form.tradeForPokemonName} size={40} />
-            )}
-            <div style={{ flex: 1, position: "relative" }}>
-              <input
-                type="text"
-                value={tradeSearch}
-                onChange={(e) => {
-                  setTradeSearch(e.target.value);
-                  setShowTradeSuggestions(true);
-                  if (!e.target.value) setForm((f) => ({ ...f, tradeForPokemonName: "", tradeForPokemonId: 0 }));
-                }}
-                onFocus={() => setShowTradeSuggestions(true)}
-                className="glass-input"
-                placeholder={mode === "add" ? "Pokémon en échange (optionnel)..." : "Pokémon en échange..."}
-                autoComplete="off"
-              />
-              {showTradeSuggestions && tradeSuggestions.length > 0 && (
-                <SuggestionDropdown
-                  options={tradeSuggestions}
-                  onSelect={(p) => {
-                    setForm((f) => ({ ...f, tradeForPokemonName: p.frenchName, tradeForPokemonId: p.id }));
-                    setTradeSearch(p.frenchName);
-                    setShowTradeSuggestions(false);
-                  }}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Notes */}
-        <div>
-          <label className="field-label">{mode === "add" ? "NOTES (optionnel)" : "NOTES"}</label>
-          <input
-            type="text"
-            value={form.notes}
-            onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-            className="glass-input mt-1"
-            placeholder="Notes..."
-          />
-        </div>
-
-        {/* Tags */}
-        <div>
-          <label className="field-label">TAGS (optionnel)</label>
-          <TagInput tags={form.tags} onChange={(tags) => setForm((f) => ({ ...f, tags }))} />
-        </div>
-
-        {/* Priority (want only) */}
-        {form.category === "want" && (
+        {/* Dresseur : uniquement pour l'admin (un compte normal ne peut de
+            toute façon créer que sous son propre dresseur, déjà forcé côté
+            serveur : lui montrer un menu figé n'apporterait que du bruit). */}
+        {isAdmin && (
           <div>
-            <label className="field-label">PRIORITÉ (1–10, optionnel)</label>
-            <input
-              type="number"
-              min={1}
-              max={10}
-              value={form.priority ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value ? Number(e.target.value) : null }))}
+            <label className="field-label">DRESSEUR</label>
+            <select
+              value={form.trainerId}
+              onChange={(e) => setForm((f) => ({ ...f, trainerId: e.target.value }))}
               className="glass-input mt-1"
-              placeholder="Ex : 1 = priorité max"
-              style={{ width: 180 }}
-            />
+            >
+              <option value="">Aucun dresseur</option>
+              {trainers.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
           </div>
         )}
 
-        {/* Quantité (give/mirror) — évite de dupliquer la même entrée N fois
-            quand on a plusieurs exemplaires du même Pokémon à donner. */}
-        {form.category !== "want" && (
-          <div>
-            <label className="field-label">QUANTITÉ</label>
-            <input
-              type="number"
-              min={1}
-              value={form.quantity}
-              onChange={(e) => setForm((f) => ({ ...f, quantity: Math.max(1, Number(e.target.value) || 1) }))}
-              className="glass-input mt-1"
-              style={{ width: 120 }}
-            />
-          </div>
-        )}
-
-        {/* Shiny */}
+        {/* Shiny : reste visible par défaut, c'est le champ le plus souvent utilisé */}
         <div>
           <label className="field-label">SHINY</label>
           <button
@@ -1405,28 +1337,143 @@ function EntryForm(props: EntryFormProps) {
           </button>
         </div>
 
-        {/* Sprite personnalisé */}
-        {(mode === "edit" || form.pokemonId > 0) && (
-          <div>
-            <label className="field-label">SPRITE PERSONNALISÉ (optionnel)</label>
-            <SpritePicker
-              pokemonId={mode === "edit" ? entry!.pokemonId : form.pokemonId}
-              pokemonName={mode === "edit" ? entry!.pokemonName : form.pokemonName}
-              currentUrl={form.customSpriteUrl}
-              onSelect={(url) => setForm((f) => ({ ...f, customSpriteUrl: url }))}
-            />
-          </div>
-        )}
+        {/* Le reste (en échange de, notes, tags, priorité, quantité, sprite,
+            fond) est replié par défaut : un ajout simple n'a besoin que de
+            catégorie + Pokémon + shiny, le reste est occasionnel. */}
+        <button
+          type="button"
+          onClick={() => setShowAdvanced((v) => !v)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            alignSelf: "flex-start",
+            padding: "6px 4px",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "#0affe0",
+            fontFamily: "Exo 2, sans-serif",
+            fontWeight: 700,
+            fontSize: "0.8rem",
+          }}
+        >
+          <span style={{ transform: showAdvanced ? "rotate(90deg)" : "none", transition: "transform 0.15s", display: "inline-block" }}>▸</span>
+          {showAdvanced ? "Moins d'options" : "Plus d'options"}
+        </button>
 
-        {/* Fond d'événement (optionnel) */}
-        <div>
-          <label className="field-label">FOND D'ÉVÉNEMENT (optionnel)</label>
-          <BackgroundPicker
-            pokemonId={mode === "edit" ? entry!.pokemonId : form.pokemonId}
-            currentUrl={form.backgroundUrl}
-            onSelect={(url) => setForm((f) => ({ ...f, backgroundUrl: url }))}
-          />
-        </div>
+        {showAdvanced && (
+          <>
+            {/* Trade for */}
+            <div ref={tradeRef} style={{ position: "relative" }}>
+              <label className="field-label">EN ÉCHANGE DE</label>
+              <div className="flex gap-2 items-center mt-1">
+                {form.tradeForPokemonId > 0 && (
+                  <PokemonSprite pokemonId={form.tradeForPokemonId} alt={form.tradeForPokemonName} size={40} />
+                )}
+                <div style={{ flex: 1, position: "relative" }}>
+                  <input
+                    type="text"
+                    value={tradeSearch}
+                    onChange={(e) => {
+                      setTradeSearch(e.target.value);
+                      setShowTradeSuggestions(true);
+                      if (!e.target.value) setForm((f) => ({ ...f, tradeForPokemonName: "", tradeForPokemonId: 0 }));
+                    }}
+                    onFocus={() => setShowTradeSuggestions(true)}
+                    className="glass-input"
+                    placeholder={mode === "add" ? "Pokémon en échange (optionnel)..." : "Pokémon en échange..."}
+                    autoComplete="off"
+                  />
+                  {showTradeSuggestions && tradeSuggestions.length > 0 && (
+                    <SuggestionDropdown
+                      options={tradeSuggestions}
+                      onSelect={(p) => {
+                        setForm((f) => ({ ...f, tradeForPokemonName: p.frenchName, tradeForPokemonId: p.id }));
+                        setTradeSearch(p.frenchName);
+                        setShowTradeSuggestions(false);
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Notes */}
+            <div>
+              <label className="field-label">{mode === "add" ? "NOTES (optionnel)" : "NOTES"}</label>
+              <input
+                type="text"
+                value={form.notes}
+                onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
+                className="glass-input mt-1"
+                placeholder="Notes..."
+              />
+            </div>
+
+            {/* Tags */}
+            <div>
+              <label className="field-label">TAGS (optionnel)</label>
+              <TagInput tags={form.tags} onChange={(tags) => setForm((f) => ({ ...f, tags }))} />
+            </div>
+
+            {/* Priority (want only) */}
+            {form.category === "want" && (
+              <div>
+                <label className="field-label">PRIORITÉ (1–10, optionnel)</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={10}
+                  value={form.priority ?? ""}
+                  onChange={(e) => setForm((f) => ({ ...f, priority: e.target.value ? Number(e.target.value) : null }))}
+                  className="glass-input mt-1"
+                  placeholder="Ex : 1 = priorité max"
+                  style={{ width: 180 }}
+                />
+              </div>
+            )}
+
+            {/* Quantité (give/mirror) — évite de dupliquer la même entrée N fois
+                quand on a plusieurs exemplaires du même Pokémon à donner. */}
+            {form.category !== "want" && (
+              <div>
+                <label className="field-label">QUANTITÉ</label>
+                <input
+                  type="number"
+                  min={1}
+                  value={form.quantity}
+                  onChange={(e) => setForm((f) => ({ ...f, quantity: Math.max(1, Number(e.target.value) || 1) }))}
+                  className="glass-input mt-1"
+                  style={{ width: 120 }}
+                />
+              </div>
+            )}
+
+            {/* Sprite personnalisé */}
+            {(mode === "edit" || form.pokemonId > 0) && (
+              <div>
+                <label className="field-label">SPRITE PERSONNALISÉ (optionnel)</label>
+                <SpritePicker
+                  pokemonId={mode === "edit" ? entry!.pokemonId : form.pokemonId}
+                  pokemonName={mode === "edit" ? entry!.pokemonName : form.pokemonName}
+                  currentUrl={form.customSpriteUrl}
+                  onSelect={(url) => setForm((f) => ({ ...f, customSpriteUrl: url }))}
+                />
+              </div>
+            )}
+
+            {/* Fond d'événement (optionnel) */}
+            <div>
+              <label className="field-label">FOND D'ÉVÉNEMENT (optionnel)</label>
+              <BackgroundPicker
+                pokemonId={mode === "edit" ? entry!.pokemonId : form.pokemonId}
+                currentUrl={form.backgroundUrl}
+                onSelect={(url) => setForm((f) => ({ ...f, backgroundUrl: url }))}
+              />
+            </div>
+          </>
+        )}
 
         <div className="flex gap-2 justify-end mt-2">
           <button type="button" onClick={onClose} className="btn-secondary">
