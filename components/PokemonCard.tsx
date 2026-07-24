@@ -5,6 +5,20 @@ import { createPortal } from "react-dom";
 import PokemonSprite from "./PokemonSprite";
 import type { PokemonEntry } from "@/lib/types";
 import { CATEGORIES, getCategory } from "@/lib/categories";
+import gigantamaxIcons from "@/data/gigantamax-icons.json";
+
+// Sprite officiel de forme Gigamax (aspect réellement différent en jeu), pour
+// la poignée d'espèces qui en ont un, voir scripts/generate-costume-catalog.mjs.
+// Aucun override équivalent pour Dynamax : ça ne change pas l'apparence dans GO.
+const GIGANTAMAX_ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
+const GIGANTAMAX_ICONS = gigantamaxIcons as Record<string, string[]>;
+
+function getGigantamaxSpriteUrl(pokemonId: number, shiny: boolean): string | null {
+  const files = GIGANTAMAX_ICONS[String(pokemonId)];
+  if (!files) return null;
+  const filename = shiny && files[1] ? files[1] : files[0];
+  return `${GIGANTAMAX_ICON_BASE}/${encodeURIComponent(filename)}`;
+}
 
 function parseTags(raw: string | null | undefined): string[] {
   if (!raw) return [];
@@ -74,6 +88,10 @@ interface PokemonCardProps {
   selectable?: boolean;
   selected?: boolean;
   onToggleSelect?: () => void;
+  // Une fois qu'au moins une tuile est sélectionnée, cliquer n'importe où sur
+  // les autres bascule leur sélection au lieu d'ouvrir la fiche détail :
+  // évite de viser la petite pastille à chaque tuile pour une sélection groupée.
+  selectionActive?: boolean;
   canEdit?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
@@ -109,6 +127,7 @@ export default function PokemonCard({
   selectable,
   selected,
   onToggleSelect,
+  selectionActive,
   canEdit,
   onEdit,
   onDelete,
@@ -133,6 +152,10 @@ export default function PokemonCard({
   const tags = parseTags(entry.tags);
   const isDynamax = entry.pokemonName.toLowerCase().includes("dynamax") && !entry.pokemonName.toLowerCase().includes("gigamax");
   const isGigamax = entry.pokemonName.toLowerCase().includes("gigamax");
+  // Respecte un sprite choisi à la main (entry.customSpriteUrl) ; sinon, pour
+  // les espèces qui Gigamax réellement dans GO, utilise leur vrai visuel
+  // Gigamax officiel au lieu du sprite de base.
+  const effectiveSpriteUrl = entry.customSpriteUrl ?? (isGigamax ? getGigantamaxSpriteUrl(entry.pokemonId, isShiny) ?? undefined : undefined);
   const eventTheme = getEventTheme(entry.pokemonName, tags);
   const categoryColor = getCategory(entry.category)?.color ?? CATEGORIES.want.color;
   const categoryGlow = getCategory(entry.category)?.glow ?? CATEGORIES.give.glow;
@@ -296,7 +319,7 @@ export default function PokemonCard({
             className="absolute inset-0 rounded-full blur-2xl opacity-30"
             style={{ background: eventTheme?.glow ?? categoryGlow }}
           />
-          <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={140} shiny={isShiny} customSpriteUrl={entry.customSpriteUrl} />
+          <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={140} shiny={isShiny} customSpriteUrl={effectiveSpriteUrl} />
         </div>
 
         {/* Name */}
@@ -425,7 +448,10 @@ export default function PokemonCard({
           }),
           transition: "transform 0.15s, box-shadow 0.15s",
         }}
-        onClick={() => setShowDetail(true)}
+        onClick={() => {
+          if (selectable && selectionActive) onToggleSelect?.();
+          else setShowDetail(true);
+        }}
         onMouseEnter={(e) => {
           (e.currentTarget as HTMLDivElement).style.transform = "scale(1.03)";
         }}
@@ -483,20 +509,6 @@ export default function PokemonCard({
               color: "#64b4ff", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
             }}>×{entry.quantity}</div>
           )}
-          {isGigamax && (
-            <div style={{
-              background: "rgba(255,40,140,0.2)", border: "1px solid rgba(255,40,140,0.55)",
-              borderRadius: 8, padding: "1px 6px", fontSize: "0.6rem", fontWeight: 800,
-              color: "#ff288c", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
-            }}>GMAX</div>
-          )}
-          {isDynamax && (
-            <div style={{
-              background: "rgba(210,40,40,0.2)", border: "1px solid rgba(210,40,40,0.55)",
-              borderRadius: 8, padding: "1px 6px", fontSize: "0.6rem", fontWeight: 800,
-              color: "#e03030", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
-            }}>DMAX</div>
-          )}
           {isMirror && (
             <div
               style={{
@@ -532,6 +544,17 @@ export default function PokemonCard({
             </div>
           )}
         </div>
+
+        {/* Logo Dynamax/Gigamax officiel, en bas à droite de la tuile */}
+        {(isGigamax || isDynamax) && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={isGigamax ? "/gigamax.png" : "/dynamax.png"}
+            alt={isGigamax ? "Gigamax" : "Dynamax"}
+            className="absolute"
+            style={{ bottom: 6, right: 6, width: 26, height: 26, zIndex: 1 }}
+          />
+        )}
 
         {/* Trainer pill */}
         {hasTrainerBadge && entry.trainer && (
@@ -572,7 +595,7 @@ export default function PokemonCard({
               undefined
             }}
           />
-          <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={88} shiny={isShiny} customSpriteUrl={entry.customSpriteUrl} />
+          <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={88} shiny={isShiny} customSpriteUrl={effectiveSpriteUrl} />
         </div>
 
         {/* Name */}

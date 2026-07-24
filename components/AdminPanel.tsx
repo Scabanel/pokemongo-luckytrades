@@ -832,6 +832,7 @@ function EntrySection({
                 selectable={editable}
                 selected={selectedIds.has(entry.id)}
                 onToggleSelect={() => onToggleSelect(entry.id)}
+                selectionActive={selectedIds.size > 0}
                 canEdit={editable}
                 onEdit={() => onEdit(entry)}
                 onDelete={() => onDelete(entry.id)}

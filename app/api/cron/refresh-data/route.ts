@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (costumeRes.status === "fulfilled") {
-    const { catalog, icons, backgrounds } = costumeRes.value;
+    const { catalog, icons, gigantamaxIcons, backgrounds } = costumeRes.value;
     try {
       steps.costumes = await putIfChangedText(
         "data/costumes.json",
@@ -83,6 +83,11 @@ export async function GET(request: NextRequest) {
         "data/go-icons.json",
         JSON.stringify(icons) + "\n",
         `Auto-refresh icônes : ${runId}`
+      );
+      steps.gigantamaxIcons = await putIfChangedText(
+        "data/gigantamax-icons.json",
+        JSON.stringify(gigantamaxIcons) + "\n",
+        `Auto-refresh icônes Gigamax : ${runId}`
       );
       steps.backgroundsGeneric = await putIfChangedText(
         "data/backgrounds.json",

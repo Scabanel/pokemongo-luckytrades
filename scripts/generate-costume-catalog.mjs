@@ -25,6 +25,9 @@ const OUT_PATH = path.join(__dirname, "..", "data", "costumes.json");
 // utilisé sur chaque carte du catalogue public — costumes.json (tous les
 // costumes historiques, ~700 Ko) ne doit être chargé que côté admin.
 const ICONS_OUT_PATH = path.join(__dirname, "..", "data", "go-icons.json");
+// Sprites de forme Gigamax officiels (léger : une poignée d'espèces), utilisé
+// pour afficher le vrai visuel Gigamax sur les tuiles publiques et privées.
+const GIGANTAMAX_ICONS_OUT_PATH = path.join(__dirname, "..", "data", "gigantamax-icons.json");
 // Fichier pour la page publique "Pas encore sortis dans GO". Ce script ne
 // calcule ici que missingShiny (heuristique de sprite chromatique manquant) ;
 // missingEntirely/missingGigantamax/missingMega viennent de
@@ -206,6 +209,21 @@ export async function buildCostumeCatalog(pokemonList, githubToken) {
   const missingShiny = missingShinyIds.map(withName).sort((a, b) => a.name.localeCompare(b.name, "fr"));
   console.log(`✓ ${missingShiny.length} sans shiny`);
 
+  // Sprite officiel de forme Gigamax (aspect visuel réellement différent en jeu),
+  // séparé de `icons` (léger, chargé sur chaque tuile publique) car seule une
+  // poignée d'espèces peuvent Gigamax, pas la peine d'alourdir go-icons.json
+  // pour ça. Le Dynamax, lui, ne change pas l'apparence dans GO : aucune icône
+  // de forme dédiée n'existe côté PokeMiners, contrairement au Gigamax.
+  const gigantamaxIcons = {};
+  for (const [dexId, list] of Object.entries(catalog)) {
+    const normal = list.find((e) => e.label === "Gigantamax")?.url;
+    const shiny = list.find((e) => e.label === "Gigantamax ✨")?.url;
+    if (!normal) continue;
+    const filename = (url) => decodeURIComponent(url.slice(RAW_BASE.length + 1));
+    gigantamaxIcons[dexId] = shiny ? [filename(normal), filename(shiny)] : [filename(normal)];
+  }
+  console.log(`✓ ${Object.keys(gigantamaxIcons).length} icônes Gigamax officielles`);
+
   const backgroundPaths = data.tree
     .map((t) => t.path)
     .filter((p) => p.startsWith(BACKGROUNDS_PREFIX) && /^(sb_|lc_)/i.test(p.slice(BACKGROUNDS_PREFIX.length)));
@@ -221,19 +239,22 @@ export async function buildCostumeCatalog(pokemonList, githubToken) {
     .sort((a, b) => a.label.localeCompare(b.label, "fr"));
   console.log(`✓ ${backgrounds.length} fonds d'événement génériques`);
 
-  return { catalog, icons, missingShiny, backgrounds };
+  return { catalog, icons, gigantamaxIcons, missingShiny, backgrounds };
 }
 
 async function main() {
   console.log("Téléchargement de l'arborescence PokeMiners/pogo_assets…");
   const pokemonList = JSON.parse(await readFile(POKEMON_LIST_PATH, "utf-8"));
-  const { catalog, icons, missingShiny, backgrounds } = await buildCostumeCatalog(pokemonList);
+  const { catalog, icons, gigantamaxIcons, missingShiny, backgrounds } = await buildCostumeCatalog(pokemonList);
 
   await writeFile(OUT_PATH, JSON.stringify(catalog, null, 2) + "\n", "utf-8");
   console.log(`  → ${path.relative(process.cwd(), OUT_PATH)}`);
 
   await writeFile(ICONS_OUT_PATH, JSON.stringify(icons) + "\n", "utf-8");
   console.log(`  → ${path.relative(process.cwd(), ICONS_OUT_PATH)}`);
+
+  await writeFile(GIGANTAMAX_ICONS_OUT_PATH, JSON.stringify(gigantamaxIcons) + "\n", "utf-8");
+  console.log(`  → ${path.relative(process.cwd(), GIGANTAMAX_ICONS_OUT_PATH)}`);
 
   // missingEntirely/missingGigantamax/missingMega viennent de
   // scripts/generate-missing-pokemon.mjs (source margxt.fr) - on les préserve.
