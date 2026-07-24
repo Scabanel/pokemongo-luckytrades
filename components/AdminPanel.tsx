@@ -10,6 +10,7 @@ import validatedBackgrounds from "@/data/pokemon-backgrounds.json";
 import type { Trainer, PokemonEntry as SharedPokemonEntry, EntryCategory } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { createClient } from "@/lib/supabase/client";
+import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
 
 // La liste des dresseurs en admin inclut toujours le compte d'entrées
 // (contrairement à PokemonEntry.trainer ailleurs, qui n'en a pas besoin).
@@ -48,7 +49,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [trainers, setTrainers] = useState<TrainerWithCount[]>([]);
   const [pokeOptions, setPokeOptions] = useState<PokeOption[]>([]);
   const [me, setMe] = useState<{ trainer: Trainer | null; isAdmin: boolean }>({ trainer: null, isAdmin: false });
-  const [activeTab, setActiveTab] = useState<"entries" | "trainers" | "account">("entries");
+  const [activeTab, setActiveTab] = useState<"entries" | "all" | "trainers" | "account">("entries");
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingEntry, setEditingEntry] = useState<PokemonEntry | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -56,6 +57,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [newTrainerName, setNewTrainerName] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState<EntryFilters>(EMPTY_ENTRY_FILTERS);
 
   const isAdmin = me.isAdmin;
   const myTrainerId = me.trainer?.id ?? null;
@@ -294,6 +297,19 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const gives = sortEntries(entries.filter((e) => e.category === "give"));
   const mirrors = sortEntries(entries.filter((e) => e.category === "mirror"));
 
+  // Vue par défaut ("Mes échanges") : uniquement les entrées du dresseur
+  // connecté, même pour l'admin. La vue globale ("Tous les dresseurs")
+  // reste un onglet séparé, réservé à l'admin.
+  const myWants = wants.filter((e) => e.trainer?.id === myTrainerId);
+  const myGives = gives.filter((e) => e.trainer?.id === myTrainerId);
+  const myMirrors = mirrors.filter((e) => e.trainer?.id === myTrainerId);
+
+  const isAllTab = activeTab === "all";
+  const listWants = (isAllTab ? wants : myWants).filter((e) => matchesEntryFilters(e, search, filters));
+  const listGives = (isAllTab ? gives : myGives).filter((e) => matchesEntryFilters(e, search, filters));
+  const listMirrors = (isAllTab ? mirrors : myMirrors).filter((e) => matchesEntryFilters(e, search, filters));
+  const anyFilterActive = search.trim() !== "" || Object.values(filters).some(Boolean);
+
   return (
     <div className="relative z-10 max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
@@ -308,10 +324,10 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               color: "#0affe0",
             }}
           >
-            {isAdmin ? "⚙️ Administration" : "🎒 Mon espace"}
+            {isAllTab ? "⚙️ Tous les dresseurs" : "🎒 Mon espace"}
           </h1>
           <p style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.85rem" }}>
-            {isAdmin ? "Gestion des échanges chanceux du V" : "Gère ta liste d'échanges"}
+            {isAllTab ? "Vue globale admin, tous les échanges" : "Gère ta liste d'échanges"}
           </p>
         </div>
         <div className="flex gap-3 flex-wrap">
@@ -342,7 +358,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6">
-        {(["entries", ...(isAdmin ? (["trainers"] as const) : []), "account"] as const).map((tab) => (
+        {(["entries", ...(isAdmin ? (["all", "trainers"] as const) : []), "account"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -369,7 +385,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             }}
           >
             {tab === "entries"
-            ? `Échanges (${entries.length}) · Miroir ${mirrors.length} · Want ${wants.length} · Give ${gives.length}`
+            ? `Mes échanges (${myMirrors.length + myWants.length + myGives.length})`
+            : tab === "all"
+            ? `Tous les dresseurs (${entries.length})`
             : tab === "trainers"
             ? `Dresseurs (${trainers.length})`
             : "Mon compte"}
@@ -377,9 +395,51 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
         ))}
       </div>
 
-      {/* Entries tab */}
-      {activeTab === "entries" && (
+      {/* Entries tab (mes échanges / vue globale admin) */}
+      {(activeTab === "entries" || activeTab === "all") && (
         <div className="space-y-8">
+          {!loadingEntries && (
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Chercher un Pokémon..."
+                className="glass-input"
+                style={{ maxWidth: 220 }}
+              />
+              {ENTRY_FILTER_CHIPS.map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => setFilters((f) => ({ ...f, [key]: !f[key] }))}
+                  style={{
+                    padding: "7px 14px",
+                    borderRadius: 999,
+                    fontFamily: "Exo 2, sans-serif",
+                    fontWeight: 700,
+                    fontSize: "0.78rem",
+                    cursor: "pointer",
+                    border: "1px solid",
+                    transition: "all 0.12s",
+                    ...(filters[key]
+                      ? { background: "rgba(10,255,224,0.15)", borderColor: "rgba(10,255,224,0.4)", color: "#0affe0" }
+                      : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+              {anyFilterActive && (
+                <button
+                  onClick={() => { setSearch(""); setFilters(EMPTY_ENTRY_FILTERS); }}
+                  className="btn-secondary"
+                  style={{ padding: "7px 14px", fontSize: "0.78rem" }}
+                >
+                  ✕ Réinitialiser
+                </button>
+              )}
+            </div>
+          )}
           {selectedIds.size > 0 && (
             <div
               className="flex items-center gap-3 flex-wrap p-3"
@@ -421,7 +481,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           {CATEGORY_DISPLAY_ORDER.map((key) => ({
             title: `${CATEGORIES[key].icon} ${CATEGORIES[key].label}`,
             color: CATEGORIES[key].color,
-            list: { mirror: mirrors, want: wants, give: gives }[key],
+            list: { mirror: listMirrors, want: listWants, give: listGives }[key],
           })).map(({ title, color, list }) => (
             <EntrySection
               key={title}

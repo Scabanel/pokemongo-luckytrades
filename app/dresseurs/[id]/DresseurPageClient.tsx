@@ -8,6 +8,7 @@ import CardSkeleton from "@/components/CardSkeleton";
 import SiteNav from "@/components/SiteNav";
 import type { PokemonEntry, EntryCategory, Trainer } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
+import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
 
 const TEAM_ICONS: Record<string, string> = {
   instinct: "⚡",
@@ -33,37 +34,6 @@ function tabLabel(key: EntryCategory, trainerName: string) {
   return CATEGORIES.mirror.label;
 }
 
-type Filters = { shiny: boolean; fond: boolean; gigamax: boolean; dynamax: boolean; costume: boolean };
-const EMPTY_FILTERS: Filters = { shiny: false, fond: false, gigamax: false, dynamax: false, costume: false };
-
-const FILTER_CHIPS: { key: keyof Filters; label: string }[] = [
-  { key: "shiny", label: "✨ Shiny" },
-  { key: "fond", label: "🖼️ Fond" },
-  { key: "gigamax", label: "✦ Gigamax" },
-  { key: "dynamax", label: "◈ Dynamax" },
-  { key: "costume", label: "🎭 Costume" },
-];
-
-// Même heuristique que components/PokemonCard.tsx pour rester cohérent avec
-// les badges déjà affichés sur chaque carte (pas de champ dédié en base).
-function matchesFilters(entry: PokemonEntry, search: string, filters: Filters) {
-  const name = entry.pokemonName.toLowerCase();
-  if (search && !name.includes(search.toLowerCase())) return false;
-
-  const isGigamax = name.includes("gigamax");
-  const isDynamax = name.includes("dynamax") && !isGigamax;
-  const isCostume = !isGigamax && !isDynamax && name.trim().includes(" ");
-  const isShiny = entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false);
-  const hasFond = !!entry.backgroundUrl;
-
-  if (filters.shiny && !isShiny) return false;
-  if (filters.fond && !hasFond) return false;
-  if (filters.gigamax && !isGigamax) return false;
-  if (filters.dynamax && !isDynamax) return false;
-  if (filters.costume && !isCostume) return false;
-  return true;
-}
-
 export default function DresseurPageClient({ id }: { id: string }) {
   const [trainer, setTrainer] = useState<Trainer | null>(null);
   const [notFound, setNotFound] = useState(false);
@@ -71,7 +41,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<EntryCategory>("mirror");
   const [search, setSearch] = useState("");
-  const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
+  const [filters, setFilters] = useState<EntryFilters>(EMPTY_ENTRY_FILTERS);
 
   useEffect(() => {
     Promise.all([
@@ -104,7 +74,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
 
   const countByTab: Record<EntryCategory, number> = { mirror: mirrors.length, want: wants.length, give: gives.length };
   const entriesByTab: Record<EntryCategory, PokemonEntry[]> = { mirror: mirrors, want: wants, give: gives };
-  const visibleEntries = entriesByTab[activeTab].filter((e) => matchesFilters(e, search, filters));
+  const visibleEntries = entriesByTab[activeTab].filter((e) => matchesEntryFilters(e, search, filters));
   const anyFilterActive = search.trim() !== "" || Object.values(filters).some(Boolean);
   const activeColor = CATEGORIES[activeTab].color;
 
@@ -222,7 +192,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
               className="glass-input"
               style={{ maxWidth: 220 }}
             />
-            {FILTER_CHIPS.map(({ key, label }) => (
+            {ENTRY_FILTER_CHIPS.map(({ key, label }) => (
               <button
                 key={key}
                 onClick={() => setFilters((f) => ({ ...f, [key]: !f[key] }))}
@@ -245,7 +215,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
             ))}
             {anyFilterActive && (
               <button
-                onClick={() => { setSearch(""); setFilters(EMPTY_FILTERS); }}
+                onClick={() => { setSearch(""); setFilters(EMPTY_ENTRY_FILTERS); }}
                 className="btn-secondary"
                 style={{ padding: "7px 14px", fontSize: "0.78rem" }}
               >

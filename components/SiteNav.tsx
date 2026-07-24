@@ -5,7 +5,7 @@ const LINKS = [
   { href: "/dresseurs", label: "Dresseurs" },
   { href: "/pas-encore-sortis", label: "Pas encore sortis" },
   { href: "/evenements", label: "Événements" },
-  { href: "/admin", label: "Mon espace" },
+  { href: "/mon-espace", label: "Mon espace" },
 ];
 
 export default function SiteNav({ active }: { active: string }) {

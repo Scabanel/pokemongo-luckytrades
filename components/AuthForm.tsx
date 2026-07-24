@@ -88,7 +88,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
     try {
       const supabase = createClient();
       await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/admin/reset-password`,
+        redirectTo: `${window.location.origin}/mon-espace/reset-password`,
       });
       setInfo("Si un compte existe avec cet email, un lien de réinitialisation vient d'être envoyé.");
     } catch {

@@ -75,7 +75,7 @@ export default function LandingPage() {
         </p>
 
         <div className="flex gap-4 flex-wrap justify-center mb-16">
-          <a href="/admin" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.95rem", padding: "12px 28px" }}>
+          <a href="/mon-espace" className="btn-primary" style={{ textDecoration: "none", fontSize: "0.95rem", padding: "12px 28px" }}>
             Se connecter / S&apos;inscrire
           </a>
           <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none", fontSize: "0.95rem", padding: "12px 28px" }}>

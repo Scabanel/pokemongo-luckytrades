@@ -2,7 +2,7 @@
 
 Catalogue public + admin pour organiser mes échanges chanceux dans Pokémon GO.
 Les amis consultent `/` pour voir ce que je recherche / peux donner / propose
-en miroir ; je gère la liste depuis `/admin`.
+en miroir ; chacun gère sa propre liste depuis `/mon-espace`.
 
 ## Stack
 
@@ -64,9 +64,9 @@ directement dans le dashboard Neon.
 ## Liste des Pokémon (autocomplete admin)
 
 `data/pokemon.json` est une liste figée des 1025 Pokémon (nom EN + nom FR)
-utilisée par l'autocomplete de `/admin`. Elle est générée une fois via
-`npm run gen:pokemon` (appelle PokeAPI) et commitée — l'admin ne fait plus
-d'appel réseau à PokeAPI au chargement. À relancer seulement si une nouvelle
+utilisée par l'autocomplete de `/mon-espace`. Elle est générée une fois via
+`npm run gen:pokemon` (appelle PokeAPI) et commitée, plus d'appel réseau
+à PokeAPI au chargement. À relancer seulement si une nouvelle
 génération de Pokémon sort.
 
 ## Sprites et costumes officiels Pokémon GO
@@ -81,7 +81,7 @@ générés par `npm run gen:costumes` :
   les Pokémon pas encore sortis dans GO).
 - `data/costumes.json` (~700 Ko, admin uniquement) — tous les costumes
   historiques par Pokémon (Halloween, GO Fest, anniversaires...) avec libellé
-  lisible, utilisé par le sélecteur de sprite dans `/admin`.
+  lisible, utilisé par le sélecteur de sprite dans `/mon-espace`.
 - `data/missing-in-go.json` (léger, noms FR déjà attachés) — Pokémon absents
   du jeu, sans version shiny, ou sans Gigamax (liste fixe des 32 espèces
   éligibles au Gigamax dans les jeux principaux, croisée avec les costumes
@@ -106,7 +106,7 @@ pour le détail de la recherche qui a mené à ces deux sources) :
   donnée jeu extractible, voir le doc de recherche). Images auto-hébergées,
   ne dépend plus du site source en production.
 
-Le sélecteur de fond dans `/admin` affiche en priorité les fonds confirmés
+Le sélecteur de fond dans `/mon-espace` affiche en priorité les fonds confirmés
 pour le Pokémon sélectionné, avec un bouton pour basculer sur le catalogue
 générique complet si besoin.
 
@@ -114,7 +114,7 @@ générique complet si besoin.
 
 Deux mécanismes complémentaires :
 
-- **Export manuel** — bouton "⬇ Export JSON" dans `/admin` (`app/api/export`),
+- **Export manuel** (admin uniquement) — bouton "⬇ Export JSON" dans `/mon-espace` (`app/api/export`),
   à tout moment.
 - **Backup automatique quotidien** — `app/api/cron/backup`, déclenché par un
   Vercel Cron (`vercel.json`), commit un snapshot dans `backups/latest.json`
@@ -166,8 +166,8 @@ le reste attend l'exécution suivante.
 - `app/pas-encore-sortis/page.tsx` — Pokémon/formes/shiny pas encore sortis dans GO
 - `app/evenements/page.tsx` — événements Pokémon GO en cours et à venir (source margxt.fr)
 - `components/SiteNav.tsx` — navigation partagée entre ces pages publiques
-- `app/admin/` — interface de gestion (auth Supabase, voir `lib/auth.ts` et `components/AuthForm.tsx`)
-- `components/AdminPanel.tsx` — CRUD des échanges et dresseurs, filtré selon le compte connecté
+- `app/mon-espace/` — espace personnel de chaque dresseur (auth Supabase, voir `lib/auth.ts` et `components/AuthForm.tsx`) ; `app/admin/` ne fait plus que rediriger les anciens liens
+- `components/AdminPanel.tsx` — CRUD des échanges et dresseurs ; par défaut chacun ne voit/modifie que ses propres échanges, l'admin a en plus un onglet "Tous les dresseurs"
 - `components/PokemonCard.tsx` — carte affichée sur les pages publiques
 - `lib/types.ts` — types partagés (`Trainer`, `PokemonEntry`)
 - `lib/categories.ts` — source unique couleur/icône/glow par catégorie
