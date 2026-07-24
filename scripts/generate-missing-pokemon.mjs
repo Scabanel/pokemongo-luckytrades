@@ -1,8 +1,13 @@
-// Regenere data/missing-in-go.json depuis margxt.fr, un fan-site qui tient
-// a jour la liste reelle des Pokemon/formes absents de Pokemon GO - bien
-// plus fiable que l'ancienne heuristique (presence/absence de costume dans
-// PokeMiners), qui produisait de faux positifs/negatifs sur les formes
-// recentes (Paldea, Gigamax...).
+// Regenere la partie missingGigantamax/missingMega de data/missing-in-go.json
+// depuis margxt.fr. La liste des Pokemon completement absents du jeu
+// (missingEntirely) ne vient PLUS de ce scrape : elle est calculee dans
+// scripts/generate-costume-catalog.mjs directement depuis les donnees du
+// client Pokemon GO (PokeMiners), une source qui ne peut pas etre datee ou
+// se tromper contrairement a un fan-site (margxt.fr listait par exemple a
+// tort Amovenus Forme Totemique et Colimucus de Hisui, pourtant bien
+// presents dans le jeu). Pour Gigamax/Mega en revanche, aucune donnee de jeu
+// n'existe a diffuser (l'espece n'a justement AUCUNE trace dans GO) : margxt.fr
+// reste la seule source disponible pour ces deux categories.
 //
 // Source : https://www.margxt.fr/guide-les-pokemon-introuvables-dans-pokemon-go/
 //
@@ -18,14 +23,6 @@ const OUT_PATH = path.join(__dirname, "..", "data", "missing-in-go.json");
 const URL = "https://www.margxt.fr/guide-les-pokemon-introuvables-dans-pokemon-go/";
 
 const SECTION_TARGET = {
-  "Gen 4 – Sinnoh": "missingEntirely",
-  "Gen 5 – Unys": "missingEntirely",
-  "Gen 6 – Kalos": "missingEntirely",
-  "Gen 7 – Alola": "missingEntirely",
-  "Gen 8 – Galar": "missingEntirely",
-  "Gen 8 – Hisui": "missingEntirely",
-  "Gen 9 – Paldea": "missingEntirely",
-  "Fusions": "missingEntirely",
   "Méga-Évolutions et Primo-Évolutions": "missingMega",
   "Gigamax": "missingGigantamax",
 };
@@ -68,14 +65,15 @@ function spriteDexId($, td) {
 }
 
 // Scrape pur (aucune écriture disque) : réutilisé par le CLI ci-dessous et
-// par app/api/cron/refresh-data/route.ts. Ne renvoie pas missingShiny, qui
-// vient d'une source différente (voir generate-costume-catalog.mjs).
+// par app/api/cron/refresh-data/route.ts. Ne renvoie ni missingShiny ni
+// missingEntirely, qui viennent tous les deux de generate-costume-catalog.mjs
+// (données du jeu lui-même, voir le commentaire en tête de ce fichier).
 export async function scrapeMissingPokemon() {
   const html = await fetchHtml(URL);
   const $ = cheerio.load(html);
 
-  const result = { missingEntirely: [], missingGigantamax: [], missingMega: [] };
-  const seen = { missingEntirely: new Set(), missingGigantamax: new Set(), missingMega: new Set() };
+  const result = { missingGigantamax: [], missingMega: [] };
+  const seen = { missingGigantamax: new Set(), missingMega: new Set() };
 
   let currentSection = null;
   let lastDexId = null;
@@ -122,12 +120,11 @@ async function main() {
   console.log("Téléchargement de la page margxt.fr…");
   const result = await scrapeMissingPokemon();
 
-  console.log(`Absents du jeu : ${result.missingEntirely.length}`);
   console.log(`Sans Méga-Évolution : ${result.missingMega.length}`);
   console.log(`Sans Gigamax : ${result.missingGigantamax.length}`);
 
-  // missingShiny vient de generate-costume-catalog.mjs (heuristique de
-  // présence de sprite chromatique) - on la préserve, ce script ne la touche pas.
+  // missingShiny et missingEntirely viennent de generate-costume-catalog.mjs
+  // (données du jeu) - on les préserve, ce script ne les touche pas.
   let existing = {};
   try {
     existing = JSON.parse(await readFile(OUT_PATH, "utf-8"));
@@ -135,7 +132,15 @@ async function main() {
     // Rien de généré encore, tant pis.
   }
 
-  await writeFile(OUT_PATH, JSON.stringify({ missingShiny: existing.missingShiny ?? [], ...result }, null, 2) + "\n", "utf-8");
+  await writeFile(
+    OUT_PATH,
+    JSON.stringify(
+      { missingShiny: existing.missingShiny ?? [], missingEntirely: existing.missingEntirely ?? [], ...result },
+      null,
+      2
+    ) + "\n",
+    "utf-8"
+  );
   console.log(`✓ Écrit dans ${path.relative(process.cwd(), OUT_PATH)}`);
 }
 

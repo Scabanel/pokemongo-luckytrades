@@ -7,7 +7,7 @@
 const LINKS = [
   { href: "/", label: "Accueil" },
   { href: "/dresseurs", label: "Dresseurs" },
-  { href: "/pas-encore-sortis", label: "Pas encore sortis" },
+  { href: "/pas-encore-sortis", label: "Pas encore disponibles" },
   { href: "/evenements", label: "Événements" },
   { href: "/mon-espace", label: "Mon espace" },
 ];

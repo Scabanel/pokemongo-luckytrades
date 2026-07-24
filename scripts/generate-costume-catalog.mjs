@@ -209,6 +209,19 @@ export async function buildCostumeCatalog(pokemonList, githubToken) {
   const missingShiny = missingShinyIds.map(withName).sort((a, b) => a.name.localeCompare(b.name, "fr"));
   console.log(`✓ ${missingShiny.length} sans shiny`);
 
+  // Absents du jeu : source de vérité = présence ou non d'une icône dans les
+  // fichiers du client Pokémon GO lui-même (PokeMiners), pas un site tiers.
+  // Avant ce changement, ce champ venait d'un scrape de margxt.fr qui listait
+  // à tort des espèces pourtant bien présentes dans le jeu (ex : Amovénus
+  // Forme Totémique #905, Colimucus de Hisui #705, qui ont toutes les deux
+  // une icône ci-dessus), un fan-site peut se tromper ou dater, l'absence
+  // réelle d'icône dans les données du jeu ne peut pas mentir.
+  const missingEntirelyIds = pokemonList
+    .map((p) => p.id)
+    .filter((id) => !icons[id]);
+  const missingEntirely = missingEntirelyIds.map(withName).sort((a, b) => a.name.localeCompare(b.name, "fr"));
+  console.log(`✓ ${missingEntirely.length} absents du jeu`);
+
   // Sprite officiel de forme Gigamax (aspect visuel réellement différent en jeu),
   // séparé de `icons` (léger, chargé sur chaque tuile publique) car seule une
   // poignée d'espèces peuvent Gigamax, pas la peine d'alourdir go-icons.json
@@ -239,13 +252,13 @@ export async function buildCostumeCatalog(pokemonList, githubToken) {
     .sort((a, b) => a.label.localeCompare(b.label, "fr"));
   console.log(`✓ ${backgrounds.length} fonds d'événement génériques`);
 
-  return { catalog, icons, gigantamaxIcons, missingShiny, backgrounds };
+  return { catalog, icons, gigantamaxIcons, missingShiny, missingEntirely, backgrounds };
 }
 
 async function main() {
   console.log("Téléchargement de l'arborescence PokeMiners/pogo_assets…");
   const pokemonList = JSON.parse(await readFile(POKEMON_LIST_PATH, "utf-8"));
-  const { catalog, icons, gigantamaxIcons, missingShiny, backgrounds } = await buildCostumeCatalog(pokemonList);
+  const { catalog, icons, gigantamaxIcons, missingShiny, missingEntirely, backgrounds } = await buildCostumeCatalog(pokemonList);
 
   await writeFile(OUT_PATH, JSON.stringify(catalog, null, 2) + "\n", "utf-8");
   console.log(`  → ${path.relative(process.cwd(), OUT_PATH)}`);
@@ -256,8 +269,8 @@ async function main() {
   await writeFile(GIGANTAMAX_ICONS_OUT_PATH, JSON.stringify(gigantamaxIcons) + "\n", "utf-8");
   console.log(`  → ${path.relative(process.cwd(), GIGANTAMAX_ICONS_OUT_PATH)}`);
 
-  // missingEntirely/missingGigantamax/missingMega viennent de
-  // scripts/generate-missing-pokemon.mjs (source margxt.fr) - on les préserve.
+  // missingGigantamax/missingMega viennent de scripts/generate-missing-pokemon.mjs
+  // (source margxt.fr, pas d'équivalent local pour ces deux-là) - on les préserve.
   let existingMissing = {};
   try {
     existingMissing = JSON.parse(await readFile(MISSING_OUT_PATH, "utf-8"));
@@ -266,7 +279,7 @@ async function main() {
   }
   await writeFile(
     MISSING_OUT_PATH,
-    JSON.stringify({ ...existingMissing, missingShiny }, null, 2) + "\n",
+    JSON.stringify({ ...existingMissing, missingShiny, missingEntirely }, null, 2) + "\n",
     "utf-8"
   );
   console.log(`  → ${path.relative(process.cwd(), MISSING_OUT_PATH)}`);

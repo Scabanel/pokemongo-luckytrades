@@ -51,82 +51,6 @@
   ],
   "missingEntirely": [
     {
-      "id": 905,
-      "name": "Amovénus Forme Totémique"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Acier"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Combat"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Dragon"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Eau"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Électrik"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Fée"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Feu"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Glace"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Insecte"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Normal"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Plante"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Poison"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Psy"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Roche"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Sol"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Spectre"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Ténèbres"
-    },
-    {
-      "id": 493,
-      "name": "Arceus Vol"
-    },
-    {
       "id": 1002,
       "name": "Baojian"
     },
@@ -135,12 +59,12 @@
       "name": "Bekaglaçon"
     },
     {
-      "id": 954,
-      "name": "Bérasca"
-    },
-    {
       "id": 896,
       "name": "Blizzeval"
+    },
+    {
+      "id": 954,
+      "name": "Bérasca"
     },
     {
       "id": 878,
@@ -159,28 +83,8 @@
       "name": "Chongjian"
     },
     {
-      "id": 705,
-      "name": "Colimucus de Hisui"
-    },
-    {
-      "id": 771,
-      "name": "Concombaffe"
-    },
-    {
       "id": 868,
       "name": "Crèmy"
-    },
-    {
-      "id": 555,
-      "name": "Darumacho"
-    },
-    {
-      "id": 555,
-      "name": "Darumacho de Galar Mode Transe"
-    },
-    {
-      "id": 976,
-      "name": "Délestin"
     },
     {
       "id": 1003,
@@ -195,12 +99,8 @@
       "name": "Dogrino"
     },
     {
-      "id": 846,
-      "name": "Embrochet"
-    },
-    {
-      "id": 995,
-      "name": "Épine-de-Fer"
+      "id": 976,
+      "name": "Délestin"
     },
     {
       "id": 981,
@@ -209,10 +109,6 @@
     {
       "id": 1016,
       "name": "Favianos"
-    },
-    {
-      "id": 1014,
-      "name": "Félicanis"
     },
     {
       "id": 1020,
@@ -235,12 +131,8 @@
       "name": "Fortusimia"
     },
     {
-      "id": 746,
-      "name": "Froussardine Forme Banc"
-    },
-    {
-      "id": 746,
-      "name": "Froussardine Forme Solitaire"
+      "id": 1014,
+      "name": "Félicanis"
     },
     {
       "id": 881,
@@ -257,10 +149,6 @@
     {
       "id": 942,
       "name": "Grondogue"
-    },
-    {
-      "id": 847,
-      "name": "Hastacuda"
     },
     {
       "id": 991,
@@ -299,46 +187,6 @@
       "name": "Magearna"
     },
     {
-      "id": 490,
-      "name": "Manaphy"
-    },
-    {
-      "id": 648,
-      "name": "Meloetta Forme Danse"
-    },
-    {
-      "id": 774,
-      "name": "Météno Forme Météore"
-    },
-    {
-      "id": 774,
-      "name": "Météno Forme Noyau (Bleu)"
-    },
-    {
-      "id": 774,
-      "name": "Météno Forme Noyau (Indigo)"
-    },
-    {
-      "id": 774,
-      "name": "Météno Forme Noyau (Jaune)"
-    },
-    {
-      "id": 774,
-      "name": "Météno Forme Noyau (Orange)"
-    },
-    {
-      "id": 774,
-      "name": "Météno Forme Noyau (Rouge)"
-    },
-    {
-      "id": 774,
-      "name": "Météno Forme Noyau (Vert)"
-    },
-    {
-      "id": 774,
-      "name": "Météno Forme Noyau (Violet)"
-    },
-    {
       "id": 1008,
       "name": "Miraidon"
     },
@@ -347,40 +195,16 @@
       "name": "Mite-de-Fer"
     },
     {
-      "id": 999,
-      "name": "Mordudor Forme Coffre"
-    },
-    {
-      "id": 479,
-      "name": "Motisma Chaîne HI-FI"
-    },
-    {
       "id": 967,
       "name": "Motorizard"
     },
     {
-      "id": 706,
-      "name": "Muplodocus de Hisui"
-    },
-    {
-      "id": 845,
-      "name": "Nigosier"
+      "id": 774,
+      "name": "Météno"
     },
     {
       "id": 1017,
-      "name": "Ogerpon Masque de la Pierre"
-    },
-    {
-      "id": 1017,
-      "name": "Ogerpon Masque du Fourneau"
-    },
-    {
-      "id": 1017,
-      "name": "Ogerpon Masque du Puits"
-    },
-    {
-      "id": 1017,
-      "name": "Ogerpon Masque Turquoise"
+      "name": "Ogerpon"
     },
     {
       "id": 879,
@@ -395,28 +219,20 @@
       "name": "Paume-de-Fer"
     },
     {
-      "id": 1025,
-      "name": "Pêchaminus"
-    },
-    {
       "id": 989,
       "name": "Pelage-Sablé"
-    },
-    {
-      "id": 489,
-      "name": "Phione"
     },
     {
       "id": 951,
       "name": "Pimito"
     },
     {
-      "id": 666,
-      "name": "Prismillon Motif Poké Ball"
+      "id": 1018,
+      "name": "Pondralugon"
     },
     {
-      "id": 1018,
-      "name": "Qwilfish"
+      "id": 1025,
+      "name": "Pêchaminus"
     },
     {
       "id": 988,
@@ -459,28 +275,8 @@
       "name": "Sylveroy"
     },
     {
-      "id": 898,
-      "name": "Sylveroy, le Cavalier d’Effroi"
-    },
-    {
-      "id": 898,
-      "name": "Sylveroy, le Cavalier du Froid"
-    },
-    {
       "id": 1024,
-      "name": "Terapagos Forme Normale"
-    },
-    {
-      "id": 1024,
-      "name": "Terapagos Forme Stellaire"
-    },
-    {
-      "id": 1024,
-      "name": "Terapagos Forme Téracristal"
-    },
-    {
-      "id": 993,
-      "name": "Têtes-de-Fer"
+      "name": "Terapagos"
     },
     {
       "id": 834,
@@ -488,15 +284,11 @@
     },
     {
       "id": 772,
-      "name": "type:0"
+      "name": "Type:0"
     },
     {
-      "id": 800,
-      "name": "Ultra-Necrozma"
-    },
-    {
-      "id": 901,
-      "name": "Ursaking Lune Vermeille"
+      "id": 993,
+      "name": "Têtes-de-Fer"
     },
     {
       "id": 1010,
@@ -517,6 +309,10 @@
     {
       "id": 1004,
       "name": "Yuyu"
+    },
+    {
+      "id": 995,
+      "name": "Épine-de-Fer"
     }
   ],
   "missingGigantamax": [

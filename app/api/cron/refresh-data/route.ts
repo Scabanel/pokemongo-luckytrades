@@ -108,10 +108,10 @@ export async function GET(request: NextRequest) {
 
     const merged = {
       missingShiny: costumeRes.status === "fulfilled" ? costumeRes.value.missingShiny : existing.missingShiny,
+      missingEntirely: costumeRes.status === "fulfilled" ? costumeRes.value.missingEntirely : existing.missingEntirely,
       ...(missingRes.status === "fulfilled"
         ? missingRes.value
         : {
-            missingEntirely: existing.missingEntirely,
             missingGigantamax: existing.missingGigantamax,
             missingMega: existing.missingMega,
           }),

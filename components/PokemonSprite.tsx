@@ -24,6 +24,10 @@ function getOfficialGoIcon(pokemonId: number, shiny: boolean): string | null {
 
 function buildUrls(pokemonId: number, shiny: boolean): string[] {
   const goIcon = getOfficialGoIcon(pokemonId, shiny);
+  // Gen V (Black/White) et Showdown n'ont pas d'animation pour les Pokémon
+  // révélés après leur sortie (tout Gen 8+ y échappe) : official-artwork,
+  // en revanche, est maintenu à jour pour chaque nouvelle espèce et sert de
+  // dernier recours garanti pour ne jamais finir sans image du tout.
   const pokeApiChain = shiny
     ? [
         // Animé shiny Gen V, puis Showdown shiny, puis statique shiny/normal
@@ -31,11 +35,14 @@ function buildUrls(pokemonId: number, shiny: boolean): string[] {
         `${BASE}/other/showdown/shiny/${pokemonId}.gif`,
         `${BASE}/shiny/${pokemonId}.png`,
         `${BASE}/${pokemonId}.png`,
+        `${BASE}/other/official-artwork/shiny/${pokemonId}.png`,
+        `${BASE}/other/official-artwork/${pokemonId}.png`,
       ]
     : [
         `${BASE}/versions/generation-v/black-white/animated/${pokemonId}.gif`,
         `${BASE}/other/showdown/${pokemonId}.gif`,
         `${BASE}/${pokemonId}.png`,
+        `${BASE}/other/official-artwork/${pokemonId}.png`,
       ];
   return goIcon ? [goIcon, ...pokeApiChain] : pokeApiChain;
 }
@@ -83,6 +90,7 @@ export default function PokemonSprite({
       alt={alt}
       width={size}
       height={size}
+      loading="lazy"
       className={`pokemon-sprite ${className}`}
       onError={handleError}
       style={{ width: size, height: size, objectFit: "contain", imageRendering: "pixelated" }}
