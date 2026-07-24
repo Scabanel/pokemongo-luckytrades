@@ -17,6 +17,7 @@ import { writeFile, readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import * as cheerio from "cheerio";
+import { attachResolvedSprites } from "./resolve-sprite.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT_PATH = path.join(__dirname, "..", "data", "missing-in-go.json");
@@ -111,6 +112,11 @@ export async function scrapeMissingPokemon() {
 
   for (const key of Object.keys(result)) {
     result[key].sort((a, b) => a.name.localeCompare(b.name, "fr", { sensitivity: "base" }));
+  }
+
+  // Sprite résolu et figé une fois pour toutes (voir scripts/resolve-sprite.mjs).
+  for (const key of Object.keys(result)) {
+    result[key] = await attachResolvedSprites(result[key]);
   }
 
   return result;

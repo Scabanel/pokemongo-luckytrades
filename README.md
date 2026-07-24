@@ -92,6 +92,11 @@ générés par `npm run gen:costumes` :
   restent scrapés sur margxt.fr, faute d'équivalent local (aucune trace de
   jeu n'existe pour une forme jamais implémentée). Le Dynamax n'a pas de
   section dédiée : aucune icône de forme n'existe pour lui dans GO.
+  Chaque entrée porte aussi `spriteUrl`/`animated` : le sprite est résolu et
+  vérifié une fois pour toutes à la génération (`scripts/resolve-sprite.mjs`,
+  en préférant l'animé), au lieu d'être retenté à chaque affichage par le
+  navigateur (`components/PokemonSprite.tsx`) - cette dernière approche
+  laissait une bonne partie des tuiles cassées indéfiniment en pratique.
   L'admin peut exclure manuellement une entrée listée à tort (bouton "x" sur
   chaque tuile de `/pas-encore-sortis`) via la table `MissingPokemonExclusion`
   (`app/api/missing-exclusions`), un filtre appliqué à la lecture, qui ne

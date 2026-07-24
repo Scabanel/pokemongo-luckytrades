@@ -3,14 +3,22 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ParticleBackground from "@/components/ParticleBackground";
-import PokemonSprite from "@/components/PokemonSprite";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import missingInGo from "@/data/missing-in-go.json";
 
 const MISSING_COLOR = "#ff6b6b";
+// Dernier recours si spriteUrl est absent (jamais résolu) ou casse un jour :
+// official-artwork est maintenu à jour pour chaque nouvelle espèce.
+const FALLBACK_SPRITE_BASE = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork";
 
-type MissingEntry = { id: number; name: string };
+// spriteUrl/animated sont résolus et figés une fois pour toutes au moment de
+// la génération (scripts/resolve-sprite.mjs), plutôt que retentés à chaque
+// affichage par le navigateur (components/PokemonSprite.tsx) : cette
+// dernière approche s'est révélée peu fiable pour cette page précise (une
+// bonne partie des tuiles restait cassée indéfiniment sans jamais retenter
+// l'URL suivante, observé en prod comme en local).
+type MissingEntry = { id: number; name: string; spriteUrl: string | null; animated: boolean };
 type MissingCategory = keyof typeof missingInGo;
 type Exclusion = { id: string; category: string; pokemonId: number };
 
@@ -179,7 +187,20 @@ export default function PasEncoreSortisPage() {
                               x
                             </button>
                           )}
-                          <PokemonSprite pokemonId={p.id} alt={p.name} size={56} />
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={p.spriteUrl ?? `${FALLBACK_SPRITE_BASE}/${p.id}.png`}
+                            alt={p.name}
+                            width={56}
+                            height={56}
+                            loading="lazy"
+                            style={{ width: 56, height: 56, objectFit: "contain", imageRendering: "pixelated" }}
+                            onError={(e) => {
+                              const img = e.currentTarget;
+                              const fallback = `${FALLBACK_SPRITE_BASE}/${p.id}.png`;
+                              if (img.src !== fallback) img.src = fallback;
+                            }}
+                          />
                           <span
                             style={{
                               fontSize: "0.65rem",
