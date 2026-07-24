@@ -99,6 +99,15 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/06/Pokemon-GO-Passe-GO-Juillet-2026.jpg"
   },
   {
+    "id": "198824",
+    "title": "Retour à McDonald's (Japon)",
+    "category": "Événement local",
+    "start": 1784473200000,
+    "end": 1788274799000,
+    "url": "https://www.margxt.fr/evenement-retour-a-mcdonalds-au-japon-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Retour-McDonalds.webp"
+  },
+  {
     "id": "197991",
     "title": "Miamiasme ✨",
     "category": "Combats Max",
@@ -315,6 +324,24 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/06/Pokemon-GO-LEGO-Store.jpg"
   },
   {
+    "id": "198816",
+    "title": "Passe GO Marathon Estival",
+    "category": "Passe GO",
+    "start": 1785830400000,
+    "end": 1786384800000,
+    "url": "https://www.margxt.fr/guide-du-passe-go-marathon-estival-2026-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Marathon-estival.jpg"
+  },
+  {
+    "id": "198819",
+    "title": "Marathon estival Braises arctiques",
+    "category": "Événement",
+    "start": 1785830400000,
+    "end": 1786384800000,
+    "url": "https://www.margxt.fr/evenement-marathon-estival-braises-arctiques-avec-frissonille-shiny-et-pikachu-marathon-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Marathon-estival.jpg"
+  },
+  {
     "id": "198743",
     "title": "Passe GO Août",
     "category": "Passe GO",
@@ -376,6 +403,15 @@
     "end": 1787594400000,
     "url": "https://www.margxt.fr/evenement-festival-de-leau-avec-nigosier-et-embrochet-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Festival-eau.jpg"
+  },
+  {
+    "id": "198785",
+    "title": "Passe GO Festival Aquatique",
+    "category": "Passe GO",
+    "start": 1787040000000,
+    "end": 1787594400000,
+    "url": "https://www.margxt.fr/guide-du-passe-go-festival-aquatique-2026-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Passe-GO-Festival-Eau-2026.jpg"
   },
   {
     "id": "197422",
@@ -486,6 +522,15 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2024/12/Pokemon-GO-Pleine-Lune.jpg"
   },
   {
+    "id": "198822",
+    "title": "Terres Sauvages Sendai (Japon)",
+    "category": "Événement local",
+    "start": 1793926800000,
+    "end": 1794135600000,
+    "url": "https://www.margxt.fr/events/terres-sauvages-sendai-japon/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Wild-Area-2026.jpg"
+  },
+  {
     "id": "197926",
     "title": "Célébration du 30e anniversaire de Pokémon PokéXciting (Singapour)",
     "category": "Événement local",
@@ -493,6 +538,24 @@
     "end": 1794153599000,
     "url": "https://www.margxt.fr/celebration-des-30-ans-de-pokemon-go-en-asie-avec-pokexciting/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/06/PokeXciting.jpg"
+  },
+  {
+    "id": "198820",
+    "title": "Terres Sauvages Mexico City (Mexique)",
+    "category": "Événement local",
+    "start": 1793980800000,
+    "end": 1794189600000,
+    "url": "https://www.margxt.fr/events/terres-sauvages-mexico-city-mexique/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Wild-Area-2026.jpg"
+  },
+  {
+    "id": "198823",
+    "title": "Terres Sauvages Mondial",
+    "category": "Événement local",
+    "start": 1794646800000,
+    "end": 1794769200000,
+    "url": "https://www.margxt.fr/events/terres-sauvages/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Wild-Area-2026.jpg"
   },
   {
     "id": "190834",
