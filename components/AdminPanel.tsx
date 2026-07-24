@@ -274,7 +274,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       const pa = a.priority ?? 9999;
       const pb = b.priority ?? 9999;
       if (pa !== pb) return pa - pb;
-      return a.pokemonName.localeCompare(b.pokemonName, "fr", { sensitivity: "base" });
+      return a.pokemonId - b.pokemonId;
     });
 
   const wants = sortEntries(entries.filter((e) => e.category === "want"));
