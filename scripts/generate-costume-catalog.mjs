@@ -87,7 +87,11 @@ function parseFilename(name) {
 
 // Récupère l'arborescence PokeMiners/pogo_assets. `githubToken` (optionnel)
 // évite la limite très basse des requêtes non-authentifiées (60/h) sur
-// l'API GitHub — en CLI local on retombe sur `gh auth token` si absent.
+// l'API GitHub, en CLI local on retombe sur `gh auth token` si absent.
+//
+// L'API GitHub exige un User-Agent (sinon 403), et cet endpoint (arbre
+// recursif d'un repo de plusieurs milliers de fichiers) répond parfois par
+// un 500 transitoire - on retente quelques fois avant d'abandonner.
 async function fetchTree(githubToken) {
   let token = githubToken;
   if (!token) {
@@ -98,15 +102,28 @@ async function fetchTree(githubToken) {
       // gh non disponible/non connecté : requête anonyme (peut être limitée)
     }
   }
-  const res = await fetch(TREE_URL, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-  });
-  if (!res.ok) throw new Error(`GitHub API ${res.status}`);
-  const data = await res.json();
-  if (data.truncated) {
-    console.warn("⚠ Réponse GitHub tronquée — certains costumes récents pourraient manquer.");
+
+  const headers = {
+    "User-Agent": "pokemongo-luckytrades",
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+
+  let lastError;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const res = await fetch(TREE_URL, { headers });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.truncated) {
+        console.warn("⚠ Réponse GitHub tronquée : certains costumes récents pourraient manquer.");
+      }
+      return data;
+    }
+    lastError = new Error(`GitHub API ${res.status}`);
+    if (res.status < 500 || attempt === 3) throw lastError;
+    console.warn(`  ⚠ GitHub API ${res.status} (tentative ${attempt}/3), nouvel essai...`);
+    await new Promise((r) => setTimeout(r, 1000 * attempt));
   }
-  return data;
+  throw lastError;
 }
 
 // Calcul pur (aucune écriture disque) : réutilisé par le CLI ci-dessous et
