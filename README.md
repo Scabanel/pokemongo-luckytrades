@@ -148,6 +148,33 @@ Deux mécanismes complémentaires :
   Sans ces 3 variables, la route répond 401/500 sans rien casser — le cron
   échoue silencieusement plutôt que de planter le site.
 
+### Rollback / restauration
+
+`scripts/restore-backup.mjs` restaure un backup dans la base pointée par
+`.env.local` (la prod, par défaut sur ce projet). À utiliser seulement en cas
+de gros pépin (perte ou corruption de données) : par défaut il **dry-run**
+(aucune écriture, juste un rapport de ce qui changerait) ; il faut `--yes`
+pour appliquer réellement le rollback.
+
+```bash
+# Dry-run avec le backup le plus récent
+node scripts/restore-backup.mjs
+
+# Rollback réel vers le backup le plus récent
+node scripts/restore-backup.mjs --yes
+
+# Rollback vers une version plus ancienne : d'abord l'extraire de l'historique git
+git log --oneline -- backups/latest.json          # trouver le commit voulu
+git show <commit>:backups/latest.json > /tmp/backup-ancien.json
+node scripts/restore-backup.mjs /tmp/backup-ancien.json --yes
+```
+
+Les dresseurs sont upsert par id (jamais supprimés, pour ne pas casser le lien
+avec un compte Supabase Auth existant). Les entrées, elles, sont remplacées
+intégralement : toute entrée créée après le backup et absente de celui-ci est
+supprimée — c'est la définition d'un vrai rollback (revenir exactement à
+l'état du backup).
+
 ## Rafraîchissement automatique des données de jeu
 
 `app/api/cron/refresh-data`, déclenché chaque semaine tard dans la nuit
