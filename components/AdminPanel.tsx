@@ -1439,8 +1439,22 @@ function EntryForm(props: EntryFormProps) {
                 // <-> give) : le Pokémon échangé est synchronisé automatiquement
                 // des deux côtés, voir Item 7 du plan.
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  <PokemonSprite pokemonId={linkedEntry.pokemonId} alt={linkedEntry.pokemonName} size={40} />
+                  <PokemonSprite
+                    pokemonId={linkedEntry.pokemonId}
+                    alt={linkedEntry.pokemonName}
+                    size={40}
+                    shiny={linkedEntry.shiny === true}
+                    customSpriteUrl={linkedEntry.customSpriteUrl}
+                  />
                   <span style={{ color: "#e8edf5", fontSize: "0.85rem" }}>{linkedEntry.pokemonName}</span>
+                  {linkedEntry.shiny && (
+                    <span style={{ fontSize: "0.7rem", color: "#ffd700" }}>✨ Shiny</span>
+                  )}
+                  {parseTags(linkedEntry.tags).map((tag) => (
+                    <span key={tag} style={{ fontSize: "0.65rem", color: "rgba(232,237,245,0.5)", textTransform: "capitalize" }}>
+                      {tag}
+                    </span>
+                  ))}
                   <span style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)" }}>
                     (lié à ton entrée « {oppositeCategory === "give" ? "Je peux donner" : "Je recherche"} »)
                   </span>
@@ -1494,26 +1508,49 @@ function EntryForm(props: EntryFormProps) {
                               borderRadius: 12, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
                             }}
                           >
-                            {linkSuggestions.map((le) => (
-                              <button
-                                key={le.id}
-                                type="button"
-                                onClick={() => {
-                                  setForm((f) => ({ ...f, linkedEntryId: le.id, tradeForPokemonName: le.pokemonName, tradeForPokemonId: le.pokemonId }));
-                                  setTradeSearch(le.pokemonName);
-                                  setShowTradeSuggestions(false);
-                                }}
-                                className="flex items-center gap-2"
-                                style={{
-                                  width: "100%", padding: "8px 12px", background: "none", border: "none",
-                                  cursor: "pointer", textAlign: "left", color: "#e8edf5",
-                                  fontFamily: "Exo 2, sans-serif", fontSize: "0.85rem",
-                                }}
-                              >
-                                <PokemonSprite pokemonId={le.pokemonId} alt={le.pokemonName} size={24} />
-                                {le.pokemonName}
-                              </button>
-                            ))}
+                            {linkSuggestions.map((le) => {
+                              const leTags = parseTags(le.tags);
+                              return (
+                                <button
+                                  key={le.id}
+                                  type="button"
+                                  onClick={() => {
+                                    setForm((f) => ({ ...f, linkedEntryId: le.id, tradeForPokemonName: le.pokemonName, tradeForPokemonId: le.pokemonId }));
+                                    setTradeSearch(le.pokemonName);
+                                    setShowTradeSuggestions(false);
+                                  }}
+                                  className="flex items-center gap-2"
+                                  style={{
+                                    width: "100%", padding: "8px 12px", background: "none", border: "none",
+                                    cursor: "pointer", textAlign: "left", color: "#e8edf5",
+                                    fontFamily: "Exo 2, sans-serif", fontSize: "0.85rem",
+                                  }}
+                                >
+                                  <PokemonSprite
+                                    pokemonId={le.pokemonId}
+                                    alt={le.pokemonName}
+                                    size={28}
+                                    shiny={le.shiny === true}
+                                    customSpriteUrl={le.customSpriteUrl}
+                                  />
+                                  <span className="flex flex-col">
+                                    <span>{le.pokemonName}</span>
+                                    {(le.shiny || leTags.length > 0) && (
+                                      <span style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                                        {le.shiny && (
+                                          <span style={{ fontSize: "0.65rem", color: "#ffd700" }}>✨ Shiny</span>
+                                        )}
+                                        {leTags.map((tag) => (
+                                          <span key={tag} style={{ fontSize: "0.65rem", color: "rgba(232,237,245,0.5)", textTransform: "capitalize" }}>
+                                            {tag}
+                                          </span>
+                                        ))}
+                                      </span>
+                                    )}
+                                  </span>
+                                </button>
+                              );
+                            })}
                           </div>
                         )
                       : showTradeSuggestions && tradeSuggestions.length > 0 && (

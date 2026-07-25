@@ -345,6 +345,16 @@ export default function PokemonCard({
           {entry.pokemonName}
         </h2>
 
+        {/* Réservé par : qui a accepté l'échange (voir tradePartnerName) */}
+        {entry.tradePartnerName && (
+          <p
+            className="text-center mb-2"
+            style={{ fontSize: "0.78rem", color: "#ffd700", fontWeight: 600 }}
+          >
+            Réservé par {entry.tradePartnerName}
+          </p>
+        )}
+
         {/* Notes */}
         {entry.notes && (
           <p
@@ -629,6 +639,16 @@ export default function PokemonCard({
         >
           {entry.pokemonName}
         </h3>
+
+        {/* Réservé par : qui a accepté l'échange (voir tradePartnerName) */}
+        {entry.tradePartnerName && (
+          <p
+            className="text-center"
+            style={{ fontSize: "0.62rem", color: "#ffd700", fontWeight: 700, marginBottom: 2, lineHeight: 1.2 }}
+          >
+            Réservé par {entry.tradePartnerName}
+          </p>
+        )}
 
         {/* Tags */}
         {tags.length > 0 && (
