@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import PokemonSprite from "./PokemonSprite";
 import type { PokemonEntry } from "@/lib/types";
 import { CATEGORIES, getCategory } from "@/lib/categories";
@@ -102,6 +103,12 @@ interface PokemonCardProps {
   // qui n'appartient déjà qu'à une seule personne (page publique d'un
   // dresseur, "Mes échanges") : `false` masque ce badge dans ce cas.
   showTrainerBadge?: boolean;
+  // Toutes les entrées de tous les dresseurs (pas juste celles de cette
+  // liste) : sert uniquement à calculer, pour une entrée "want", chez quels
+  // autres dresseurs ce Pokémon est disponible (bouton "Dispo chez N
+  // Dresseurs"). Recalculé automatiquement à chaque nouveau fetch du parent
+  // (useMemo dérivé), pas de polling dédié.
+  allEntries?: PokemonEntry[];
 }
 
 
@@ -133,8 +140,10 @@ export default function PokemonCard({
   onComplete,
   onQuantityChange,
   showTrainerBadge = true,
+  allEntries,
 }: PokemonCardProps) {
   const [showDetail, setShowDetail] = useState(false);
+  const [showAvailableFrom, setShowAvailableFrom] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const quantity = entry.quantity ?? 1;
@@ -168,6 +177,29 @@ export default function PokemonCard({
   const categoryColor = getCategory(entry.category)?.color ?? CATEGORIES.want.color;
   const categoryGlow = getCategory(entry.category)?.glow ?? CATEGORIES.give.glow;
 
+  // Dresseurs (autres que soi) ayant ce Pokémon dispo en "give"/"mirror" :
+  // masqué si un partenaire est déjà associé (linkedEntryId) ou si ce n'est
+  // pas une entrée "want". Dérivé de allEntries, donc se met à jour tout
+  // seul dès que le parent refetch (pas de polling séparé à gérer ici).
+  const entryTrainerId = entry.trainer?.id;
+  const availableFrom = useMemo(() => {
+    if (entry.category !== "want" || entry.linkedEntryId || !allEntries) return [];
+    const seen = new Set<string>();
+    const matches: { id: string; name: string }[] = [];
+    for (const other of allEntries) {
+      const otherTrainerId = other.trainer?.id;
+      if (!otherTrainerId || otherTrainerId === entryTrainerId) continue;
+      if (other.category !== "give" && other.category !== "mirror") continue;
+      if (other.completed) continue;
+      if (other.pokemonId !== entry.pokemonId) continue;
+      if (!!other.shiny !== !!entry.shiny) continue;
+      if (seen.has(otherTrainerId)) continue;
+      seen.add(otherTrainerId);
+      matches.push({ id: otherTrainerId, name: other.trainer!.name });
+    }
+    return matches;
+  }, [allEntries, entry.category, entry.linkedEntryId, entry.pokemonId, entry.shiny, entryTrainerId]);
+
   useEffect(() => { setMounted(true); }, []);
 
   const modal = showDetail && (
@@ -181,10 +213,12 @@ export default function PokemonCard({
       onClick={closeDetail}
     >
       <div
-        className="glass-card animate-scale-in flex flex-col items-center relative"
+        className="glass-card animate-scale-in flex flex-col items-center relative overflow-y-auto"
         style={{
           maxWidth: 340,
           width: "100%",
+          maxHeight: "calc(100dvh - 32px)",
+          overscrollBehavior: "contain",
           padding: 32,
           ...(entry.backgroundUrl && {
             backgroundImage: `linear-gradient(rgba(8,11,20,0.55), rgba(8,11,20,0.8)), url(${entry.backgroundUrl})`,
@@ -330,7 +364,7 @@ export default function PokemonCard({
           <PokemonSprite
             pokemonId={entry.pokemonId}
             alt={entry.pokemonName}
-            size={168}
+            size={202}
             shiny={isShiny}
             customSpriteUrl={entry.customSpriteUrl}
             preferStatic={preferStatic}
@@ -388,7 +422,7 @@ export default function PokemonCard({
             <PokemonSprite
               pokemonId={entry.tradeForPokemonId}
               alt={entry.tradeForPokemonName}
-              size={40}
+              size={48}
               shiny={entry.tradeForShiny === true}
               customSpriteUrl={entry.tradeForCustomSpriteUrl}
               preferStatic={preferStatic}
@@ -632,7 +666,7 @@ export default function PokemonCard({
           <PokemonSprite
             pokemonId={entry.pokemonId}
             alt={entry.pokemonName}
-            size={112}
+            size={134}
             shiny={isShiny}
             customSpriteUrl={entry.customSpriteUrl}
             preferStatic={preferStatic}
@@ -707,7 +741,7 @@ export default function PokemonCard({
             <PokemonSprite
               pokemonId={entry.tradeForPokemonId}
               alt={entry.tradeForPokemonName}
-              size={24}
+              size={29}
               shiny={entry.tradeForShiny === true}
               customSpriteUrl={entry.tradeForCustomSpriteUrl}
               preferStatic={preferStatic}
@@ -717,10 +751,62 @@ export default function PokemonCard({
             </span>
           </div>
         )}
+
+        {/* Dispo chez d'autres dresseurs (want uniquement, pas déjà associé) */}
+        {availableFrom.length > 0 && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setShowAvailableFrom(true); }}
+            className="mt-auto"
+            style={{
+              marginTop: 6, padding: "4px 12px", borderRadius: 999, cursor: "pointer",
+              background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.3)",
+              color: "#ffd700", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.65rem",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Dispo chez {availableFrom.length} Dresseur{availableFrom.length > 1 ? "s" : ""}
+          </button>
+        )}
       </div>
 
       {/* Modal rendered in document.body via portal to avoid transform clipping */}
       {mounted && modal && createPortal(modal, document.body)}
+      {mounted && showAvailableFrom && createPortal(
+        <div
+          className="fixed inset-0 flex items-center justify-center p-4"
+          style={{ background: "rgba(10,6,0,0.88)", backdropFilter: "blur(12px)", zIndex: 350 }}
+          onClick={(e) => { e.stopPropagation(); setShowAvailableFrom(false); }}
+        >
+          <div
+            className="glass-card overflow-y-auto"
+            style={{ maxWidth: 360, width: "100%", maxHeight: "calc(100dvh - 32px)", overscrollBehavior: "contain", padding: 24 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 700, fontSize: "1rem" }}>
+                {entry.pokemonName} dispo chez
+              </h3>
+              <button onClick={() => setShowAvailableFrom(false)} style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#e8edf5", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>
+                Fermer
+              </button>
+            </div>
+            <div className="flex flex-col gap-2">
+              {availableFrom.map((t) => (
+                <Link
+                  key={t.id}
+                  href={`/dresseurs/${t.id}`}
+                  className="glass-card"
+                  style={{ textDecoration: "none", padding: "10px 14px", color: "#e8edf5", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem" }}
+                >
+                  {t.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </>
   );
 }
