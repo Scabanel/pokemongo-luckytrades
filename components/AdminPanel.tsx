@@ -377,23 +377,57 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       {activeTab === "entries" && (
         <>
           <header className="text-center mb-8">
-            <h1
-              style={{
-                fontFamily: "Exo 2, sans-serif",
-                fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
-                fontWeight: 900,
-                color: "#ffd700",
-                textTransform: "uppercase",
-                textShadow: "0 0 20px rgba(255,215,0,0.4)",
-              }}
-            >
-              {me.trainer?.name ?? "Mon espace"}
-            </h1>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <h1
+                style={{
+                  fontFamily: "Exo 2, sans-serif",
+                  fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
+                  fontWeight: 900,
+                  color: "#ffd700",
+                  textTransform: "uppercase",
+                  textShadow: "0 0 20px rgba(255,215,0,0.4)",
+                }}
+              >
+                {me.trainer?.name ?? "Mon espace"}
+              </h1>
+              {me.trainer && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(`${window.location.origin}/dresseurs/${me.trainer!.id}`);
+                    toast.success("Lien copié ! Colle-le sur Discord.");
+                  }}
+                  className="btn-secondary"
+                  style={{ fontSize: "0.75rem", padding: "6px 12px" }}
+                  title="Copier le lien de mon catalogue"
+                >
+                  Partager
+                </button>
+              )}
+            </div>
             <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 4 }}>
               {me.trainer?.team
                 ? `${me.trainer.team.charAt(0).toUpperCase() + me.trainer.team.slice(1)} · Niveau ${me.trainer.level ?? "?"}`
                 : "Gère ta liste d'échanges"}
             </p>
+            {me.trainer?.friendCode && (
+              <div className="flex items-center justify-center gap-2" style={{ marginTop: 8 }}>
+                <span style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem" }}>
+                  Code ami : {me.trainer.friendCode}
+                </span>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(me.trainer!.friendCode!);
+                    toast.success("Code ami copié !");
+                  }}
+                  className="btn-secondary"
+                  style={{ fontSize: "0.7rem", padding: "4px 10px" }}
+                >
+                  Copier
+                </button>
+              </div>
+            )}
           </header>
 
           <div className="flex gap-2 mb-5 flex-wrap justify-center">
