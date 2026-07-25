@@ -632,6 +632,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       {showAddForm && (
         <EntryForm
           mode="add"
+          defaultCategory={activeCategory}
           trainers={trainers}
           pokeOptions={pokeOptions}
           existingEntries={entries}
@@ -878,6 +879,7 @@ function SelectAllCheckbox({
 type EntryFormProps =
   | {
       mode: "add";
+      defaultCategory: EntryCategory;
       trainers: Trainer[];
       pokeOptions: PokeOption[];
       existingEntries: PokemonEntry[];
@@ -922,7 +924,7 @@ function EntryForm(props: EntryFormProps) {
       : {
           pokemonName: "",
           pokemonId: 0,
-          category: "want" as EntryCategory,
+          category: (mode === "add" ? props.defaultCategory : "want") as EntryCategory,
           // Un compte non-admin ne peut créer que sous son propre dresseur
           // (de toute façon forcé côté serveur, voir app/api/entries/route.ts).
           trainerId: isAdmin ? "" : myTrainerId ?? "",
