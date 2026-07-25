@@ -29,7 +29,7 @@ export default function SiteFooter() {
         className="site-footer-link"
         style={{ color: "#b464ff", textDecoration: "none", fontWeight: 600 }}
       >
-        Fonctionnalités du site et prochaines mises à jour
+        Infos et Majs
       </a>
       <span className="site-footer-link" style={{ color: "#ffd700", textDecoration: "none" }}>Fait par Vorthil</span>
     </footer>
