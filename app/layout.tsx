@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import KonamiEasterEgg from "@/components/KonamiEasterEgg";
 
 export const metadata: Metadata = {
   title: "Échanges Pokémon Go Strasbourg",
@@ -27,6 +28,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased" suppressHydrationWarning>
         {children}
+        <KonamiEasterEgg />
         <Toaster
           position="bottom-right"
           containerStyle={{ bottom: 64 }}
