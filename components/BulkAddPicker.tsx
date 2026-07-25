@@ -161,7 +161,7 @@ export default function BulkAddPicker({
     >
       <div
         className="glass-card overflow-y-auto"
-        style={{ maxWidth: 720, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: 24 }}
+        style={{ maxWidth: 720, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: 24, overscrollBehavior: "contain" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
@@ -254,7 +254,11 @@ export default function BulkAddPicker({
           </p>
         ) : (
           <>
-            <div style={{ display: "flex", flexDirection: "column", gap: 14, maxHeight: 480, overflowY: "auto", marginBottom: 12, padding: "2px 4px" }}>
+            {/* Un seul conteneur défilant (la fenêtre entière, ci-dessus) plutôt
+                que celui-ci imbriqué avec son propre scroll : deux zones de
+                scroll indépendantes rendaient le geste ambigu sur mobile
+                (parfois interprété comme un pull-to-refresh du navigateur). */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 12, padding: "2px 4px" }}>
               {speciesList.slice(0, visibleCount).map((species) => (
                 <SpeciesBlock
                   key={species.id}

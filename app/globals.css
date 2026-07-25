@@ -27,8 +27,14 @@ body {
   background: var(--navy);
   color: #e8edf5;
   font-family: "Inter", sans-serif;
-  min-height: 100vh;
+  /* dvh (pas vh) : sur mobile, vh vaut la hauteur "barre d'adresse cachée",
+     plus grande que ce qui est réellement visible tant qu'elle s'affiche.
+     Ce décalage est ce qui faisait apparaître le contenu de la page sous le
+     footer fixe pendant le scroll (la barre d'adresse d'Android/iOS qui
+     se réduit/redéploie change la hauteur visible sans que ce vh recalcule). */
+  min-height: 100dvh;
   overflow-x: hidden;
+  overscroll-behavior-y: contain;
   padding-bottom: var(--footer-height);
 }
 
@@ -367,9 +373,9 @@ h1, h2, h3, h4, h5, h6 {
   .btn-secondary,
   .btn-danger,
   .btn-primary {
-    min-height: 44px;
-    padding-left: 16px;
-    padding-right: 16px;
+    min-height: 40px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }
 

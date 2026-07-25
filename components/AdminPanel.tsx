@@ -2014,7 +2014,7 @@ function SpritePicker({
         >
           <div
             className="glass-card overflow-y-auto"
-            style={{ maxWidth: 580, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: 24 }}
+            style={{ maxWidth: 580, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: 24, overscrollBehavior: "contain" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -2155,7 +2155,7 @@ function CostumeGrid({
           style={{ marginBottom: 8, fontSize: "0.8rem" }}
         />
       )}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 6, maxHeight: 360, overflowY: "auto" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 6 }}>
         {filtered.map(({ url, label }) => (
           <button
             key={url}
@@ -2280,7 +2280,7 @@ function BackgroundPicker({
         >
           <div
             className="glass-card overflow-y-auto"
-            style={{ maxWidth: 580, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: 24 }}
+            style={{ maxWidth: 580, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: 24, overscrollBehavior: "contain" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -2317,7 +2317,7 @@ function BackgroundPicker({
               style={{ marginBottom: 12 }}
             />
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: 8, maxHeight: 420, overflowY: "auto" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: 8 }}>
               {filtered.map(({ url, label }) => (
                 <button
                   key={url + label}
@@ -2409,7 +2409,7 @@ function ModalOverlay({ children }: { children: React.ReactNode }) {
     >
       <div
         className="glass-card animate-scale-in w-full overflow-y-auto"
-        style={{ maxWidth: 520, maxHeight: "calc(100dvh - 32px)", padding: 28 }}
+        style={{ maxWidth: 520, maxHeight: "calc(100dvh - 32px)", padding: 28, overscrollBehavior: "contain" }}
       >
         {children}
       </div>
