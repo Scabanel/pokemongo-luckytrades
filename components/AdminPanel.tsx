@@ -350,7 +350,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             Dresseurs
           </a>
           <button onClick={() => setShowAddForm(true)} className="btn-primary" style={{ fontSize: "0.8rem", padding: "7px 14px" }}>
-            + Ajouter un échange
+            +Ajouter un Pokémon
           </button>
           <button onClick={handleLogout} className="btn-danger" style={{ fontSize: "0.8rem", padding: "7px 14px" }}>
             Déconnexion
