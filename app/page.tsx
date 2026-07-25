@@ -6,16 +6,20 @@ import SiteFooter from "@/components/SiteFooter";
 
 const FEATURES = [
   {
-    title: "Crée ta liste",
-    text: "Indique ce que tu recherches, ce que tu peux donner, et tes échanges miroir. Toi seul peux la modifier.",
+    title: "Crée tes listes",
+    text: "Indique ce que tu recherches, ce que tu peux donner, et ce qui est dispo en échanges miroir!",
   },
   {
-    title: "Parcours les autres dresseurs",
-    text: "Consulte librement ce que chaque dresseur inscrit recherche ou propose, sans même avoir de compte.",
+    title: "Regarde ce qu'on les autres!",
+    text: "Consulte librement ce que chaque dresseur inscrit recherche ou propose!",
   },
   {
     title: "Organise tes échanges",
-    text: "Repère une correspondance, contacte la personne en jeu, et marque l'échange comme conclu une fois fait.",
+    text: "Une fois que t'as fait ton choix, tu peux éditer le pokémon dans ta liste pour y indiquer le nom du dresseur avec qui tu feras l'échange, et contre quel pokémon! Une fois que c'est fait, tu pourras le marqué comme étant échangé!",
+  },
+  {
+    title: "Tout y est!",
+    text: "Les fonds, les costumes spéciaux, les 92831 versions différentes de Pikachu...tout y est, visible en un clin d'oeil!",
   },
 ];
 
@@ -59,7 +63,7 @@ export default function LandingPage() {
               animation: "title-float 4s ease-in-out infinite",
             }}
           >
-            Organise tes échanges chanceux
+            Organise tes échanges avec les membres de la communauté POGO Strasbourg!
           </h1>
         </div>
 
@@ -70,9 +74,9 @@ export default function LandingPage() {
           lineHeight: 1.6,
           marginBottom: 40,
         }}>
-          Un carnet d&apos;échanges partagé entre dresseurs Pokémon GO. Chacun crée
-          son propre compte et gère sa propre liste (recherches, dons, miroirs)
-          et peut consulter celles de tous les autres.
+          "Tu cherches quoi? Je sais pas et toi? Je sais pas.
+          Ok, vous connaissez cette situation qui vous prend 15 minutes à chaque fois. Avec cette appli, vous pouvez organiser
+          tous vos échanges, voir la liste des pokémons disponibles des personnes inscrites et réserver des Pokémon! Voilà un site qui va faire plaisir à Estelle!"
         </p>
 
         <div className="flex gap-4 flex-wrap justify-center mb-16">
