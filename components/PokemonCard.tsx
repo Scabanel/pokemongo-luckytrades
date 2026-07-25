@@ -42,6 +42,17 @@ const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> =
 const DEFAULT_TAG_COLOR = { bg: "rgba(100,180,255,0.15)", text: "#64b4ff", border: "rgba(100,180,255,0.4)" };
 function getTagColor(tag: string) { return TAG_COLORS[tag.toLowerCase()] ?? DEFAULT_TAG_COLOR; }
 
+// Identité de forme/costume d'une entrée, pour le matching "Dispo chez N
+// Dresseurs" : pokemonId+shiny ne suffisent pas (ex: les races de Paldea de
+// Tauros partagent le même pokemonId ET le même pokemonName "Tauros", seul
+// customSpriteUrl distingue la race exacte). "fond" est ignoré : c'est un
+// arrière-plan d'événement, pas une forme différente du Pokémon.
+const FORM_TAGS = new Set(["costume", "gigamax", "dynamax"]);
+function formVariantKey(customSpriteUrl: string | null | undefined, rawTags: string | null | undefined): string {
+  const relevantTags = parseTags(rawTags).filter((t) => FORM_TAGS.has(t.toLowerCase())).sort().join(",");
+  return `${customSpriteUrl || ""}|${relevantTags}`;
+}
+
 function getEventTheme(name: string, tags: string[]): {
   borderColor: string; boxShadow: string; glow: string;
 } | null {
@@ -182,6 +193,7 @@ export default function PokemonCard({
   // pas une entrée "want". Dérivé de allEntries, donc se met à jour tout
   // seul dès que le parent refetch (pas de polling séparé à gérer ici).
   const entryTrainerId = entry.trainer?.id;
+  const entryFormKey = formVariantKey(entry.customSpriteUrl, entry.tags);
   const availableFrom = useMemo(() => {
     if (entry.category !== "want" || entry.linkedEntryId || !allEntries) return [];
     const seen = new Set<string>();
@@ -193,12 +205,13 @@ export default function PokemonCard({
       if (other.completed) continue;
       if (other.pokemonId !== entry.pokemonId) continue;
       if (!!other.shiny !== !!entry.shiny) continue;
+      if (formVariantKey(other.customSpriteUrl, other.tags) !== entryFormKey) continue;
       if (seen.has(otherTrainerId)) continue;
       seen.add(otherTrainerId);
       matches.push({ id: otherTrainerId, name: other.trainer!.name });
     }
     return matches;
-  }, [allEntries, entry.category, entry.linkedEntryId, entry.pokemonId, entry.shiny, entryTrainerId]);
+  }, [allEntries, entry.category, entry.linkedEntryId, entry.pokemonId, entry.shiny, entryTrainerId, entryFormKey]);
 
   useEffect(() => { setMounted(true); }, []);
 
