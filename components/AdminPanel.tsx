@@ -1042,6 +1042,10 @@ function EntryForm(props: EntryFormProps) {
   const linkedEntry = form.linkedEntryId
     ? existingEntries.find((e) => e.id === form.linkedEntryId) ?? null
     : null;
+  const linkSuggestions =
+    tradeSearch.length >= 1
+      ? linkableEntries.filter((le) => le.pokemonName.toLowerCase().includes(tradeSearch.toLowerCase())).slice(0, 8)
+      : [];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -1130,7 +1134,7 @@ function EntryForm(props: EntryFormProps) {
   };
 
   return (
-    <ModalOverlay onClose={onClose}>
+    <ModalOverlay>
       {mode === "add" ? (
         <div className="flex items-center justify-between flex-wrap gap-2" style={{ marginBottom: 20 }}>
           <h2
@@ -1453,60 +1457,77 @@ function EntryForm(props: EntryFormProps) {
                   </button>
                 </div>
               ) : (
-                <>
-                  {oppositeCategory && linkableEntries.length > 0 && (
-                    <div className="flex gap-2 flex-wrap mt-1 mb-2">
-                      {linkableEntries.map((le) => (
-                        <button
-                          key={le.id}
-                          type="button"
-                          onClick={() => {
-                            setForm((f) => ({ ...f, linkedEntryId: le.id, tradeForPokemonName: le.pokemonName, tradeForPokemonId: le.pokemonId }));
-                            setTradeSearch(le.pokemonName);
-                          }}
-                          style={{
-                            padding: "4px 10px", borderRadius: 999,
-                            border: "1px solid rgba(255, 215, 0,0.3)", background: "rgba(255, 215, 0,0.08)",
-                            cursor: "pointer", fontSize: "0.75rem", color: "#ffd700",
-                            fontFamily: "Exo 2, sans-serif", fontWeight: 600,
-                          }}
-                        >
-                          Lier : {le.pokemonName}
-                        </button>
-                      ))}
-                    </div>
+                <div className="flex gap-2 items-center mt-1">
+                  {form.tradeForPokemonId > 0 && (
+                    <PokemonSprite pokemonId={form.tradeForPokemonId} alt={form.tradeForPokemonName} size={40} />
                   )}
-                  <div className="flex gap-2 items-center mt-1">
-                    {form.tradeForPokemonId > 0 && (
-                      <PokemonSprite pokemonId={form.tradeForPokemonId} alt={form.tradeForPokemonName} size={40} />
-                    )}
-                    <div style={{ flex: 1, position: "relative" }}>
-                      <input
-                        type="text"
-                        value={tradeSearch}
-                        onChange={(e) => {
-                          setTradeSearch(e.target.value);
-                          setShowTradeSuggestions(true);
-                          if (!e.target.value) setForm((f) => ({ ...f, tradeForPokemonName: "", tradeForPokemonId: 0 }));
-                        }}
-                        onFocus={() => setShowTradeSuggestions(true)}
-                        className="glass-input"
-                        placeholder={mode === "add" ? "Pokémon en échange (optionnel)..." : "Pokémon en échange..."}
-                        autoComplete="off"
-                      />
-                      {showTradeSuggestions && tradeSuggestions.length > 0 && (
-                        <SuggestionDropdown
-                          options={tradeSuggestions}
-                          onSelect={(p) => {
-                            setForm((f) => ({ ...f, tradeForPokemonName: p.frenchName, tradeForPokemonId: p.id }));
-                            setTradeSearch(p.frenchName);
-                            setShowTradeSuggestions(false);
-                          }}
-                        />
-                      )}
-                    </div>
+                  <div style={{ flex: 1, position: "relative" }}>
+                    <input
+                      type="text"
+                      value={tradeSearch}
+                      onChange={(e) => {
+                        setTradeSearch(e.target.value);
+                        setShowTradeSuggestions(true);
+                        if (!e.target.value) setForm((f) => ({ ...f, tradeForPokemonName: "", tradeForPokemonId: 0 }));
+                      }}
+                      onFocus={() => setShowTradeSuggestions(true)}
+                      className="glass-input"
+                      placeholder={
+                        oppositeCategory
+                          ? "Nom du Pokémon disponible à l'échange..."
+                          : mode === "add"
+                          ? "Pokémon en échange (optionnel)..."
+                          : "Pokémon en échange..."
+                      }
+                      autoComplete="off"
+                    />
+                    {/* Pour want/give : propose uniquement ce que tu as déjà
+                        disponible dans ta propre liste opposée, et lie les
+                        deux entrées (voir Item 7 du plan). Pour miroir : pas
+                        de lien possible, autocomplete générique sur le nom. */}
+                    {oppositeCategory
+                      ? showTradeSuggestions && linkSuggestions.length > 0 && (
+                          <div
+                            style={{
+                              position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, zIndex: 20,
+                              background: "#141926", border: "1px solid rgba(255,215,0,0.2)",
+                              borderRadius: 12, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+                            }}
+                          >
+                            {linkSuggestions.map((le) => (
+                              <button
+                                key={le.id}
+                                type="button"
+                                onClick={() => {
+                                  setForm((f) => ({ ...f, linkedEntryId: le.id, tradeForPokemonName: le.pokemonName, tradeForPokemonId: le.pokemonId }));
+                                  setTradeSearch(le.pokemonName);
+                                  setShowTradeSuggestions(false);
+                                }}
+                                className="flex items-center gap-2"
+                                style={{
+                                  width: "100%", padding: "8px 12px", background: "none", border: "none",
+                                  cursor: "pointer", textAlign: "left", color: "#e8edf5",
+                                  fontFamily: "Exo 2, sans-serif", fontSize: "0.85rem",
+                                }}
+                              >
+                                <PokemonSprite pokemonId={le.pokemonId} alt={le.pokemonName} size={24} />
+                                {le.pokemonName}
+                              </button>
+                            ))}
+                          </div>
+                        )
+                      : showTradeSuggestions && tradeSuggestions.length > 0 && (
+                          <SuggestionDropdown
+                            options={tradeSuggestions}
+                            onSelect={(p) => {
+                              setForm((f) => ({ ...f, tradeForPokemonName: p.frenchName, tradeForPokemonId: p.id }));
+                              setTradeSearch(p.frenchName);
+                              setShowTradeSuggestions(false);
+                            }}
+                          />
+                        )}
                   </div>
-                </>
+                </div>
               )}
             </div>
 
@@ -2206,13 +2227,7 @@ function getTagColor(tag: string) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-function ModalOverlay({
-  onClose,
-  children,
-}: {
-  onClose: () => void;
-  children: React.ReactNode;
-}) {
+function ModalOverlay({ children }: { children: React.ReactNode }) {
   return (
     <div
       className="fixed inset-0 flex items-center justify-center p-4"
@@ -2221,7 +2236,6 @@ function ModalOverlay({
         backdropFilter: "blur(8px)",
         zIndex: 200,
       }}
-      onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
         className="glass-card animate-scale-in w-full overflow-y-auto"
