@@ -240,7 +240,7 @@ export default function KonamiEasterEgg() {
                   color: "rgba(232,237,245,0.7)",
                 }}
               >
-                Capturé par
+                Capturée par
               </p>
               <p
                 style={{
@@ -251,7 +251,7 @@ export default function KonamiEasterEgg() {
                   color: "#ffd700",
                 }}
               >
-                Sayen074 &amp; Estelle97417
+                Sayen974 &amp; Estelle97417
               </p>
             </div>
 
