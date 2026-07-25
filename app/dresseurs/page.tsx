@@ -105,11 +105,19 @@ export default function DresseursPage() {
                   </div>
                   <div className="flex flex-wrap items-center gap-1">
                     <span
-                      style={{
-                        background: "rgba(255,215,0,0.12)", border: "1px solid rgba(255,215,0,0.3)",
-                        color: "#ffd700", borderRadius: 999, padding: "2px 10px",
-                        fontSize: "0.72rem", fontWeight: 700,
-                      }}
+                      style={
+                        t._count.entries === 0
+                          ? {
+                              background: "rgba(255,107,107,0.1)", border: "1px solid rgba(255,107,107,0.3)",
+                              color: "#ff6b6b", borderRadius: 999, padding: "2px 10px",
+                              fontSize: "0.72rem", fontWeight: 700,
+                            }
+                          : {
+                              background: "rgba(255,215,0,0.12)", border: "1px solid rgba(255,215,0,0.3)",
+                              color: "#ffd700", borderRadius: 999, padding: "2px 10px",
+                              fontSize: "0.72rem", fontWeight: 700,
+                            }
+                      }
                     >
                       {t._count.entries} à échanger
                     </span>
