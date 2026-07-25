@@ -46,6 +46,7 @@ const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> =
   "événement":  { bg: "rgba(180,100,255,0.2)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
   fond:         { bg: "rgba(100,220,180,0.2)",  text: "#64dcb4", border: "rgba(100,220,180,0.5)" },
   legendaire:   { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
+  "forme-regionale": { bg: "rgba(0,180,220,0.2)", text: "#00b4dc", border: "rgba(0,180,220,0.5)" },
 };
 const DEFAULT_TAG_COLOR = { bg: "rgba(100,180,255,0.15)", text: "#64b4ff", border: "rgba(100,180,255,0.4)" };
 function getTagColor(tag: string) { return TAG_COLORS[tag.toLowerCase()] ?? DEFAULT_TAG_COLOR; }
@@ -128,6 +129,12 @@ interface PokemonCardProps {
   // Dresseurs"). Recalculé automatiquement à chaque nouveau fetch du parent
   // (useMemo dérivé), pas de polling dédié.
   allEntries?: PokemonEntry[];
+  // Id du dresseur actuellement connecté qui REGARDE la page (pas forcément
+  // le propriétaire de cette entrée) : sert à distinguer "mon propre want"
+  // (bouton Dispo chez N Dresseurs) de "le want de quelqu'un d'autre que je
+  // regarde" (jamais ce bouton-là), et à détecter si CE visiteur recherche
+  // lui-même ce Pokémon sur une tuile give/mirror d'un autre dresseur.
+  viewerTrainerId?: string | null;
 }
 
 
@@ -341,10 +348,12 @@ export default function PokemonCard({
           )}
         </div>
 
-        {/* Tags in modal */}
-        {displayTags.length > 0 && (
+        {/* Tags in modal : dynamax/gigamax ont déjà leur badge dédié juste
+            au-dessus, les remontrer ici ferait doublon (ex: "Dynamax" +
+            "dynamax") */}
+        {displayTags.filter((t) => !["dynamax", "gigamax"].includes(t.toLowerCase())).length > 0 && (
           <div className="flex flex-wrap gap-1 justify-center mb-3">
-            {displayTags.map((tag) => {
+            {displayTags.filter((t) => !["dynamax", "gigamax"].includes(t.toLowerCase())).map((tag) => {
               const c = getTagColor(tag);
               return (
                 <span key={tag} style={{

@@ -2432,6 +2432,7 @@ const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> =
   evenement:    { bg: "rgba(180,100,255,0.18)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
   "événement":  { bg: "rgba(180,100,255,0.18)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
   fond:         { bg: "rgba(100,220,180,0.18)",  text: "#64dcb4", border: "rgba(100,220,180,0.5)" },
+  "forme-regionale": { bg: "rgba(0,180,220,0.18)", text: "#00b4dc", border: "rgba(0,180,220,0.5)" },
 };
 const DEFAULT_TAG_COLOR = { bg: "rgba(100,180,255,0.15)", text: "#64b4ff", border: "rgba(100,180,255,0.4)" };
 

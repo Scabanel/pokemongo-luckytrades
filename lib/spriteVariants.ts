@@ -13,6 +13,12 @@ const GO_ICONS = goIcons as Record<string, string[]>;
 // filtre, toutes les espèces avec un sprite de base en auraient un à tort.
 const DYNAMAX_SPECIES = new Set(dynamaxSpecies as number[]);
 const ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
+// data/costumes.json mélange les vrais costumes événementiels ET les formes
+// régionales (Alola/Galar/Hisui/Paldea) sous la même structure — ce ne sont
+// pas des costumes, juste une autre apparence naturelle de l'espèce. Détecté
+// par préfixe de label (ex: "Alola", "Galarian Standard", "Hisuian (2)",
+// "Paldea Combat" — vérifié exhaustivement sur tout le catalogue).
+const REGIONAL_FORM_PREFIX = /^(alola|galar|hisui|paldea)/i;
 
 export interface SpriteVariant {
   key: string;
@@ -38,7 +44,11 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
     label: c.label,
     url: c.url,
     shiny: c.label.includes("✨"),
-    tags: c.label.startsWith("Officiel Pokémon GO") ? [] : ["costume"],
+    tags: c.label.startsWith("Officiel Pokémon GO")
+      ? []
+      : REGIONAL_FORM_PREFIX.test(c.label)
+        ? ["forme-regionale"]
+        : ["costume"],
   }));
 
   // costumes.json ne couvre que les espèces ayant déjà eu un costume/une
