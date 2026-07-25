@@ -1971,33 +1971,16 @@ function SpritePicker({
 
       {open && (
         <div
-          className="fixed inset-0 flex items-start justify-center"
-          style={{
-            background: "rgba(11,15,26,0.92)",
-            backdropFilter: "blur(10px)",
-            zIndex: 400,
-            overflowY: "auto",
-            padding: "24px 16px",
-          }}
+          className="fixed inset-0 flex items-center justify-center p-4"
+          style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 400 }}
           onClick={(e) => e.target === e.currentTarget && setOpen(false)}
         >
           <div
-            className="glass-card"
-            style={{ maxWidth: 580, width: "100%", padding: 24 }}
+            className="glass-card overflow-y-auto"
+            style={{ maxWidth: 580, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: 24 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div
-              className="flex items-center justify-between mb-4"
-              style={{
-                position: "sticky",
-                top: -24,
-                margin: "-24px -24px 16px",
-                padding: "24px 24px 12px",
-                background: "var(--glass-bg)",
-                backdropFilter: "blur(20px) saturate(160%)",
-                zIndex: 1,
-              }}
-            >
+            <div className="flex items-center justify-between mb-4">
               <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 700, fontSize: "1.1rem" }}>
                 Sprites : <span style={{ textTransform: "capitalize" }}>{pokemonName}</span>
               </h3>
@@ -2239,33 +2222,16 @@ function BackgroundPicker({
 
       {open && (
         <div
-          className="fixed inset-0 flex items-start justify-center"
-          style={{
-            background: "rgba(11,15,26,0.92)",
-            backdropFilter: "blur(10px)",
-            zIndex: 400,
-            overflowY: "auto",
-            padding: "24px 16px",
-          }}
+          className="fixed inset-0 flex items-center justify-center p-4"
+          style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 400 }}
           onClick={(e) => e.target === e.currentTarget && setOpen(false)}
         >
           <div
-            className="glass-card"
-            style={{ maxWidth: 580, width: "100%", padding: 24 }}
+            className="glass-card overflow-y-auto"
+            style={{ maxWidth: 580, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: 24 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div
-              className="flex items-center justify-between mb-4"
-              style={{
-                position: "sticky",
-                top: -24,
-                margin: "-24px -24px 16px",
-                padding: "24px 24px 12px",
-                background: "var(--glass-bg)",
-                backdropFilter: "blur(20px) saturate(160%)",
-                zIndex: 1,
-              }}
-            >
+            <div className="flex items-center justify-between mb-4">
               <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#b464ff", fontWeight: 700, fontSize: "1.1rem" }}>
                 {showAll || validated.length === 0
                   ? `Tous les fonds (${BACKGROUND_CATALOG.length})`
@@ -2391,7 +2357,7 @@ function ModalOverlay({ children }: { children: React.ReactNode }) {
     >
       <div
         className="glass-card animate-scale-in w-full overflow-y-auto"
-        style={{ maxWidth: 520, maxHeight: "90vh", padding: 28 }}
+        style={{ maxWidth: 520, maxHeight: "calc(100dvh - 32px)", padding: 28 }}
       >
         {children}
       </div>

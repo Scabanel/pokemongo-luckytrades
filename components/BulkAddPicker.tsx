@@ -112,15 +112,16 @@ export default function BulkAddPicker({
 
   return (
     <div
-      className="fixed inset-0 flex items-start justify-center"
-      style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 500, overflowY: "auto", padding: "24px 16px" }}
+      className="fixed inset-0 flex items-center justify-center p-4"
+      style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 500 }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="glass-card" style={{ maxWidth: 720, width: "100%", padding: 24 }} onClick={(e) => e.stopPropagation()}>
-        <div
-          className="flex items-center justify-between mb-4 flex-wrap gap-2"
-          style={{ position: "sticky", top: -24, margin: "-24px -24px 16px", padding: "24px 24px 12px", background: "var(--glass-bg)", backdropFilter: "blur(20px) saturate(160%)", zIndex: 1 }}
-        >
+      <div
+        className="glass-card overflow-y-auto"
+        style={{ maxWidth: 720, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: 24 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
           <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 700, fontSize: "1.1rem" }}>
             Ajouter plusieurs Pokémon
           </h3>
