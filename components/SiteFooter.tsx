@@ -25,6 +25,12 @@ export default function SiteFooter() {
       >
         Discord Pokémon GO Strasbourg
       </a>
+      <a
+        href="/fonctionnalites"
+        style={{ color: "#b464ff", textDecoration: "none", fontWeight: 600 }}
+      >
+        Fonctionnalités du site et prochaines mises à jour
+      </a>
       <span>Fait par Vorthil</span>
     </footer>
   );
