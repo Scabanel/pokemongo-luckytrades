@@ -1100,10 +1100,14 @@ export function EntryForm(props: EntryFormProps) {
         // fois (formes/costumes différents : Zarbi A/B/C..., Deoxys Attaque/
         // Défense, Pikachu déguisé...) : le nom (variante) doit aussi
         // correspondre pour que ce soit un vrai doublon, pas juste le même
-        // numéro national.
+        // numéro national. Et surtout : ne comparer qu'à SES PROPRES entrées
+        // — existingEntries contient celles de tout le monde (catalogue
+        // partagé), comparer sans filtrer par dresseur bloquait un ajout dès
+        // qu'un AUTRE dresseur avait déjà le même Pokémon dans sa liste.
         const duplicate = existingEntries!.find(
           (x) =>
             x.category === "want" &&
+            x.trainer?.id === form.trainerId &&
             x.pokemonId === form.pokemonId &&
             !!x.shiny === form.shiny &&
             x.pokemonName.trim().toLowerCase() === form.pokemonName.trim().toLowerCase()
