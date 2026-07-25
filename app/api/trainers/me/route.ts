@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentTrainer } from "@/lib/auth";
 
 const TEAMS = ["instinct", "mystic", "valor"];
+const SPRITE_STYLES = ["static", "animated"];
 
 // Permet à un compte connecté de modifier sa propre équipe/niveau, sans
 // passer par PATCH /api/trainers/[id] qui est réservé à l'admin.
@@ -12,10 +13,13 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
-  const { team, level, friendCode } = await request.json();
+  const { team, level, friendCode, preferredSpriteStyle } = await request.json();
 
   if (team !== undefined && team !== null && !TEAMS.includes(team)) {
     return NextResponse.json({ error: "Équipe invalide" }, { status: 400 });
+  }
+  if (preferredSpriteStyle !== undefined && preferredSpriteStyle !== null && !SPRITE_STYLES.includes(preferredSpriteStyle)) {
+    return NextResponse.json({ error: "Style de sprite invalide" }, { status: 400 });
   }
 
   const parsedLevel = level != null ? Number(level) : null;
@@ -31,6 +35,7 @@ export async function PATCH(request: NextRequest) {
       ...(friendCode !== undefined && {
         friendCode: typeof friendCode === "string" ? friendCode.trim() || null : null,
       }),
+      ...(preferredSpriteStyle !== undefined && { preferredSpriteStyle }),
     },
   });
 

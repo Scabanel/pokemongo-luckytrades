@@ -61,6 +61,14 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false);
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<EntryFilters>(EMPTY_ENTRY_FILTERS);
+  // Bouton d'ajout flottant : au-delà d'un scroll, remonter tout en haut pour
+  // ajouter un Pokémon devient vite pénible sur une longue liste.
+  const [showFloatingAdd, setShowFloatingAdd] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShowFloatingAdd(window.scrollY > 320);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const isAdmin = me.isAdmin;
   const myTrainerId = me.trainer?.id ?? null;
@@ -636,6 +644,25 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
         />
       )}
 
+      {/* Bouton d'ajout flottant, visible dès qu'on a scrollé */}
+      {activeTab === "entries" && showFloatingAdd && !showAddForm && (
+        <button
+          onClick={() => setShowAddForm(true)}
+          className="btn-primary"
+          style={{
+            position: "fixed",
+            bottom: "calc(var(--footer-height) + 16px)",
+            right: 20,
+            zIndex: 150,
+            borderRadius: 999,
+            padding: "14px 22px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.45)",
+          }}
+        >
+          +Ajouter un Pokémon
+        </button>
+      )}
+
       {/* Add form modal */}
       {showAddForm && (
         <EntryForm
@@ -703,12 +730,14 @@ function MyAccountPanel({
   const [team, setTeam] = useState(trainer?.team ?? "");
   const [level, setLevel] = useState(trainer?.level != null ? String(trainer.level) : "");
   const [friendCode, setFriendCode] = useState(trainer?.friendCode ?? "");
+  const [spriteStyle, setSpriteStyle] = useState(trainer?.preferredSpriteStyle ?? "static");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setTeam(trainer?.team ?? "");
     setLevel(trainer?.level != null ? String(trainer.level) : "");
     setFriendCode(trainer?.friendCode ?? "");
+    setSpriteStyle(trainer?.preferredSpriteStyle ?? "static");
   }, [trainer]);
 
   if (!trainer) {
@@ -732,6 +761,7 @@ function MyAccountPanel({
           team: team || null,
           level: level ? Number(level) : null,
           friendCode: friendCode || null,
+          preferredSpriteStyle: spriteStyle,
         }),
       });
       if (!res.ok) throw new Error();
@@ -783,6 +813,16 @@ function MyAccountPanel({
             className="glass-input mt-1"
             placeholder="0000 0000 0000"
           />
+        </div>
+        <div>
+          <label className="field-label">STYLE DE SPRITE PAR DÉFAUT</label>
+          <select value={spriteStyle} onChange={(e) => setSpriteStyle(e.target.value)} className="glass-input mt-1">
+            <option value="static">Statique (icône officielle Pokémon GO)</option>
+            <option value="animated">Animé (Gen V / Showdown)</option>
+          </select>
+          <p style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", marginTop: 4 }}>
+            S&apos;applique instantanément à tous tes Pokémon (sauf ceux avec un sprite personnalisé).
+          </p>
         </div>
         <button type="submit" className="btn-primary" disabled={loading} style={{ alignSelf: "flex-start" }}>
           {loading ? "Sauvegarde…" : "Sauvegarder"}

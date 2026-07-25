@@ -40,19 +40,21 @@ function buildUrls(
   pokemonId: number,
   shiny: boolean,
   gigantamaxSlug?: string | null,
-  gigantamaxIconUrl?: string | null
+  gigantamaxIconUrl?: string | null,
+  preferStatic?: boolean
 ): string[] {
   const goIcon = getOfficialGoIcon(pokemonId, shiny);
-  // Le sprite animé (Gen V Black/White, sinon Showdown) est privilégié par
-  // défaut : plus vivant que les icônes statiques. Gen V et Showdown n'ont
-  // pas d'animation pour les Pokémon révélés après leur sortie (tout Gen 8+ y
-  // échappe), d'où la cascade de repli jusqu'à official-artwork qui, lui, est
-  // maintenu à jour pour chaque nouvelle espèce et garantit de ne jamais finir
-  // sans image du tout.
-  const chain = shiny
+  const animatedUrls = shiny
     ? [
         `${BASE}/versions/generation-v/black-white/animated/shiny/${pokemonId}.gif`,
         `${BASE}/other/showdown/shiny/${pokemonId}.gif`,
+      ]
+    : [
+        `${BASE}/versions/generation-v/black-white/animated/${pokemonId}.gif`,
+        `${BASE}/other/showdown/${pokemonId}.gif`,
+      ];
+  const staticUrls = shiny
+    ? [
         ...(goIcon ? [goIcon] : []),
         `${BASE}/shiny/${pokemonId}.png`,
         `${BASE}/${pokemonId}.png`,
@@ -60,12 +62,16 @@ function buildUrls(
         `${BASE}/other/official-artwork/${pokemonId}.png`,
       ]
     : [
-        `${BASE}/versions/generation-v/black-white/animated/${pokemonId}.gif`,
-        `${BASE}/other/showdown/${pokemonId}.gif`,
         ...(goIcon ? [goIcon] : []),
         `${BASE}/${pokemonId}.png`,
         `${BASE}/other/official-artwork/${pokemonId}.png`,
       ];
+  // Préférence par dresseur (Trainer.preferredSpriteStyle, voir MyAccountPanel) :
+  // "animated" tente d'abord le sprite animé (Gen V/Showdown), plus vivant
+  // mais absent pour les Pokémon post-Gen 7 ; "static" (le défaut pour tout
+  // le monde sauf Vorthil) va direct à l'icône officielle Pokémon GO, plus
+  // simple et surtout fidèle pour les innombrables variantes costumées.
+  const chain = preferStatic ? [...staticUrls, ...animatedUrls] : [...animatedUrls, ...staticUrls];
 
   // Gigamax : le visuel Gigamax officiel (animé Showdown si possible, sinon
   // l'icône statique Gigamax officielle) passe avant la chaîne normale, qui
@@ -89,6 +95,9 @@ interface PokemonSpriteProps {
   // Pokémon Showdown avant tout le reste.
   gigantamaxSlug?: string | null;
   gigantamaxIconUrl?: string | null;
+  // Préférence de sprite du dresseur propriétaire de l'entrée (voir
+  // Trainer.preferredSpriteStyle) : true = icône statique GO en premier.
+  preferStatic?: boolean;
 }
 
 export default function PokemonSprite({
@@ -100,10 +109,11 @@ export default function PokemonSprite({
   customSpriteUrl,
   gigantamaxSlug,
   gigantamaxIconUrl,
+  preferStatic = true,
 }: PokemonSpriteProps) {
   const urls = useMemo(
-    () => buildUrls(pokemonId, shiny, gigantamaxSlug, gigantamaxIconUrl),
-    [pokemonId, shiny, gigantamaxSlug, gigantamaxIconUrl]
+    () => buildUrls(pokemonId, shiny, gigantamaxSlug, gigantamaxIconUrl, preferStatic),
+    [pokemonId, shiny, gigantamaxSlug, gigantamaxIconUrl, preferStatic]
   );
   const [idx, setIdx] = useState(0);
   const [useCustom, setUseCustom] = useState(!!customSpriteUrl);

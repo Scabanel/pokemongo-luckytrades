@@ -160,6 +160,10 @@ export default function PokemonCard({
   // officielle) avant la chaîne de sprites normale.
   const gigantamaxSlug = isGigamax ? ENGLISH_NAME_BY_ID.get(entry.pokemonId) ?? null : null;
   const gigantamaxIconUrl = isGigamax ? getGigantamaxSpriteUrl(entry.pokemonId, isShiny) : null;
+  // Statique (icône officielle Pokémon GO) par défaut pour tout le monde,
+  // sauf pour un dresseur ayant explicitement choisi "animated" (voir
+  // MyAccountPanel / Trainer.preferredSpriteStyle).
+  const preferStatic = entry.trainer?.preferredSpriteStyle !== "animated";
   const eventTheme = getEventTheme(entry.pokemonName, tags);
   const categoryColor = getCategory(entry.category)?.color ?? CATEGORIES.want.color;
   const categoryGlow = getCategory(entry.category)?.glow ?? CATEGORIES.give.glow;
@@ -329,6 +333,7 @@ export default function PokemonCard({
             size={168}
             shiny={isShiny}
             customSpriteUrl={entry.customSpriteUrl}
+            preferStatic={preferStatic}
             gigantamaxSlug={gigantamaxSlug}
             gigantamaxIconUrl={gigantamaxIconUrl}
           />
@@ -623,6 +628,7 @@ export default function PokemonCard({
             size={112}
             shiny={isShiny}
             customSpriteUrl={entry.customSpriteUrl}
+            preferStatic={preferStatic}
             gigantamaxSlug={gigantamaxSlug}
             gigantamaxIconUrl={gigantamaxIconUrl}
           />

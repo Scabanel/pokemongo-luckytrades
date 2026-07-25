@@ -16,6 +16,12 @@ model Trainer {
   team       String?
   level      Int?
   friendCode String?
+  // Style de sprite par défaut appliqué à toutes ses entrées : "animated"
+  // (Gen V/Showdown en premier) ou "static" (icône officielle Pokémon GO en
+  // premier). Lu dynamiquement à l'affichage (voir PokemonSprite.tsx) : pas
+  // besoin de migrer chaque entrée quand ce champ change, un seul update ici
+  // change instantanément tous les sprites du dresseur.
+  preferredSpriteStyle String?
   createdAt  DateTime       @default(now())
   entries    PokemonEntry[]
 }
