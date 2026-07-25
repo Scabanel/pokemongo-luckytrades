@@ -2090,7 +2090,7 @@ function SpritePicker({
         >
           <div
             className="glass-card overflow-y-auto"
-            style={{ maxWidth: 680, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: "clamp(12px, 4vw, 24px)", overscrollBehavior: "contain" }}
+            style={{ maxWidth: 800, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: "clamp(12px, 4vw, 24px)", overscrollBehavior: "contain" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -2103,7 +2103,7 @@ function SpritePicker({
             {fetching ? (
               <div style={{ textAlign: "center", padding: 32, color: "rgba(232,237,245,0.4)" }}>Chargement…</div>
             ) : visibleSprites.length > 0 ? (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(76px, 22vw, 136px), 1fr))", gap: 8, marginBottom: 20 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(96px, 26vw, 160px), 1fr))", gap: 8, marginBottom: 20 }}>
                 {visibleSprites.map(({ url, label }) => (
                   <button
                     key={url}
@@ -2116,7 +2116,7 @@ function SpritePicker({
                       display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
                     }}
                   >
-                    <span style={{ display: "block", width: 96, height: 96, overflow: "hidden" }}>
+                    <span style={{ display: "block", width: 140, height: 140, overflow: "hidden" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={url}
@@ -2231,7 +2231,7 @@ function CostumeGrid({
           style={{ marginBottom: 8, fontSize: "0.8rem" }}
         />
       )}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(70px, 20vw, 116px), 1fr))", gap: 6 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(96px, 26vw, 150px), 1fr))", gap: 8 }}>
         {filtered.map(({ url, label }) => (
           <button
             key={url}
@@ -2244,7 +2244,7 @@ function CostumeGrid({
               display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
             }}
           >
-            <span style={{ display: "block", width: 86, height: 86, overflow: "hidden" }}>
+            <span style={{ display: "block", width: 130, height: 130, overflow: "hidden" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={url}
@@ -2356,7 +2356,7 @@ function BackgroundPicker({
         >
           <div
             className="glass-card overflow-y-auto"
-            style={{ maxWidth: 680, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: "clamp(12px, 4vw, 24px)", overscrollBehavior: "contain" }}
+            style={{ maxWidth: 800, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: "clamp(12px, 4vw, 24px)", overscrollBehavior: "contain" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">

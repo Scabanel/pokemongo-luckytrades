@@ -180,7 +180,7 @@ export default function BulkAddPicker({
     >
       <div
         className="glass-card overflow-y-auto"
-        style={{ maxWidth: 820, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: "clamp(12px, 4vw, 24px)", overscrollBehavior: "contain" }}
+        style={{ maxWidth: 920, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: "clamp(12px, 4vw, 24px)", overscrollBehavior: "contain" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
@@ -394,7 +394,7 @@ function SpeciesBlock({
         )}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(64px, 20vw, 96px), 1fr))", gap: 8 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(96px, 26vw, 160px), 1fr))", gap: 10 }}>
         {variants.map((variant) => {
           const isStaged = staged.has(variant.key);
           return (
