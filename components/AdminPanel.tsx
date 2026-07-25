@@ -26,7 +26,7 @@ interface PokemonEntry extends SharedPokemonEntry {
   completed: boolean;
 }
 
-interface PokeOption {
+export interface PokeOption {
   name: string;       // English (internal, for pokemonId resolution)
   id: number;
   frenchName: string; // French (displayed + stored as pokemonName)
@@ -955,7 +955,7 @@ function SelectAllCheckbox({
 // Seuls diffèrent : le sélecteur de Pokémon (uniquement à l'ajout, on ne
 // change pas le Pokémon d'une entrée existante), le endpoint POST/PATCH,
 // et le comportement "reste ouvert pour enchaîner" propre à l'ajout.
-type EntryFormProps =
+export type EntryFormProps =
   | {
       mode: "add";
       defaultCategory: EntryCategory;
@@ -979,7 +979,7 @@ type EntryFormProps =
       onSaved: (entry: PokemonEntry) => void;
     };
 
-function EntryForm(props: EntryFormProps) {
+export function EntryForm(props: EntryFormProps) {
   const { mode, trainers, pokeOptions, isAdmin, myTrainerId, onClose, onSaved, existingEntries } = props;
   const entry = mode === "edit" ? props.entry : undefined;
 

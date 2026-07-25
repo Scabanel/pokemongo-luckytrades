@@ -1,15 +1,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import toast from "react-hot-toast";
 import ParticleBackground from "@/components/ParticleBackground";
 import PokemonCard from "@/components/PokemonCard";
 import CardSkeleton from "@/components/CardSkeleton";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
+import type { PokeOption } from "@/components/AdminPanel";
+import pokemonList from "@/data/pokemon.json";
 import type { PokemonEntry, EntryCategory, Trainer } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
+
+// Chargé à la demande seulement (voir plus bas) : cette page publique est
+// visitée par n'importe qui, y compris sans être connecté, et EntryForm
+// entraîne dans son sillage tout le module AdminPanel (catalogues de
+// costumes/fonds, ~1 Mo de JSON) qui ne sert qu'à l'admin qui édite.
+const EntryForm = dynamic(() => import("@/components/AdminPanel").then((m) => ({ default: m.EntryForm })), {
+  ssr: false,
+});
 
 function sortEntries(entries: PokemonEntry[]): PokemonEntry[] {
   return [...entries].sort((a, b) => {
@@ -37,22 +48,94 @@ export default function DresseurPageClient({ id }: { id: string }) {
   const [activeTab, setActiveTab] = useState<EntryCategory>("mirror");
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<EntryFilters>(EMPTY_ENTRY_FILTERS);
+  // Un admin qui consulte la liste publique d'un dresseur peut l'éditer
+  // directement (changer un sprite, ajouter un fond...) pour l'aider, sans
+  // devoir passer par son propre compte. Aucune capacité d'édition pour un
+  // visiteur normal ou le dresseur lui-même sur cette page publique.
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [allTrainers, setAllTrainers] = useState<Trainer[]>([]);
+  const [editingEntry, setEditingEntry] = useState<PokemonEntry | null>(null);
 
   useEffect(() => {
     Promise.all([
       fetch(`/api/trainers/${id}`).then((r) => (r.ok ? r.json() : null)),
       fetch(`/api/entries?trainerId=${id}`).then((r) => r.json()),
+      fetch("/api/auth/me").then((r) => (r.ok ? r.json() : null)),
     ])
-      .then(([trainerData, trainerEntries]) => {
+      .then(([trainerData, trainerEntries, me]) => {
         if (!trainerData) {
           setNotFound(true);
           return;
         }
         setTrainer(trainerData);
         setEntries(trainerEntries);
+        if (me?.isAdmin) {
+          setIsAdmin(true);
+          fetch("/api/trainers")
+            .then((r) => r.json())
+            .then(setAllTrainers);
+        }
       })
       .finally(() => setLoading(false));
   }, [id]);
+
+  const handleDeleteEntry = async (entryId: string) => {
+    const prev = entries;
+    setEntries((es) => es.filter((e) => e.id !== entryId));
+    try {
+      const res = await fetch(`/api/entries/${entryId}`, { method: "DELETE" });
+      if (!res.ok) throw new Error();
+      toast.success("Entrée supprimée");
+    } catch {
+      setEntries(prev);
+      toast.error("Erreur lors de la suppression");
+    }
+  };
+
+  const handleCompleteEntry = async (entry: PokemonEntry) => {
+    const prev = entries;
+    setEntries((es) => es.filter((e) => e.id !== entry.id && e.id !== entry.linkedEntryId));
+    try {
+      const res = await fetch(`/api/entries/${entry.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completed: true }),
+      });
+      if (!res.ok) throw new Error();
+      toast.success(`${entry.pokemonName} marqué comme échangé`);
+    } catch {
+      setEntries(prev);
+      toast.error("Erreur");
+    }
+  };
+
+  const handleQuantityChange = async (entry: PokemonEntry, delta: number) => {
+    const current = entry.quantity ?? 1;
+    const next = current + delta;
+    if (next < 1) {
+      handleCompleteEntry(entry);
+      return;
+    }
+    const prev = entries;
+    setEntries((es) => es.map((e) => (e.id === entry.id ? { ...e, quantity: next } : e)));
+    try {
+      const res = await fetch(`/api/entries/${entry.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ quantity: next }),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      setEntries(prev);
+      toast.error("Erreur lors de la mise à jour de la quantité");
+    }
+  };
+
+  const refetchEntries = () => {
+    fetch(`/api/entries?trainerId=${id}`)
+      .then((r) => r.json())
+      .then(setEntries);
+  };
 
   const handleShare = async () => {
     try {
@@ -265,12 +348,44 @@ export default function DresseurPageClient({ id }: { id: string }) {
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
               {visibleEntries.map((entry, i) => (
-                <PokemonCard key={entry.id} entry={entry} showTrainerBadge={false} style={{ animationDelay: `${i * 0.04}s` }} />
+                <PokemonCard
+                  key={entry.id}
+                  entry={entry}
+                  showTrainerBadge={false}
+                  style={{ animationDelay: `${i * 0.04}s` }}
+                  canEdit={isAdmin}
+                  onEdit={isAdmin ? () => setEditingEntry(entry) : undefined}
+                  onDelete={isAdmin ? () => handleDeleteEntry(entry.id) : undefined}
+                  onComplete={isAdmin ? () => handleCompleteEntry(entry) : undefined}
+                  onQuantityChange={isAdmin ? (delta) => handleQuantityChange(entry, delta) : undefined}
+                />
               ))}
             </div>
           )}
         </div>
       </div>
+
+      {editingEntry && (
+        <EntryForm
+          mode="edit"
+          entry={{ ...editingEntry, shiny: editingEntry.shiny ?? false, completed: editingEntry.completed ?? false }}
+          trainers={allTrainers}
+          pokeOptions={pokemonList as PokeOption[]}
+          existingEntries={entries.map((e) => ({ ...e, shiny: e.shiny ?? false, completed: e.completed ?? false }))}
+          isAdmin={isAdmin}
+          myTrainerId={null}
+          onClose={() => setEditingEntry(null)}
+          onSaved={(updated: PokemonEntry) => {
+            if (updated.linkedEntryId || editingEntry.linkedEntryId) {
+              refetchEntries();
+            } else {
+              setEntries((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
+            }
+            toast.success("Échange mis à jour");
+            setEditingEntry(null);
+          }}
+        />
+      )}
 
       <SiteFooter />
     </div>
