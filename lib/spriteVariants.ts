@@ -1,10 +1,17 @@
 import costumeCatalog from "@/data/costumes.json";
 import gigantamaxIcons from "@/data/gigantamax-icons.json";
 import goIcons from "@/data/go-icons.json";
+import dynamaxSpecies from "@/data/dynamax-species.json";
 
 const COSTUME_CATALOG = costumeCatalog as Record<string, { label: string; url: string }[]>;
 const GIGANTAMAX_ICONS = gigantamaxIcons as Record<string, string[]>;
 const GO_ICONS = goIcons as Record<string, string[]>;
+// Liste des dex ID ayant réellement une forme Dynamax en jeu (extraite du
+// catalogue pokexperience.com, lui-même dérivé du GAME_MASTER Niantic) :
+// contrairement à Gigamax (déjà limité par gigantamax-icons.json), rien
+// dans nos autres sources ne dit quelles espèces ont un Dynamax — sans ce
+// filtre, toutes les espèces avec un sprite de base en auraient un à tort.
+const DYNAMAX_SPECIES = new Set(dynamaxSpecies as number[]);
 const ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
 
 export interface SpriteVariant {
@@ -23,7 +30,9 @@ export interface SpriteVariant {
 // (même sprite que la base : Dynamax ne change pas l'apparence dans GO,
 // contrairement à Gigamax).
 export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
-  const costumes = COSTUME_CATALOG[String(pokemonId)] ?? [];
+  // Les Méga-Évolutions ne servent à rien dans cette appli (pas de mécanique
+  // Méga dans les échanges/recherches Pokémon GO) : on les exclut du picker.
+  const costumes = (COSTUME_CATALOG[String(pokemonId)] ?? []).filter((c) => !c.label.startsWith("Mega"));
   const variants: SpriteVariant[] = costumes.map((c) => ({
     key: c.url,
     label: c.label,
@@ -69,13 +78,15 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
     }
   }
 
-  const base = variants.find((v) => v.label === "Officiel Pokémon GO");
-  const baseShiny = variants.find((v) => v.label === "Officiel Pokémon GO ✨");
-  if (base) {
-    variants.push({ key: `dynamax-${base.url}`, label: "Dynamax", url: base.url, shiny: false, tags: ["dynamax"] });
-  }
-  if (baseShiny) {
-    variants.push({ key: `dynamax-${baseShiny.url}`, label: "Dynamax ✨", url: baseShiny.url, shiny: true, tags: ["dynamax"] });
+  if (DYNAMAX_SPECIES.has(pokemonId)) {
+    const base = variants.find((v) => v.label === "Officiel Pokémon GO");
+    const baseShiny = variants.find((v) => v.label === "Officiel Pokémon GO ✨");
+    if (base) {
+      variants.push({ key: `dynamax-${base.url}`, label: "Dynamax", url: base.url, shiny: false, tags: ["dynamax"] });
+    }
+    if (baseShiny) {
+      variants.push({ key: `dynamax-${baseShiny.url}`, label: "Dynamax ✨", url: baseShiny.url, shiny: true, tags: ["dynamax"] });
+    }
   }
 
   return variants;

@@ -30,6 +30,24 @@ const CATEGORY_LABELS: Record<EntryCategory, string> = {
   mirror: "Miroir",
 };
 
+type VariantFilter = "shiny" | "costume" | "dynamax" | "gigamax";
+
+const FILTER_LABELS: Record<VariantFilter, string> = {
+  shiny: "Shiny",
+  costume: "Costumes",
+  dynamax: "Dynamax",
+  gigamax: "Gigamax",
+};
+
+function matchesFilters(variant: SpriteVariant, filters: Set<VariantFilter>): boolean {
+  if (filters.size === 0) return true;
+  if (filters.has("shiny") && variant.shiny) return true;
+  if (filters.has("costume") && variant.tags.includes("costume")) return true;
+  if (filters.has("dynamax") && variant.tags.includes("dynamax")) return true;
+  if (filters.has("gigamax") && variant.tags.includes("gigamax")) return true;
+  return false;
+}
+
 export default function BulkAddPicker({
   defaultCategory,
   trainerId,
@@ -46,6 +64,7 @@ export default function BulkAddPicker({
   const [staged, setStaged] = useState<Map<string, StagedItem>>(new Map());
   const [category, setCategory] = useState<EntryCategory>(defaultCategory);
   const [submitting, setSubmitting] = useState(false);
+  const [filters, setFilters] = useState<Set<VariantFilter>>(new Set());
   // Toutes les variantes de tous les Pokémon de la région/recherche sont
   // affichées d'un coup (comme un grand tableau de sprites, génération par
   // génération) plutôt que de devoir cliquer sur chaque Pokémon un par un :
@@ -68,6 +87,16 @@ export default function BulkAddPicker({
     }
     return map;
   }, []);
+
+  const toggleFilter = (f: VariantFilter) => {
+    setFilters((prev) => {
+      const next = new Set(prev);
+      if (next.has(f)) next.delete(f);
+      else next.add(f);
+      return next;
+    });
+    setVisibleCount(50);
+  };
 
   const toggleVariant = (species: PokeListEntry, variant: SpriteVariant) => {
     setStaged((prev) => {
@@ -114,7 +143,15 @@ export default function BulkAddPicker({
     }
   };
 
-  const speciesList = searchResults ?? speciesByRegion.get(openRegion ?? "") ?? [];
+  // Quand un filtre est actif, on ne garde que les Pokémon ayant au moins une
+  // variante qui correspond : sinon la liste afficherait des tuiles vides.
+  const speciesList = useMemo(() => {
+    const base = searchResults ?? speciesByRegion.get(openRegion ?? "") ?? [];
+    if (filters.size === 0) return base;
+    return base.filter((species) =>
+      getSpriteVariants(species.id).some((v) => matchesFilters(v, filters))
+    );
+  }, [searchResults, speciesByRegion, openRegion, filters]);
 
   return (
     <div
@@ -191,6 +228,26 @@ export default function BulkAddPicker({
           </div>
         )}
 
+        <div className="flex gap-2 items-center flex-wrap mb-3">
+          <label className="field-label" style={{ marginRight: 4 }}>FILTRES</label>
+          {(Object.keys(FILTER_LABELS) as VariantFilter[]).map((f) => (
+            <button
+              key={f}
+              type="button"
+              onClick={() => toggleFilter(f)}
+              style={{
+                padding: "6px 14px", borderRadius: 999, cursor: "pointer",
+                border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.78rem",
+                ...(filters.has(f)
+                  ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.4)", color: "#ffd700" }
+                  : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+              }}
+            >
+              {FILTER_LABELS[f]}
+            </button>
+          ))}
+        </div>
+
         {speciesList.length === 0 ? (
           <p style={{ color: "rgba(232,237,245,0.35)", fontSize: "0.85rem", padding: "16px 0" }}>
             {searchResults ? "Aucun résultat." : "Choisis une région, ou cherche un Pokémon par nom."}
@@ -203,6 +260,7 @@ export default function BulkAddPicker({
                   key={species.id}
                   species={species}
                   staged={staged}
+                  filters={filters}
                   onToggleVariant={(variant) => toggleVariant(species, variant)}
                 />
               ))}
@@ -238,17 +296,63 @@ export default function BulkAddPicker({
   );
 }
 
+function VariantBadges({ variant }: { variant: SpriteVariant }) {
+  return (
+    <>
+      {variant.shiny && (
+        <span
+          title="Shiny"
+          style={{
+            position: "absolute", top: 2, right: 2, fontSize: "0.75rem",
+            lineHeight: 1, filter: "drop-shadow(0 0 2px rgba(0,0,0,0.9))",
+          }}
+        >
+          ✨
+        </span>
+      )}
+      {variant.tags.includes("dynamax") && (
+        <span
+          title="Dynamax"
+          style={{
+            position: "absolute", bottom: 2, left: 2, fontSize: "0.55rem", fontWeight: 800,
+            width: 15, height: 15, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+            background: "#7c3aed", color: "#fff", border: "1px solid rgba(255,255,255,0.4)",
+          }}
+        >
+          D
+        </span>
+      )}
+      {variant.tags.includes("gigamax") && (
+        <span
+          title="Gigamax"
+          style={{
+            position: "absolute", bottom: 2, left: 2, fontSize: "0.55rem", fontWeight: 800,
+            width: 15, height: 15, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+            background: "#e11d48", color: "#fff", border: "1px solid rgba(255,255,255,0.4)",
+          }}
+        >
+          G
+        </span>
+      )}
+    </>
+  );
+}
+
 function SpeciesBlock({
   species,
   staged,
+  filters,
   onToggleVariant,
 }: {
   species: PokeListEntry;
   staged: Map<string, StagedItem>;
+  filters: Set<VariantFilter>;
   onToggleVariant: (variant: SpriteVariant) => void;
 }) {
-  const variants = getSpriteVariants(species.id);
+  const variants = getSpriteVariants(species.id).filter((v) => matchesFilters(v, filters));
   const stagedCountForSpecies = Array.from(staged.values()).filter((s) => s.pokemonId === species.id).length;
+
+  if (variants.length === 0) return null;
 
   return (
     <div>
@@ -262,34 +366,29 @@ function SpeciesBlock({
         )}
       </div>
 
-      {variants.length === 0 ? (
-        <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.3)" }}>Pas encore sorti dans Pokémon GO.</p>
-      ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))", gap: 6 }}>
-          {variants.map((variant) => {
-            const isStaged = staged.has(variant.key);
-            return (
-              <button
-                key={variant.key}
-                type="button"
-                onClick={() => onToggleVariant(variant)}
-                style={{
-                  display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-                  padding: 6, borderRadius: 8, cursor: "pointer",
-                  background: isStaged ? "rgba(255,215,0,0.18)" : "rgba(255,255,255,0.04)",
-                  border: `1px solid ${isStaged ? "rgba(255,215,0,0.5)" : "rgba(255,255,255,0.08)"}`,
-                }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={variant.url} alt={variant.label} width={44} height={44} loading="lazy" decoding="async" style={{ objectFit: "contain", imageRendering: "pixelated" }} />
-                <span style={{ fontSize: "0.58rem", color: "rgba(232,237,245,0.6)", textAlign: "center", lineHeight: 1.2 }}>
-                  {variant.label}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      )}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(72px, 1fr))", gap: 8 }}>
+        {variants.map((variant) => {
+          const isStaged = staged.has(variant.key);
+          return (
+            <button
+              key={variant.key}
+              type="button"
+              title={variant.label}
+              onClick={() => onToggleVariant(variant)}
+              style={{
+                position: "relative", display: "flex", alignItems: "center", justifyContent: "center",
+                padding: 8, borderRadius: 8, cursor: "pointer",
+                background: isStaged ? "rgba(255,215,0,0.18)" : "rgba(255,255,255,0.04)",
+                border: `1px solid ${isStaged ? "rgba(255,215,0,0.5)" : "rgba(255,255,255,0.08)"}`,
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={variant.url} alt={variant.label} width={64} height={64} loading="lazy" decoding="async" style={{ objectFit: "contain", imageRendering: "pixelated" }} />
+              <VariantBadges variant={variant} />
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

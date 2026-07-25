@@ -1879,7 +1879,9 @@ type CostumeEntry = { label: string; url: string };
 const COSTUME_CATALOG = costumeCatalog as Record<string, CostumeEntry[]>;
 
 function getOfficialCostumes(pokemonId: number): CostumeEntry[] {
-  return COSTUME_CATALOG[String(pokemonId)] ?? [];
+  // Les Méga-Évolutions ne servent à rien dans cette appli (pas de mécanique
+  // Méga dans les échanges/recherches Pokémon GO) : on les exclut partout.
+  return (COSTUME_CATALOG[String(pokemonId)] ?? []).filter((c) => !c.label.startsWith("Mega"));
 }
 
 function SpritePicker({
