@@ -94,7 +94,7 @@ export default function LandingPage() {
               <h2 style={{
                 fontFamily: "Exo 2, sans-serif",
                 fontWeight: 700,
-                color: "#0affe0",
+                color: "#ffd700",
                 fontSize: "1rem",
                 marginBottom: 6,
               }}>

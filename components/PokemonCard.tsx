@@ -143,7 +143,7 @@ export default function PokemonCard({
     setShowDetail(false);
     setConfirmDelete(false);
   };
-  const trainerColor = entry.trainer ? "#00dc64" : "#0affe0";
+  const trainerColor = entry.trainer ? "#00dc64" : "#ffd700";
   const isMirror = entry.category === "mirror";
   const isShiny = entry.shiny === true || (entry.notes?.toLowerCase().includes("shiny") ?? false);
   const hasPriority = entry.priority != null && entry.priority >= 1 && entry.priority <= 10;
@@ -455,8 +455,8 @@ export default function PokemonCard({
             boxShadow: "0 8px 32px rgba(0, 200, 80, 0.28), 0 0 0 1px rgba(0, 220, 100, 0.2), inset 0 1px 0 rgba(0, 220, 100, 0.06)",
           }),
           ...(selected && {
-            borderColor: "rgba(10,255,224,0.6)",
-            boxShadow: "0 8px 32px rgba(10,255,224,0.25), 0 0 0 2px rgba(10,255,224,0.35)",
+            borderColor: "rgba(255, 215, 0,0.6)",
+            boxShadow: "0 8px 32px rgba(255, 215, 0,0.25), 0 0 0 2px rgba(255, 215, 0,0.35)",
           }),
           transition: "transform 0.15s, box-shadow 0.15s",
         }}
@@ -501,12 +501,12 @@ export default function PokemonCard({
               width: 26, height: 26, borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
               cursor: "pointer",
-              background: selected ? "#0affe0" : "rgba(8,11,20,0.7)",
-              border: `2px solid ${selected ? "#0affe0" : "rgba(255,255,255,0.3)"}`,
+              background: selected ? "#ffd700" : "rgba(8,11,20,0.7)",
+              border: `2px solid ${selected ? "#ffd700" : "rgba(255,255,255,0.3)"}`,
               color: selected ? "#0b0f1a" : "rgba(232,237,245,0.4)",
               fontSize: "0.75rem",
               fontWeight: 900,
-              boxShadow: selected ? "0 0 12px rgba(10,255,224,0.5)" : "none",
+              boxShadow: selected ? "0 0 12px rgba(255, 215, 0,0.5)" : "none",
               transition: "all 0.12s",
             }}
           />

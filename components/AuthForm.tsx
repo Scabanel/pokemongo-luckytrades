@@ -8,7 +8,7 @@ const labelStyle: React.CSSProperties = {
   display: "block",
   fontSize: "0.75rem",
   fontWeight: 600,
-  color: "#0affe0",
+  color: "#ffd700",
   marginBottom: 6,
   letterSpacing: "0.06em",
   fontFamily: "Exo 2, sans-serif",
@@ -112,7 +112,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
 
       <div className="glass-card animate-scale-in relative z-10 w-full max-w-sm p-8">
         <div className="text-center mb-8">
-          <h1 className="neon-text" style={{ fontFamily: "Exo 2, sans-serif", fontSize: "1.5rem", fontWeight: 800, color: "#0affe0" }}>
+          <h1 className="neon-text" style={{ fontFamily: "Exo 2, sans-serif", fontSize: "1.5rem", fontWeight: 800, color: "#ffd700" }}>
             {titles[mode]}
           </h1>
           <p style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.85rem", marginTop: 4 }}>
@@ -161,7 +161,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               <button
                 type="button"
                 onClick={() => { resetMessages(); setMode("signup"); }}
-                style={{ color: "#0affe0", fontSize: "0.8rem", background: "none" }}
+                style={{ color: "#ffd700", fontSize: "0.8rem", background: "none" }}
               >
                 Pas encore de compte ? Inscris-toi
               </button>
@@ -247,7 +247,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               <button
                 type="button"
                 onClick={() => { resetMessages(); setMode("login"); }}
-                style={{ color: "#0affe0", fontSize: "0.8rem", background: "none" }}
+                style={{ color: "#ffd700", fontSize: "0.8rem", background: "none" }}
               >
                 Déjà un compte ? Connecte-toi
               </button>
@@ -277,7 +277,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               <button
                 type="button"
                 onClick={() => { resetMessages(); setMode("login"); }}
-                style={{ color: "#0affe0", fontSize: "0.8rem", background: "none" }}
+                style={{ color: "#ffd700", fontSize: "0.8rem", background: "none" }}
               >
                 Retour à la connexion
               </button>
@@ -318,13 +318,13 @@ function Messages({ error, info }: { error: string; info: string }) {
         <p
           className="animate-fade-in-up"
           style={{
-            color: "#0affe0",
+            color: "#ffd700",
             fontSize: "0.8rem",
             textAlign: "center",
-            background: "rgba(10,255,224,0.1)",
+            background: "rgba(255, 215, 0,0.1)",
             padding: "8px 12px",
             borderRadius: 8,
-            border: "1px solid rgba(10,255,224,0.2)",
+            border: "1px solid rgba(255, 215, 0,0.2)",
           }}
         >
           {info}

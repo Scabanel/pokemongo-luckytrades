@@ -41,7 +41,7 @@ interface AdminPanelProps {
 // La couleur vient de lib/categories.ts ; le libellé compact ("Miroir") et
 // la teinte "active" restent spécifiques à ce composant.
 const CATEGORY_PICKER_OPTIONS = [
-  { val: "want" as const, label: "Je recherche", active: "rgba(10,255,224,0.15)", c: CATEGORIES.want.color },
+  { val: "want" as const, label: "Je recherche", active: "rgba(78,168,255,0.15)", c: CATEGORIES.want.color },
   { val: "give" as const, label: "Je peux donner", active: "rgba(255,217,61,0.15)", c: CATEGORIES.give.color },
   { val: "mirror" as const, label: "Miroir", active: "rgba(180,100,255,0.15)", c: CATEGORIES.mirror.color },
 ];
@@ -326,9 +326,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 transition: "all 0.2s",
                 ...(activeTab === tab
                   ? {
-                      background: "rgba(10,255,224,0.15)",
-                      borderColor: "rgba(10,255,224,0.4)",
-                      color: "#0affe0",
+                      background: "rgba(255, 215, 0,0.15)",
+                      borderColor: "rgba(255, 215, 0,0.4)",
+                      color: "#ffd700",
                     }
                   : {
                       background: "rgba(255,255,255,0.04)",
@@ -457,7 +457,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                     border: "1px solid",
                     transition: "all 0.12s",
                     ...(filters[key]
-                      ? { background: "rgba(10,255,224,0.15)", borderColor: "rgba(10,255,224,0.4)", color: "#0affe0" }
+                      ? { background: "rgba(255, 215, 0,0.15)", borderColor: "rgba(255, 215, 0,0.4)", color: "#ffd700" }
                       : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "rgba(232,237,245,0.5)" }),
                   }}
                 >
@@ -480,12 +480,12 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             <div
               className="flex items-center gap-3 flex-wrap p-3 mb-5"
               style={{
-                background: "rgba(10,255,224,0.06)",
-                border: "1px solid rgba(10,255,224,0.25)",
+                background: "rgba(255, 215, 0,0.06)",
+                border: "1px solid rgba(255, 215, 0,0.25)",
                 borderRadius: 12,
               }}
             >
-              <span style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#0affe0", fontSize: "0.85rem" }}>
+              <span style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#ffd700", fontSize: "0.85rem" }}>
                 {selectedIds.size} sélectionné{selectedIds.size > 1 ? "s" : ""}
               </span>
               <button onClick={handleBulkComplete} className="btn-success">
@@ -552,7 +552,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             style={{
               fontFamily: "Exo 2, sans-serif",
               fontWeight: 700,
-              color: "#0affe0",
+              color: "#ffd700",
               marginBottom: 16,
             }}
           >
@@ -590,14 +590,14 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                       width: 32,
                       height: 32,
                       borderRadius: "50%",
-                      background: "#0affe020",
-                      border: "1px solid #0affe040",
+                      background: "#ffd70020",
+                      border: "1px solid #ffd70040",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       fontSize: "0.8rem",
                       fontWeight: 700,
-                      color: "#0affe0",
+                      color: "#ffd700",
                       fontFamily: "Exo 2, sans-serif",
                     }}
                   >
@@ -747,7 +747,7 @@ function MyAccountPanel({
 
   return (
     <div className="glass-card p-6" style={{ maxWidth: 500 }}>
-      <h2 style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#0affe0", marginBottom: 16 }}>
+      <h2 style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#ffd700", marginBottom: 16 }}>
         Mon compte ({trainer.name})
       </h2>
       <form onSubmit={handleSave} className="flex flex-col gap-4">
@@ -902,7 +902,7 @@ function SelectAllCheckbox({
       type="checkbox"
       checked={checked}
       onChange={onChange}
-      style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#0affe0" }}
+      style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#ffd700" }}
       aria-label="Tout sélectionner"
     />
   );
@@ -1133,7 +1133,7 @@ function EntryForm(props: EntryFormProps) {
             style={{
               fontFamily: "Exo 2, sans-serif",
               fontWeight: 800,
-              color: "#0affe0",
+              color: "#ffd700",
               fontSize: "1.3rem",
             }}
           >
@@ -1143,13 +1143,13 @@ function EntryForm(props: EntryFormProps) {
             <span
               className="animate-fade-in-up"
               style={{
-                background: "rgba(10,255,224,0.12)",
-                border: "1px solid rgba(10,255,224,0.35)",
+                background: "rgba(255, 215, 0,0.12)",
+                border: "1px solid rgba(255, 215, 0,0.35)",
                 borderRadius: 999,
                 padding: "3px 12px",
                 fontSize: "0.75rem",
                 fontWeight: 800,
-                color: "#0affe0",
+                color: "#ffd700",
                 fontFamily: "Exo 2, sans-serif",
               }}
             >
@@ -1165,7 +1165,7 @@ function EntryForm(props: EntryFormProps) {
               style={{
                 fontFamily: "Exo 2, sans-serif",
                 fontWeight: 800,
-                color: "#0affe0",
+                color: "#ffd700",
                 fontSize: "1.2rem",
                 textTransform: "capitalize",
               }}
@@ -1175,7 +1175,7 @@ function EntryForm(props: EntryFormProps) {
             <span
               style={{
                 fontSize: "0.75rem",
-                color: form.category === "want" ? "#0affe0" : form.category === "mirror" ? "#b464ff" : "#ffd93d",
+                color: form.category === "want" ? "#4ea8ff" : form.category === "mirror" ? "#b464ff" : "#ffd93d",
                 fontWeight: 600,
                 fontFamily: "Exo 2, sans-serif",
               }}
@@ -1410,7 +1410,7 @@ function EntryForm(props: EntryFormProps) {
             background: "none",
             border: "none",
             cursor: "pointer",
-            color: "#0affe0",
+            color: "#ffd700",
             fontFamily: "Exo 2, sans-serif",
             fontWeight: 700,
             fontSize: "0.8rem",
@@ -1462,8 +1462,8 @@ function EntryForm(props: EntryFormProps) {
                           }}
                           style={{
                             padding: "4px 10px", borderRadius: 999,
-                            border: "1px solid rgba(10,255,224,0.3)", background: "rgba(10,255,224,0.08)",
-                            cursor: "pointer", fontSize: "0.75rem", color: "#0affe0",
+                            border: "1px solid rgba(255, 215, 0,0.3)", background: "rgba(255, 215, 0,0.08)",
+                            cursor: "pointer", fontSize: "0.75rem", color: "#ffd700",
                             fontFamily: "Exo 2, sans-serif", fontWeight: 600,
                           }}
                         >
@@ -1609,7 +1609,7 @@ function SuggestionDropdown({
         left: 0,
         right: 0,
         background: "#141926",
-        border: "1px solid rgba(10,255,224,0.2)",
+        border: "1px solid rgba(255, 215, 0,0.2)",
         borderRadius: 12,
         zIndex: 100,
         overflow: "hidden",
@@ -1637,7 +1637,7 @@ function SuggestionDropdown({
             textTransform: "capitalize",
           }}
           onMouseEnter={(e) =>
-            ((e.currentTarget as HTMLButtonElement).style.background = "rgba(10,255,224,0.08)")
+            ((e.currentTarget as HTMLButtonElement).style.background = "rgba(255, 215, 0,0.08)")
           }
           onMouseLeave={(e) =>
             ((e.currentTarget as HTMLButtonElement).style.background = "transparent")
@@ -1807,8 +1807,8 @@ function SpritePicker({
           onClick={handleOpen}
           style={{
             padding: "6px 14px", borderRadius: 10, cursor: "pointer",
-            background: "rgba(10,255,224,0.08)", border: "1px solid rgba(10,255,224,0.25)",
-            color: "#0affe0", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
+            background: "rgba(255, 215, 0,0.08)", border: "1px solid rgba(255, 215, 0,0.25)",
+            color: "#ffd700", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
           }}
         >
           Sélectionner sprite
@@ -1840,7 +1840,7 @@ function SpritePicker({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#0affe0", fontWeight: 700, fontSize: "1.1rem" }}>
+              <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 700, fontSize: "1.1rem" }}>
                 Sprites : <span style={{ textTransform: "capitalize" }}>{pokemonName}</span>
               </h3>
               <button onClick={() => setOpen(false)} style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#e8edf5", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>Fermer</button>
@@ -1856,8 +1856,8 @@ function SpritePicker({
                     type="button"
                     onClick={() => { onSelect(url); setOpen(false); }}
                     style={{
-                      background: currentUrl === url ? "rgba(10,255,224,0.15)" : "rgba(255,255,255,0.04)",
-                      border: `1px solid ${currentUrl === url ? "rgba(10,255,224,0.4)" : "rgba(255,255,255,0.08)"}`,
+                      background: currentUrl === url ? "rgba(255, 215, 0,0.15)" : "rgba(255,255,255,0.04)",
+                      border: `1px solid ${currentUrl === url ? "rgba(255, 215, 0,0.4)" : "rgba(255,255,255,0.08)"}`,
                       borderRadius: 10, padding: 10, cursor: "pointer",
                       display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
                     }}

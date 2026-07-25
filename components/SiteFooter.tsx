@@ -7,13 +7,11 @@
 export default function SiteFooter() {
   return (
     <footer
-      className="fixed bottom-0 left-0 right-0 z-20 flex items-center justify-between flex-wrap gap-3"
+      className="site-footer fixed bottom-0 left-0 right-0 z-20 flex items-center justify-between"
       style={{
-        padding: "14px 20px",
         borderTop: "1px solid rgba(255,255,255,0.08)",
         background: "rgba(11,7,0,0.92)",
         backdropFilter: "blur(10px)",
-        fontSize: "0.78rem",
         color: "rgba(232,237,245,0.4)",
       }}
     >
@@ -21,17 +19,19 @@ export default function SiteFooter() {
         href="https://discord.gg/yR9BwR9aRg"
         target="_blank"
         rel="noopener noreferrer"
+        className="site-footer-link"
         style={{ color: "#ffd700", textDecoration: "none" }}
       >
         Discord Pokémon GO Strasbourg
       </a>
       <a
         href="/fonctionnalites"
+        className="site-footer-link"
         style={{ color: "#b464ff", textDecoration: "none", fontWeight: 600 }}
       >
         Fonctionnalités du site et prochaines mises à jour
       </a>
-      <span style={{ color: "#ffd700", textDecoration: "none" }}>Fait par Vorthil</span>
+      <span className="site-footer-link" style={{ color: "#ffd700", textDecoration: "none" }}>Fait par Vorthil</span>
     </footer>
   );
 }

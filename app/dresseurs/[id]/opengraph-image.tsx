@@ -13,7 +13,7 @@ const TEAM_STYLE: Record<string, { color: string; label: string }> = {
 
 const CATEGORY_STYLE = [
   { key: "mirror", label: "Miroir", color: "#b464ff" },
-  { key: "want", label: "Recherche", color: "#0affe0" },
+  { key: "want", label: "Recherche", color: "#4ea8ff" },
   { key: "give", label: "Donne", color: "#ffd93d" },
 ] as const;
 

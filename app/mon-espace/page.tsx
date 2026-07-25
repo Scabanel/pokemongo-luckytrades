@@ -34,7 +34,7 @@ export default function MonEspacePage() {
           style={{
             width: 48,
             height: 48,
-            border: "3px solid #0affe0",
+            border: "3px solid #ffd700",
             borderTop: "3px solid transparent",
             borderRadius: "50%",
             animation: "spin-slow 0.8s linear infinite",

@@ -33,13 +33,13 @@ export default function RootLayout({
           toastOptions={{
             style: {
               background: "#141926",
-              border: "1px solid rgba(10, 255, 224, 0.18)",
+              border: "1px solid rgba(255, 215, 0, 0.18)",
               color: "#e8edf5",
               borderRadius: "14px",
               fontFamily: "Inter, sans-serif",
             },
             success: {
-              iconTheme: { primary: "#0affe0", secondary: "#0b0f1a" },
+              iconTheme: { primary: "#ffd700", secondary: "#0b0f1a" },
             },
             error: {
               iconTheme: { primary: "#ff6b6b", secondary: "#0b0f1a" },

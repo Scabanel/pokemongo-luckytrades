@@ -15,9 +15,8 @@ const LINKS = [
 export default function SiteNav({ active }: { active: string }) {
   return (
     <header
-      className="sticky top-0 z-20 flex items-center gap-4 flex-wrap"
+      className="site-nav sticky top-0 z-20 flex items-center gap-4"
       style={{
-        padding: "12px 20px",
         borderBottom: "1px solid rgba(255,255,255,0.08)",
         background: "rgba(11,7,0,0.92)",
         backdropFilter: "blur(10px)",
@@ -25,11 +24,12 @@ export default function SiteNav({ active }: { active: string }) {
     >
       <a
         href="/"
-        className="flex items-center gap-2"
+        className="site-nav-brand flex items-center gap-2"
         style={{ textDecoration: "none" }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
+          className="site-nav-brand-icon"
           src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
           alt=""
           width={22}
@@ -37,10 +37,10 @@ export default function SiteNav({ active }: { active: string }) {
           style={{ imageRendering: "pixelated" }}
         />
         <span
+          className="site-nav-brand-text"
           style={{
             fontFamily: "Exo 2, sans-serif",
             fontWeight: 900,
-            fontSize: "1.05rem",
             letterSpacing: "0.04em",
             textTransform: "uppercase",
             color: "#ffd700",
@@ -50,25 +50,23 @@ export default function SiteNav({ active }: { active: string }) {
           Échanges Pokémon Go Strasbourg!
         </span>
       </a>
-      <nav className="flex gap-2 flex-wrap" style={{ marginLeft: "auto" }}>
+      <nav className="site-nav-links flex" style={{ marginLeft: "auto" }}>
         {LINKS.map(({ href, label }) => (
           <a
             key={href}
             href={href}
+            className="site-nav-link"
             style={{
-              padding: "6px 14px",
-              borderRadius: 8,
               fontFamily: "Exo 2, sans-serif",
               fontWeight: 600,
-              fontSize: "0.78rem",
               letterSpacing: "0.02em",
               textDecoration: "none",
               border: "1px solid",
               transition: "border-color 0.15s, color 0.15s, background 0.15s",
               ...(active === href
                 ? {
-                    background: "rgba(10,255,224,0.12)",
-                    borderColor: "rgba(10,255,224,0.4)",
+                    background: "rgba(255, 215, 0,0.12)",
+                    borderColor: "rgba(255, 215, 0,0.4)",
                     color: "#ffd700",
                   }
                 : {

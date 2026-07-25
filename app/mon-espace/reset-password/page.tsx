@@ -9,7 +9,7 @@ const labelStyle: React.CSSProperties = {
   display: "block",
   fontSize: "0.75rem",
   fontWeight: 600,
-  color: "#0affe0",
+  color: "#ffd700",
   marginBottom: 6,
   letterSpacing: "0.06em",
   fontFamily: "Exo 2, sans-serif",
@@ -50,13 +50,13 @@ export default function ResetPasswordPage() {
 
       <div className="glass-card animate-scale-in relative z-10 w-full max-w-sm p-8">
         <div className="text-center mb-8">
-          <h1 className="neon-text" style={{ fontFamily: "Exo 2, sans-serif", fontSize: "1.5rem", fontWeight: 800, color: "#0affe0" }}>
+          <h1 className="neon-text" style={{ fontFamily: "Exo 2, sans-serif", fontSize: "1.5rem", fontWeight: 800, color: "#ffd700" }}>
             Nouveau mot de passe
           </h1>
         </div>
 
         {done ? (
-          <p style={{ color: "#0affe0", fontSize: "0.85rem", textAlign: "center" }}>
+          <p style={{ color: "#ffd700", fontSize: "0.85rem", textAlign: "center" }}>
             Mot de passe mis à jour ! Redirection vers ton espace…
           </p>
         ) : (

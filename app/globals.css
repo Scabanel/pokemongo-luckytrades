@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --teal: #0affe0;
+  --teal: #ffd700;
   --yellow: #ffd93d;
   --coral: #ff6b6b;
   --success: #4ade80;
@@ -71,18 +71,18 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 10px;
   box-shadow:
     0 6px 28px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(10, 255, 224, 0.05);
+    inset 0 1px 0 rgba(255, 215, 0, 0.05);
   transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
 }
 
 .glass-card:hover {
   transform: translateY(-4px) scale(1.015);
   box-shadow:
-    4px 8px 0 rgba(10, 255, 224, 0.07),
+    4px 8px 0 rgba(255, 215, 0, 0.07),
     0 18px 50px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(10, 255, 224, 0.38),
-    inset 0 1px 0 rgba(10, 255, 224, 0.12);
-  border-color: rgba(10, 255, 224, 0.42);
+    0 0 0 1px rgba(255, 215, 0, 0.38),
+    inset 0 1px 0 rgba(255, 215, 0, 0.12);
+  border-color: rgba(255, 215, 0, 0.42);
 }
 
 /* ── Float title ── */
@@ -131,16 +131,16 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 0.88;
   letter-spacing: -0.02em;
   position: fixed;
-  color: rgba(10, 255, 224, 0.028);
+  color: rgba(255, 215, 0, 0.028);
 }
 
 /* ── Glow pulse animation ── */
 @keyframes glow-pulse {
   0%, 100% {
-    box-shadow: 0 0 8px rgba(10, 255, 224, 0.4), 0 0 20px rgba(10, 255, 224, 0.15);
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.15);
   }
   50% {
-    box-shadow: 0 0 16px rgba(10, 255, 224, 0.7), 0 0 40px rgba(10, 255, 224, 0.3);
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 215, 0, 0.3);
   }
 }
 
@@ -227,8 +227,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Section header gradient ── */
 .section-want {
-  background: linear-gradient(135deg, rgba(10, 255, 224, 0.08), rgba(10, 255, 224, 0.02));
-  border-top: 3px solid var(--teal);
+  background: linear-gradient(135deg, rgba(78, 168, 255, 0.08), rgba(78, 168, 255, 0.02));
+  border-top: 3px solid #4ea8ff;
 }
 
 .section-give {
@@ -238,8 +238,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Trainer pill ── */
 .trainer-pill {
-  background: rgba(10, 255, 224, 0.08);
-  border: 1px solid rgba(10, 255, 224, 0.22);
+  background: rgba(255, 215, 0, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.22);
   border-radius: 4px;
   padding: 2px 10px;
   font-size: 0.7rem;
@@ -281,7 +281,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 3px 3px 0 rgba(10, 255, 224, 0.25), 0 10px 28px rgba(10, 255, 224, 0.3);
+  box-shadow: 3px 3px 0 rgba(255, 215, 0, 0.25), 0 10px 28px rgba(255, 215, 0, 0.3);
   background: #0eeece;
 }
 
@@ -373,10 +373,77 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* ── Site header / footer (SiteNav.tsx, SiteFooter.tsx) ── */
+.site-nav {
+  padding: 12px 20px;
+}
+.site-nav-brand-icon {
+  width: 22px;
+  height: 22px;
+}
+.site-nav-brand-text {
+  font-size: 1.05rem;
+}
+.site-nav-links {
+  gap: 8px;
+}
+.site-nav-link {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+}
+.site-footer {
+  padding: 14px 20px;
+  gap: 12px;
+  font-size: 0.78rem;
+}
+
+/* En dessous de 640px, tout doit tenir sur une seule ligne (header ET footer) :
+   on réduit fortement tailles/paddings/gaps plutôt que de laisser le flex-wrap
+   passer sur 2-3 lignes, ce qui doublait/triplait la hauteur de ces barres
+   fixes et mangeait l'espace utile de la page. */
+@media (max-width: 640px) {
+  .site-nav {
+    padding: 8px 10px;
+    gap: 6px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .site-nav-brand-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  .site-nav-brand-text {
+    display: none;
+  }
+  .site-nav-links {
+    gap: 2px;
+    flex-wrap: nowrap;
+  }
+  .site-nav-link {
+    padding: 4px 5px;
+    border-radius: 5px;
+    font-size: 0.52rem;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+  .site-footer {
+    padding: 6px 8px;
+    gap: 6px;
+    font-size: 0.56rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .site-footer-link {
+    white-space: nowrap;
+  }
+}
+
 /* ── Input styles ── */
 .glass-input {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(10, 255, 224, 0.18);
+  border: 1px solid rgba(255, 215, 0, 0.18);
   border-radius: 8px;
   color: #e8edf5;
   padding: 10px 14px;
@@ -389,7 +456,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .glass-input:focus {
   border-color: var(--teal);
-  box-shadow: 0 0 0 2px rgba(10, 255, 224, 0.08), 2px 2px 0 rgba(10, 255, 224, 0.06);
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.08), 2px 2px 0 rgba(255, 215, 0, 0.06);
 }
 
 .glass-input::placeholder {
@@ -415,7 +482,7 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   font-size: 0.68rem;
   font-weight: 800;
-  color: rgba(10, 255, 224, 0.65);
+  color: rgba(255, 215, 0, 0.65);
   letter-spacing: 0.1em;
   font-family: "Exo 2", sans-serif;
   text-transform: uppercase;
@@ -429,9 +496,10 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--navy);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(10, 255, 224, 0.2);
+  background: rgba(255, 215, 0, 0.2);
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(10, 255, 224, 0.4);
+  background: rgba(255, 215, 0, 0.4);
 }
+

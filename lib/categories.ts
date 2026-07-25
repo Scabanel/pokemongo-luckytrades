@@ -21,8 +21,8 @@ export const CATEGORIES: Record<
   },
   want: {
     label: "Je recherche",
-    color: "#0affe0",
-    glow: "radial-gradient(circle, #0affe0 0%, transparent 70%)",
+    color: "#4ea8ff",
+    glow: "radial-gradient(circle, #4ea8ff 0%, transparent 70%)",
   },
   give: {
     label: "Je peux donner",

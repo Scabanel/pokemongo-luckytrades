@@ -224,7 +224,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
                   border: "1px solid",
                   transition: "all 0.12s",
                   ...(filters[key]
-                    ? { background: "rgba(10,255,224,0.15)", borderColor: "rgba(10,255,224,0.4)", color: "#0affe0" }
+                    ? { background: "rgba(255, 215, 0,0.15)", borderColor: "rgba(255, 215, 0,0.4)", color: "#ffd700" }
                     : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "rgba(232,237,245,0.5)" }),
                 }}
               >

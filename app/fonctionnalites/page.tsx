@@ -54,7 +54,9 @@ const UPCOMING = [
   "Demande de réservation de Pokémon directement dans l'application, avec notifications !",
   "Intégration des événements communautaires strasbourgeois à venir ?",
   "Jeux concours",
-  "··· ·− ·−−· ···· ·· ·−·",
+  "Génération de cartes de dresseurs imprimables",
+  "Génération de feuille d'échanges pour garder votre liste...même sans internet!",
+  "··· ·− ·−−· ···· ·· ·−· ·",
 ];
 
 export default function FonctionnalitesPage() {
@@ -154,7 +156,7 @@ export default function FonctionnalitesPage() {
 
         <p style={{ textAlign: "center", color: "rgba(232,237,245,0.45)", fontSize: "0.85rem" }}>
           Si tu as des propositions de fonctionnalités ou des bugs à remonter, contacte-moi
-          directement sur Discord ! <span style={{ color: "#0affe0", fontWeight: 700 }}>@Vorthil</span>
+          directement sur Discord ! <span style={{ color: "#ffd700", fontWeight: 700 }}>@Vorthil</span>
         </p>
       </div>
 
