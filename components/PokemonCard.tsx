@@ -7,12 +7,14 @@ import type { PokemonEntry } from "@/lib/types";
 import { CATEGORIES, getCategory } from "@/lib/categories";
 import { parseTags } from "@/lib/tags";
 import gigantamaxIcons from "@/data/gigantamax-icons.json";
+import pokemonList from "@/data/pokemon.json";
 
 // Sprite officiel de forme Gigamax (aspect réellement différent en jeu), pour
 // la poignée d'espèces qui en ont un, voir scripts/generate-costume-catalog.mjs.
 // Aucun override équivalent pour Dynamax : ça ne change pas l'apparence dans GO.
 const GIGANTAMAX_ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
 const GIGANTAMAX_ICONS = gigantamaxIcons as Record<string, string[]>;
+const ENGLISH_NAME_BY_ID = new Map(pokemonList.map((p) => [p.id, p.name]));
 
 function getGigantamaxSpriteUrl(pokemonId: number, shiny: boolean): string | null {
   const files = GIGANTAMAX_ICONS[String(pokemonId)];
@@ -153,10 +155,11 @@ export default function PokemonCard({
   const nameAndTags = (entry.pokemonName + " " + tags.join(" ")).toLowerCase();
   const isDynamax = nameAndTags.includes("dynamax") && !nameAndTags.includes("gigamax");
   const isGigamax = nameAndTags.includes("gigamax");
-  // Respecte un sprite choisi à la main (entry.customSpriteUrl) ; sinon, pour
-  // les espèces qui Gigamax réellement dans GO, utilise leur vrai visuel
-  // Gigamax officiel au lieu du sprite de base.
-  const effectiveSpriteUrl = entry.customSpriteUrl ?? (isGigamax ? getGigantamaxSpriteUrl(entry.pokemonId, isShiny) ?? undefined : undefined);
+  // Pour les espèces qui Gigamax réellement dans GO, PokemonSprite tente
+  // d'abord leur vrai visuel Gigamax (animé Showdown, puis icône statique
+  // officielle) avant la chaîne de sprites normale.
+  const gigantamaxSlug = isGigamax ? ENGLISH_NAME_BY_ID.get(entry.pokemonId) ?? null : null;
+  const gigantamaxIconUrl = isGigamax ? getGigantamaxSpriteUrl(entry.pokemonId, isShiny) : null;
   const eventTheme = getEventTheme(entry.pokemonName, tags);
   const categoryColor = getCategory(entry.category)?.color ?? CATEGORIES.want.color;
   const categoryGlow = getCategory(entry.category)?.glow ?? CATEGORIES.give.glow;
@@ -320,7 +323,15 @@ export default function PokemonCard({
             className="absolute inset-0 rounded-full blur-2xl opacity-30"
             style={{ background: eventTheme?.glow ?? categoryGlow }}
           />
-          <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={168} shiny={isShiny} customSpriteUrl={effectiveSpriteUrl} />
+          <PokemonSprite
+            pokemonId={entry.pokemonId}
+            alt={entry.pokemonName}
+            size={168}
+            shiny={isShiny}
+            customSpriteUrl={entry.customSpriteUrl}
+            gigantamaxSlug={gigantamaxSlug}
+            gigantamaxIconUrl={gigantamaxIconUrl}
+          />
         </div>
 
         {/* Name */}
@@ -596,7 +607,15 @@ export default function PokemonCard({
               undefined
             }}
           />
-          <PokemonSprite pokemonId={entry.pokemonId} alt={entry.pokemonName} size={112} shiny={isShiny} customSpriteUrl={effectiveSpriteUrl} />
+          <PokemonSprite
+            pokemonId={entry.pokemonId}
+            alt={entry.pokemonName}
+            size={112}
+            shiny={isShiny}
+            customSpriteUrl={entry.customSpriteUrl}
+            gigantamaxSlug={gigantamaxSlug}
+            gigantamaxIconUrl={gigantamaxIconUrl}
+          />
         </div>
 
         {/* Name */}
