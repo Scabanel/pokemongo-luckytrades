@@ -1621,6 +1621,7 @@ function EntryForm(props: EntryFormProps) {
                   pokemonId={mode === "edit" ? entry!.pokemonId : form.pokemonId}
                   pokemonName={mode === "edit" ? entry!.pokemonName : form.pokemonName}
                   currentUrl={form.customSpriteUrl}
+                  shiny={form.shiny}
                   onSelect={(url) => setForm((f) => ({ ...f, customSpriteUrl: url }))}
                 />
               </div>
@@ -1814,11 +1815,13 @@ function SpritePicker({
   pokemonId,
   pokemonName,
   currentUrl,
+  shiny = false,
   onSelect,
 }: {
   pokemonId: number;
   pokemonName: string;
   currentUrl: string | null;
+  shiny?: boolean;
   onSelect: (url: string | null) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -1827,7 +1830,12 @@ function SpritePicker({
   const [fetching, setFetching] = useState(false);
   const [manualUrl, setManualUrl] = useState("");
   const [showCostumes, setShowCostumes] = useState(false);
-  const officialCostumes = getOfficialCostumes(pokemonId);
+  // Ne propose que la variante qui correspond au shiny coché sur le
+  // formulaire : montrer des sprites non-shiny quand on cherche un sprite
+  // shiny (et inversement) n'a jamais de sens.
+  const matchesShiny = (label: string) => label.includes("✨") === shiny;
+  const visibleSprites = sprites.filter((s) => matchesShiny(s.label));
+  const officialCostumes = getOfficialCostumes(pokemonId).filter((c) => matchesShiny(c.label));
 
   // Reset cache when Pokémon changes
   useEffect(() => {
@@ -1927,9 +1935,9 @@ function SpritePicker({
 
             {fetching ? (
               <div style={{ textAlign: "center", padding: 32, color: "rgba(232,237,245,0.4)" }}>Chargement…</div>
-            ) : sprites.length > 0 ? (
+            ) : visibleSprites.length > 0 ? (
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: 8, marginBottom: 20 }}>
-                {sprites.map(({ url, label }) => (
+                {visibleSprites.map(({ url, label }) => (
                   <button
                     key={url}
                     type="button"
@@ -1960,7 +1968,9 @@ function SpritePicker({
               </div>
             ) : fetched ? (
               <p style={{ color: "rgba(232,237,245,0.4)", marginBottom: 16 }}>
-                Aucun sprite trouvé via PokéAPI pour ce Pokémon.
+                {sprites.length > 0
+                  ? `Aucun sprite ${shiny ? "shiny" : "normal"} trouvé via PokéAPI pour ce Pokémon.`
+                  : "Aucun sprite trouvé via PokéAPI pour ce Pokémon."}
               </p>
             ) : null}
 
