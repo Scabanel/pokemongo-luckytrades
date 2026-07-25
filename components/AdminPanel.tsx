@@ -606,7 +606,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   <div>
                     <div style={{ fontWeight: 600, fontSize: "0.9rem" }}>{t.name}</div>
                     <div style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.75rem" }}>
-                      {t._count.entries} échange{t._count.entries !== 1 ? "s" : ""}
+                      {t._count.entries} Pokémon à échanger
                     </div>
                   </div>
                 </div>

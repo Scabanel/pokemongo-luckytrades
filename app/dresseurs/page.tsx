@@ -90,7 +90,7 @@ export default function DresseursPage() {
                   </div>
                   <div style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.75rem", display: "flex", gap: 6, alignItems: "center" }}>
                     {t.team && <span>Niveau {t.level ?? "?"}</span>}
-                    <span>{t._count.entries} échange{t._count.entries !== 1 ? "s" : ""}</span>
+                    <span>{t._count.entries} Pokémon à échanger</span>
                   </div>
                 </div>
               </a>

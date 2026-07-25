@@ -5,7 +5,7 @@ import { getCurrentTrainer } from "@/lib/auth";
 export async function GET() {
   const trainers = await prisma.trainer.findMany({
     include: {
-      _count: { select: { entries: { where: { completed: false } } } },
+      _count: { select: { entries: { where: { completed: false, category: { in: ["give", "mirror"] } } } } },
     },
     orderBy: { name: "asc" },
   });
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     update: {},
     create: { name: name.trim() },
     include: {
-      _count: { select: { entries: { where: { completed: false } } } },
+      _count: { select: { entries: { where: { completed: false, category: { in: ["give", "mirror"] } } } } },
     },
   });
 
