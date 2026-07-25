@@ -111,7 +111,14 @@ export default function BulkAddPicker({
             ? `${species.frenchName} ${variant.label}`
             : species.frenchName,
           shiny: variant.shiny,
-          customSpriteUrl: variant.url,
+          // Seuls les costumes événementiels ont un visuel qu'on ne peut pas
+          // reconstruire autrement (aucun tag/pokemonId n'y suffit) : on fixe
+          // alors le sprite exact. Pour la base/Dynamax/Gigamax, PokemonCard
+          // retrouve déjà le bon visuel à partir des tags + pokemonId + shiny
+          // (voir components/PokemonCard.tsx) — figer customSpriteUrl ici
+          // empêcherait à tort la préférence de style (statique/animé) du
+          // dresseur de jamais s'appliquer à ces entrées.
+          customSpriteUrl: variant.tags.includes("costume") ? variant.url : "",
           tags: variant.tags,
         });
       }
@@ -362,7 +369,7 @@ function SpeciesBlock({
         )}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))", gap: 8 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(96px, 1fr))", gap: 8 }}>
         {variants.map((variant) => {
           const isStaged = staged.has(variant.key);
           return (
