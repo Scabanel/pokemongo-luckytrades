@@ -47,7 +47,7 @@ export default function SiteNav({ active }: { active: string }) {
             textShadow: "0 0 12px rgba(255,215,0,0.35)",
           }}
         >
-          Lucky Trades
+          Échanges Pokémon Go Strasbourg!
         </span>
       </a>
       <nav className="flex gap-2 flex-wrap" style={{ marginLeft: "auto" }}>
@@ -69,7 +69,7 @@ export default function SiteNav({ active }: { active: string }) {
                 ? {
                     background: "rgba(10,255,224,0.12)",
                     borderColor: "rgba(10,255,224,0.4)",
-                    color: "#0affe0",
+                    color: "#ffd700",
                   }
                 : {
                     background: "transparent",
