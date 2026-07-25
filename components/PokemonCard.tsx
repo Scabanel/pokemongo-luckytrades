@@ -9,6 +9,7 @@ import { CATEGORIES, getCategory } from "@/lib/categories";
 import { parseTags } from "@/lib/tags";
 import gigantamaxIcons from "@/data/gigantamax-icons.json";
 import pokemonList from "@/data/pokemon.json";
+import legendarySpecies from "@/data/legendary-species.json";
 
 // Sprite officiel de forme Gigamax (aspect réellement différent en jeu), pour
 // la poignée d'espèces qui en ont un, voir scripts/generate-costume-catalog.mjs.
@@ -16,6 +17,12 @@ import pokemonList from "@/data/pokemon.json";
 const GIGANTAMAX_ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
 const GIGANTAMAX_ICONS = gigantamaxIcons as Record<string, string[]>;
 const ENGLISH_NAME_BY_ID = new Map(pokemonList.map((p) => [p.id, p.name]));
+// Légendaires/Mythiques/Ultra-Chimères (voir lib/entryFilters.ts, même
+// source) : calculé à partir du pokemonId plutôt que stocké en base, pour que
+// le badge s'affiche automatiquement sur TOUTES les entrées existantes ET
+// futures sans backfill à maintenir (même logique que le badge Dynamax/Gigamax
+// ci-dessous, déjà dérivé du tag/nom plutôt que d'un champ dédié).
+const LEGENDARY_SPECIES = new Set(legendarySpecies as number[]);
 
 function getGigantamaxSpriteUrl(pokemonId: number, shiny: boolean): string | null {
   const files = GIGANTAMAX_ICONS[String(pokemonId)];
@@ -38,6 +45,7 @@ const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> =
   evenement:    { bg: "rgba(180,100,255,0.2)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
   "événement":  { bg: "rgba(180,100,255,0.2)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
   fond:         { bg: "rgba(100,220,180,0.2)",  text: "#64dcb4", border: "rgba(100,220,180,0.5)" },
+  legendaire:   { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
 };
 const DEFAULT_TAG_COLOR = { bg: "rgba(100,180,255,0.15)", text: "#64b4ff", border: "rgba(100,180,255,0.4)" };
 function getTagColor(tag: string) { return TAG_COLORS[tag.toLowerCase()] ?? DEFAULT_TAG_COLOR; }
@@ -169,6 +177,12 @@ export default function PokemonCard({
   const hasPriority = entry.priority != null && entry.priority >= 1 && entry.priority <= 10;
   const priorityStyle = hasPriority ? getPriorityStyle(entry.priority!) : null;
   const tags = parseTags(entry.tags);
+  // Badge "légendaire" calculé au rendu (voir LEGENDARY_SPECIES plus haut),
+  // jamais stocké en base : ajouté uniquement à la liste affichée, pas à
+  // `tags`/`nameAndTags` qui servent à la détection Dynamax/Gigamax.
+  const displayTags = LEGENDARY_SPECIES.has(entry.pokemonId) && !tags.some((t) => t.toLowerCase() === "legendaire")
+    ? [...tags, "legendaire"]
+    : tags;
   // Le nom du Pokémon ne contient pas toujours "Dynamax"/"Gigamax" (ex: un
   // tag "dynamax" ajouté à la main sur "Duralugon" sans renommer l'entrée) :
   // vérifie aussi les tags, pas seulement le nom.
@@ -328,9 +342,9 @@ export default function PokemonCard({
         </div>
 
         {/* Tags in modal */}
-        {tags.length > 0 && (
+        {displayTags.length > 0 && (
           <div className="flex flex-wrap gap-1 justify-center mb-3">
-            {tags.map((tag) => {
+            {displayTags.map((tag) => {
               const c = getTagColor(tag);
               return (
                 <span key={tag} style={{
@@ -711,9 +725,9 @@ export default function PokemonCard({
         )}
 
         {/* Tags */}
-        {tags.length > 0 && (
+        {displayTags.length > 0 && (
           <div className="flex flex-wrap gap-1 justify-center mb-1" style={{ maxWidth: 160 }}>
-            {tags.slice(0, 2).map((tag) => {
+            {displayTags.slice(0, 2).map((tag) => {
               const c = getTagColor(tag);
               return (
                 <span key={tag} style={{
@@ -724,13 +738,13 @@ export default function PokemonCard({
                 }}>{tag}</span>
               );
             })}
-            {tags.length > 2 && (
+            {displayTags.length > 2 && (
               <span style={{
                 background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)",
                 borderRadius: 999, padding: "1px 5px",
                 fontSize: "0.55rem", fontWeight: 700, color: "rgba(232,237,245,0.4)",
                 fontFamily: "Exo 2, sans-serif",
-              }}>+{tags.length - 2}</span>
+              }}>+{displayTags.length - 2}</span>
             )}
           </div>
         )}
