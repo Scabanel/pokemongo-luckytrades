@@ -12,7 +12,7 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
-  const { team, level } = await request.json();
+  const { team, level, friendCode } = await request.json();
 
   if (team !== undefined && team !== null && !TEAMS.includes(team)) {
     return NextResponse.json({ error: "Équipe invalide" }, { status: 400 });
@@ -28,6 +28,9 @@ export async function PATCH(request: NextRequest) {
     data: {
       ...(team !== undefined && { team: team || null }),
       ...(level !== undefined && { level: parsedLevel }),
+      ...(friendCode !== undefined && {
+        friendCode: typeof friendCode === "string" ? friendCode.trim() || null : null,
+      }),
     },
   });
 

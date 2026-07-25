@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 const TEAMS = ["instinct", "mystic", "valor"];
 
 export async function POST(request: NextRequest) {
-  const { email, password, displayName, team, level } = await request.json();
+  const { email, password, displayName, team, level, friendCode } = await request.json();
 
   if (!email || !password || !displayName?.trim() || !team || level == null) {
     return NextResponse.json(
@@ -24,6 +24,8 @@ export async function POST(request: NextRequest) {
   }
 
   const normalizedName = displayName.trim();
+  const normalizedFriendCode =
+    typeof friendCode === "string" ? friendCode.trim() || null : null;
 
   // Pré-vérification (avant de créer le compte Supabase) pour éviter de créer
   // un compte auth orphelin si le nom est déjà réclamé par un autre compte.
@@ -67,7 +69,7 @@ export async function POST(request: NextRequest) {
       if (rows.length > 0) {
         await tx.trainer.update({
           where: { id: rows[0].id },
-          data: { authUserId, team: team ?? null, level: parsedLevel },
+          data: { authUserId, team: team ?? null, level: parsedLevel, friendCode: normalizedFriendCode },
         });
         return;
       }
@@ -78,7 +80,7 @@ export async function POST(request: NextRequest) {
       }
 
       await tx.trainer.create({
-        data: { name: normalizedName, authUserId, team: team ?? null, level: parsedLevel },
+        data: { name: normalizedName, authUserId, team: team ?? null, level: parsedLevel, friendCode: normalizedFriendCode },
       });
     });
   } catch (err) {

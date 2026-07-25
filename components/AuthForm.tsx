@@ -23,6 +23,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
   const [displayName, setDisplayName] = useState("");
   const [team, setTeam] = useState("");
   const [level, setLevel] = useState("");
+  const [friendCode, setFriendCode] = useState("");
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
@@ -65,6 +66,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
           displayName,
           team: team || null,
           level: level ? Number(level) : null,
+          friendCode: friendCode || null,
         }),
       });
       const data = await res.json();
@@ -225,6 +227,16 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
                 min={1}
                 max={80}
                 required
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>CODE AMI (optionnel)</label>
+              <input
+                type="text"
+                value={friendCode}
+                onChange={(e) => setFriendCode(e.target.value)}
+                className="glass-input"
+                placeholder="0000 0000 0000"
               />
             </div>
             <Messages error={error} info={info} />

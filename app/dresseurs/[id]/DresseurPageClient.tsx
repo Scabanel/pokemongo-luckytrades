@@ -63,6 +63,16 @@ export default function DresseurPageClient({ id }: { id: string }) {
     }
   };
 
+  const handleCopyFriendCode = async () => {
+    if (!trainer?.friendCode) return;
+    try {
+      await navigator.clipboard.writeText(trainer.friendCode);
+      toast.success("Code ami copié !");
+    } catch {
+      toast.error("Impossible de copier le code ami");
+    }
+  };
+
   const wants = sortEntries(entries.filter((e) => e.category === "want"));
   const gives = sortEntries(entries.filter((e) => e.category === "give"));
   const mirrors = sortEntries(entries.filter((e) => e.category === "mirror"));
@@ -123,6 +133,20 @@ export default function DresseurPageClient({ id }: { id: string }) {
             <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 4 }}>
               {trainer.team.charAt(0).toUpperCase() + trainer.team.slice(1)} · Niveau {trainer.level ?? "?"}
             </p>
+          )}
+          {trainer?.friendCode && (
+            <div className="flex items-center justify-center gap-2" style={{ marginTop: 8 }}>
+              <span style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem" }}>
+                Code ami : {trainer.friendCode}
+              </span>
+              <button
+                onClick={handleCopyFriendCode}
+                className="btn-secondary"
+                style={{ fontSize: "0.7rem", padding: "4px 10px" }}
+              >
+                Copier
+              </button>
+            </div>
           )}
         </header>
 

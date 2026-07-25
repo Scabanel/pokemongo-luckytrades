@@ -684,11 +684,13 @@ function MyAccountPanel({
 }) {
   const [team, setTeam] = useState(trainer?.team ?? "");
   const [level, setLevel] = useState(trainer?.level != null ? String(trainer.level) : "");
+  const [friendCode, setFriendCode] = useState(trainer?.friendCode ?? "");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setTeam(trainer?.team ?? "");
     setLevel(trainer?.level != null ? String(trainer.level) : "");
+    setFriendCode(trainer?.friendCode ?? "");
   }, [trainer]);
 
   if (!trainer) {
@@ -708,7 +710,11 @@ function MyAccountPanel({
       const res = await fetch("/api/trainers/me", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ team: team || null, level: level ? Number(level) : null }),
+        body: JSON.stringify({
+          team: team || null,
+          level: level ? Number(level) : null,
+          friendCode: friendCode || null,
+        }),
       });
       if (!res.ok) throw new Error();
       const updated = await res.json();
@@ -748,6 +754,16 @@ function MyAccountPanel({
             max={80}
             required
             style={{ width: 120 }}
+          />
+        </div>
+        <div>
+          <label className="field-label">CODE AMI (optionnel)</label>
+          <input
+            type="text"
+            value={friendCode}
+            onChange={(e) => setFriendCode(e.target.value)}
+            className="glass-input mt-1"
+            placeholder="0000 0000 0000"
           />
         </div>
         <button type="submit" className="btn-primary" disabled={loading} style={{ alignSelf: "flex-start" }}>

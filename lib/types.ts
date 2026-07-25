@@ -10,6 +10,7 @@ export interface Trainer {
   name: string;
   team?: Team | null;
   level?: number | null;
+  friendCode?: string | null;
   // Présent uniquement quand l'API renvoie le compte d'entrées (liste des dresseurs en admin).
   _count?: { entries: number };
 }

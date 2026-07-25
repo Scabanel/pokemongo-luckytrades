@@ -15,6 +15,7 @@ model Trainer {
   authUserId String?        @unique
   team       String?
   level      Int?
+  friendCode String?
   createdAt  DateTime       @default(now())
   entries    PokemonEntry[]
 }
