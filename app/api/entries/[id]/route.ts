@@ -22,8 +22,12 @@ export async function PATCH(
   }
 
   const body = await request.json();
-  const { trainerId, tradeForPokemonName, tradeForPokemonId, tradePartnerName, linkedEntryId, notes, completed, category, shiny, customSpriteUrl, backgroundUrl, priority, tags, quantity } =
+  const { trainerId, tradeForPokemonName, tradeForPokemonId, tradePartnerName, notes, completed, category, shiny, customSpriteUrl, backgroundUrl, priority, tags, quantity } =
     body;
+  // Réassigné si on réserve 1 exemplaire d'un stock (voir plus bas) : l'id
+  // effectivement lié à cette entrée devient alors la fiche dédiée créée
+  // pour la réservation, pas la pile d'origine.
+  let linkedEntryId = body.linkedEntryId;
 
   const linking = linkedEntryId !== undefined;
 
@@ -56,20 +60,45 @@ export async function PATCH(
             tradePartnerName !== undefined
               ? tradePartnerName
               : existing.tradePartnerName ?? target.tradePartnerName ?? null;
+          const trimmedDerivedPartnerName =
+            typeof derivedPartnerName === "string" ? derivedPartnerName.trim() || null : derivedPartnerName;
 
-          await tx.pokemonEntry.update({
-            where: { id: target.id },
-            data: {
-              linkedEntryId: id,
-              tradeForPokemonName: existing.pokemonName,
-              tradeForPokemonId: existing.pokemonId,
-              tradePartnerName:
-                typeof derivedPartnerName === "string"
-                  ? derivedPartnerName.trim() || null
-                  : derivedPartnerName,
-              ...(completed !== undefined && { completed }),
-            },
-          });
+          // Réserver 1 exemplaire d'un stock (quantité > 1) ne doit pas
+          // marquer TOUT le stock comme parti pour ce partenaire : on
+          // détache une fiche dédiée à quantité 1 pour la réservation, et le
+          // reste de la pile redevient une entrée générique (sans lien ni
+          // partenaire) avec une unité de moins.
+          if (target.quantity > 1) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { id: _tid, createdAt: _createdAt, updatedAt: _updatedAt, ...targetRest } = target;
+            const reserved = await tx.pokemonEntry.create({
+              data: {
+                ...targetRest,
+                quantity: 1,
+                linkedEntryId: id,
+                tradeForPokemonName: existing.pokemonName,
+                tradeForPokemonId: existing.pokemonId,
+                tradePartnerName: trimmedDerivedPartnerName,
+                ...(completed !== undefined && { completed }),
+              },
+            });
+            await tx.pokemonEntry.update({
+              where: { id: target.id },
+              data: { quantity: target.quantity - 1 },
+            });
+            linkedEntryId = reserved.id;
+          } else {
+            await tx.pokemonEntry.update({
+              where: { id: target.id },
+              data: {
+                linkedEntryId: id,
+                tradeForPokemonName: existing.pokemonName,
+                tradeForPokemonId: existing.pokemonId,
+                tradePartnerName: trimmedDerivedPartnerName,
+                ...(completed !== undefined && { completed }),
+              },
+            });
+          }
         }
       } else if (completed !== undefined && existing.linkedEntryId) {
         // Marquer l'échange conclu (ou le rouvrir) des deux côtés : les deux
