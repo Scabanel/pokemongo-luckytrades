@@ -22,7 +22,7 @@ export async function PATCH(
   }
 
   const body = await request.json();
-  const { trainerId, tradeForPokemonName, tradeForPokemonId, notes, completed, category, shiny, customSpriteUrl, backgroundUrl, priority, tags, quantity } =
+  const { trainerId, tradeForPokemonName, tradeForPokemonId, tradePartnerName, notes, completed, category, shiny, customSpriteUrl, backgroundUrl, priority, tags, quantity } =
     body;
 
   // Seul un admin peut réassigner une entrée à un autre dresseur.
@@ -36,6 +36,10 @@ export async function PATCH(
         }),
         ...(tradeForPokemonId !== undefined && {
           tradeForPokemonId: tradeForPokemonId ? Number(tradeForPokemonId) : null,
+        }),
+        ...(tradePartnerName !== undefined && {
+          tradePartnerName:
+            typeof tradePartnerName === "string" ? tradePartnerName.trim() || null : null,
         }),
         ...(notes !== undefined && { notes: notes || null }),
         ...(completed !== undefined && { completed }),

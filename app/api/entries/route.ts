@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
     trainerId,
     tradeForPokemonName,
     tradeForPokemonId,
+    tradePartnerName,
     notes,
     shiny,
     customSpriteUrl,
@@ -64,6 +65,8 @@ export async function POST(request: NextRequest) {
       trainerId: effectiveTrainerId,
       tradeForPokemonName: tradeForPokemonName || null,
       tradeForPokemonId: tradeForPokemonId ? Number(tradeForPokemonId) : null,
+      tradePartnerName:
+        typeof tradePartnerName === "string" ? tradePartnerName.trim() || null : null,
       notes: notes || null,
       shiny: shiny === true,
       customSpriteUrl: customSpriteUrl || null,

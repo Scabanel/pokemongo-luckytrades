@@ -911,6 +911,7 @@ function EntryForm(props: EntryFormProps) {
           pokemonId: entry.pokemonId,
           category: entry.category as EntryCategory,
           trainerId: entry.trainer?.id ?? "",
+          tradePartnerName: entry.tradePartnerName ?? "",
           tradeForPokemonName: entry.tradeForPokemonName ?? "",
           tradeForPokemonId: entry.tradeForPokemonId ?? 0,
           notes: entry.notes ?? "",
@@ -928,6 +929,7 @@ function EntryForm(props: EntryFormProps) {
           // Un compte non-admin ne peut créer que sous son propre dresseur
           // (de toute façon forcé côté serveur, voir app/api/entries/route.ts).
           trainerId: isAdmin ? "" : myTrainerId ?? "",
+          tradePartnerName: "",
           tradeForPokemonName: "",
           tradeForPokemonId: 0,
           notes: "",
@@ -944,6 +946,7 @@ function EntryForm(props: EntryFormProps) {
   const [tradeSearch, setTradeSearch] = useState(entry?.tradeForPokemonName ?? "");
   const [showPokeSuggestions, setShowPokeSuggestions] = useState(false);
   const [showTradeSuggestions, setShowTradeSuggestions] = useState(false);
+  const [showPartnerSuggestions, setShowPartnerSuggestions] = useState(false);
   const [addedCount, setAddedCount] = useState(0);
   // "Plus d'options" reste replié par défaut pour réduire la friction d'un
   // ajout simple (le cas le plus fréquent) ; s'ouvre automatiquement en
@@ -963,6 +966,7 @@ function EntryForm(props: EntryFormProps) {
   });
   const pokeRef = useRef<HTMLDivElement>(null);
   const tradeRef = useRef<HTMLDivElement>(null);
+  const partnerRef = useRef<HTMLDivElement>(null);
   const pokeInputRef = useRef<HTMLInputElement>(null);
 
   const pokeSuggestions = pokeSearch.length >= 2
@@ -971,6 +975,10 @@ function EntryForm(props: EntryFormProps) {
 
   const tradeSuggestions = tradeSearch.length >= 2
     ? pokeOptions.filter((p) => p.frenchName.toLowerCase().includes(tradeSearch.toLowerCase())).slice(0, 8)
+    : [];
+
+  const partnerSuggestions = form.tradePartnerName.length >= 1
+    ? trainers.filter((t) => t.name.toLowerCase().includes(form.tradePartnerName.toLowerCase())).slice(0, 8)
     : [];
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -1002,6 +1010,7 @@ function EntryForm(props: EntryFormProps) {
         customSpriteUrl: form.customSpriteUrl,
         backgroundUrl: form.backgroundUrl,
         trainerId: form.trainerId || null,
+        tradePartnerName: form.tradePartnerName.trim() || null,
         tradeForPokemonName: form.tradeForPokemonName || null,
         tradeForPokemonId: form.tradeForPokemonId || null,
         notes: form.notes || null,
@@ -1034,6 +1043,7 @@ function EntryForm(props: EntryFormProps) {
           pokemonId: 0,
           category: f.category,
           trainerId: f.trainerId,
+          tradePartnerName: f.tradePartnerName,
           tradeForPokemonName: "",
           tradeForPokemonId: 0,
           notes: "",
@@ -1198,6 +1208,59 @@ function EntryForm(props: EntryFormProps) {
                 </option>
               ))}
             </select>
+          </div>
+        )}
+
+        {/* Échanger avec : qui est le partenaire de l'échange (pas le
+            propriétaire de l'entrée, voir DRESSEUR ci-dessus). Uniquement
+            pour miroir/donne, où il y a un partenaire à identifier. Champ
+            texte libre avec suggestions parmi les dresseurs déjà présents,
+            mais accepte aussi un pseudo qui n'existe pas encore. */}
+        {(form.category === "mirror" || form.category === "give") && (
+          <div ref={partnerRef} style={{ position: "relative" }}>
+            <label className="field-label">
+              {form.category === "mirror" ? "ÉCHANGER AVEC" : "JE PEUX DONNER À"}
+            </label>
+            <input
+              type="text"
+              value={form.tradePartnerName}
+              onChange={(e) => {
+                setForm((f) => ({ ...f, tradePartnerName: e.target.value }));
+                setShowPartnerSuggestions(true);
+              }}
+              onFocus={() => setShowPartnerSuggestions(true)}
+              className="glass-input mt-1"
+              placeholder="Pseudo du dresseur..."
+              autoComplete="off"
+            />
+            {showPartnerSuggestions && partnerSuggestions.length > 0 && (
+              <div
+                style={{
+                  position: "absolute", top: "100%", left: 0, right: 0, zIndex: 20,
+                  background: "#141824", border: "1px solid rgba(255,255,255,0.12)",
+                  borderRadius: 10, marginTop: 4, maxHeight: 220, overflowY: "auto",
+                }}
+              >
+                {partnerSuggestions.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => {
+                      setForm((f) => ({ ...f, tradePartnerName: t.name }));
+                      setShowPartnerSuggestions(false);
+                    }}
+                    className="flex items-center gap-2"
+                    style={{
+                      width: "100%", padding: "8px 12px", background: "none", border: "none",
+                      cursor: "pointer", textAlign: "left", color: "#e8edf5",
+                      fontFamily: "Exo 2, sans-serif", fontSize: "0.85rem",
+                    }}
+                  >
+                    {t.name}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
