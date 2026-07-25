@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import goIcons from "@/data/go-icons.json";
+import { isGoIconUrl, GO_ICON_CROP_STYLE } from "@/lib/spriteCrop";
 
 const BASE = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
 const GO_ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
@@ -134,16 +135,23 @@ export default function PokemonSprite({
   const src = useCustom ? customSpriteUrl! : urls[idx];
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={src}
-      alt={alt}
-      width={size}
-      height={size}
-      loading="lazy"
+    <span
       className={`pokemon-sprite ${className}`}
-      onError={handleError}
-      style={{ width: size, height: size, objectFit: "contain", imageRendering: "pixelated" }}
-    />
+      style={{ display: "inline-block", width: size, height: size, overflow: "hidden" }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={alt}
+        width={size}
+        height={size}
+        loading="lazy"
+        onError={handleError}
+        style={{
+          width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated",
+          ...(isGoIconUrl(src) ? GO_ICON_CROP_STYLE : {}),
+        }}
+      />
+    </span>
   );
 }

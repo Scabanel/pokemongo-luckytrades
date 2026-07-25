@@ -14,6 +14,7 @@ import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { createClient } from "@/lib/supabase/client";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
 import BulkAddPicker from "./BulkAddPicker";
+import { isGoIconUrl, GO_ICON_CROP_STYLE } from "@/lib/spriteCrop";
 
 // La liste des dresseurs en admin inclut toujours le compte d'entrées
 // (contrairement à PokemonEntry.trainer ailleurs, qui n'en a pas besoin).
@@ -1067,6 +1068,13 @@ export function EntryForm(props: EntryFormProps) {
       entry.backgroundUrl
     );
   });
+  // Compteurs incrémentés pour signaler à SpritePicker/BackgroundPicker de
+  // s'ouvrir automatiquement quand on active un tag Costume/Dynamax/Gigamax
+  // (sprite) ou Fond (fond d'événement) : simple changement de valeur détecté
+  // par un useEffect côté picker, plutôt qu'un state "open" contrôlé par le
+  // parent (éviterait de dupliquer toute la logique d'ouverture/fermeture).
+  const [spriteAutoOpenKey, setSpriteAutoOpenKey] = useState(0);
+  const [backgroundAutoOpenKey, setBackgroundAutoOpenKey] = useState(0);
   const pokeRef = useRef<HTMLDivElement>(null);
   const tradeRef = useRef<HTMLDivElement>(null);
   const partnerRef = useRef<HTMLDivElement>(null);
@@ -1447,12 +1455,20 @@ export function EntryForm(props: EntryFormProps) {
                 <button
                   key={key}
                   type="button"
-                  onClick={() =>
+                  onClick={() => {
                     setForm((f) => ({
                       ...f,
                       tags: active ? f.tags.filter((t) => t !== key) : [...f.tags, key],
-                    }))
-                  }
+                    }));
+                    // On n'ouvre la section concernée qu'en activant le tag
+                    // (pas en le retirant), pour que le dresseur tombe
+                    // directement sur le bon sprite/fond à choisir.
+                    if (!active) {
+                      setShowAdvanced(true);
+                      if (key === "fond") setBackgroundAutoOpenKey((k) => k + 1);
+                      else setSpriteAutoOpenKey((k) => k + 1);
+                    }
+                  }}
                   style={{
                     padding: "8px 16px",
                     borderRadius: 10,
@@ -1693,6 +1709,7 @@ export function EntryForm(props: EntryFormProps) {
                   pokemonName={mode === "edit" ? entry!.pokemonName : form.pokemonName}
                   currentUrl={form.customSpriteUrl}
                   shiny={form.shiny}
+                  autoOpenKey={spriteAutoOpenKey}
                   onSelect={(url) => setForm((f) => ({ ...f, customSpriteUrl: url }))}
                 />
               </div>
@@ -1704,6 +1721,7 @@ export function EntryForm(props: EntryFormProps) {
               <BackgroundPicker
                 pokemonId={mode === "edit" ? entry!.pokemonId : form.pokemonId}
                 currentUrl={form.backgroundUrl}
+                autoOpenKey={backgroundAutoOpenKey}
                 onSelect={(url) => setForm((f) => ({ ...f, backgroundUrl: url }))}
               />
             </div>
@@ -1889,12 +1907,14 @@ function SpritePicker({
   pokemonName,
   currentUrl,
   shiny = false,
+  autoOpenKey,
   onSelect,
 }: {
   pokemonId: number;
   pokemonName: string;
   currentUrl: string | null;
   shiny?: boolean;
+  autoOpenKey?: number;
   onSelect: (url: string | null) => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -1915,6 +1935,16 @@ function SpritePicker({
     setFetched(false);
     setSprites([]);
   }, [pokemonId]);
+
+  // Activer un tag Costume/Dynamax/Gigamax doit ouvrir directement ce picker
+  // sur la section "Costumes officiels Pokémon GO" (c'est là que vivent ces
+  // variantes), pour que le dresseur tombe sur le bon sprite sans chercher.
+  useEffect(() => {
+    if (!autoOpenKey) return;
+    setShowCostumes(true);
+    handleOpen();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoOpenKey]);
 
   const handleOpen = async () => {
     setOpen(true);
@@ -1942,8 +1972,17 @@ function SpritePicker({
     <>
       <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: 4 }}>
         {currentUrl && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={currentUrl} alt="sprite" style={{ width: 48, height: 48, objectFit: "contain", imageRendering: "pixelated", background: "rgba(255,255,255,0.05)", borderRadius: 8 }} />
+          <span style={{ display: "inline-block", width: 48, height: 48, overflow: "hidden", background: "rgba(255,255,255,0.05)", borderRadius: 8 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={currentUrl}
+              alt="sprite"
+              style={{
+                width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated",
+                ...(isGoIconUrl(currentUrl) ? GO_ICON_CROP_STYLE : {}),
+              }}
+            />
+          </span>
         )}
         <button
           type="button"
@@ -2005,17 +2044,22 @@ function SpritePicker({
                       display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
                     }}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={url}
-                      alt={label}
-                      style={{ width: 80, height: 80, objectFit: "contain", imageRendering: "pixelated" }}
-                      onError={(e) => {
-                        // Hide the whole button when the image is broken
-                        const btn = (e.currentTarget as HTMLImageElement).closest("button");
-                        if (btn) btn.style.display = "none";
-                      }}
-                    />
+                    <span style={{ display: "block", width: 80, height: 80, overflow: "hidden" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={url}
+                        alt={label}
+                        style={{
+                          width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated",
+                          ...(isGoIconUrl(url) ? GO_ICON_CROP_STYLE : {}),
+                        }}
+                        onError={(e) => {
+                          // Hide the whole button when the image is broken
+                          const btn = (e.currentTarget as HTMLImageElement).closest("button");
+                          if (btn) btn.style.display = "none";
+                        }}
+                      />
+                    </span>
                     <span style={{ fontSize: "0.6rem", color: "rgba(232,237,245,0.55)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
                       {label}
                     </span>
@@ -2131,16 +2175,18 @@ function CostumeGrid({
               display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={url}
-              alt={label}
-              style={{ width: 72, height: 72, objectFit: "contain", imageRendering: "pixelated" }}
-              onError={(e) => {
-                const btn = (e.currentTarget as HTMLImageElement).closest("button");
-                if (btn) btn.style.display = "none";
-              }}
-            />
+            <span style={{ display: "block", width: 72, height: 72, overflow: "hidden" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={url}
+                alt={label}
+                style={{ width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated", ...GO_ICON_CROP_STYLE }}
+                onError={(e) => {
+                  const btn = (e.currentTarget as HTMLImageElement).closest("button");
+                  if (btn) btn.style.display = "none";
+                }}
+              />
+            </span>
             <span style={{ fontSize: "0.58rem", color: "rgba(255,153,0,0.8)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
               {label}
             </span>
@@ -2173,15 +2219,26 @@ const VALIDATED_BACKGROUNDS = validatedBackgrounds as Record<string, BackgroundE
 function BackgroundPicker({
   pokemonId,
   currentUrl,
+  autoOpenKey,
   onSelect,
 }: {
   pokemonId: number;
   currentUrl: string | null;
+  autoOpenKey?: number;
   onSelect: (url: string | null) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [showAll, setShowAll] = useState(false);
+
+  useEffect(() => {
+    if (!autoOpenKey) return;
+    // Signal ponctuel du parent (tag "Fond" activé) : ouvrir la popup en
+    // réaction est le comportement voulu, pas un enchaînement de re-renders
+    // à éviter.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOpen(true);
+  }, [autoOpenKey]);
 
   const validated = VALIDATED_BACKGROUNDS[String(pokemonId)] ?? [];
   const source = showAll || validated.length === 0 ? BACKGROUND_CATALOG : validated;

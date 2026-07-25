@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import pokemonList from "@/data/pokemon.json";
 import { REGIONS, getRegionName } from "@/lib/regions";
 import { getSpriteVariants, type SpriteVariant } from "@/lib/spriteVariants";
+import { GO_ICON_CROP_STYLE } from "@/lib/spriteCrop";
 import type { EntryCategory } from "@/lib/types";
 
 interface PokeListEntry {
@@ -358,7 +359,7 @@ function SpeciesBlock({
         )}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(72px, 1fr))", gap: 8 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))", gap: 8 }}>
         {variants.map((variant) => {
           const isStaged = staged.has(variant.key);
           return (
@@ -369,13 +370,19 @@ function SpeciesBlock({
               onClick={() => onToggleVariant(variant)}
               style={{
                 position: "relative", display: "flex", alignItems: "center", justifyContent: "center",
-                padding: 8, borderRadius: 8, cursor: "pointer",
+                aspectRatio: "1", padding: 4, borderRadius: 8, cursor: "pointer", overflow: "hidden",
                 background: isStaged ? "rgba(255,215,0,0.18)" : "rgba(255,255,255,0.04)",
                 border: `1px solid ${isStaged ? "rgba(255,215,0,0.5)" : "rgba(255,255,255,0.08)"}`,
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={variant.url} alt={variant.label} width={64} height={64} loading="lazy" decoding="async" style={{ objectFit: "contain", imageRendering: "pixelated" }} />
+              <img
+                src={variant.url}
+                alt={variant.label}
+                loading="lazy"
+                decoding="async"
+                style={{ width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated", ...GO_ICON_CROP_STYLE }}
+              />
               <VariantBadges variant={variant} />
             </button>
           );
