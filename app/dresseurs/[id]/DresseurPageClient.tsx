@@ -60,6 +60,11 @@ export default function DresseurPageClient({ id }: { id: string }) {
   // tuiles "want" (voir components/PokemonCard.tsx), pour savoir chez qui
   // d'autre ce Pokémon est disponible.
   const [allEntries, setAllEntries] = useState<PokemonEntry[]>([]);
+  // Id du dresseur connecté qui REGARDE cette page (peut différer de `trainer`
+  // ci-dessus, qui est le propriétaire du catalogue affiché) : distingue "je
+  // regarde mon propre catalogue" de "je regarde celui de quelqu'un d'autre"
+  // pour les tuiles want/give viewer-dépendantes (voir PokemonCard.tsx).
+  const [viewerTrainerId, setViewerTrainerId] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -76,6 +81,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
         setTrainer(trainerData);
         setEntries(trainerEntries);
         setAllEntries(everyEntries);
+        setViewerTrainerId(me?.trainer?.id ?? null);
         if (me?.isAdmin) {
           setIsAdmin(true);
           fetch("/api/trainers")
@@ -359,6 +365,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
                   key={entry.id}
                   entry={entry}
                   allEntries={allEntries}
+                  viewerTrainerId={viewerTrainerId}
                   showTrainerBadge={false}
                   style={{ animationDelay: `${i * 0.04}s` }}
                   canEdit={isAdmin}

@@ -167,6 +167,7 @@ export default function PokemonCard({
   onQuantityChange,
   showTrainerBadge = true,
   allEntries,
+  viewerTrainerId,
 }: PokemonCardProps) {
   const [showDetail, setShowDetail] = useState(false);
   const [showAvailableFrom, setShowAvailableFrom] = useState(false);
@@ -213,10 +214,15 @@ export default function PokemonCard({
   // masqué si un partenaire est déjà associé (linkedEntryId) ou si ce n'est
   // pas une entrée "want". Dérivé de allEntries, donc se met à jour tout
   // seul dès que le parent refetch (pas de polling séparé à gérer ici).
+  // N'a de sens que sur SA PROPRE entrée want : sur la page publique d'un
+  // AUTRE dresseur, ses want à lui ne nous regardent pas — d'où le check
+  // entryTrainerId === viewerTrainerId (le visiteur connecté, pas forcément
+  // le propriétaire de la tuile qu'on regarde).
   const entryTrainerId = entry.trainer?.id;
   const entryFormKey = formVariantKey(entry.customSpriteUrl, entry.tags);
+  const isOwnEntry = viewerTrainerId != null && entryTrainerId === viewerTrainerId;
   const availableFrom = useMemo(() => {
-    if (entry.category !== "want" || entry.linkedEntryId || !allEntries) return [];
+    if (entry.category !== "want" || entry.linkedEntryId || !allEntries || !isOwnEntry) return [];
     const seen = new Set<string>();
     const matches: { id: string; name: string }[] = [];
     for (const other of allEntries) {
@@ -232,7 +238,25 @@ export default function PokemonCard({
       matches.push({ id: otherTrainerId, name: other.trainer!.name });
     }
     return matches;
-  }, [allEntries, entry.category, entry.linkedEntryId, entry.pokemonId, entry.shiny, entryTrainerId, entryFormKey]);
+  }, [allEntries, entry.category, entry.linkedEntryId, entry.pokemonId, entry.shiny, entryTrainerId, entryFormKey, isOwnEntry]);
+
+  // Inverse du calcul ci-dessus : sur une tuile give/mirror qui N'appartient
+  // PAS au visiteur, est-ce que LUI recherche ce Pokémon (want non lié, même
+  // forme/shiny) ? Affiche "Vous recherchez celui-ci !" + surligne la tuile.
+  const viewerWantsThis = useMemo(() => {
+    if (isOwnEntry || !viewerTrainerId || !allEntries) return false;
+    if (entry.category !== "give" && entry.category !== "mirror") return false;
+    if (entry.completed) return false;
+    return allEntries.some((other) =>
+      other.trainer?.id === viewerTrainerId &&
+      other.category === "want" &&
+      !other.completed &&
+      !other.linkedEntryId &&
+      other.pokemonId === entry.pokemonId &&
+      !!other.shiny === !!entry.shiny &&
+      formVariantKey(other.customSpriteUrl, other.tags) === entryFormKey
+    );
+  }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.pokemonId, entry.shiny, entryFormKey]);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -266,6 +290,10 @@ export default function PokemonCard({
           ...(hasTrainerBadge && {
             borderColor: "rgba(0,220,100,0.5)",
             boxShadow: "0 16px 64px rgba(0,200,80,0.25), 0 0 0 1px rgba(0,220,100,0.2)",
+          }),
+          ...(viewerWantsThis && {
+            borderColor: "rgba(255,45,120,0.5)",
+            boxShadow: "0 16px 64px rgba(255,45,120,0.25), 0 0 0 1px rgba(255,45,120,0.2)",
           }),
         }}
         onClick={(e) => e.stopPropagation()}
@@ -546,6 +574,10 @@ export default function PokemonCard({
             borderColor: "rgba(0, 220, 100, 0.5)",
             boxShadow: "0 8px 32px rgba(0, 200, 80, 0.28), 0 0 0 1px rgba(0, 220, 100, 0.2), inset 0 1px 0 rgba(0, 220, 100, 0.06)",
           }),
+          ...(viewerWantsThis && {
+            borderColor: "rgba(255, 45, 120, 0.5)",
+            boxShadow: "0 8px 32px rgba(255, 45, 120, 0.28), 0 0 0 1px rgba(255, 45, 120, 0.2)",
+          }),
           ...(selected && {
             borderColor: "rgba(255, 215, 0,0.6)",
             boxShadow: "0 8px 32px rgba(255, 215, 0,0.25), 0 0 0 2px rgba(255, 215, 0,0.35)",
@@ -803,6 +835,22 @@ export default function PokemonCard({
           >
             Dispo chez {availableFrom.length} Dresseur{availableFrom.length > 1 ? "s" : ""}
           </button>
+        )}
+
+        {/* Sur la liste "peut donner"/"miroir" d'un AUTRE dresseur : ce
+            visiteur précis le recherche lui-même dans sa propre liste. */}
+        {viewerWantsThis && (
+          <div
+            className="mt-auto"
+            style={{
+              marginTop: 6, padding: "4px 12px", borderRadius: 999,
+              background: "rgba(255,45,120,0.12)", border: "1px solid rgba(255,45,120,0.35)",
+              color: "#ff2d78", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.65rem",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Vous recherchez celui-ci !
+          </div>
         )}
       </div>
 

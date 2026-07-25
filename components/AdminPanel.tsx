@@ -575,6 +575,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             <EntrySection
               entries={listByCategory[activeCategory]}
               allEntries={entries}
+              viewerTrainerId={myTrainerId}
               loading={loadingEntries}
               showTrainerBadge={false}
               selectedIds={selectedIds}
@@ -908,6 +909,7 @@ function MyAccountPanel({
 function EntrySection({
   entries,
   allEntries,
+  viewerTrainerId,
   loading,
   showTrainerBadge,
   selectedIds,
@@ -921,6 +923,7 @@ function EntrySection({
 }: {
   entries: PokemonEntry[];
   allEntries: PokemonEntry[];
+  viewerTrainerId: string | null;
   loading: boolean;
   showTrainerBadge: boolean;
   selectedIds: Set<string>;
@@ -979,6 +982,7 @@ function EntrySection({
                 key={entry.id}
                 entry={entry}
                 allEntries={allEntries}
+                viewerTrainerId={viewerTrainerId}
                 showTrainerBadge={showTrainerBadge}
                 selectable={editable}
                 selected={selectedIds.has(entry.id)}
