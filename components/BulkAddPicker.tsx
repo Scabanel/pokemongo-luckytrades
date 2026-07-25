@@ -311,28 +311,20 @@ function VariantBadges({ variant }: { variant: SpriteVariant }) {
         </span>
       )}
       {variant.tags.includes("dynamax") && (
-        <span
-          title="Dynamax"
-          style={{
-            position: "absolute", bottom: 2, left: 2, fontSize: "0.55rem", fontWeight: 800,
-            width: 15, height: 15, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-            background: "#7c3aed", color: "#fff", border: "1px solid rgba(255,255,255,0.4)",
-          }}
-        >
-          D
-        </span>
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src="/dynamax.png"
+          alt="Dynamax"
+          style={{ position: "absolute", bottom: 2, left: 2, width: 18, height: 18 }}
+        />
       )}
       {variant.tags.includes("gigamax") && (
-        <span
-          title="Gigamax"
-          style={{
-            position: "absolute", bottom: 2, left: 2, fontSize: "0.55rem", fontWeight: 800,
-            width: 15, height: 15, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
-            background: "#e11d48", color: "#fff", border: "1px solid rgba(255,255,255,0.4)",
-          }}
-        >
-          G
-        </span>
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src="/gigamax.png"
+          alt="Gigamax"
+          style={{ position: "absolute", bottom: 2, left: 2, width: 18, height: 18 }}
+        />
       )}
     </>
   );
