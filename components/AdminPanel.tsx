@@ -966,9 +966,13 @@ function EntryForm(props: EntryFormProps) {
           pokemonName: "",
           pokemonId: 0,
           category: (mode === "add" ? props.defaultCategory : "want") as EntryCategory,
-          // Un compte non-admin ne peut créer que sous son propre dresseur
-          // (de toute façon forcé côté serveur, voir app/api/entries/route.ts).
-          trainerId: isAdmin ? "" : myTrainerId ?? "",
+          // Par défaut sur soi-même, y compris pour l'admin : "Mon espace"
+          // doit rester la même expérience simple pour tout le monde (pas
+          // besoin de choisir un dresseur pour ajouter à sa propre liste).
+          // Un compte non-admin ne peut de toute façon créer que sous son
+          // propre dresseur, forcé côté serveur (app/api/entries/route.ts) ;
+          // l'admin garde le champ DRESSEUR pour réassigner s'il le souhaite.
+          trainerId: myTrainerId ?? "",
           tradePartnerName: "",
           tradeForPokemonName: "",
           tradeForPokemonId: 0,
