@@ -784,6 +784,7 @@ function MyAccountPanel({
   const [team, setTeam] = useState(trainer?.team ?? "");
   const [level, setLevel] = useState(trainer?.level != null ? String(trainer.level) : "");
   const [friendCode, setFriendCode] = useState(trainer?.friendCode ?? "");
+  const [city, setCity] = useState(trainer?.city ?? "");
   const [spriteStyle, setSpriteStyle] = useState(trainer?.preferredSpriteStyle ?? "static");
   const [loading, setLoading] = useState(false);
 
@@ -791,6 +792,7 @@ function MyAccountPanel({
     setTeam(trainer?.team ?? "");
     setLevel(trainer?.level != null ? String(trainer.level) : "");
     setFriendCode(trainer?.friendCode ?? "");
+    setCity(trainer?.city ?? "");
     setSpriteStyle(trainer?.preferredSpriteStyle ?? "static");
   }, [trainer]);
 
@@ -815,6 +817,7 @@ function MyAccountPanel({
           team: team || null,
           level: level ? Number(level) : null,
           friendCode: friendCode || null,
+          city,
           preferredSpriteStyle: spriteStyle,
         }),
       });
@@ -855,6 +858,17 @@ function MyAccountPanel({
         )}
       </div>
       <form onSubmit={handleSave} className="flex flex-col gap-4">
+        <div>
+          <label className="field-label">VILLE</label>
+          <input
+            type="text"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="glass-input mt-1"
+            placeholder="Ta ville"
+            required
+          />
+        </div>
         <div>
           <label className="field-label">ÉQUIPE</label>
           <select value={team} onChange={(e) => setTeam(e.target.value)} className="glass-input mt-1" required>

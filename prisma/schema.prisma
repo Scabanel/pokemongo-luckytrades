@@ -16,6 +16,10 @@ model Trainer {
   team       String?
   level      Int?
   friendCode String?
+  // Obligatoire à l'inscription (voir app/api/auth/signup) ; défaut
+  // "Strasbourg" pour que la migration backfill les dresseurs déjà inscrits
+  // sans valeur.
+  city       String         @default("Strasbourg")
   // Style de sprite par défaut appliqué à toutes ses entrées : "animated"
   // (Gen V/Showdown en premier) ou "static" (icône officielle Pokémon GO en
   // premier). Lu dynamiquement à l'affichage (voir PokemonSprite.tsx) : pas

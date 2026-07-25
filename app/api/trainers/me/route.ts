@@ -13,10 +13,13 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
-  const { team, level, friendCode, preferredSpriteStyle } = await request.json();
+  const { team, level, friendCode, preferredSpriteStyle, city } = await request.json();
 
   if (team !== undefined && team !== null && !TEAMS.includes(team)) {
     return NextResponse.json({ error: "Équipe invalide" }, { status: 400 });
+  }
+  if (city !== undefined && !city?.trim()) {
+    return NextResponse.json({ error: "Ville obligatoire" }, { status: 400 });
   }
   if (preferredSpriteStyle !== undefined && preferredSpriteStyle !== null && !SPRITE_STYLES.includes(preferredSpriteStyle)) {
     return NextResponse.json({ error: "Style de sprite invalide" }, { status: 400 });
@@ -36,6 +39,7 @@ export async function PATCH(request: NextRequest) {
         friendCode: typeof friendCode === "string" ? friendCode.trim() || null : null,
       }),
       ...(preferredSpriteStyle !== undefined && { preferredSpriteStyle }),
+      ...(city !== undefined && { city: city.trim() }),
     },
   });
 

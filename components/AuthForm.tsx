@@ -24,6 +24,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
   const [team, setTeam] = useState("");
   const [level, setLevel] = useState("");
   const [friendCode, setFriendCode] = useState("");
+  const [city, setCity] = useState("");
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
   const [loading, setLoading] = useState(false);
@@ -67,6 +68,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
           team: team || null,
           level: level ? Number(level) : null,
           friendCode: friendCode || null,
+          city,
         }),
       });
       const data = await res.json();
@@ -204,6 +206,17 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
                 placeholder="••••••••"
                 autoComplete="new-password"
                 minLength={6}
+                required
+              />
+            </div>
+            <div>
+              <label style={labelStyle}>VILLE</label>
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="glass-input"
+                placeholder="Ta ville"
                 required
               />
             </div>
