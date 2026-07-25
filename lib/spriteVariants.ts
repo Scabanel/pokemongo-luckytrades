@@ -1,0 +1,66 @@
+import costumeCatalog from "@/data/costumes.json";
+import gigantamaxIcons from "@/data/gigantamax-icons.json";
+
+const COSTUME_CATALOG = costumeCatalog as Record<string, { label: string; url: string }[]>;
+const GIGANTAMAX_ICONS = gigantamaxIcons as Record<string, string[]>;
+const GIGANTAMAX_ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
+
+export interface SpriteVariant {
+  key: string;
+  label: string;
+  url: string;
+  shiny: boolean;
+  tags: string[];
+}
+
+// Toutes les variantes visuelles sélectionnables d'un Pokémon pour le picker
+// d'ajout en masse : le costume officiel (base + formes + costumes
+// événementiels, déjà tout dans data/costumes.json — Unown A-Z, Deoxys
+// Attaque/Défense/Vitesse, déguisements Pikachu... y sont mélangés), plus le
+// Gigamax officiel séparément (fichier dédié), plus deux entrées Dynamax
+// (même sprite que la base : Dynamax ne change pas l'apparence dans GO,
+// contrairement à Gigamax).
+export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
+  const costumes = COSTUME_CATALOG[String(pokemonId)] ?? [];
+  const variants: SpriteVariant[] = costumes.map((c) => ({
+    key: c.url,
+    label: c.label,
+    url: c.url,
+    shiny: c.label.includes("✨"),
+    tags: c.label.startsWith("Officiel Pokémon GO") ? [] : ["costume"],
+  }));
+
+  const gmax = GIGANTAMAX_ICONS[String(pokemonId)];
+  if (gmax) {
+    const [normal, shiny] = gmax;
+    if (normal) {
+      variants.push({
+        key: `gmax-${normal}`,
+        label: "Gigamax",
+        url: `${GIGANTAMAX_ICON_BASE}/${encodeURIComponent(normal)}`,
+        shiny: false,
+        tags: ["gigamax"],
+      });
+    }
+    if (shiny) {
+      variants.push({
+        key: `gmax-${shiny}`,
+        label: "Gigamax ✨",
+        url: `${GIGANTAMAX_ICON_BASE}/${encodeURIComponent(shiny)}`,
+        shiny: true,
+        tags: ["gigamax"],
+      });
+    }
+  }
+
+  const base = costumes.find((c) => c.label === "Officiel Pokémon GO");
+  const baseShiny = costumes.find((c) => c.label === "Officiel Pokémon GO ✨");
+  if (base) {
+    variants.push({ key: `dynamax-${base.url}`, label: "Dynamax", url: base.url, shiny: false, tags: ["dynamax"] });
+  }
+  if (baseShiny) {
+    variants.push({ key: `dynamax-${baseShiny.url}`, label: "Dynamax ✨", url: baseShiny.url, shiny: true, tags: ["dynamax"] });
+  }
+
+  return variants;
+}

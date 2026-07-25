@@ -13,6 +13,7 @@ import type { Trainer, PokemonEntry as SharedPokemonEntry, EntryCategory } from 
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { createClient } from "@/lib/supabase/client";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
+import BulkAddPicker from "./BulkAddPicker";
 
 // La liste des dresseurs en admin inclut toujours le compte d'entrées
 // (contrairement à PokemonEntry.trainer ailleurs, qui n'en a pas besoin).
@@ -54,6 +55,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   const [activeTab, setActiveTab] = useState<"entries" | "trainers" | "account">("entries");
   const [activeCategory, setActiveCategory] = useState<EntryCategory>("mirror");
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showBulkAdd, setShowBulkAdd] = useState(false);
   const [editingEntry, setEditingEntry] = useState<PokemonEntry | null>(null);
   const [loadingEntries, setLoadingEntries] = useState(true);
   const [newTrainerName, setNewTrainerName] = useState("");
@@ -359,6 +361,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           </a>
           <button onClick={() => setShowAddForm(true)} className="btn-primary" style={{ fontSize: "0.8rem", padding: "7px 14px" }}>
             +Ajouter un Pokémon
+          </button>
+          <button onClick={() => setShowBulkAdd(true)} className="btn-secondary" style={{ fontSize: "0.8rem", padding: "7px 14px" }}>
+            Ajouter plusieurs Pokémon
           </button>
           <button onClick={handleLogout} className="btn-danger" style={{ fontSize: "0.8rem", padding: "7px 14px" }}>
             Déconnexion
@@ -686,6 +691,19 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             // La modale reste ouverte pour enchaîner les ajouts (ex: après une
             // session de jeu avec plusieurs échanges) — elle se ferme via
             // le bouton "Terminé" ou le clic en dehors.
+          }}
+        />
+      )}
+
+      {/* Bulk add picker */}
+      {showBulkAdd && (
+        <BulkAddPicker
+          defaultCategory={activeCategory}
+          trainerId={myTrainerId}
+          onClose={() => setShowBulkAdd(false)}
+          onAdded={() => {
+            fetchData();
+            setShowBulkAdd(false);
           }}
         />
       )}
