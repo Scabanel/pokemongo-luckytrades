@@ -486,7 +486,7 @@ export default function PokemonCard({
                   <button
                     onClick={() => onQuantityChange?.(1)}
                     className="btn-secondary"
-                    style={{ padding: "6px 10px", fontSize: "0.85rem", fontWeight: 800 }}
+                    style={{ padding: "clamp(4px, 1.5vw, 6px) clamp(7px, 2.5vw, 10px)", fontSize: "clamp(0.72rem, 3vw, 0.85rem)", fontWeight: 800 }}
                     title="Corriger : +1 exemplaire"
                   >
                     +1
@@ -495,7 +495,7 @@ export default function PokemonCard({
                 <button
                   onClick={() => { closeDetail(); onEdit?.(); }}
                   className="btn-secondary"
-                  style={{ padding: "6px 12px", fontSize: "0.8rem" }}
+                  style={{ padding: "clamp(4px, 1.5vw, 6px) clamp(9px, 3vw, 12px)", fontSize: "clamp(0.68rem, 3vw, 0.8rem)" }}
                 >
                   Modifier
                 </button>

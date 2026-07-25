@@ -374,8 +374,12 @@ h1, h2, h3, h4, h5, h6 {
   .btn-danger,
   .btn-primary {
     min-height: 40px;
+    padding-top: 6px;
+    padding-bottom: 6px;
     padding-left: 12px;
     padding-right: 12px;
+    font-size: 0.74rem;
+    gap: 4px;
   }
 }
 

@@ -2042,9 +2042,9 @@ function SpritePicker({
           type="button"
           onClick={handleOpen}
           style={{
-            padding: "6px 14px", borderRadius: 10, cursor: "pointer",
+            padding: "clamp(4px, 1.5vw, 6px) clamp(9px, 3vw, 14px)", borderRadius: 10, cursor: "pointer",
             background: "rgba(255, 215, 0,0.08)", border: "1px solid rgba(255, 215, 0,0.25)",
-            color: "#ffd700", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
+            color: "#ffd700", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "clamp(0.68rem, 3vw, 0.8rem)",
           }}
         >
           Sélectionner sprite
@@ -2054,9 +2054,9 @@ function SpritePicker({
             type="button"
             onClick={() => onSelect(null)}
             style={{
-              padding: "6px 10px", borderRadius: 10, cursor: "pointer",
+              padding: "clamp(4px, 1.5vw, 6px) clamp(7px, 2.5vw, 10px)", borderRadius: 10, cursor: "pointer",
               background: "rgba(255,107,107,0.08)", border: "1px solid rgba(255,107,107,0.25)",
-              color: "#ff6b6b", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
+              color: "#ff6b6b", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "clamp(0.68rem, 3vw, 0.8rem)",
             }}
           >
             Retirer
@@ -2072,7 +2072,7 @@ function SpritePicker({
         >
           <div
             className="glass-card overflow-y-auto"
-            style={{ maxWidth: 580, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: 24, overscrollBehavior: "contain" }}
+            style={{ maxWidth: 680, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: "clamp(12px, 4vw, 24px)", overscrollBehavior: "contain" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -2085,7 +2085,7 @@ function SpritePicker({
             {fetching ? (
               <div style={{ textAlign: "center", padding: 32, color: "rgba(232,237,245,0.4)" }}>Chargement…</div>
             ) : visibleSprites.length > 0 ? (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(136px, 1fr))", gap: 8, marginBottom: 20 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(76px, 22vw, 136px), 1fr))", gap: 8, marginBottom: 20 }}>
                 {visibleSprites.map(({ url, label }) => (
                   <button
                     key={url}
@@ -2213,7 +2213,7 @@ function CostumeGrid({
           style={{ marginBottom: 8, fontSize: "0.8rem" }}
         />
       )}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(116px, 1fr))", gap: 6 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(70px, 20vw, 116px), 1fr))", gap: 6 }}>
         {filtered.map(({ url, label }) => (
           <button
             key={url}
@@ -2308,9 +2308,9 @@ function BackgroundPicker({
           type="button"
           onClick={() => setOpen(true)}
           style={{
-            padding: "6px 14px", borderRadius: 10, cursor: "pointer",
+            padding: "clamp(4px, 1.5vw, 6px) clamp(9px, 3vw, 14px)", borderRadius: 10, cursor: "pointer",
             background: "rgba(180,100,255,0.08)", border: "1px solid rgba(180,100,255,0.25)",
-            color: "#b464ff", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
+            color: "#b464ff", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "clamp(0.68rem, 3vw, 0.8rem)",
           }}
         >
           Sélectionner un fond{validated.length > 0 ? ` (${validated.length} confirmés)` : ""}
@@ -2320,9 +2320,9 @@ function BackgroundPicker({
             type="button"
             onClick={() => onSelect(null)}
             style={{
-              padding: "6px 10px", borderRadius: 10, cursor: "pointer",
+              padding: "clamp(4px, 1.5vw, 6px) clamp(7px, 2.5vw, 10px)", borderRadius: 10, cursor: "pointer",
               background: "rgba(255,107,107,0.08)", border: "1px solid rgba(255,107,107,0.25)",
-              color: "#ff6b6b", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.8rem",
+              color: "#ff6b6b", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "clamp(0.68rem, 3vw, 0.8rem)",
             }}
           >
             Retirer
@@ -2338,7 +2338,7 @@ function BackgroundPicker({
         >
           <div
             className="glass-card overflow-y-auto"
-            style={{ maxWidth: 580, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: 24, overscrollBehavior: "contain" }}
+            style={{ maxWidth: 680, width: "100%", maxHeight: "calc(100dvh - 32px)", padding: "clamp(12px, 4vw, 24px)", overscrollBehavior: "contain" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -2375,7 +2375,7 @@ function BackgroundPicker({
               style={{ marginBottom: 12 }}
             />
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: 8 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(70px, 20vw, 110px), 1fr))", gap: 8 }}>
               {filtered.map(({ url, label }) => (
                 <button
                   key={url + label}
@@ -2467,7 +2467,7 @@ function ModalOverlay({ children }: { children: React.ReactNode }) {
     >
       <div
         className="glass-card animate-scale-in w-full overflow-y-auto"
-        style={{ maxWidth: 520, maxHeight: "calc(100dvh - 32px)", padding: 28, overscrollBehavior: "contain" }}
+        style={{ maxWidth: 560, maxHeight: "calc(100dvh - 32px)", padding: "clamp(14px, 4vw, 28px)", overscrollBehavior: "contain" }}
       >
         {children}
       </div>
