@@ -5,9 +5,13 @@ import { getCurrentTrainer } from "@/lib/auth";
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const showCompleted = searchParams.get("completed") === "true";
+  const trainerId = searchParams.get("trainerId");
 
   const entries = await prisma.pokemonEntry.findMany({
-    where: showCompleted ? undefined : { completed: false },
+    where: {
+      ...(showCompleted ? undefined : { completed: false }),
+      ...(trainerId ? { trainerId } : undefined),
+    },
     include: { trainer: true },
     orderBy: { createdAt: "desc" },
   });

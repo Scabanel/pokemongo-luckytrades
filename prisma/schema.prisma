@@ -73,4 +73,12 @@ model PokemonEntry {
   completed           Boolean  @default(false)
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+
+  // GET /api/entries filtre systématiquement par completed, souvent combiné à
+  // trainerId (page dresseur) ou category (catalogue par onglet) : ces index
+  // évitent un scan complet de la table à mesure qu'elle grossit avec plus
+  // d'utilisateurs.
+  @@index([trainerId, completed])
+  @@index([category, completed])
+  @@index([linkedEntryId])
 }

@@ -41,15 +41,15 @@ export default function DresseurPageClient({ id }: { id: string }) {
   useEffect(() => {
     Promise.all([
       fetch(`/api/trainers/${id}`).then((r) => (r.ok ? r.json() : null)),
-      fetch("/api/entries").then((r) => r.json()),
+      fetch(`/api/entries?trainerId=${id}`).then((r) => r.json()),
     ])
-      .then(([trainerData, allEntries]) => {
+      .then(([trainerData, trainerEntries]) => {
         if (!trainerData) {
           setNotFound(true);
           return;
         }
         setTrainer(trainerData);
-        setEntries(allEntries.filter((e: PokemonEntry) => e.trainer?.id === id));
+        setEntries(trainerEntries);
       })
       .finally(() => setLoading(false));
   }, [id]);
