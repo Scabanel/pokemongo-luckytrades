@@ -26,7 +26,7 @@ export default function DresseursPage() {
 
       <SiteNav active="/dresseurs" />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 py-8 flex-1 w-full">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
         <header className="text-center mb-10">
           <h1
             style={{

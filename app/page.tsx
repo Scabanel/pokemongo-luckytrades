@@ -36,7 +36,7 @@ export default function LandingPage() {
       <div className="fixed pointer-events-none" style={{ bottom: -120, left: "8%", width: 700, height: 420, background: "radial-gradient(ellipse at center bottom, rgba(255,200,50,0.13) 0%, rgba(255,160,20,0.06) 45%, transparent 70%)", zIndex: 0 }} />
       <div className="fixed pointer-events-none" style={{ bottom: -100, right: "12%", width: 600, height: 380, background: "radial-gradient(ellipse at center bottom, rgba(255,180,30,0.1) 0%, rgba(255,140,0,0.04) 45%, transparent 70%)", zIndex: 0 }} />
 
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto px-4 py-16 text-center">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center max-w-6xl mx-auto px-4 py-16 text-center">
         <div style={{
           fontFamily: "Bebas Neue, Exo 2, sans-serif",
           fontSize: "clamp(0.7rem, 1.5vw, 0.9rem)",
@@ -70,7 +70,7 @@ export default function LandingPage() {
         <p style={{
           color: "rgba(232,237,245,0.55)",
           fontSize: "1rem",
-          maxWidth: 560,
+          maxWidth: 640,
           lineHeight: 1.6,
           marginBottom: 40,
         }}>
@@ -88,7 +88,7 @@ export default function LandingPage() {
           </a>
         </div>
 
-        <div className="grid gap-6 w-full" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
+        <div className="grid gap-6 w-full" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}>
           {FEATURES.map(({ title, text }) => (
             <div key={title} className="glass-card p-5" style={{ textAlign: "left" }}>
               <h2 style={{
