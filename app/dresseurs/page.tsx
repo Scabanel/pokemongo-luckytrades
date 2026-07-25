@@ -6,11 +6,12 @@ import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import type { Trainer } from "@/lib/types";
 
-type TrainerWithCount = Trainer & { _count: { entries: number } };
+type TrainerWithCount = Trainer & { _count: { entries: number; shinyEntries: number } };
 
 export default function DresseursPage() {
   const [trainers, setTrainers] = useState<TrainerWithCount[]>([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetch("/api/trainers")
@@ -18,6 +19,11 @@ export default function DresseursPage() {
       .then((data) => setTrainers(data))
       .finally(() => setLoading(false));
   }, []);
+
+  const searchTrimmed = search.trim().toLowerCase();
+  const visibleTrainers = searchTrimmed
+    ? trainers.filter((t) => t.name.toLowerCase().includes(searchTrimmed))
+    : trainers;
 
   return (
     <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
@@ -46,19 +52,28 @@ export default function DresseursPage() {
           </p>
         </header>
 
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="glass-input"
+          placeholder="Chercher un dresseur..."
+          style={{ marginBottom: 20, maxWidth: 360, marginLeft: "auto", marginRight: "auto", display: "block" }}
+        />
+
         {loading ? (
           <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))" }}>
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="skeleton" style={{ height: 90, borderRadius: 16 }} />
             ))}
           </div>
-        ) : trainers.length === 0 ? (
+        ) : visibleTrainers.length === 0 ? (
           <p style={{ textAlign: "center", color: "rgba(232,237,245,0.3)", padding: 32 }}>
-            Aucun dresseur inscrit pour le moment.
+            {trainers.length === 0 ? "Aucun dresseur inscrit pour le moment." : "Aucun dresseur ne correspond à cette recherche."}
           </p>
         ) : (
           <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))" }}>
-            {trainers.map((t) => (
+            {visibleTrainers.map((t) => (
               <a
                 key={t.id}
                 href={`/dresseurs/${t.id}`}
@@ -85,12 +100,30 @@ export default function DresseursPage() {
                   {t.name.charAt(0).toUpperCase()}
                 </div>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#e8edf5" }}>
+                  <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#e8edf5", marginBottom: 4 }}>
                     {t.name}
                   </div>
-                  <div style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.75rem", display: "flex", gap: 6, alignItems: "center" }}>
-                    {t.team && <span>Niveau {t.level ?? "?"}</span>}
-                    <span>{t._count.entries} Pokémon à échanger</span>
+                  <div className="flex flex-wrap items-center gap-1">
+                    <span
+                      style={{
+                        background: "rgba(255,215,0,0.12)", border: "1px solid rgba(255,215,0,0.3)",
+                        color: "#ffd700", borderRadius: 999, padding: "2px 10px",
+                        fontSize: "0.72rem", fontWeight: 700,
+                      }}
+                    >
+                      {t._count.entries} à échanger
+                    </span>
+                    {t._count.shinyEntries > 0 && (
+                      <span
+                        style={{
+                          background: "rgba(255,215,0,0.08)", border: "1px solid rgba(255,215,0,0.2)",
+                          color: "rgba(255,215,0,0.85)", borderRadius: 999, padding: "2px 10px",
+                          fontSize: "0.72rem", fontWeight: 700,
+                        }}
+                      >
+                        {t._count.shinyEntries} ✨
+                      </span>
+                    )}
                   </div>
                 </div>
               </a>
