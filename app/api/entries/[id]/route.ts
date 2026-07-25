@@ -36,6 +36,8 @@ export async function PATCH(
     const entry = await prisma.$transaction(async (tx) => {
       let derivedTradeForName = tradeForPokemonName;
       let derivedTradeForId = tradeForPokemonId;
+      let derivedTradeForShiny: boolean | null | undefined = undefined;
+      let derivedTradeForCustomSpriteUrl: string | null | undefined = undefined;
       let derivedPartnerName = tradePartnerName;
 
       if (linking) {
@@ -56,6 +58,8 @@ export async function PATCH(
           }
           derivedTradeForName = target.pokemonName;
           derivedTradeForId = target.pokemonId;
+          derivedTradeForShiny = target.shiny;
+          derivedTradeForCustomSpriteUrl = target.customSpriteUrl;
           derivedPartnerName =
             tradePartnerName !== undefined
               ? tradePartnerName
@@ -78,6 +82,8 @@ export async function PATCH(
                 linkedEntryId: id,
                 tradeForPokemonName: existing.pokemonName,
                 tradeForPokemonId: existing.pokemonId,
+                tradeForShiny: existing.shiny,
+                tradeForCustomSpriteUrl: existing.customSpriteUrl,
                 tradePartnerName: trimmedDerivedPartnerName,
                 ...(completed !== undefined && { completed }),
               },
@@ -94,6 +100,8 @@ export async function PATCH(
                 linkedEntryId: id,
                 tradeForPokemonName: existing.pokemonName,
                 tradeForPokemonId: existing.pokemonId,
+                tradeForShiny: existing.shiny,
+                tradeForCustomSpriteUrl: existing.customSpriteUrl,
                 tradePartnerName: trimmedDerivedPartnerName,
                 ...(completed !== undefined && { completed }),
               },
@@ -119,6 +127,10 @@ export async function PATCH(
           }),
           ...(derivedTradeForId !== undefined && {
             tradeForPokemonId: derivedTradeForId ? Number(derivedTradeForId) : null,
+          }),
+          ...(derivedTradeForShiny !== undefined && { tradeForShiny: derivedTradeForShiny }),
+          ...(derivedTradeForCustomSpriteUrl !== undefined && {
+            tradeForCustomSpriteUrl: derivedTradeForCustomSpriteUrl,
           }),
           ...(derivedPartnerName !== undefined && {
             tradePartnerName:

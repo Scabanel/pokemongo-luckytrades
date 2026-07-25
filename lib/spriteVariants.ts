@@ -1,9 +1,11 @@
 import costumeCatalog from "@/data/costumes.json";
 import gigantamaxIcons from "@/data/gigantamax-icons.json";
+import goIcons from "@/data/go-icons.json";
 
 const COSTUME_CATALOG = costumeCatalog as Record<string, { label: string; url: string }[]>;
 const GIGANTAMAX_ICONS = gigantamaxIcons as Record<string, string[]>;
-const GIGANTAMAX_ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
+const GO_ICONS = goIcons as Record<string, string[]>;
+const ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
 
 export interface SpriteVariant {
   key: string;
@@ -30,6 +32,20 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
     tags: c.label.startsWith("Officiel Pokémon GO") ? [] : ["costume"],
   }));
 
+  // costumes.json ne couvre que les espèces ayant déjà eu un costume/une
+  // forme événementielle (~925/1025) : sans repli, tout Pokémon jamais
+  // costumé n'aurait AUCUNE tuile du tout dans le picker, pas même son sprite
+  // de base. go-icons.json couvre lui l'icône officielle de chaque espèce.
+  if (!costumes.some((c) => c.label.startsWith("Officiel Pokémon GO"))) {
+    const files = GO_ICONS[String(pokemonId)];
+    if (files?.[0]) {
+      variants.unshift({ key: `base-${files[0]}`, label: "Officiel Pokémon GO", url: `${ICON_BASE}/${encodeURIComponent(files[0])}`, shiny: false, tags: [] });
+    }
+    if (files?.[1]) {
+      variants.unshift({ key: `base-${files[1]}`, label: "Officiel Pokémon GO ✨", url: `${ICON_BASE}/${encodeURIComponent(files[1])}`, shiny: true, tags: [] });
+    }
+  }
+
   const gmax = GIGANTAMAX_ICONS[String(pokemonId)];
   if (gmax) {
     const [normal, shiny] = gmax;
@@ -37,7 +53,7 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
       variants.push({
         key: `gmax-${normal}`,
         label: "Gigamax",
-        url: `${GIGANTAMAX_ICON_BASE}/${encodeURIComponent(normal)}`,
+        url: `${ICON_BASE}/${encodeURIComponent(normal)}`,
         shiny: false,
         tags: ["gigamax"],
       });
@@ -46,15 +62,15 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
       variants.push({
         key: `gmax-${shiny}`,
         label: "Gigamax ✨",
-        url: `${GIGANTAMAX_ICON_BASE}/${encodeURIComponent(shiny)}`,
+        url: `${ICON_BASE}/${encodeURIComponent(shiny)}`,
         shiny: true,
         tags: ["gigamax"],
       });
     }
   }
 
-  const base = costumes.find((c) => c.label === "Officiel Pokémon GO");
-  const baseShiny = costumes.find((c) => c.label === "Officiel Pokémon GO ✨");
+  const base = variants.find((v) => v.label === "Officiel Pokémon GO");
+  const baseShiny = variants.find((v) => v.label === "Officiel Pokémon GO ✨");
   if (base) {
     variants.push({ key: `dynamax-${base.url}`, label: "Dynamax", url: base.url, shiny: false, tags: ["dynamax"] });
   }

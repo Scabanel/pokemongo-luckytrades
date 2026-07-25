@@ -385,7 +385,14 @@ export default function PokemonCard({
             <span style={{ fontSize: "0.75rem", color: "#ffd93d", fontWeight: 600 }}>
               {entry.category === "want" ? "Je donne" : entry.category === "mirror" ? "Échange" : "Je reçois"}
             </span>
-            <PokemonSprite pokemonId={entry.tradeForPokemonId} alt={entry.tradeForPokemonName} size={40} />
+            <PokemonSprite
+              pokemonId={entry.tradeForPokemonId}
+              alt={entry.tradeForPokemonName}
+              size={40}
+              shiny={entry.tradeForShiny === true}
+              customSpriteUrl={entry.tradeForCustomSpriteUrl}
+              preferStatic={preferStatic}
+            />
             <span style={{ fontSize: "0.85rem", color: "#e8edf5", fontWeight: 500 }}>
               {entry.tradeForPokemonName}
             </span>
@@ -697,7 +704,14 @@ export default function PokemonCard({
             <span style={{ fontSize: "0.6rem", color: "#ffd93d", fontWeight: 600, whiteSpace: "nowrap" }}>
               {entry.category === "want" ? "Je donne" : entry.category === "mirror" ? "Échange" : "Je reçois"}
             </span>
-            <PokemonSprite pokemonId={entry.tradeForPokemonId} alt={entry.tradeForPokemonName} size={24} />
+            <PokemonSprite
+              pokemonId={entry.tradeForPokemonId}
+              alt={entry.tradeForPokemonName}
+              size={24}
+              shiny={entry.tradeForShiny === true}
+              customSpriteUrl={entry.tradeForCustomSpriteUrl}
+              preferStatic={preferStatic}
+            />
             <span style={{ fontSize: "0.62rem", color: "#e8edf5", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 70 }}>
               {entry.tradeForPokemonName}
             </span>

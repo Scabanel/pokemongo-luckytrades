@@ -101,6 +101,8 @@ export async function POST(request: NextRequest) {
             linkedEntryId,
             tradeForPokemonName: target.pokemonName,
             tradeForPokemonId: target.pokemonId,
+            tradeForShiny: target.shiny,
+            tradeForCustomSpriteUrl: target.customSpriteUrl,
             tradePartnerName: sharedPartnerName,
           },
         });
@@ -110,6 +112,8 @@ export async function POST(request: NextRequest) {
             linkedEntryId: created.id,
             tradeForPokemonName: created.pokemonName,
             tradeForPokemonId: created.pokemonId,
+            tradeForShiny: created.shiny,
+            tradeForCustomSpriteUrl: created.customSpriteUrl,
             tradePartnerName: sharedPartnerName,
           },
         });

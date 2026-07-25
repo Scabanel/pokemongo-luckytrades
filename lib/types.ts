@@ -27,6 +27,8 @@ export interface PokemonEntry {
   trainer?: Trainer | null;
   tradeForPokemonName?: string | null;
   tradeForPokemonId?: number | null;
+  tradeForShiny?: boolean | null;
+  tradeForCustomSpriteUrl?: string | null;
   tradePartnerName?: string | null;
   linkedEntryId?: string | null;
   notes?: string | null;

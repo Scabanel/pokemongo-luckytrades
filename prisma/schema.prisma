@@ -63,6 +63,11 @@ model PokemonEntry {
   trainer             Trainer? @relation(fields: [trainerId], references: [id])
   tradeForPokemonName String?
   tradeForPokemonId   Int?
+  // Copie du shiny/sprite du Pokémon reçu en échange (voir linkedEntryId) :
+  // sans ça, la tuile "en échange de" affiche toujours le sprite par défaut
+  // (non-shiny, sans costume) même quand le Pokémon lié en est un.
+  tradeForShiny           Boolean?
+  tradeForCustomSpriteUrl String?
   tradePartnerName    String?
   // Lien vers l'autre entrée (à soi, catégorie opposée want/give) qui
   // représente le même échange concret : voir Item 7 du plan, synchronisé

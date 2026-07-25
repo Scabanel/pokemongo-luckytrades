@@ -116,7 +116,7 @@ export default function BulkAddPicker({
       style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 500, overflowY: "auto", padding: "24px 16px" }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="glass-card" style={{ maxWidth: 900, width: "100%", padding: 24, paddingBottom: 90 }} onClick={(e) => e.stopPropagation()}>
+      <div className="glass-card" style={{ maxWidth: 720, width: "100%", padding: 24 }} onClick={(e) => e.stopPropagation()}>
         <div
           className="flex items-center justify-between mb-4 flex-wrap gap-2"
           style={{ position: "sticky", top: -24, margin: "-24px -24px 16px", padding: "24px 24px 12px", background: "var(--glass-bg)", backdropFilter: "blur(20px) saturate(160%)", zIndex: 1 }}
@@ -131,8 +131,28 @@ export default function BulkAddPicker({
 
         <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.45)", marginBottom: 12 }}>
           Cherche un Pokémon ou parcours par région, puis clique sur chaque sprite (shiny, costume, Gigamax, Dynamax...)
-          que tu veux ajouter — sans autre champ à remplir. Les fonds d&apos;événement s&apos;ajoutent ensuite au cas par cas via l&apos;édition.
+          que tu veux ajouter. Les fonds d&apos;événement s&apos;ajoutent ensuite au cas par cas via l&apos;édition.
         </p>
+
+        <div className="flex gap-2 items-center flex-wrap mb-3">
+          <label className="field-label" style={{ marginRight: 4 }}>CATÉGORIE</label>
+          {(Object.keys(CATEGORY_LABELS) as EntryCategory[]).map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCategory(c)}
+              style={{
+                padding: "6px 14px", borderRadius: 999, cursor: "pointer",
+                border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.78rem",
+                ...(category === c
+                  ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.4)", color: "#ffd700" }
+                  : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+              }}
+            >
+              {CATEGORY_LABELS[c]}
+            </button>
+          ))}
+        </div>
 
         <input
           type="text"
@@ -169,7 +189,7 @@ export default function BulkAddPicker({
             {searchResults ? "Aucun résultat." : "Choisis une région, ou cherche un Pokémon par nom."}
           </p>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 480, overflowY: "auto" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 420, overflowY: "auto", marginBottom: 16 }}>
             {speciesList.map((species) => (
               <SpeciesRow
                 key={species.id}
@@ -183,24 +203,10 @@ export default function BulkAddPicker({
           </div>
         )}
 
-        <div
-          className="flex items-center justify-between gap-3 flex-wrap"
-          style={{
-            position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 501,
-            background: "#141926", borderTop: "1px solid rgba(255,215,0,0.25)",
-            padding: "14px 24px",
-          }}
-        >
-          <div className="flex items-center gap-3 flex-wrap">
-            <span style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#ffd700", fontSize: "0.9rem" }}>
-              {staged.size} sélectionné{staged.size > 1 ? "s" : ""}
-            </span>
-            <select value={category} onChange={(e) => setCategory(e.target.value as EntryCategory)} className="glass-input" style={{ width: 180, padding: "6px 10px" }}>
-              {(Object.keys(CATEGORY_LABELS) as EntryCategory[]).map((c) => (
-                <option key={c} value={c}>{CATEGORY_LABELS[c]}</option>
-              ))}
-            </select>
-          </div>
+        <div className="flex items-center justify-between gap-3 flex-wrap" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 16 }}>
+          <span style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#ffd700", fontSize: "0.9rem" }}>
+            {staged.size} sélectionné{staged.size > 1 ? "s" : ""}
+          </span>
           <button
             type="button"
             onClick={handleSubmit}
@@ -239,18 +245,18 @@ function SpeciesRow({
         className="flex items-center gap-2"
         style={{ width: "100%", padding: "8px 12px", background: open ? "rgba(255,215,0,0.06)" : "transparent", border: "none", cursor: "pointer", textAlign: "left" }}
       >
-        <span style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", width: 40 }}>#{species.id}</span>
+        <span style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", width: 40, flexShrink: 0 }}>#{species.id}</span>
         <span style={{ flex: 1, color: "#e8edf5", fontSize: "0.85rem" }}>{species.frenchName}</span>
         {stagedCountForSpecies > 0 && (
-          <span style={{ fontSize: "0.7rem", color: "#ffd700", fontWeight: 700 }}>{stagedCountForSpecies} sélectionné{stagedCountForSpecies > 1 ? "s" : ""}</span>
+          <span style={{ fontSize: "0.7rem", color: "#ffd700", fontWeight: 700, flexShrink: 0 }}>{stagedCountForSpecies} sélectionné{stagedCountForSpecies > 1 ? "s" : ""}</span>
         )}
-        <span style={{ transform: open ? "rotate(90deg)" : "none", transition: "transform 0.15s", color: "rgba(232,237,245,0.4)" }}>▸</span>
+        <span style={{ transform: open ? "rotate(90deg)" : "none", transition: "transform 0.15s", color: "rgba(232,237,245,0.4)", flexShrink: 0 }}>▸</span>
       </button>
 
       {open && (
-        <div style={{ padding: 10, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(90px, 1fr))", gap: 8 }}>
+        <div style={{ padding: 10, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(84px, 1fr))", gap: 8 }}>
           {variants.length === 0 ? (
-            <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.35)" }}>Aucun sprite officiel connu pour ce Pokémon.</p>
+            <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.35)" }}>Aucun sprite officiel Pokémon GO connu pour ce Pokémon.</p>
           ) : (
             variants.map((variant) => {
               const isStaged = staged.has(variant.key);
