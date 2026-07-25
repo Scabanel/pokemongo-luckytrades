@@ -55,20 +55,27 @@ export default function DresseurPageClient({ id }: { id: string }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [allTrainers, setAllTrainers] = useState<Trainer[]>([]);
   const [editingEntry, setEditingEntry] = useState<PokemonEntry | null>(null);
+  // Toutes les entrées de tous les dresseurs (pas juste celles de cette
+  // page) : sert uniquement au bouton "Dispo chez N Dresseurs" sur les
+  // tuiles "want" (voir components/PokemonCard.tsx), pour savoir chez qui
+  // d'autre ce Pokémon est disponible.
+  const [allEntries, setAllEntries] = useState<PokemonEntry[]>([]);
 
   useEffect(() => {
     Promise.all([
       fetch(`/api/trainers/${id}`).then((r) => (r.ok ? r.json() : null)),
       fetch(`/api/entries?trainerId=${id}`).then((r) => r.json()),
       fetch("/api/auth/me").then((r) => (r.ok ? r.json() : null)),
+      fetch("/api/entries?completed=false").then((r) => r.json()),
     ])
-      .then(([trainerData, trainerEntries, me]) => {
+      .then(([trainerData, trainerEntries, me, everyEntries]) => {
         if (!trainerData) {
           setNotFound(true);
           return;
         }
         setTrainer(trainerData);
         setEntries(trainerEntries);
+        setAllEntries(everyEntries);
         if (me?.isAdmin) {
           setIsAdmin(true);
           fetch("/api/trainers")
@@ -351,6 +358,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
                 <PokemonCard
                   key={entry.id}
                   entry={entry}
+                  allEntries={allEntries}
                   showTrainerBadge={false}
                   style={{ animationDelay: `${i * 0.04}s` }}
                   canEdit={isAdmin}
