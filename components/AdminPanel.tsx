@@ -1096,8 +1096,17 @@ export function EntryForm(props: EntryFormProps) {
         return;
       }
       if (form.category === "want") {
+        // Un même numéro de Pokédex peut légitimement apparaître plusieurs
+        // fois (formes/costumes différents : Zarbi A/B/C..., Deoxys Attaque/
+        // Défense, Pikachu déguisé...) : le nom (variante) doit aussi
+        // correspondre pour que ce soit un vrai doublon, pas juste le même
+        // numéro national.
         const duplicate = existingEntries!.find(
-          (x) => x.category === "want" && x.pokemonId === form.pokemonId && !!x.shiny === form.shiny
+          (x) =>
+            x.category === "want" &&
+            x.pokemonId === form.pokemonId &&
+            !!x.shiny === form.shiny &&
+            x.pokemonName.trim().toLowerCase() === form.pokemonName.trim().toLowerCase()
         );
         if (duplicate) {
           toast.error(`${form.pokemonName}${form.shiny ? " ✨ Shiny" : ""} est déjà dans "Je recherche"`);
