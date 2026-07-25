@@ -270,7 +270,12 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
   };
 
   const sortEntries = (list: PokemonEntry[]) =>
-    [...list].sort((a, b) => a.pokemonId - b.pokemonId);
+    [...list].sort((a, b) => {
+      const pa = a.category === "want" ? (a.priority ?? 9999) : 9999;
+      const pb = b.category === "want" ? (b.priority ?? 9999) : 9999;
+      if (pa !== pb) return pa - pb;
+      return a.pokemonId - b.pokemonId;
+    });
 
   const wants = sortEntries(entries.filter((e) => e.category === "want"));
   const gives = sortEntries(entries.filter((e) => e.category === "give"));
