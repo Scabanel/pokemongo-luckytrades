@@ -47,7 +47,7 @@ export default function SiteNav({ active }: { active: string }) {
             textShadow: "0 0 12px rgba(255,215,0,0.35)",
           }}
         >
-          Échanges Pokémon Go Strasbourg!
+          Échanges Pokémon Strasbourg GO Events!
         </span>
       </a>
       <nav className="site-nav-links flex" style={{ marginLeft: "auto" }}>
