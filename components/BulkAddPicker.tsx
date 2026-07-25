@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import pokemonList from "@/data/pokemon.json";
 import { REGIONS, getRegionName } from "@/lib/regions";
 import { getSpriteVariants, type SpriteVariant } from "@/lib/spriteVariants";
-import { GO_ICON_CROP_STYLE } from "@/lib/spriteCrop";
 import type { EntryCategory } from "@/lib/types";
 
 interface PokeListEntry {
@@ -381,7 +380,7 @@ function SpeciesBlock({
                 alt={variant.label}
                 loading="lazy"
                 decoding="async"
-                style={{ width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated", ...GO_ICON_CROP_STYLE }}
+                style={{ width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated" }}
               />
               <VariantBadges variant={variant} />
             </button>

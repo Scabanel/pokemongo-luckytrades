@@ -14,7 +14,6 @@ import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { createClient } from "@/lib/supabase/client";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
 import BulkAddPicker from "./BulkAddPicker";
-import { isGoIconUrl, GO_ICON_CROP_STYLE } from "@/lib/spriteCrop";
 
 // La liste des dresseurs en admin inclut toujours le compte d'entrées
 // (contrairement à PokemonEntry.trainer ailleurs, qui n'en a pas besoin).
@@ -1977,10 +1976,7 @@ function SpritePicker({
             <img
               src={currentUrl}
               alt="sprite"
-              style={{
-                width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated",
-                ...(isGoIconUrl(currentUrl) ? GO_ICON_CROP_STYLE : {}),
-              }}
+              style={{ width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated" }}
             />
           </span>
         )}
@@ -2049,10 +2045,7 @@ function SpritePicker({
                       <img
                         src={url}
                         alt={label}
-                        style={{
-                          width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated",
-                          ...(isGoIconUrl(url) ? GO_ICON_CROP_STYLE : {}),
-                        }}
+                        style={{ width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated" }}
                         onError={(e) => {
                           // Hide the whole button when the image is broken
                           const btn = (e.currentTarget as HTMLImageElement).closest("button");
@@ -2180,7 +2173,7 @@ function CostumeGrid({
               <img
                 src={url}
                 alt={label}
-                style={{ width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated", ...GO_ICON_CROP_STYLE }}
+                style={{ width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated" }}
                 onError={(e) => {
                   const btn = (e.currentTarget as HTMLImageElement).closest("button");
                   if (btn) btn.style.display = "none";

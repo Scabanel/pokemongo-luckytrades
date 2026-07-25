@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 import goIcons from "@/data/go-icons.json";
-import { isGoIconUrl, GO_ICON_CROP_STYLE } from "@/lib/spriteCrop";
 
 const BASE = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon";
 const GO_ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
@@ -147,10 +146,7 @@ export default function PokemonSprite({
         height={size}
         loading="lazy"
         onError={handleError}
-        style={{
-          width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated",
-          ...(isGoIconUrl(src) ? GO_ICON_CROP_STYLE : {}),
-        }}
+        style={{ width: "100%", height: "100%", objectFit: "contain", imageRendering: "pixelated" }}
       />
     </span>
   );
