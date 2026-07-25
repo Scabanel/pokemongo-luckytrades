@@ -326,11 +326,11 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               key={tab}
               onClick={() => setActiveTab(tab)}
               style={{
-                padding: "7px 16px",
+                padding: "clamp(5px, 1.6vw, 7px) clamp(9px, 3vw, 16px)",
                 borderRadius: 10,
                 fontFamily: "Exo 2, sans-serif",
                 fontWeight: 600,
-                fontSize: "0.78rem",
+                fontSize: "clamp(0.66rem, 2.8vw, 0.78rem)",
                 cursor: "pointer",
                 border: "1px solid",
                 transition: "all 0.2s",
@@ -356,16 +356,16 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           ))}
         </div>
         <div className="flex gap-2 flex-wrap">
-          <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none", fontSize: "0.8rem", padding: "7px 14px" }}>
+          <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none", fontSize: "clamp(0.66rem, 2.8vw, 0.8rem)", padding: "clamp(5px, 1.6vw, 7px) clamp(9px, 3vw, 14px)" }}>
             Dresseurs
           </a>
-          <button onClick={() => setShowAddForm(true)} className="btn-primary" style={{ fontSize: "0.8rem", padding: "7px 14px" }}>
+          <button onClick={() => setShowAddForm(true)} className="btn-primary" style={{ fontSize: "clamp(0.66rem, 2.8vw, 0.8rem)", padding: "clamp(5px, 1.6vw, 7px) clamp(9px, 3vw, 14px)" }}>
             +Ajouter un Pokémon
           </button>
-          <button onClick={() => setShowBulkAdd(true)} className="btn-secondary" style={{ fontSize: "0.8rem", padding: "7px 14px" }}>
+          <button onClick={() => setShowBulkAdd(true)} className="btn-secondary" style={{ fontSize: "clamp(0.66rem, 2.8vw, 0.8rem)", padding: "clamp(5px, 1.6vw, 7px) clamp(9px, 3vw, 14px)" }}>
             Ajouter plusieurs Pokémon
           </button>
-          <button onClick={handleLogout} className="btn-danger" style={{ fontSize: "0.8rem", padding: "7px 14px" }}>
+          <button onClick={handleLogout} className="btn-danger" style={{ fontSize: "clamp(0.66rem, 2.8vw, 0.8rem)", padding: "clamp(5px, 1.6vw, 7px) clamp(9px, 3vw, 14px)" }}>
             Déconnexion
           </button>
         </div>
@@ -404,12 +404,12 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
-                  padding: "9px 20px",
+                  gap: 6,
+                  padding: "clamp(6px, 2vw, 9px) clamp(12px, 4vw, 20px)",
                   borderRadius: 6,
                   fontFamily: "Exo 2, sans-serif",
                   fontWeight: 800,
-                  fontSize: "0.82rem",
+                  fontSize: "clamp(0.68rem, 3vw, 0.82rem)",
                   letterSpacing: "0.05em",
                   textTransform: "uppercase",
                   cursor: "pointer",
