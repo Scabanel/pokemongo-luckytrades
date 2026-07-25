@@ -540,6 +540,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           >
             <EntrySection
               entries={listByCategory[activeCategory]}
+              allEntries={entries}
               loading={loadingEntries}
               showTrainerBadge={false}
               selectedIds={selectedIds}
@@ -793,11 +794,31 @@ function MyAccountPanel({
     }
   };
 
+  const handleShare = async () => {
+    await navigator.clipboard.writeText(`${window.location.origin}/dresseurs/${trainer.id}`);
+    toast.success("Lien copié ! Colle-le sur Discord.");
+  };
+  const handleCopyFriendCode = async () => {
+    if (!trainer.friendCode) return;
+    await navigator.clipboard.writeText(trainer.friendCode);
+    toast.success("Code ami copié !");
+  };
+
   return (
     <div className="glass-card p-6" style={{ maxWidth: 500 }}>
       <h2 style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#ffd700", marginBottom: 16 }}>
         Mon compte ({trainer.name})
       </h2>
+      <div className="flex items-center gap-2 flex-wrap" style={{ marginBottom: 16 }}>
+        <button type="button" onClick={handleShare} className="btn-secondary" style={{ fontSize: "0.75rem", padding: "6px 12px" }} title="Copier le lien de mon catalogue">
+          Partager mon catalogue
+        </button>
+        {trainer.friendCode && (
+          <button type="button" onClick={handleCopyFriendCode} className="btn-secondary" style={{ fontSize: "0.75rem", padding: "6px 12px" }}>
+            Copier mon code ami
+          </button>
+        )}
+      </div>
       <form onSubmit={handleSave} className="flex flex-col gap-4">
         <div>
           <label className="field-label">ÉQUIPE</label>
@@ -852,6 +873,7 @@ function MyAccountPanel({
 
 function EntrySection({
   entries,
+  allEntries,
   loading,
   showTrainerBadge,
   selectedIds,
@@ -864,6 +886,7 @@ function EntrySection({
   canEditEntry,
 }: {
   entries: PokemonEntry[];
+  allEntries: PokemonEntry[];
   loading: boolean;
   showTrainerBadge: boolean;
   selectedIds: Set<string>;
@@ -921,6 +944,7 @@ function EntrySection({
               <PokemonCard
                 key={entry.id}
                 entry={entry}
+                allEntries={allEntries}
                 showTrainerBadge={showTrainerBadge}
                 selectable={editable}
                 selected={selectedIds.has(entry.id)}
@@ -1245,7 +1269,7 @@ export function EntryForm(props: EntryFormProps) {
         </div>
       ) : (
         <div className="flex items-center gap-3 mb-5">
-          <PokemonSprite pokemonId={entry!.pokemonId} alt={entry!.pokemonName} size={48} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
+          <PokemonSprite pokemonId={entry!.pokemonId} alt={entry!.pokemonName} size={58} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
           <div>
             <h2
               style={{
@@ -1303,7 +1327,7 @@ export function EntryForm(props: EntryFormProps) {
             <label className="field-label">POKÉMON</label>
             <div className="flex gap-2 items-center mt-1">
               {form.pokemonId > 0 && (
-                <PokemonSprite pokemonId={form.pokemonId} alt={form.pokemonName} size={40} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
+                <PokemonSprite pokemonId={form.pokemonId} alt={form.pokemonName} size={48} shiny={form.shiny} customSpriteUrl={form.customSpriteUrl} />
               )}
               <div style={{ flex: 1, position: "relative" }}>
                 <input
@@ -1528,7 +1552,7 @@ export function EntryForm(props: EntryFormProps) {
                   <PokemonSprite
                     pokemonId={linkedEntry.pokemonId}
                     alt={linkedEntry.pokemonName}
-                    size={40}
+                    size={48}
                     shiny={linkedEntry.shiny === true}
                     customSpriteUrl={linkedEntry.customSpriteUrl}
                   />
@@ -1559,7 +1583,7 @@ export function EntryForm(props: EntryFormProps) {
               ) : (
                 <div className="flex gap-2 items-center mt-1">
                   {form.tradeForPokemonId > 0 && (
-                    <PokemonSprite pokemonId={form.tradeForPokemonId} alt={form.tradeForPokemonName} size={40} />
+                    <PokemonSprite pokemonId={form.tradeForPokemonId} alt={form.tradeForPokemonName} size={48} />
                   )}
                   <div style={{ flex: 1, position: "relative" }}>
                     <input
@@ -1615,7 +1639,7 @@ export function EntryForm(props: EntryFormProps) {
                                   <PokemonSprite
                                     pokemonId={le.pokemonId}
                                     alt={le.pokemonName}
-                                    size={28}
+                                    size={34}
                                     shiny={le.shiny === true}
                                     customSpriteUrl={le.customSpriteUrl}
                                   />
@@ -2027,7 +2051,7 @@ function SpritePicker({
             {fetching ? (
               <div style={{ textAlign: "center", padding: 32, color: "rgba(232,237,245,0.4)" }}>Chargement…</div>
             ) : visibleSprites.length > 0 ? (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: 8, marginBottom: 20 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(136px, 1fr))", gap: 8, marginBottom: 20 }}>
                 {visibleSprites.map(({ url, label }) => (
                   <button
                     key={url}
@@ -2040,7 +2064,7 @@ function SpritePicker({
                       display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
                     }}
                   >
-                    <span style={{ display: "block", width: 80, height: 80, overflow: "hidden" }}>
+                    <span style={{ display: "block", width: 96, height: 96, overflow: "hidden" }}>
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={url}
@@ -2155,7 +2179,7 @@ function CostumeGrid({
           style={{ marginBottom: 8, fontSize: "0.8rem" }}
         />
       )}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", gap: 6 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(116px, 1fr))", gap: 6 }}>
         {filtered.map(({ url, label }) => (
           <button
             key={url}
@@ -2168,7 +2192,7 @@ function CostumeGrid({
               display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
             }}
           >
-            <span style={{ display: "block", width: 72, height: 72, overflow: "hidden" }}>
+            <span style={{ display: "block", width: 86, height: 86, overflow: "hidden" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={url}
