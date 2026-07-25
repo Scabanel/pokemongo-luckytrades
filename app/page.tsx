@@ -14,8 +14,8 @@ const FEATURES = [
     text: "Consulte librement ce que chaque dresseur inscrit recherche ou propose, sans même avoir de compte.",
   },
   {
-    title: "Organisez vos échanges",
-    text: "Repérez une correspondance, contactez-vous en jeu, et marquez l'échange comme conclu une fois fait.",
+    title: "Organise tes échanges",
+    text: "Repère une correspondance, contacte la personne en jeu, et marque l'échange comme conclu une fois fait.",
   },
 ];
 
@@ -59,7 +59,7 @@ export default function LandingPage() {
               animation: "title-float 4s ease-in-out infinite",
             }}
           >
-            Organisez vos échanges chanceux
+            Organise tes échanges chanceux
           </h1>
         </div>
 
