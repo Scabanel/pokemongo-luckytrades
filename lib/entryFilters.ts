@@ -1,10 +1,16 @@
 import type { PokemonEntry } from "./types";
 import { parseTags } from "./tags";
+import legendarySpecies from "@/data/legendary-species.json";
+
+// Légendaires/Mythiques/Ultra-Chimères : liste de dex ID validée (source :
+// catalogue pokexperience.com, champ "legend", déjà utilisé pour distinguer
+// ces espèces ailleurs dans le projet — voir docs/research-fond-backgrounds.md).
+const LEGENDARY_SPECIES = new Set(legendarySpecies as number[]);
 
 // Partagé entre la page publique d'un dresseur (DresseurPageClient) et son
 // propre espace (AdminPanel), pour que la recherche/les filtres se comportent
 // pareil partout où on regarde une liste d'échanges.
-export type EntryFilters = { shiny: boolean; fond: boolean; gigamax: boolean; dynamax: boolean; costume: boolean };
+export type EntryFilters = { shiny: boolean; fond: boolean; gigamax: boolean; dynamax: boolean; costume: boolean; legendaire: boolean };
 
 export const EMPTY_ENTRY_FILTERS: EntryFilters = {
   shiny: false,
@@ -12,6 +18,7 @@ export const EMPTY_ENTRY_FILTERS: EntryFilters = {
   gigamax: false,
   dynamax: false,
   costume: false,
+  legendaire: false,
 };
 
 export const ENTRY_FILTER_CHIPS: { key: keyof EntryFilters; label: string }[] = [
@@ -20,6 +27,7 @@ export const ENTRY_FILTER_CHIPS: { key: keyof EntryFilters; label: string }[] = 
   { key: "gigamax", label: "Gigamax" },
   { key: "dynamax", label: "Dynamax" },
   { key: "costume", label: "Costume" },
+  { key: "legendaire", label: "Légendaire" },
 ];
 
 // Même heuristique que components/PokemonCard.tsx pour rester cohérent avec
@@ -36,11 +44,13 @@ export function matchesEntryFilters(entry: PokemonEntry, search: string, filters
   const isCostume = !isGigamax && !isDynamax && name.trim().includes(" ");
   const isShiny = entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false);
   const hasFond = !!entry.backgroundUrl;
+  const isLegendary = LEGENDARY_SPECIES.has(entry.pokemonId);
 
   if (filters.shiny && !isShiny) return false;
   if (filters.fond && !hasFond) return false;
   if (filters.gigamax && !isGigamax) return false;
   if (filters.dynamax && !isDynamax) return false;
   if (filters.costume && !isCostume) return false;
+  if (filters.legendaire && !isLegendary) return false;
   return true;
 }

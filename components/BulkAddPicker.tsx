@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import pokemonList from "@/data/pokemon.json";
+import legendarySpecies from "@/data/legendary-species.json";
 import { REGIONS, getRegionName } from "@/lib/regions";
 import { getSpriteVariants, type SpriteVariant } from "@/lib/spriteVariants";
 import type { EntryCategory } from "@/lib/types";
@@ -14,6 +15,12 @@ interface PokeListEntry {
 }
 
 const POKE_LIST = pokemonList as PokeListEntry[];
+// Légendaires/Mythiques/Ultra-Chimères : liste de dex ID validée (voir
+// lib/entryFilters.ts, même source). Propriété de l'espèce entière, pas
+// d'une variante précise : contrairement à Shiny/Costume/Dynamax/Gigamax
+// ci-dessous, ce filtre restreint la liste des espèces affichées plutôt que
+// de filtrer les sprites d'une espèce déjà affichée.
+const LEGENDARY_SPECIES = new Set(legendarySpecies as number[]);
 
 interface StagedItem {
   key: string;
@@ -65,6 +72,7 @@ export default function BulkAddPicker({
   const [category, setCategory] = useState<EntryCategory>(defaultCategory);
   const [submitting, setSubmitting] = useState(false);
   const [filters, setFilters] = useState<Set<VariantFilter>>(new Set());
+  const [legendaryOnly, setLegendaryOnly] = useState(false);
   // Toutes les variantes de tous les Pokémon de la région/recherche sont
   // affichées d'un coup (comme un grand tableau de sprites, génération par
   // génération) plutôt que de devoir cliquer sur chaque Pokémon un par un :
@@ -152,13 +160,16 @@ export default function BulkAddPicker({
 
   // Quand un filtre est actif, on ne garde que les Pokémon ayant au moins une
   // variante qui correspond : sinon la liste afficherait des tuiles vides.
+  // Légendaire restreint d'abord la liste d'espèces (propriété de l'espèce),
+  // puis les filtres de variante s'appliquent comme d'habitude par-dessus.
   const speciesList = useMemo(() => {
-    const base = searchResults ?? speciesByRegion.get(openRegion ?? "") ?? [];
+    let base = searchResults ?? speciesByRegion.get(openRegion ?? "") ?? [];
+    if (legendaryOnly) base = base.filter((species) => LEGENDARY_SPECIES.has(species.id));
     if (filters.size === 0) return base;
     return base.filter((species) =>
       getSpriteVariants(species.id).some((v) => matchesFilters(v, filters))
     );
-  }, [searchResults, speciesByRegion, openRegion, filters]);
+  }, [searchResults, speciesByRegion, openRegion, filters, legendaryOnly]);
 
   return (
     <div
@@ -253,6 +264,19 @@ export default function BulkAddPicker({
               {FILTER_LABELS[f]}
             </button>
           ))}
+          <button
+            type="button"
+            onClick={() => { setLegendaryOnly((v) => !v); setVisibleCount(50); }}
+            style={{
+              padding: "6px 14px", borderRadius: 999, cursor: "pointer",
+              border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.78rem",
+              ...(legendaryOnly
+                ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.4)", color: "#ffd700" }
+                : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+            }}
+          >
+            Légendaire
+          </button>
         </div>
 
         {speciesList.length === 0 ? (
