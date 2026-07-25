@@ -59,8 +59,19 @@ function humanizeCode(code) {
     .join(" ");
 }
 
+// "GOWA" (Go Wild Area) est le nom interne PokeMiners de l'événement connu
+// dans la communauté FR sous le nom "Terres Sauvages" : l'humanisation
+// générique donnerait "Gowa ..." (peu clair), ces libellés remplacent le nom
+// une fois la casse/suffixe normalisés (voir stripped ci-dessous).
+const BACKGROUND_LABEL_OVERRIDES = {
+  "gowa2025_global": "Terres Sauvages 2025",
+  "gowa_fukuoka": "Terres Sauvages 2024",
+};
+
 function humanizeBackgroundFilename(filename) {
   const stripped = filename.replace(/\.png$/i, "").replace(/^(sb_|lc_)/, "");
+  const override = BACKGROUND_LABEL_OVERRIDES[stripped.toLowerCase()];
+  if (override) return override;
   const spaced = stripped
     .replace(/([a-z0-9])([A-Z])/g, "$1 $2") // camelCase
     .replace(/([a-zA-Z])(\d)/g, "$1 $2")     // lettre → chiffre
