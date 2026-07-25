@@ -22,7 +22,7 @@ export async function PATCH(
   }
 
   const body = await request.json();
-  const { trainerId, tradeForPokemonName, tradeForPokemonId, tradePartnerName, notes, completed, category, shiny, customSpriteUrl, backgroundUrl, priority, tags, quantity } =
+  const { trainerId, tradeForPokemonName, tradeForPokemonId, tradePartnerName, notes, completed, category, shiny, gender, customSpriteUrl, backgroundUrl, priority, tags, quantity } =
     body;
   // Réassigné si on réserve 1 exemplaire d'un stock (voir plus bas) : l'id
   // effectivement lié à cette entrée devient alors la fiche dédiée créée
@@ -142,6 +142,7 @@ export async function PATCH(
           ...(completed !== undefined && { completed }),
           ...(category !== undefined && { category }),
           ...(shiny !== undefined && { shiny: shiny === true }),
+          ...(gender !== undefined && { gender: gender === "male" || gender === "female" ? gender : null }),
           ...(customSpriteUrl !== undefined && { customSpriteUrl: customSpriteUrl || null }),
           ...(backgroundUrl !== undefined && { backgroundUrl: backgroundUrl || null }),
           ...(priority !== undefined && { priority: priority != null ? Number(priority) : null }),

@@ -1090,6 +1090,7 @@ export function EntryForm(props: EntryFormProps) {
           linkedEntryId: entry.linkedEntryId ?? (null as string | null),
           notes: entry.notes ?? "",
           shiny: entry.shiny ?? false,
+          gender: entry.gender ?? (null as string | null),
           customSpriteUrl: entry.customSpriteUrl ?? (null as string | null),
           backgroundUrl: entry.backgroundUrl ?? (null as string | null),
           priority: entry.priority ?? (null as number | null),
@@ -1113,6 +1114,7 @@ export function EntryForm(props: EntryFormProps) {
           linkedEntryId: null as string | null,
           notes: "",
           shiny: false,
+          gender: null as string | null,
           customSpriteUrl: null as string | null,
           backgroundUrl: null as string | null,
           priority: null as number | null,
@@ -1227,6 +1229,7 @@ export function EntryForm(props: EntryFormProps) {
         pokemonId: form.pokemonId,
         category: form.category,
         shiny: form.shiny,
+        gender: form.gender,
         customSpriteUrl: form.customSpriteUrl,
         backgroundUrl: form.backgroundUrl,
         trainerId: form.trainerId || null,
@@ -1270,6 +1273,7 @@ export function EntryForm(props: EntryFormProps) {
           linkedEntryId: null,
           notes: "",
           shiny: false,
+          gender: null,
           customSpriteUrl: null,
           backgroundUrl: null,
           priority: null,
@@ -1515,6 +1519,38 @@ export function EntryForm(props: EntryFormProps) {
           >
             ✨ {form.shiny ? "Shiny activé" : "Pas shiny"}
           </button>
+        </div>
+
+        {/* Genre : utile pour les quelques espèces à sprite différent selon
+            le genre (Pyroar, Frillish, Indeedee...). Non obligatoire, la
+            plupart des espèces n'en ont pas besoin. */}
+        <div>
+          <label className="field-label">GENRE (optionnel)</label>
+          <div className="flex gap-2 mt-1">
+            {([
+              { key: "male", label: "♂ Mâle", color: "#4ea8ff" },
+              { key: "female", label: "♀ Femelle", color: "#ff5d9e" },
+            ] as const).map(({ key, label, color }) => {
+              const active = form.gender === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setForm((f) => ({ ...f, gender: f.gender === key ? null : key }))}
+                  style={{
+                    padding: "8px 16px", borderRadius: 10, cursor: "pointer",
+                    border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem",
+                    transition: "all 0.2s",
+                    ...(active
+                      ? { background: `${color}26`, borderColor: `${color}80`, color }
+                      : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Tags : liste fermée (voir SELECTABLE_TAGS), à côté de SHINY pour

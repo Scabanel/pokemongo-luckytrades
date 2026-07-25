@@ -34,6 +34,7 @@ export interface PokemonEntry {
   linkedEntryId?: string | null;
   notes?: string | null;
   shiny?: boolean;
+  gender?: string | null;
   customSpriteUrl?: string | null;
   backgroundUrl?: string | null;
   priority?: number | null;

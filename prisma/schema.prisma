@@ -79,6 +79,9 @@ model PokemonEntry {
   // formelle (juste un id texte) pour rester simple sur un self-relation.
   linkedEntryId       String?
   notes               String?
+  // "male" | "female" | null (non précisé/asexué) : utile pour les quelques
+  // espèces à sprite différent selon le genre (Pyroar, Frillish, Indeedee...).
+  gender              String?
   shiny               Boolean  @default(false)
   customSpriteUrl     String?
   backgroundUrl       String?

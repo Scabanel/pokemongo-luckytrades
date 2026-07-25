@@ -62,6 +62,29 @@ function formVariantKey(customSpriteUrl: string | null | undefined, rawTags: str
   return `${customSpriteUrl || ""}|${relevantTags}`;
 }
 
+// Badge ♂/♀ en haut à gauche du sprite : bleu/rouge classique des jeux
+// Pokémon, pour distinguer les quelques espèces à sprite différent selon
+// le genre (Pyroar, Frillish, Indeedee...).
+function GenderBadge({ gender, size = 20 }: { gender: string | null | undefined; size?: number }) {
+  if (gender !== "male" && gender !== "female") return null;
+  const isMale = gender === "male";
+  return (
+    <span
+      className="absolute"
+      style={{
+        top: 2, left: 2, zIndex: 1,
+        width: size, height: size, borderRadius: "50%",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        background: isMale ? "#3b82f6" : "#ff2d78",
+        color: "#fff", fontWeight: 800, fontSize: size * 0.65,
+        boxShadow: "0 2px 6px rgba(0,0,0,0.4)",
+      }}
+    >
+      {isMale ? "♂" : "♀"}
+    </span>
+  );
+}
+
 function getEventTheme(name: string, tags: string[]): {
   borderColor: string; boxShadow: string; glow: string;
 } | null {
@@ -425,6 +448,7 @@ export default function PokemonCard({
             className="absolute inset-0 rounded-full blur-2xl opacity-30"
             style={{ background: eventTheme?.glow ?? categoryGlow }}
           />
+          <GenderBadge gender={entry.gender} size={28} />
           <PokemonSprite
             pokemonId={entry.pokemonId}
             alt={entry.pokemonName}
@@ -731,6 +755,7 @@ export default function PokemonCard({
               undefined
             }}
           />
+          <GenderBadge gender={entry.gender} size={20} />
           <PokemonSprite
             pokemonId={entry.pokemonId}
             alt={entry.pokemonName}
