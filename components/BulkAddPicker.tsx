@@ -43,10 +43,16 @@ export default function BulkAddPicker({
 }) {
   const [search, setSearch] = useState("");
   const [openRegion, setOpenRegion] = useState<string | null>(null);
-  const [openSpeciesId, setOpenSpeciesId] = useState<number | null>(null);
   const [staged, setStaged] = useState<Map<string, StagedItem>>(new Map());
   const [category, setCategory] = useState<EntryCategory>(defaultCategory);
   const [submitting, setSubmitting] = useState(false);
+  // Toutes les variantes de tous les Pokémon de la région/recherche sont
+  // affichées d'un coup (comme un grand tableau de sprites, génération par
+  // génération) plutôt que de devoir cliquer sur chaque Pokémon un par un :
+  // reste gérable via le lot de 50 Pokémon à la fois ci-dessous (images en
+  // chargement paresseux, donc le coût réel dépend de ce qui est visible à
+  // l'écran, pas du nombre total de tuiles dans le DOM).
+  const [visibleCount, setVisibleCount] = useState(20);
 
   const searchTrimmed = search.trim().toLowerCase();
   const searchResults = searchTrimmed.length >= 2
@@ -158,7 +164,7 @@ export default function BulkAddPicker({
         <input
           type="text"
           value={search}
-          onChange={(e) => { setSearch(e.target.value); setOpenSpeciesId(null); }}
+          onChange={(e) => { setSearch(e.target.value); setVisibleCount(50); }}
           className="glass-input"
           placeholder="Chercher un Pokémon..."
           style={{ marginBottom: 12 }}
@@ -170,7 +176,7 @@ export default function BulkAddPicker({
               <button
                 key={r.name}
                 type="button"
-                onClick={() => { setOpenRegion(openRegion === r.name ? null : r.name); setOpenSpeciesId(null); }}
+                onClick={() => { setOpenRegion(openRegion === r.name ? null : r.name); setVisibleCount(50); }}
                 style={{
                   padding: "6px 14px", borderRadius: 999, cursor: "pointer",
                   border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.78rem",
@@ -190,18 +196,28 @@ export default function BulkAddPicker({
             {searchResults ? "Aucun résultat." : "Choisis une région, ou cherche un Pokémon par nom."}
           </p>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 420, overflowY: "auto", marginBottom: 16 }}>
-            {speciesList.map((species) => (
-              <SpeciesRow
-                key={species.id}
-                species={species}
-                open={openSpeciesId === species.id}
-                onToggle={() => setOpenSpeciesId(openSpeciesId === species.id ? null : species.id)}
-                staged={staged}
-                onToggleVariant={(variant) => toggleVariant(species, variant)}
-              />
-            ))}
-          </div>
+          <>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, maxHeight: 480, overflowY: "auto", marginBottom: 12, padding: "2px 4px" }}>
+              {speciesList.slice(0, visibleCount).map((species) => (
+                <SpeciesBlock
+                  key={species.id}
+                  species={species}
+                  staged={staged}
+                  onToggleVariant={(variant) => toggleVariant(species, variant)}
+                />
+              ))}
+            </div>
+            {speciesList.length > visibleCount && (
+              <button
+                type="button"
+                onClick={() => setVisibleCount((v) => v + 50)}
+                className="btn-secondary"
+                style={{ marginBottom: 16, fontSize: "0.8rem" }}
+              >
+                Afficher plus ({speciesList.length - visibleCount} restants)
+              </button>
+            )}
+          </>
         )}
 
         <div className="flex items-center justify-between gap-3 flex-wrap" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 16 }}>
@@ -222,66 +238,56 @@ export default function BulkAddPicker({
   );
 }
 
-function SpeciesRow({
+function SpeciesBlock({
   species,
-  open,
-  onToggle,
   staged,
   onToggleVariant,
 }: {
   species: PokeListEntry;
-  open: boolean;
-  onToggle: () => void;
   staged: Map<string, StagedItem>;
   onToggleVariant: (variant: SpriteVariant) => void;
 }) {
-  const variants = open ? getSpriteVariants(species.id) : [];
+  const variants = getSpriteVariants(species.id);
   const stagedCountForSpecies = Array.from(staged.values()).filter((s) => s.pokemonId === species.id).length;
 
   return (
-    <div style={{ border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, overflow: "hidden" }}>
-      <button
-        type="button"
-        onClick={onToggle}
-        className="flex items-center gap-2"
-        style={{ width: "100%", padding: "8px 12px", background: open ? "rgba(255,215,0,0.06)" : "transparent", border: "none", cursor: "pointer", textAlign: "left" }}
-      >
-        <span style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", width: 40, flexShrink: 0 }}>#{species.id}</span>
-        <span style={{ flex: 1, color: "#e8edf5", fontSize: "0.85rem" }}>{species.frenchName}</span>
+    <div>
+      <div className="flex items-center gap-2" style={{ marginBottom: 6 }}>
+        <span style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)" }}>#{species.id}</span>
+        <span style={{ color: "#e8edf5", fontSize: "0.85rem", fontWeight: 600 }}>{species.frenchName}</span>
         {stagedCountForSpecies > 0 && (
-          <span style={{ fontSize: "0.7rem", color: "#ffd700", fontWeight: 700, flexShrink: 0 }}>{stagedCountForSpecies} sélectionné{stagedCountForSpecies > 1 ? "s" : ""}</span>
+          <span style={{ fontSize: "0.7rem", color: "#ffd700", fontWeight: 700 }}>
+            {stagedCountForSpecies} sélectionné{stagedCountForSpecies > 1 ? "s" : ""}
+          </span>
         )}
-        <span style={{ transform: open ? "rotate(90deg)" : "none", transition: "transform 0.15s", color: "rgba(232,237,245,0.4)", flexShrink: 0 }}>▸</span>
-      </button>
+      </div>
 
-      {open && (
-        <div style={{ padding: 10, display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(84px, 1fr))", gap: 8 }}>
-          {variants.length === 0 ? (
-            <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.35)" }}>Aucun sprite officiel Pokémon GO connu pour ce Pokémon.</p>
-          ) : (
-            variants.map((variant) => {
-              const isStaged = staged.has(variant.key);
-              return (
-                <button
-                  key={variant.key}
-                  type="button"
-                  onClick={() => onToggleVariant(variant)}
-                  style={{
-                    display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
-                    padding: 6, borderRadius: 8, cursor: "pointer",
-                    background: isStaged ? "rgba(255,215,0,0.18)" : "rgba(255,255,255,0.04)",
-                    border: `1px solid ${isStaged ? "rgba(255,215,0,0.5)" : "rgba(255,255,255,0.08)"}`,
-                  }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={variant.url} alt={variant.label} width={48} height={48} style={{ objectFit: "contain", imageRendering: "pixelated" }} />
-                  <span style={{ fontSize: "0.6rem", color: "rgba(232,237,245,0.6)", textAlign: "center", lineHeight: 1.2 }}>
-                    {variant.label}
-                  </span>
-                </button>
-              );
-            })
-          )}
+      {variants.length === 0 ? (
+        <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.3)" }}>Pas encore sorti dans Pokémon GO.</p>
+      ) : (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))", gap: 6 }}>
+          {variants.map((variant) => {
+            const isStaged = staged.has(variant.key);
+            return (
+              <button
+                key={variant.key}
+                type="button"
+                onClick={() => onToggleVariant(variant)}
+                style={{
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+                  padding: 6, borderRadius: 8, cursor: "pointer",
+                  background: isStaged ? "rgba(255,215,0,0.18)" : "rgba(255,255,255,0.04)",
+                  border: `1px solid ${isStaged ? "rgba(255,215,0,0.5)" : "rgba(255,255,255,0.08)"}`,
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={variant.url} alt={variant.label} width={44} height={44} loading="lazy" decoding="async" style={{ objectFit: "contain", imageRendering: "pixelated" }} />
+                <span style={{ fontSize: "0.58rem", color: "rgba(232,237,245,0.6)", textAlign: "center", lineHeight: 1.2 }}>
+                  {variant.label}
+                </span>
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
