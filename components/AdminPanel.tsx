@@ -14,6 +14,7 @@ import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { createClient } from "@/lib/supabase/client";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
 import BulkAddPicker from "./BulkAddPicker";
+import { detectCostumeGender } from "@/lib/spriteVariants";
 
 // La liste des dresseurs en admin inclut toujours le compte d'entrées
 // (contrairement à PokemonEntry.trainer ailleurs, qui n'en a pas besoin).
@@ -2243,6 +2244,7 @@ function CostumeGrid({
   onSelect: (url: string) => void;
 }) {
   const [search, setSearch] = useState("");
+  const allLabels = costumes.map((c) => c.label);
   const filtered = search.trim()
     ? costumes.filter((c) => c.label.toLowerCase().includes(search.trim().toLowerCase()))
     : costumes;
@@ -2268,18 +2270,36 @@ function CostumeGrid({
         />
       )}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(96px, 26vw, 150px), 1fr))", gap: 8 }}>
-        {filtered.map(({ url, label }) => (
+        {filtered.map(({ url, label }) => {
+          const gender = detectCostumeGender(label, allLabels);
+          return (
           <button
             key={url}
             type="button"
             onClick={() => onSelect(url)}
             style={{
+              position: "relative",
               background: currentUrl === url ? "rgba(255,153,0,0.2)" : "rgba(255,255,255,0.03)",
               border: `1px solid ${currentUrl === url ? "rgba(255,153,0,0.5)" : "rgba(255,255,255,0.07)"}`,
               borderRadius: 10, padding: 8, cursor: "pointer",
               display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
             }}
           >
+            {gender && (
+              <span
+                title={gender === "male" ? "Mâle" : "Femelle"}
+                style={{
+                  position: "absolute", top: 4, left: 4, zIndex: 1,
+                  width: 18, height: 18, borderRadius: "50%",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  background: gender === "male" ? "#3b82f6" : "#ff2d78",
+                  color: "#fff", fontWeight: 800, fontSize: "0.65rem",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.5)",
+                }}
+              >
+                {gender === "male" ? "♂" : "♀"}
+              </span>
+            )}
             <span style={{ display: "block", width: 130, height: 130, overflow: "hidden" }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -2296,7 +2316,8 @@ function CostumeGrid({
               {label}
             </span>
           </button>
-        ))}
+          );
+        })}
         {filtered.length === 0 && (
           <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.35)", gridColumn: "1 / -1" }}>
             Aucun costume ne correspond à « {search} ».

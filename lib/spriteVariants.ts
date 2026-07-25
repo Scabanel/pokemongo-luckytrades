@@ -26,6 +26,26 @@ export interface SpriteVariant {
   url: string;
   shiny: boolean;
   tags: string[];
+  gender: "male" | "female" | null;
+}
+
+// Un costume "X (2)" est systématiquement le pendant féminin de "X" (vérifié
+// exhaustivement : le suffixe "(2)" dans data/costumes.json correspond
+// exactement, sans exception, au marqueur ".g2." dans l'URL du fichier
+// PokeMiners — "gender 2"). Si "X" seul existe sans "X (2)", l'apparence est
+// unique/asexuée : pas de badge dans ce cas.
+export function detectCostumeGender(label: string, allLabels: string[]): "male" | "female" | null {
+  // Le "(2)" se place AVANT le "✨" final ("Anniversary (2) ✨", pas
+  // "Anniversary ✨ (2)") : il faut retirer/rajouter le sparkle à part pour
+  // comparer le bon pendant, sinon les shiny ne se pairent jamais.
+  const isShinyLabel = label.endsWith(" ✨");
+  const core = isShinyLabel ? label.slice(0, -2) : label;
+  const isSecond = core.includes(" (2)");
+  const baseCore = core.replace(" (2)", "");
+  const pairCore = isSecond ? baseCore : `${baseCore} (2)`;
+  const pairLabel = isShinyLabel ? `${pairCore} ✨` : pairCore;
+  if (!allLabels.includes(pairLabel)) return null;
+  return isSecond ? "female" : "male";
 }
 
 // Toutes les variantes visuelles sélectionnables d'un Pokémon pour le picker
@@ -39,6 +59,7 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
   // Les Méga-Évolutions ne servent à rien dans cette appli (pas de mécanique
   // Méga dans les échanges/recherches Pokémon GO) : on les exclut du picker.
   const costumes = (COSTUME_CATALOG[String(pokemonId)] ?? []).filter((c) => !c.label.startsWith("Mega"));
+  const allLabels = costumes.map((c) => c.label);
   const variants: SpriteVariant[] = costumes.map((c) => ({
     key: c.url,
     label: c.label,
@@ -49,6 +70,7 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
       : REGIONAL_FORM_PREFIX.test(c.label)
         ? ["forme-regionale"]
         : ["costume"],
+    gender: detectCostumeGender(c.label, allLabels),
   }));
 
   // costumes.json ne couvre que les espèces ayant déjà eu un costume/une
@@ -58,10 +80,10 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
   if (!costumes.some((c) => c.label.startsWith("Officiel Pokémon GO"))) {
     const files = GO_ICONS[String(pokemonId)];
     if (files?.[0]) {
-      variants.unshift({ key: `base-${files[0]}`, label: "Officiel Pokémon GO", url: `${ICON_BASE}/${encodeURIComponent(files[0])}`, shiny: false, tags: [] });
+      variants.unshift({ key: `base-${files[0]}`, label: "Officiel Pokémon GO", url: `${ICON_BASE}/${encodeURIComponent(files[0])}`, shiny: false, tags: [], gender: null });
     }
     if (files?.[1]) {
-      variants.unshift({ key: `base-${files[1]}`, label: "Officiel Pokémon GO ✨", url: `${ICON_BASE}/${encodeURIComponent(files[1])}`, shiny: true, tags: [] });
+      variants.unshift({ key: `base-${files[1]}`, label: "Officiel Pokémon GO ✨", url: `${ICON_BASE}/${encodeURIComponent(files[1])}`, shiny: true, tags: [], gender: null });
     }
   }
 
@@ -75,6 +97,7 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
         url: `${ICON_BASE}/${encodeURIComponent(normal)}`,
         shiny: false,
         tags: ["gigamax"],
+        gender: null,
       });
     }
     if (shiny) {
@@ -84,6 +107,7 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
         url: `${ICON_BASE}/${encodeURIComponent(shiny)}`,
         shiny: true,
         tags: ["gigamax"],
+        gender: null,
       });
     }
   }
@@ -92,10 +116,10 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
     const base = variants.find((v) => v.label === "Officiel Pokémon GO");
     const baseShiny = variants.find((v) => v.label === "Officiel Pokémon GO ✨");
     if (base) {
-      variants.push({ key: `dynamax-${base.url}`, label: "Dynamax", url: base.url, shiny: false, tags: ["dynamax"] });
+      variants.push({ key: `dynamax-${base.url}`, label: "Dynamax", url: base.url, shiny: false, tags: ["dynamax"], gender: null });
     }
     if (baseShiny) {
-      variants.push({ key: `dynamax-${baseShiny.url}`, label: "Dynamax ✨", url: baseShiny.url, shiny: true, tags: ["dynamax"] });
+      variants.push({ key: `dynamax-${baseShiny.url}`, label: "Dynamax ✨", url: baseShiny.url, shiny: true, tags: ["dynamax"], gender: null });
     }
   }
 

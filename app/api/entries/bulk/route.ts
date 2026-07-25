@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
       category,
       trainerId: effectiveTrainerId,
       shiny: it.shiny === true,
+      gender: it.gender === "male" || it.gender === "female" ? it.gender : null,
       customSpriteUrl: typeof it.customSpriteUrl === "string" ? it.customSpriteUrl : null,
       tags: Array.isArray(it.tags) && it.tags.length > 0 ? JSON.stringify(it.tags) : null,
     })),

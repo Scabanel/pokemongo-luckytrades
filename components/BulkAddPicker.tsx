@@ -29,6 +29,7 @@ interface StagedItem {
   shiny: boolean;
   customSpriteUrl: string;
   tags: string[];
+  gender: "male" | "female" | null;
 }
 
 const CATEGORY_LABELS: Record<EntryCategory, string> = {
@@ -119,16 +120,19 @@ export default function BulkAddPicker({
             ? `${species.frenchName} ${variant.label}`
             : species.frenchName,
           shiny: variant.shiny,
-          // Costumes événementiels ET formes régionales (Alola/Galar/Hisui/
-          // Paldea) ont un visuel qu'on ne peut pas reconstruire autrement
-          // (aucun tag/pokemonId n'y suffit) : on fixe alors le sprite exact.
-          // Pour la base/Dynamax/Gigamax, PokemonCard retrouve déjà le bon
-          // visuel à partir des tags + pokemonId + shiny (voir
+          // Costumes événementiels, formes régionales (Alola/Galar/Hisui/
+          // Paldea) ET variantes de genre (le "g2"/"(2)" de PokeMiners, ex :
+          // Pikachu femelle a une queue différente même sans costume) ont un
+          // visuel qu'on ne peut pas reconstruire autrement (aucun
+          // tag/pokemonId n'y suffit) : on fixe alors le sprite exact. Pour
+          // la base/Dynamax/Gigamax sans genre, PokemonCard retrouve déjà le
+          // bon visuel à partir des tags + pokemonId + shiny (voir
           // components/PokemonCard.tsx) — figer customSpriteUrl ici
           // empêcherait à tort la préférence de style (statique/animé) du
           // dresseur de jamais s'appliquer à ces entrées.
-          customSpriteUrl: (variant.tags.includes("costume") || variant.tags.includes("forme-regionale")) ? variant.url : "",
+          customSpriteUrl: (variant.tags.includes("costume") || variant.tags.includes("forme-regionale") || variant.gender) ? variant.url : "",
           tags: variant.tags,
+          gender: variant.gender,
         });
       }
       return next;
@@ -335,6 +339,21 @@ export default function BulkAddPicker({
 function VariantBadges({ variant }: { variant: SpriteVariant }) {
   return (
     <>
+      {variant.gender && (
+        <span
+          title={variant.gender === "male" ? "Mâle" : "Femelle"}
+          style={{
+            position: "absolute", top: 2, left: 2,
+            width: 16, height: 16, borderRadius: "50%",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: variant.gender === "male" ? "#3b82f6" : "#ff2d78",
+            color: "#fff", fontWeight: 800, fontSize: "0.6rem",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.5)",
+          }}
+        >
+          {variant.gender === "male" ? "♂" : "♀"}
+        </span>
+      )}
       {variant.shiny && (
         <span
           title="Shiny"
