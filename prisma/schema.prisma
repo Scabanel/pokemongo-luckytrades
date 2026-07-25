@@ -58,6 +58,11 @@ model PokemonEntry {
   tradeForPokemonName String?
   tradeForPokemonId   Int?
   tradePartnerName    String?
+  // Lien vers l'autre entrée (à soi, catégorie opposée want/give) qui
+  // représente le même échange concret : voir Item 7 du plan, synchronisé
+  // dans les deux sens par les routes POST/PATCH, pas de relation Prisma
+  // formelle (juste un id texte) pour rester simple sur un self-relation.
+  linkedEntryId       String?
   notes               String?
   shiny               Boolean  @default(false)
   customSpriteUrl     String?

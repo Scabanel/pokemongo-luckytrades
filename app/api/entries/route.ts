@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
     tradeForPokemonName,
     tradeForPokemonId,
     tradePartnerName,
+    linkedEntryId,
     notes,
     shiny,
     customSpriteUrl,
@@ -56,27 +57,72 @@ export async function POST(request: NextRequest) {
   // Un compte non-admin ne peut créer une entrée que sous son propre
   // dresseur, quelle que soit la valeur envoyée par le client.
   const effectiveTrainerId = isAdmin ? trainerId || null : trainer!.id;
+  const trimmedPartnerName =
+    typeof tradePartnerName === "string" ? tradePartnerName.trim() || null : null;
 
-  const entry = await prisma.pokemonEntry.create({
-    data: {
-      pokemonName,
-      pokemonId: Number(pokemonId),
-      category,
-      trainerId: effectiveTrainerId,
-      tradeForPokemonName: tradeForPokemonName || null,
-      tradeForPokemonId: tradeForPokemonId ? Number(tradeForPokemonId) : null,
-      tradePartnerName:
-        typeof tradePartnerName === "string" ? tradePartnerName.trim() || null : null,
-      notes: notes || null,
-      shiny: shiny === true,
-      customSpriteUrl: customSpriteUrl || null,
-      backgroundUrl: backgroundUrl || null,
-      priority: priority != null ? Number(priority) : null,
-      tags: Array.isArray(tags) && tags.length > 0 ? JSON.stringify(tags) : null,
-      quantity: quantity != null && Number(quantity) > 0 ? Number(quantity) : 1,
-    },
-    include: { trainer: true },
-  });
+  try {
+    const entry = await prisma.$transaction(async (tx) => {
+      const created = await tx.pokemonEntry.create({
+        data: {
+          pokemonName,
+          pokemonId: Number(pokemonId),
+          category,
+          trainerId: effectiveTrainerId,
+          tradeForPokemonName: tradeForPokemonName || null,
+          tradeForPokemonId: tradeForPokemonId ? Number(tradeForPokemonId) : null,
+          tradePartnerName: trimmedPartnerName,
+          notes: notes || null,
+          shiny: shiny === true,
+          customSpriteUrl: customSpriteUrl || null,
+          backgroundUrl: backgroundUrl || null,
+          priority: priority != null ? Number(priority) : null,
+          tags: Array.isArray(tags) && tags.length > 0 ? JSON.stringify(tags) : null,
+          quantity: quantity != null && Number(quantity) > 0 ? Number(quantity) : 1,
+        },
+      });
 
-  return NextResponse.json(entry, { status: 201 });
+      // Association automatique avec une de ses propres entrées de la
+      // catégorie opposée (want <-> give) : voir Item 7 du plan. Les deux
+      // entrées se synchronisent (Pokémon échangé + partenaire) pour ne pas
+      // avoir à répéter la même info des deux côtés.
+      if (linkedEntryId) {
+        const target = await tx.pokemonEntry.findUnique({ where: { id: linkedEntryId } });
+        if (!target || target.trainerId !== effectiveTrainerId) {
+          throw new Error("INVALID_LINK");
+        }
+        const sharedPartnerName = trimmedPartnerName ?? target.tradePartnerName ?? null;
+        await tx.pokemonEntry.update({
+          where: { id: created.id },
+          data: {
+            linkedEntryId,
+            tradeForPokemonName: target.pokemonName,
+            tradeForPokemonId: target.pokemonId,
+            tradePartnerName: sharedPartnerName,
+          },
+        });
+        await tx.pokemonEntry.update({
+          where: { id: target.id },
+          data: {
+            linkedEntryId: created.id,
+            tradeForPokemonName: created.pokemonName,
+            tradeForPokemonId: created.pokemonId,
+            tradePartnerName: sharedPartnerName,
+          },
+        });
+      }
+
+      return tx.pokemonEntry.findUniqueOrThrow({
+        where: { id: created.id },
+        include: { trainer: true },
+      });
+    });
+
+    return NextResponse.json(entry, { status: 201 });
+  } catch (err) {
+    if (err instanceof Error && err.message === "INVALID_LINK") {
+      return NextResponse.json({ error: "Entrée à lier invalide" }, { status: 400 });
+    }
+    console.error("[POST /api/entries]", err);
+    return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+  }
 }

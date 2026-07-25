@@ -124,7 +124,10 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
   const handleComplete = async (entry: PokemonEntry) => {
     const prev = entries;
-    setEntries((e) => e.filter((x) => x.id !== entry.id));
+    // Une entrée liée (want<->give, voir Item 7) est marquée échangée des
+    // deux côtés par le serveur : la retirer aussi localement évite de
+    // laisser sa "moitié" affichée jusqu'au prochain rechargement.
+    setEntries((e) => e.filter((x) => x.id !== entry.id && x.id !== entry.linkedEntryId));
 
     try {
       const res = await fetch(`/api/entries/${entry.id}`, {
@@ -645,7 +648,13 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           myTrainerId={myTrainerId}
           onClose={() => setShowAddForm(false)}
           onSaved={(entry) => {
-            setEntries((prev) => [entry, ...prev]);
+            if (entry.linkedEntryId) {
+              // Idem édition : l'entrée liée à SOI a aussi été mise à jour
+              // côté serveur, un simple ajout local la laisserait obsolète.
+              fetchData();
+            } else {
+              setEntries((prev) => [entry, ...prev]);
+            }
             toast.success(`${entry.pokemonName} ajouté !`);
             // La modale reste ouverte pour enchaîner les ajouts (ex: après une
             // session de jeu avec plusieurs échanges) — elle se ferme via
@@ -661,11 +670,20 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           entry={editingEntry}
           trainers={trainers}
           pokeOptions={pokeOptions}
+          existingEntries={entries}
           isAdmin={isAdmin}
           myTrainerId={myTrainerId}
           onClose={() => setEditingEntry(null)}
           onSaved={(updated) => {
-            setEntries((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
+            // Un lien want<->give synchronise aussi l'autre entrée côté
+            // serveur (Pokémon échangé, partenaire) : un simple patch local
+            // de l'entrée éditée laisserait son "autre moitié" affichée avec
+            // des données obsolètes tant que la page n'est pas rechargée.
+            if (updated.linkedEntryId || editingEntry.linkedEntryId) {
+              fetchData();
+            } else {
+              setEntries((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
+            }
             toast.success("Échange mis à jour");
             setEditingEntry(null);
           }}
@@ -914,6 +932,7 @@ type EntryFormProps =
       entry: PokemonEntry;
       trainers: Trainer[];
       pokeOptions: PokeOption[];
+      existingEntries: PokemonEntry[];
       isAdmin: boolean;
       myTrainerId: string | null;
       onClose: () => void;
@@ -921,9 +940,8 @@ type EntryFormProps =
     };
 
 function EntryForm(props: EntryFormProps) {
-  const { mode, trainers, pokeOptions, isAdmin, myTrainerId, onClose, onSaved } = props;
+  const { mode, trainers, pokeOptions, isAdmin, myTrainerId, onClose, onSaved, existingEntries } = props;
   const entry = mode === "edit" ? props.entry : undefined;
-  const existingEntries = mode === "add" ? props.existingEntries : undefined;
 
   const [form, setForm] = useState(() =>
     entry
@@ -935,6 +953,7 @@ function EntryForm(props: EntryFormProps) {
           tradePartnerName: entry.tradePartnerName ?? "",
           tradeForPokemonName: entry.tradeForPokemonName ?? "",
           tradeForPokemonId: entry.tradeForPokemonId ?? 0,
+          linkedEntryId: entry.linkedEntryId ?? (null as string | null),
           notes: entry.notes ?? "",
           shiny: entry.shiny ?? false,
           customSpriteUrl: entry.customSpriteUrl ?? (null as string | null),
@@ -953,6 +972,7 @@ function EntryForm(props: EntryFormProps) {
           tradePartnerName: "",
           tradeForPokemonName: "",
           tradeForPokemonId: 0,
+          linkedEntryId: null as string | null,
           notes: "",
           shiny: false,
           customSpriteUrl: null as string | null,
@@ -1002,6 +1022,23 @@ function EntryForm(props: EntryFormProps) {
     ? trainers.filter((t) => t.name.toLowerCase().includes(form.tradePartnerName.toLowerCase())).slice(0, 8)
     : [];
 
+  // Association automatique want <-> give (voir Item 7 du plan) : le
+  // Pokémon qu'on reçoit (want) et celui qu'on donne en échange (give) sont
+  // deux entrées à SOI de catégories opposées, pas un simple texte libre.
+  // Choisir l'une lie les deux : la modif de l'une répercute automatiquement
+  // sur l'autre (voir sync côté API POST/PATCH /api/entries).
+  const oppositeCategory: EntryCategory | null =
+    form.category === "want" ? "give" : form.category === "give" ? "want" : null;
+  const linkableEntries =
+    oppositeCategory && form.trainerId
+      ? existingEntries.filter(
+          (e) => e.trainer?.id === form.trainerId && e.category === oppositeCategory && e.id !== entry?.id
+        )
+      : [];
+  const linkedEntry = form.linkedEntryId
+    ? existingEntries.find((e) => e.id === form.linkedEntryId) ?? null
+    : null;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -1034,6 +1071,7 @@ function EntryForm(props: EntryFormProps) {
         tradePartnerName: form.tradePartnerName.trim() || null,
         tradeForPokemonName: form.tradeForPokemonName || null,
         tradeForPokemonId: form.tradeForPokemonId || null,
+        linkedEntryId: form.linkedEntryId,
         notes: form.notes || null,
         priority: form.priority || null,
         tags: form.tags,
@@ -1067,6 +1105,7 @@ function EntryForm(props: EntryFormProps) {
           tradePartnerName: f.tradePartnerName,
           tradeForPokemonName: "",
           tradeForPokemonId: 0,
+          linkedEntryId: null,
           notes: "",
           shiny: false,
           customSpriteUrl: null,
@@ -1233,14 +1272,17 @@ function EntryForm(props: EntryFormProps) {
         )}
 
         {/* Échanger avec : qui est le partenaire de l'échange (pas le
-            propriétaire de l'entrée, voir DRESSEUR ci-dessus). Uniquement
-            pour miroir/donne, où il y a un partenaire à identifier. Champ
-            texte libre avec suggestions parmi les dresseurs déjà présents,
-            mais accepte aussi un pseudo qui n'existe pas encore. */}
-        {(form.category === "mirror" || form.category === "give") && (
+            propriétaire de l'entrée, voir DRESSEUR ci-dessus). Champ texte
+            libre avec suggestions parmi les dresseurs déjà présents, mais
+            accepte aussi un pseudo qui n'existe pas encore. */}
+        {(form.category === "mirror" || form.category === "give" || form.category === "want") && (
           <div ref={partnerRef} style={{ position: "relative" }}>
             <label className="field-label">
-              {form.category === "mirror" ? "ÉCHANGER AVEC" : "JE PEUX DONNER À"}
+              {form.category === "mirror"
+                ? "ÉCHANGER AVEC"
+                : form.category === "give"
+                ? "JE PEUX DONNER À"
+                : "ÉCHANGER AVEC (qui te le donne)"}
             </label>
             <input
               type="text"
@@ -1383,36 +1425,85 @@ function EntryForm(props: EntryFormProps) {
             {/* Trade for */}
             <div ref={tradeRef} style={{ position: "relative" }}>
               <label className="field-label">EN ÉCHANGE DE</label>
-              <div className="flex gap-2 items-center mt-1">
-                {form.tradeForPokemonId > 0 && (
-                  <PokemonSprite pokemonId={form.tradeForPokemonId} alt={form.tradeForPokemonName} size={40} />
-                )}
-                <div style={{ flex: 1, position: "relative" }}>
-                  <input
-                    type="text"
-                    value={tradeSearch}
-                    onChange={(e) => {
-                      setTradeSearch(e.target.value);
-                      setShowTradeSuggestions(true);
-                      if (!e.target.value) setForm((f) => ({ ...f, tradeForPokemonName: "", tradeForPokemonId: 0 }));
+
+              {linkedEntry ? (
+                // Lié à une de tes propres entrées de l'autre catégorie (want
+                // <-> give) : le Pokémon échangé est synchronisé automatiquement
+                // des deux côtés, voir Item 7 du plan.
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  <PokemonSprite pokemonId={linkedEntry.pokemonId} alt={linkedEntry.pokemonName} size={40} />
+                  <span style={{ color: "#e8edf5", fontSize: "0.85rem" }}>{linkedEntry.pokemonName}</span>
+                  <span style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)" }}>
+                    (lié à ton entrée « {oppositeCategory === "give" ? "Je peux donner" : "Je recherche"} »)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setForm((f) => ({ ...f, linkedEntryId: null, tradeForPokemonName: "", tradeForPokemonId: 0 }));
+                      setTradeSearch("");
                     }}
-                    onFocus={() => setShowTradeSuggestions(true)}
-                    className="glass-input"
-                    placeholder={mode === "add" ? "Pokémon en échange (optionnel)..." : "Pokémon en échange..."}
-                    autoComplete="off"
-                  />
-                  {showTradeSuggestions && tradeSuggestions.length > 0 && (
-                    <SuggestionDropdown
-                      options={tradeSuggestions}
-                      onSelect={(p) => {
-                        setForm((f) => ({ ...f, tradeForPokemonName: p.frenchName, tradeForPokemonId: p.id }));
-                        setTradeSearch(p.frenchName);
-                        setShowTradeSuggestions(false);
-                      }}
-                    />
-                  )}
+                    className="btn-secondary"
+                    style={{ fontSize: "0.7rem", padding: "4px 10px" }}
+                  >
+                    Délier
+                  </button>
                 </div>
-              </div>
+              ) : (
+                <>
+                  {oppositeCategory && linkableEntries.length > 0 && (
+                    <div className="flex gap-2 flex-wrap mt-1 mb-2">
+                      {linkableEntries.map((le) => (
+                        <button
+                          key={le.id}
+                          type="button"
+                          onClick={() => {
+                            setForm((f) => ({ ...f, linkedEntryId: le.id, tradeForPokemonName: le.pokemonName, tradeForPokemonId: le.pokemonId }));
+                            setTradeSearch(le.pokemonName);
+                          }}
+                          style={{
+                            padding: "4px 10px", borderRadius: 999,
+                            border: "1px solid rgba(10,255,224,0.3)", background: "rgba(10,255,224,0.08)",
+                            cursor: "pointer", fontSize: "0.75rem", color: "#0affe0",
+                            fontFamily: "Exo 2, sans-serif", fontWeight: 600,
+                          }}
+                        >
+                          Lier : {le.pokemonName}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <div className="flex gap-2 items-center mt-1">
+                    {form.tradeForPokemonId > 0 && (
+                      <PokemonSprite pokemonId={form.tradeForPokemonId} alt={form.tradeForPokemonName} size={40} />
+                    )}
+                    <div style={{ flex: 1, position: "relative" }}>
+                      <input
+                        type="text"
+                        value={tradeSearch}
+                        onChange={(e) => {
+                          setTradeSearch(e.target.value);
+                          setShowTradeSuggestions(true);
+                          if (!e.target.value) setForm((f) => ({ ...f, tradeForPokemonName: "", tradeForPokemonId: 0 }));
+                        }}
+                        onFocus={() => setShowTradeSuggestions(true)}
+                        className="glass-input"
+                        placeholder={mode === "add" ? "Pokémon en échange (optionnel)..." : "Pokémon en échange..."}
+                        autoComplete="off"
+                      />
+                      {showTradeSuggestions && tradeSuggestions.length > 0 && (
+                        <SuggestionDropdown
+                          options={tradeSuggestions}
+                          onSelect={(p) => {
+                            setForm((f) => ({ ...f, tradeForPokemonName: p.frenchName, tradeForPokemonId: p.id }));
+                            setTradeSearch(p.frenchName);
+                            setShowTradeSuggestions(false);
+                          }}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Notes */}

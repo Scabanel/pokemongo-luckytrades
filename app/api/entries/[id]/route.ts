@@ -22,39 +22,99 @@ export async function PATCH(
   }
 
   const body = await request.json();
-  const { trainerId, tradeForPokemonName, tradeForPokemonId, tradePartnerName, notes, completed, category, shiny, customSpriteUrl, backgroundUrl, priority, tags, quantity } =
+  const { trainerId, tradeForPokemonName, tradeForPokemonId, tradePartnerName, linkedEntryId, notes, completed, category, shiny, customSpriteUrl, backgroundUrl, priority, tags, quantity } =
     body;
+
+  const linking = linkedEntryId !== undefined;
 
   // Seul un admin peut réassigner une entrée à un autre dresseur.
   try {
-    const entry = await prisma.pokemonEntry.update({
-      where: { id },
-      data: {
-        ...(isAdmin && trainerId !== undefined && { trainerId: trainerId || null }),
-        ...(tradeForPokemonName !== undefined && {
-          tradeForPokemonName: tradeForPokemonName || null,
-        }),
-        ...(tradeForPokemonId !== undefined && {
-          tradeForPokemonId: tradeForPokemonId ? Number(tradeForPokemonId) : null,
-        }),
-        ...(tradePartnerName !== undefined && {
-          tradePartnerName:
-            typeof tradePartnerName === "string" ? tradePartnerName.trim() || null : null,
-        }),
-        ...(notes !== undefined && { notes: notes || null }),
-        ...(completed !== undefined && { completed }),
-        ...(category !== undefined && { category }),
-        ...(shiny !== undefined && { shiny: shiny === true }),
-        ...(customSpriteUrl !== undefined && { customSpriteUrl: customSpriteUrl || null }),
-        ...(backgroundUrl !== undefined && { backgroundUrl: backgroundUrl || null }),
-        ...(priority !== undefined && { priority: priority != null ? Number(priority) : null }),
-        ...(tags !== undefined && { tags: Array.isArray(tags) && tags.length > 0 ? JSON.stringify(tags) : null }),
-        ...(quantity !== undefined && { quantity: Math.max(1, Number(quantity) || 1) }),
-      },
-      include: { trainer: true },
+    const entry = await prisma.$transaction(async (tx) => {
+      let derivedTradeForName = tradeForPokemonName;
+      let derivedTradeForId = tradeForPokemonId;
+      let derivedPartnerName = tradePartnerName;
+
+      if (linking) {
+        // Change ou retrait du lien précédent : on délie l'ancien partenaire
+        // s'il pointait bien vers cette entrée, pour ne jamais laisser un
+        // lien à sens unique vers une entrée qui n'existe plus côté lien.
+        if (existing.linkedEntryId && existing.linkedEntryId !== linkedEntryId) {
+          await tx.pokemonEntry.updateMany({
+            where: { id: existing.linkedEntryId, linkedEntryId: id },
+            data: { linkedEntryId: null },
+          });
+        }
+
+        if (linkedEntryId) {
+          const target = await tx.pokemonEntry.findUnique({ where: { id: linkedEntryId } });
+          if (!target || target.trainerId !== existing.trainerId) {
+            throw new Error("INVALID_LINK");
+          }
+          derivedTradeForName = target.pokemonName;
+          derivedTradeForId = target.pokemonId;
+          derivedPartnerName =
+            tradePartnerName !== undefined
+              ? tradePartnerName
+              : existing.tradePartnerName ?? target.tradePartnerName ?? null;
+
+          await tx.pokemonEntry.update({
+            where: { id: target.id },
+            data: {
+              linkedEntryId: id,
+              tradeForPokemonName: existing.pokemonName,
+              tradeForPokemonId: existing.pokemonId,
+              tradePartnerName:
+                typeof derivedPartnerName === "string"
+                  ? derivedPartnerName.trim() || null
+                  : derivedPartnerName,
+              ...(completed !== undefined && { completed }),
+            },
+          });
+        }
+      } else if (completed !== undefined && existing.linkedEntryId) {
+        // Marquer l'échange conclu (ou le rouvrir) des deux côtés : les deux
+        // entrées représentent le même échange concret.
+        await tx.pokemonEntry.updateMany({
+          where: { id: existing.linkedEntryId },
+          data: { completed },
+        });
+      }
+
+      return tx.pokemonEntry.update({
+        where: { id },
+        data: {
+          ...(isAdmin && trainerId !== undefined && { trainerId: trainerId || null }),
+          ...(linking && { linkedEntryId: linkedEntryId || null }),
+          ...(derivedTradeForName !== undefined && {
+            tradeForPokemonName: derivedTradeForName || null,
+          }),
+          ...(derivedTradeForId !== undefined && {
+            tradeForPokemonId: derivedTradeForId ? Number(derivedTradeForId) : null,
+          }),
+          ...(derivedPartnerName !== undefined && {
+            tradePartnerName:
+              typeof derivedPartnerName === "string"
+                ? derivedPartnerName.trim() || null
+                : derivedPartnerName,
+          }),
+          ...(notes !== undefined && { notes: notes || null }),
+          ...(completed !== undefined && { completed }),
+          ...(category !== undefined && { category }),
+          ...(shiny !== undefined && { shiny: shiny === true }),
+          ...(customSpriteUrl !== undefined && { customSpriteUrl: customSpriteUrl || null }),
+          ...(backgroundUrl !== undefined && { backgroundUrl: backgroundUrl || null }),
+          ...(priority !== undefined && { priority: priority != null ? Number(priority) : null }),
+          ...(tags !== undefined && { tags: Array.isArray(tags) && tags.length > 0 ? JSON.stringify(tags) : null }),
+          ...(quantity !== undefined && { quantity: Math.max(1, Number(quantity) || 1) }),
+        },
+        include: { trainer: true },
+      });
     });
     return NextResponse.json(entry);
   } catch (err) {
+    if (err instanceof Error && err.message === "INVALID_LINK") {
+      return NextResponse.json({ error: "Entrée à lier invalide" }, { status: 400 });
+    }
     console.error("[PATCH /api/entries/:id]", err);
     return NextResponse.json(
       { error: "Erreur serveur", detail: err instanceof Error ? err.message : String(err) },
@@ -82,7 +142,15 @@ export async function DELETE(
     return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
   }
 
-  await prisma.pokemonEntry.delete({ where: { id } });
+  await prisma.$transaction(async (tx) => {
+    if (existing.linkedEntryId) {
+      await tx.pokemonEntry.updateMany({
+        where: { id: existing.linkedEntryId, linkedEntryId: id },
+        data: { linkedEntryId: null },
+      });
+    }
+    await tx.pokemonEntry.delete({ where: { id } });
+  });
 
   return NextResponse.json({ success: true });
 }
