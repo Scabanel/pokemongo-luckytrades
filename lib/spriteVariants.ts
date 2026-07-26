@@ -140,3 +140,18 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
 export function variantNeedsPinnedSprite(variant: SpriteVariant): boolean {
   return variant.tags.includes("costume") || REGIONAL_FORM_PREFIX.test(variant.label) || !!variant.gender;
 }
+
+// Pour les entrées ajoutées avant l'existence du champ PokemonEntry.gender :
+// retrouve le genre a posteriori en retrouvant, dans le catalogue, quel
+// costume correspond exactement à ce customSpriteUrl, puis en appliquant la
+// même détection de paire que detectCostumeGender. Calculé au rendu (jamais
+// stocké), donc s'applique automatiquement à toutes les entrées existantes
+// sans backfill à maintenir — même logique que le badge légendaire.
+export function getGenderForCustomSprite(pokemonId: number, customSpriteUrl: string | null | undefined): "male" | "female" | null {
+  if (!customSpriteUrl) return null;
+  const costumes = COSTUME_CATALOG[String(pokemonId)] ?? [];
+  const match = costumes.find((c) => c.url === customSpriteUrl);
+  if (!match) return null;
+  const allLabels = costumes.map((c) => c.label);
+  return detectCostumeGender(match.label, allLabels);
+}

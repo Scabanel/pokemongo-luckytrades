@@ -10,6 +10,7 @@ import { parseTags } from "@/lib/tags";
 import gigantamaxIcons from "@/data/gigantamax-icons.json";
 import pokemonList from "@/data/pokemon.json";
 import legendarySpecies from "@/data/legendary-species.json";
+import { getGenderForCustomSprite } from "@/lib/spriteVariants";
 
 // Sprite officiel de forme Gigamax (aspect réellement différent en jeu), pour
 // la poignée d'espèces qui en ont un, voir scripts/generate-costume-catalog.mjs.
@@ -213,6 +214,10 @@ export default function PokemonCard({
   const displayTags = LEGENDARY_SPECIES.has(entry.pokemonId) && !tags.some((t) => t.toLowerCase() === "legendaire")
     ? [...tags, "legendaire"]
     : tags;
+  // entry.gender n'existe que pour les entrées ajoutées après l'introduction
+  // du champ : pour les plus anciennes (gender null mais customSpriteUrl
+  // pointant déjà vers un costume genré), on le retrouve a posteriori.
+  const displayGender = entry.gender ?? getGenderForCustomSprite(entry.pokemonId, entry.customSpriteUrl);
   // Le nom du Pokémon ne contient pas toujours "Dynamax"/"Gigamax" (ex: un
   // tag "dynamax" ajouté à la main sur "Duralugon" sans renommer l'entrée) :
   // vérifie aussi les tags, pas seulement le nom.
@@ -280,6 +285,24 @@ export default function PokemonCard({
     );
   }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.pokemonId, entry.shiny, entryFormKey]);
 
+  // Symétrique : sur une tuile want qui N'appartient PAS au visiteur, est-ce
+  // que LUI peut donner ce Pokémon (give/mirror non lié, même forme/shiny) ?
+  // Affiche "Tu as celui recherché !".
+  const viewerHasThis = useMemo(() => {
+    if (isOwnEntry || !viewerTrainerId || !allEntries) return false;
+    if (entry.category !== "want") return false;
+    if (entry.completed || entry.linkedEntryId) return false;
+    return allEntries.some((other) =>
+      other.trainer?.id === viewerTrainerId &&
+      (other.category === "give" || other.category === "mirror") &&
+      !other.completed &&
+      !other.linkedEntryId &&
+      other.pokemonId === entry.pokemonId &&
+      !!other.shiny === !!entry.shiny &&
+      formVariantKey(other.customSpriteUrl, other.tags) === entryFormKey
+    );
+  }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.linkedEntryId, entry.pokemonId, entry.shiny, entryFormKey]);
+
   useEffect(() => { setMounted(true); }, []);
 
   const modal = showDetail && (
@@ -316,6 +339,10 @@ export default function PokemonCard({
           ...(viewerWantsThis && {
             borderColor: "rgba(255,45,120,0.5)",
             boxShadow: "0 16px 64px rgba(255,45,120,0.25), 0 0 0 1px rgba(255,45,120,0.2)",
+          }),
+          ...(viewerHasThis && {
+            borderColor: "rgba(6,182,212,0.5)",
+            boxShadow: "0 16px 64px rgba(6,182,212,0.25), 0 0 0 1px rgba(6,182,212,0.2)",
           }),
         }}
         onClick={(e) => e.stopPropagation()}
@@ -447,7 +474,7 @@ export default function PokemonCard({
             className="absolute inset-0 rounded-full blur-2xl opacity-30"
             style={{ background: eventTheme?.glow ?? categoryGlow }}
           />
-          <GenderBadge gender={entry.gender} size={28} />
+          <GenderBadge gender={displayGender} size={28} />
           <PokemonSprite
             pokemonId={entry.pokemonId}
             alt={entry.pokemonName}
@@ -600,6 +627,10 @@ export default function PokemonCard({
           ...(viewerWantsThis && {
             borderColor: "rgba(255, 45, 120, 0.5)",
             boxShadow: "0 8px 32px rgba(255, 45, 120, 0.28), 0 0 0 1px rgba(255, 45, 120, 0.2)",
+          }),
+          ...(viewerHasThis && {
+            borderColor: "rgba(6, 182, 212, 0.5)",
+            boxShadow: "0 8px 32px rgba(6, 182, 212, 0.28), 0 0 0 1px rgba(6, 182, 212, 0.2)",
           }),
           ...(selected && {
             borderColor: "rgba(255, 215, 0,0.6)",
@@ -754,7 +785,7 @@ export default function PokemonCard({
               undefined
             }}
           />
-          <GenderBadge gender={entry.gender} size={20} />
+          <GenderBadge gender={displayGender} size={20} />
           <PokemonSprite
             pokemonId={entry.pokemonId}
             alt={entry.pokemonName}
@@ -874,6 +905,22 @@ export default function PokemonCard({
             }}
           >
             Vous recherchez celui-ci !
+          </div>
+        )}
+
+        {/* Symétrique : sur la liste "recherche" d'un AUTRE dresseur, ce
+            visiteur peut lui-même donner ce Pokémon. */}
+        {viewerHasThis && (
+          <div
+            className="mt-auto"
+            style={{
+              marginTop: 6, padding: "4px 12px", borderRadius: 999,
+              background: "rgba(6,182,212,0.12)", border: "1px solid rgba(6,182,212,0.35)",
+              color: "#06b6d4", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.65rem",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Tu as celui recherché !
           </div>
         )}
       </div>
