@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import pokemonList from "@/data/pokemon.json";
 import legendarySpecies from "@/data/legendary-species.json";
 import { REGIONS, getRegionName } from "@/lib/regions";
-import { getSpriteVariants, variantNeedsPinnedSprite, type SpriteVariant } from "@/lib/spriteVariants";
+import { getSpriteVariants, variantNeedsPinnedSprite, AVAILABLE_SPECIES, type SpriteVariant } from "@/lib/spriteVariants";
 import type { EntryCategory } from "@/lib/types";
 
 interface PokeListEntry {
@@ -15,7 +15,13 @@ interface PokeListEntry {
   frenchName: string;
 }
 
-const POKE_LIST = pokemonList as PokeListEntry[];
+// Restreint la liste aux espèces confirmées sorties par le Google Sheet de
+// Steven (voir scripts/generate-pogo-availability.mjs) : sans ce filtre,
+// data/pokemon.json liste TOUTES les espèces ayant jamais existé, y compris
+// celles pas encore sorties dans GO (ex: Ogerpon, Terapagos au moment
+// d'écrire ceci), qui se retrouvaient proposées ici dès qu'un sprite existait
+// dans le datamine du client.
+const POKE_LIST = (pokemonList as PokeListEntry[]).filter((p) => AVAILABLE_SPECIES.has(p.id));
 // Légendaires/Mythiques/Ultra-Chimères : liste de dex ID validée (voir
 // lib/entryFilters.ts, même source). Propriété de l'espèce entière, pas
 // d'une variante précise : contrairement à Shiny/Costume/Dynamax/Gigamax

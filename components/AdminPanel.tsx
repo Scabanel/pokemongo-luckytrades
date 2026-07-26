@@ -15,7 +15,7 @@ import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { createClient } from "@/lib/supabase/client";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
 import BulkAddPicker from "./BulkAddPicker";
-import { detectCostumeGender } from "@/lib/spriteVariants";
+import { detectCostumeGender, isCostumeShinyReleased, AVAILABLE_SPECIES, DYNAMAX_AVAILABLE_SPECIES, GIGANTAMAX_AVAILABLE_SPECIES } from "@/lib/spriteVariants";
 
 // La liste des dresseurs en admin inclut toujours le compte d'entrées
 // (contrairement à PokemonEntry.trainer ailleurs, qui n'en a pas besoin).
@@ -101,7 +101,11 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
     // Liste des Pokémon (FR/EN) figée dans le repo (data/pokemon.json) : plus besoin
     // d'appeler PokeAPI + GraphQL à chaque ouverture de l'admin. Regénérer avec
     // `npm run gen:pokemon` si une nouvelle génération de Pokémon sort.
-    setPokeOptions(pokemonList as PokeOption[]);
+    // Restreint aux espèces confirmées sorties par le Google Sheet de Steven
+    // (même filtre que BulkAddPicker, voir lib/spriteVariants.ts) : sinon
+    // Ogerpon/Terapagos et consorts restaient sélectionnables ici même après
+    // avoir été retirés du picker d'ajout en masse.
+    setPokeOptions((pokemonList as PokeOption[]).filter((p) => AVAILABLE_SPECIES.has(p.id)));
   }, [fetchData]);
 
   // Retire de la sélection les entrées qui ont disparu de la liste (marquées
@@ -1592,7 +1596,17 @@ export function EntryForm(props: EntryFormProps) {
         <div>
           <label className="field-label">TAGS</label>
           <div className="flex gap-2 flex-wrap mt-1">
-            {SELECTABLE_TAGS.map(({ key, label }) => {
+            {SELECTABLE_TAGS.filter(({ key }) => {
+              // Dynamax/Gigamax ne sont proposables que si le Google Sheet de
+              // Steven confirme que l'espèce sélectionnée les a réellement
+              // (voir lib/spriteVariants.ts) — sinon on pourrait librement
+              // cocher "Gigamax" sur un Pokémon qui n'en a pas. Un tag déjà
+              // posé (entrée existante, sheet mis à jour depuis) reste quand
+              // même affiché pour pouvoir être retiré.
+              if (key === "dynamax") return form.tags.includes("dynamax") || DYNAMAX_AVAILABLE_SPECIES.has(form.pokemonId);
+              if (key === "gigamax") return form.tags.includes("gigamax") || GIGANTAMAX_AVAILABLE_SPECIES.has(form.pokemonId);
+              return true;
+            }).map(({ key, label }) => {
               const active = form.tags.includes(key);
               const c = getTagColor(key);
               return (
@@ -2052,7 +2066,14 @@ const COSTUME_CATALOG = costumeCatalog as Record<string, CostumeEntry[]>;
 function getOfficialCostumes(pokemonId: number): CostumeEntry[] {
   // Les Méga-Évolutions ne servent à rien dans cette appli (pas de mécanique
   // Méga dans les échanges/recherches Pokémon GO) : on les exclut partout.
-  return (COSTUME_CATALOG[String(pokemonId)] ?? []).filter((c) => !c.label.startsWith("Mega"));
+  // Gigantamax : présent dans le datamine parfois avant sa sortie réelle
+  // (voir GIGANTAMAX_AVAILABLE_SPECIES) — cohérent avec BulkAddPicker/
+  // getSpriteVariants. Shiny (base/forme régionale/Gigamax) : voir
+  // isCostumeShinyReleased, même logique que BulkAddPicker.
+  return (COSTUME_CATALOG[String(pokemonId)] ?? [])
+    .filter((c) => !c.label.startsWith("Mega"))
+    .filter((c) => !c.label.startsWith("Gigantamax") || GIGANTAMAX_AVAILABLE_SPECIES.has(pokemonId))
+    .filter((c) => isCostumeShinyReleased(pokemonId, c.label));
 }
 
 function SpritePicker({

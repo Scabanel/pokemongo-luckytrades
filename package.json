@@ -12,6 +12,7 @@
     "gen:costumes": "node scripts/generate-costume-catalog.mjs",
     "gen:backgrounds": "node scripts/generate-pokemon-backgrounds.mjs",
     "gen:missing": "node scripts/generate-missing-pokemon.mjs",
+    "gen:pogo": "node scripts/generate-pogo-availability.mjs",
     "gen:events": "node scripts/generate-upcoming-events.mjs",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate"
@@ -26,7 +27,8 @@
     "prisma": "^7.5.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "react-hot-toast": "^2.6.0"
+    "react-hot-toast": "^2.6.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

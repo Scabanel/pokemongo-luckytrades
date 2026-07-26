@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { scrapeMissingPokemon } from "@/scripts/generate-missing-pokemon.mjs";
+import { scrapePogoAvailability } from "@/scripts/generate-pogo-availability.mjs";
 import { buildCostumeCatalog } from "@/scripts/generate-costume-catalog.mjs";
 import { scrapeValidatedBackgrounds, downloadImage, slugify } from "@/scripts/generate-pokemon-backgrounds.mjs";
 import { scrapeUpcomingEvents } from "@/scripts/generate-upcoming-events.mjs";
@@ -50,8 +50,9 @@ export async function GET(request: NextRequest) {
   const runId = new Date().toISOString();
   const steps: Record<string, StepResult> = {};
 
-  // Les deux sources (margxt.fr et PokeMiners) sont indépendantes : on les
-  // récupère en parallèle, chacune alimente une partie de missing-in-go.json.
+  // Le Google Sheet de Steven (source de vérité "qu'est-ce qui est sorti
+  // dans GO") et PokeMiners (sprites/costumes) sont indépendants : on les
+  // récupère en parallèle.
   //
   // buildCostumeCatalog n'a PAS le GITHUB_TOKEN : ce token est un PAT
   // finement scopé au seul dépôt de ce projet (Contents: read/write), il
@@ -59,13 +60,13 @@ export async function GET(request: NextRequest) {
   // différent) et GitHub rejette l'appel si on l'envoie quand même. Le
   // dépôt étant public, un appel anonyme fonctionne très bien (limite de
   // 60/h largement suffisante pour un seul appel hebdomadaire).
-  const [missingRes, costumeRes] = await Promise.allSettled([
-    scrapeMissingPokemon(),
+  const [availabilityRes, costumeRes] = await Promise.allSettled([
+    scrapePogoAvailability(pokemonList),
     buildCostumeCatalog(pokemonList),
   ]);
 
-  if (missingRes.status === "rejected") {
-    steps.missingPokemonScrape = { error: missingRes.reason instanceof Error ? missingRes.reason.message : String(missingRes.reason) };
+  if (availabilityRes.status === "rejected") {
+    steps.pogoAvailabilityScrape = { error: availabilityRes.reason instanceof Error ? availabilityRes.reason.message : String(availabilityRes.reason) };
   }
   if (costumeRes.status === "rejected") {
     steps.costumeScrape = { error: costumeRes.reason instanceof Error ? costumeRes.reason.message : String(costumeRes.reason) };
@@ -99,23 +100,28 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // missing-in-go.json fusionne les deux sources. Si l'une des deux a
-  // échoué cette fois, on préserve sa part depuis le fichier déjà committé
-  // plutôt que d'écraser avec du vide.
-  try {
-    const needsFallback = missingRes.status === "rejected" || costumeRes.status === "rejected";
-    const existing = needsFallback ? await getExistingMissingInGo() : {};
+  // pogo-availability.json (gating Shiny/Dynamax/Gigamax dans le picker) et
+  // missing-in-go.json (page "pas encore sortis") viennent tous les deux du
+  // même scrape du Google Sheet. Si le scrape a échoué cette fois, on
+  // préserve missing-in-go.json depuis le fichier déjà committé plutôt que
+  // d'écraser avec du vide ; pogo-availability.json, lui, n'est simplement
+  // pas retouché (pas de fallback nécessaire : GitHub garde la dernière
+  // version committée telle quelle).
+  if (availabilityRes.status === "fulfilled") {
+    try {
+      steps.pogoAvailability = await putIfChangedText(
+        "data/pogo-availability.json",
+        JSON.stringify(availabilityRes.value.availability, null, 2) + "\n",
+        `Auto-refresh disponibilité GO : ${runId}`
+      );
+    } catch (err) {
+      steps.pogoAvailabilityCommit = { error: err instanceof Error ? err.message : String(err) };
+    }
+  }
 
-    const merged = {
-      missingShiny: costumeRes.status === "fulfilled" ? costumeRes.value.missingShiny : existing.missingShiny,
-      missingEntirely: costumeRes.status === "fulfilled" ? costumeRes.value.missingEntirely : existing.missingEntirely,
-      ...(missingRes.status === "fulfilled"
-        ? missingRes.value
-        : {
-            missingGigantamax: existing.missingGigantamax,
-            missingMega: existing.missingMega,
-          }),
-    };
+  try {
+    const existing = availabilityRes.status === "rejected" ? await getExistingMissingInGo() : {};
+    const merged = availabilityRes.status === "fulfilled" ? availabilityRes.value.missing : existing;
 
     steps.missingInGo = await putIfChangedText(
       "data/missing-in-go.json",

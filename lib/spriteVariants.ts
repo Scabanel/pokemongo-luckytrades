@@ -1,17 +1,35 @@
 import costumeCatalog from "@/data/costumes.json";
 import gigantamaxIcons from "@/data/gigantamax-icons.json";
 import goIcons from "@/data/go-icons.json";
-import dynamaxSpecies from "@/data/dynamax-species.json";
+import pogoAvailability from "@/data/pogo-availability.json";
 
 const COSTUME_CATALOG = costumeCatalog as Record<string, { label: string; url: string }[]>;
 const GIGANTAMAX_ICONS = gigantamaxIcons as Record<string, string[]>;
 const GO_ICONS = goIcons as Record<string, string[]>;
-// Liste des dex ID ayant réellement une forme Dynamax en jeu (extraite du
-// catalogue pokexperience.com, lui-même dérivé du GAME_MASTER Niantic) :
-// contrairement à Gigamax (déjà limité par gigantamax-icons.json), rien
-// dans nos autres sources ne dit quelles espèces ont un Dynamax — sans ce
-// filtre, toutes les espèces avec un sprite de base en auraient un à tort.
-const DYNAMAX_SPECIES = new Set(dynamaxSpecies as number[]);
+// data/pogo-availability.json vient du Google Sheet que Steven tient à jour
+// (voir scripts/generate-pogo-availability.mjs) : la seule source qui dise
+// vraiment quelles espèces/variantes sont EN JEU, par opposition à "l'asset
+// existe déjà dans le client" (souvent dataminé avant la sortie réelle,
+// ex. Ogerpon/Terapagos). Remplace l'ancien data/dynamax-species.json
+// (pokexperience.com) et ajoute un filtre équivalent pour Shiny (espèce de
+// base, forme régionale, Gigamax) qui n'existait pas avant : tout costume/
+// icône marqué shiny dans le catalogue était montré, qu'il soit réellement
+// sorti ou non. Seuls les costumes événementiels "classiques" (pas les
+// formes régionales) restent hors classeur : leur présence dans
+// costumes.json (scrapée du client au moment de l'événement, pas dataminée
+// à l'avance comme une nouvelle espèce) reste le seul et bon signal.
+const DYNAMAX_SPECIES = new Set(pogoAvailability.dynamaxAvailable as number[]);
+const SHINY_DYNAMAX_SPECIES = new Set(pogoAvailability.shinyDynamaxAvailable as number[]);
+const SHINY_AVAILABLE_SPECIES = new Set(pogoAvailability.shinyAvailable as number[]);
+const GIGANTAMAX_AVAILABLE_SPECIES = new Set(pogoAvailability.gigantamaxAvailable as number[]);
+const GIGANTAMAX_SHINY_AVAILABLE_SPECIES = new Set(pogoAvailability.gigantamaxShinyAvailable as number[]);
+const REGIONAL_FORM_SHINY_AVAILABLE_SPECIES = new Set(pogoAvailability.regionalFormShinyAvailable as number[]);
+// Exportés pour que tout autre formulaire d'ajout (ex: SpritePicker/EntryForm
+// dans AdminPanel.tsx, chemin d'ajout unique séparé de BulkAddPicker) applique
+// exactement la même restriction plutôt que de la redéfinir/oublier à côté.
+export const AVAILABLE_SPECIES = new Set(pogoAvailability.available as number[]);
+export const DYNAMAX_AVAILABLE_SPECIES = DYNAMAX_SPECIES;
+export { GIGANTAMAX_AVAILABLE_SPECIES };
 const ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
 // data/costumes.json mélange les vraies formes régionales (Alola/Galar/Hisui/
 // Paldea) parmi les costumes événementiels — ce ne sont pas des costumes,
@@ -68,16 +86,34 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
     (c) => !c.label.startsWith("Mega") && !c.label.startsWith("Gigantamax")
   );
   const allLabels = costumes.map((c) => c.label);
-  const variants: SpriteVariant[] = costumes.map((c) => ({
-    key: c.url,
-    label: c.label,
-    url: c.url,
-    shiny: c.label.includes("✨"),
-    // Seuls les vrais costumes événementiels sont tagués "costume" : ni la
-    // base, ni les formes régionales (voir REGIONAL_FORM_PREFIX plus haut).
-    tags: c.label.startsWith("Officiel Pokémon GO") || REGIONAL_FORM_PREFIX.test(c.label) ? [] : ["costume"],
-    gender: detectCostumeGender(c.label, allLabels),
-  }));
+  // Shiny de forme régionale pas encore sorti (voir
+  // REGIONAL_FORM_SHINY_AVAILABLE_SPECIES ci-dessus) : contrairement aux
+  // costumes événementiels classiques, le classeur suit bien le shiny de
+  // chaque forme régionale.
+  const regionalFormShinyReleased = REGIONAL_FORM_SHINY_AVAILABLE_SPECIES.has(pokemonId);
+  const variants: SpriteVariant[] = costumes
+    .filter((c) => regionalFormShinyReleased || !(REGIONAL_FORM_PREFIX.test(c.label) && c.label.includes("✨")))
+    .map((c) => ({
+      key: c.url,
+      label: c.label,
+      url: c.url,
+      shiny: c.label.includes("✨"),
+      // Seuls les vrais costumes événementiels sont tagués "costume" : ni la
+      // base, ni les formes régionales (voir REGIONAL_FORM_PREFIX plus haut).
+      tags: c.label.startsWith("Officiel Pokémon GO") || REGIONAL_FORM_PREFIX.test(c.label) ? [] : ["costume"],
+      gender: detectCostumeGender(c.label, allLabels),
+    }));
+
+  // Shiny "de base" (hors costume/forme régionale) pas encore sorti pour
+  // cette espèce (voir SHINY_AVAILABLE_SPECIES ci-dessus) : le classeur de
+  // Steven ne suit QUE le shiny sauvage/de base, pas les costumes — un shiny
+  // événementiel (ex. déguisement d'anniversaire) peut très bien être sorti
+  // avant le shiny sauvage de l'espèce, et sa présence dans costumes.json
+  // (scrapée du client au moment de l'événement, pas dataminée à l'avance
+  // comme une nouvelle espèce) suffit déjà à le confirmer réellement sorti.
+  const shinyReleased = SHINY_AVAILABLE_SPECIES.has(pokemonId);
+  const baseShinyIndex = variants.findIndex((v) => v.label === "Officiel Pokémon GO ✨");
+  if (baseShinyIndex !== -1 && !shinyReleased) variants.splice(baseShinyIndex, 1);
 
   // costumes.json ne couvre que les espèces ayant déjà eu un costume/une
   // forme événementielle (~925/1025) : sans repli, tout Pokémon jamais
@@ -88,12 +124,16 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
     if (files?.[0]) {
       variants.unshift({ key: `base-${files[0]}`, label: "Officiel Pokémon GO", url: `${ICON_BASE}/${encodeURIComponent(files[0])}`, shiny: false, tags: [], gender: null });
     }
-    if (files?.[1]) {
+    if (files?.[1] && shinyReleased) {
       variants.unshift({ key: `base-${files[1]}`, label: "Officiel Pokémon GO ✨", url: `${ICON_BASE}/${encodeURIComponent(files[1])}`, shiny: true, tags: [], gender: null });
     }
   }
 
-  const gmax = GIGANTAMAX_ICONS[String(pokemonId)];
+  // Gigamax : le fichier existe parfois dans le datamine avant sa sortie
+  // réelle en jeu (voir GIGANTAMAX_AVAILABLE_SPECIES ci-dessus) — sans ce
+  // filtre, un Gigamax pas encore sorti (ex: Évoli) serait quand même
+  // proposé.
+  const gmax = GIGANTAMAX_AVAILABLE_SPECIES.has(pokemonId) ? GIGANTAMAX_ICONS[String(pokemonId)] : undefined;
   if (gmax) {
     const [normal, shiny] = gmax;
     if (normal) {
@@ -106,7 +146,7 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
         gender: null,
       });
     }
-    if (shiny) {
+    if (shiny && GIGANTAMAX_SHINY_AVAILABLE_SPECIES.has(pokemonId)) {
       variants.push({
         key: `gmax-${shiny}`,
         label: "Gigamax ✨",
@@ -124,12 +164,32 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
     if (base) {
       variants.push({ key: `dynamax-${base.url}`, label: "Dynamax", url: base.url, shiny: false, tags: ["dynamax"], gender: null });
     }
-    if (baseShiny) {
+    // Shiny D-Max est une case à part sur le classeur : certaines espèces ont
+    // Dynamax sans encore avoir Shiny Dynamax (ex: Ronflex l'a eu bien plus
+    // tard que son Dynamax normal).
+    if (baseShiny && SHINY_DYNAMAX_SPECIES.has(pokemonId)) {
       variants.push({ key: `dynamax-${baseShiny.url}`, label: "Dynamax ✨", url: baseShiny.url, shiny: true, tags: ["dynamax"], gender: null });
     }
   }
 
   return variants;
+}
+
+// Un shiny (base, forme régionale ou Gigamax) marqué "✨" dans le catalogue
+// est-il réellement sorti dans GO, ou juste présent dans le datamine (voir
+// commentaire en tête de fichier) ? Centralise la logique déjà appliquée par
+// getSpriteVariants ci-dessus, pour que tout autre picker de sprite (ex:
+// SpritePicker dans AdminPanel.tsx, chemin d'ajout unique séparé de
+// BulkAddPicker) reste cohérent avec le même classeur au lieu de refaire ce
+// calcul à côté (et de dériver au fil des mises à jour du classeur).
+export function isCostumeShinyReleased(pokemonId: number, label: string): boolean {
+  if (!label.includes("✨")) return true;
+  if (REGIONAL_FORM_PREFIX.test(label)) return REGIONAL_FORM_SHINY_AVAILABLE_SPECIES.has(pokemonId);
+  if (label.startsWith("Gigantamax")) return GIGANTAMAX_SHINY_AVAILABLE_SPECIES.has(pokemonId);
+  if (label.startsWith("Officiel Pokémon GO")) return SHINY_AVAILABLE_SPECIES.has(pokemonId);
+  // Costume événementiel classique : pas suivi par le classeur, sa présence
+  // dans costumes.json (scrapée du client au moment de l'événement) suffit.
+  return true;
 }
 
 // Un visuel qui ne peut pas être reconstruit juste à partir de
