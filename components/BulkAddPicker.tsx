@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import toast from "react-hot-toast";
 import pokemonList from "@/data/pokemon.json";
 import legendarySpecies from "@/data/legendary-species.json";
 import { REGIONS, getRegionName } from "@/lib/regions";
-import { getSpriteVariants, type SpriteVariant } from "@/lib/spriteVariants";
+import { getSpriteVariants, variantNeedsPinnedSprite, type SpriteVariant } from "@/lib/spriteVariants";
 import type { EntryCategory } from "@/lib/types";
 
 interface PokeListEntry {
@@ -74,6 +75,13 @@ export default function BulkAddPicker({
   const [submitting, setSubmitting] = useState(false);
   const [filters, setFilters] = useState<Set<VariantFilter>>(new Set());
   const [legendaryOnly, setLegendaryOnly] = useState(false);
+  // Portal vers document.body : cette fenêtre peut s'ouvrir depuis un
+  // contexte où un ancêtre .glass-card a un backdrop-filter, qui piège les
+  // position:fixed dans sa propre boîte au lieu du vrai viewport (bouton
+  // Fermer masqué/mal placé selon le scroll — voir SpritePicker dans
+  // AdminPanel.tsx pour le même correctif).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
   // Toutes les variantes de tous les Pokémon de la région/recherche sont
   // affichées d'un coup (comme un grand tableau de sprites, génération par
   // génération) plutôt que de devoir cliquer sur chaque Pokémon un par un :
@@ -130,7 +138,7 @@ export default function BulkAddPicker({
           // components/PokemonCard.tsx) — figer customSpriteUrl ici
           // empêcherait à tort la préférence de style (statique/animé) du
           // dresseur de jamais s'appliquer à ces entrées.
-          customSpriteUrl: (variant.tags.includes("costume") || variant.tags.includes("forme-regionale") || variant.gender) ? variant.url : "",
+          customSpriteUrl: variantNeedsPinnedSprite(variant) ? variant.url : "",
           tags: variant.tags,
           gender: variant.gender,
         });
@@ -176,7 +184,9 @@ export default function BulkAddPicker({
     );
   }, [searchResults, speciesByRegion, openRegion, filters, legendaryOnly]);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div
       className="fixed inset-0 flex items-center justify-center p-4"
       style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 500 }}
@@ -332,7 +342,8 @@ export default function BulkAddPicker({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
