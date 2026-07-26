@@ -451,25 +451,42 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Barres de boutons/filtres (toolbar admin, onglets de catégorie, chips de
-   filtre) qui ne doivent jamais passer sur 2-3 lignes en mobile, ni défiler
-   horizontalement (repéré comme trop invasif/peu naturel au toucher) :
-   restent sur une seule ligne de boutons en rétrécissant - min-width:0
-   annule le min-width:auto implicite des flex items, ce qui autorise le
-   texte à passer à la ligne DANS le bouton (grâce à white-space:normal)
-   plutôt que de forcer le bouton ou la barre à déborder. */
+   filtre) qui ne doivent jamais passer sur 2-3 lignes en mobile - même
+   recette éprouvée que .site-nav plus haut (texte qui reste horizontal et
+   lisible, juste plus petit), PAS le passage à la ligne dans le bouton :
+   testé en vrai, ça donnait des tours de lettres verticales illisibles dès
+   qu'il y avait plus de 3-4 boutons ou un libellé un peu long (ex: le nom du
+   dresseur inséré dans "X recherche"/"X peut donner"). overflow-x reste en
+   filet de sécurité silencieux (comme .site-nav) pour les cas vraiment
+   extrêmes (pseudo très long), pas le mécanisme principal. */
 @media (max-width: 640px) {
   .mobile-fit-row {
     flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
   .mobile-fit-row > * {
-    flex: 1 1 0;
-    min-width: 0;
-    white-space: normal !important;
-    text-align: center;
-    line-height: 1.15;
-    /* Filet de sécurité : même un seul mot très long (ex: "Déconnexion")
-       peut casser au milieu plutôt que forcer un débordement/scroll. */
-    overflow-wrap: anywhere;
+    flex-shrink: 0;
+  }
+  .mobile-fit-row {
+    gap: 4px !important;
+  }
+  .mobile-fit-row > button,
+  .mobile-fit-row > a {
+    white-space: nowrap !important;
+    font-size: 0.56rem !important;
+    padding: 3px 6px !important;
+    letter-spacing: 0 !important;
+  }
+  .mobile-fit-row > button > span,
+  .mobile-fit-row > a > span {
+    font-size: inherit !important;
+  }
+  .mobile-fit-row > input {
+    width: 84px;
+    flex-shrink: 1;
+    font-size: 0.72rem;
   }
 }
 
