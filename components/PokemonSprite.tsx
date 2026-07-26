@@ -98,6 +98,13 @@ interface PokemonSpriteProps {
   // Préférence de sprite du dresseur propriétaire de l'entrée (voir
   // Trainer.preferredSpriteStyle) : true = icône statique GO en premier.
   preferStatic?: boolean;
+  // true : le sprite remplit son conteneur (100%/100%) au lieu d'une taille
+  // fixe en pixels — utilisé sur les cartes de la grille, dont la largeur de
+  // colonne varie avec le nombre de colonnes (voir PokemonCard.tsx), pour
+  // qu'il rétrécisse avec la carte plutôt que de la faire déborder. `size`
+  // reste utilisé comme attribut HTML width/height (ratio intrinsèque,
+  // évite un saut de mise en page pendant le chargement).
+  fluid?: boolean;
 }
 
 export default function PokemonSprite({
@@ -110,6 +117,7 @@ export default function PokemonSprite({
   gigantamaxSlug,
   gigantamaxIconUrl,
   preferStatic = true,
+  fluid = false,
 }: PokemonSpriteProps) {
   const urls = useMemo(
     () => buildUrls(pokemonId, shiny, gigantamaxSlug, gigantamaxIconUrl, preferStatic),
@@ -136,7 +144,7 @@ export default function PokemonSprite({
   return (
     <span
       className={`pokemon-sprite ${className}`}
-      style={{ display: "inline-block", width: size, height: size, overflow: "hidden" }}
+      style={{ display: "inline-block", width: fluid ? "100%" : size, height: fluid ? "100%" : size, overflow: "hidden" }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

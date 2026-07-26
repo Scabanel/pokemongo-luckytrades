@@ -246,7 +246,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
           )}
         </header>
 
-        <div className="flex gap-2 mb-5 flex-wrap justify-center">
+        <div className="flex gap-2 mb-5 flex-wrap justify-center mobile-scroll-row">
           {CATEGORY_DISPLAY_ORDER.map((key) => (
             <button
               key={key}
@@ -297,7 +297,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
         </div>
 
         {!loading && (
-          <div className="flex flex-wrap items-center gap-2 mb-5 justify-center">
+          <div className="flex flex-wrap items-center gap-2 mb-5 justify-center mobile-scroll-row">
             <input
               type="text"
               value={search}
@@ -351,7 +351,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
           }}
         >
           {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
               {Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}
             </div>
           ) : visibleEntries.length === 0 ? (
@@ -359,7 +359,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
               {anyFilterActive ? "Aucun résultat pour ces filtres." : "Rien ici pour le moment."}
             </p>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
               {visibleEntries.map((entry, i) => (
                 <PokemonCard
                   key={entry.id}

@@ -326,7 +326,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           Volontairement discrète (petits boutons compacts) pour laisser la
           place à l'en-tête façon page publique juste en dessous. */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap mobile-scroll-row">
           {(["entries", ...(isAdmin ? (["trainers"] as const) : []), "account"] as const).map((tab) => (
             <button
               key={tab}
@@ -361,7 +361,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             </button>
           ))}
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap mobile-scroll-row">
           <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none", fontSize: "clamp(0.66rem, 2.8vw, 0.8rem)", padding: "clamp(5px, 1.6vw, 7px) clamp(9px, 3vw, 14px)" }}>
             Dresseurs
           </a>
@@ -441,7 +441,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             )}
           </header>
 
-          <div className="flex gap-2 mb-5 flex-wrap justify-center">
+          <div className="flex gap-2 mb-5 flex-wrap justify-center mobile-scroll-row">
             {CATEGORY_DISPLAY_ORDER.map((key) => (
               <button
                 key={key}
@@ -492,7 +492,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           </div>
 
           {!loadingEntries && (
-            <div className="flex flex-wrap items-center gap-2 mb-5 justify-center">
+            <div className="flex flex-wrap items-center gap-2 mb-5 justify-center mobile-scroll-row">
               <input
                 type="text"
                 value={search}
@@ -982,7 +982,7 @@ function EntrySection({
       )}
 
       {loading ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
           {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
         </div>
       ) : entries.length === 0 ? (
@@ -999,7 +999,7 @@ function EntrySection({
           Aucune entrée
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
           {entries.map((entry) => {
             const editable = canEditEntry(entry);
             return (

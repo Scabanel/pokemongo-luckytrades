@@ -608,7 +608,7 @@ export default function PokemonCard({
   return (
     <>
       <div
-        className="glass-card animate-scale-in p-4 flex flex-col items-center relative cursor-pointer select-none"
+        className="glass-card animate-scale-in p-2 sm:p-3 md:p-4 flex flex-col items-center relative cursor-pointer select-none"
         style={{
           ...style,
           ...(entry.backgroundUrl && {
@@ -781,8 +781,10 @@ export default function PokemonCard({
           </div>
         )}
 
-        {/* Main sprite */}
-        <div className="mt-7 mb-2 relative">
+        {/* Main sprite : largeur en % (maxWidth 134px) plutôt que fixe, pour
+            rétrécir avec la carte quand la grille passe à 3+ colonnes sur
+            mobile (voir prop `fluid` de PokemonSprite) sans la faire déborder. */}
+        <div className="mt-7 mb-2 relative" style={{ width: "100%", maxWidth: 134, aspectRatio: "1" }}>
           <div
             className="absolute inset-0 rounded-full blur-xl opacity-25"
             style={{ background:
@@ -798,6 +800,7 @@ export default function PokemonCard({
             pokemonId={entry.pokemonId}
             alt={entry.pokemonName}
             size={134}
+            fluid
             shiny={isShiny}
             customSpriteUrl={entry.customSpriteUrl}
             preferStatic={preferStatic}

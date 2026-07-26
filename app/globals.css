@@ -450,6 +450,22 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Barres de boutons/filtres (toolbar admin, onglets de catégorie, chips de
+   filtre) qui ne doivent jamais passer sur 2-3 lignes en mobile - même
+   traitement que .site-nav plus haut : défilement horizontal plutôt que
+   retour à la ligne, qui mangeait trop de hauteur utile. */
+@media (max-width: 640px) {
+  .mobile-scroll-row {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    justify-content: flex-start !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mobile-scroll-row > * {
+    flex-shrink: 0;
+  }
+}
+
 /* ── Input styles ── */
 .glass-input {
   background: rgba(255, 255, 255, 0.04);
