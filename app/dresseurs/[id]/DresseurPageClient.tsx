@@ -246,7 +246,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
           )}
         </header>
 
-        <div className="flex gap-2 mb-5 flex-wrap justify-center mobile-scroll-row">
+        <div className="flex gap-2 mb-5 flex-wrap justify-center mobile-fit-row">
           {CATEGORY_DISPLAY_ORDER.map((key) => (
             <button
               key={key}
@@ -297,7 +297,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
         </div>
 
         {!loading && (
-          <div className="flex flex-wrap items-center gap-2 mb-5 justify-center mobile-scroll-row">
+          <div className="flex flex-wrap items-center gap-2 mb-5 justify-center mobile-fit-row">
             <input
               type="text"
               value={search}

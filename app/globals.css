@@ -451,18 +451,25 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Barres de boutons/filtres (toolbar admin, onglets de catégorie, chips de
-   filtre) qui ne doivent jamais passer sur 2-3 lignes en mobile - même
-   traitement que .site-nav plus haut : défilement horizontal plutôt que
-   retour à la ligne, qui mangeait trop de hauteur utile. */
+   filtre) qui ne doivent jamais passer sur 2-3 lignes en mobile, ni défiler
+   horizontalement (repéré comme trop invasif/peu naturel au toucher) :
+   restent sur une seule ligne de boutons en rétrécissant - min-width:0
+   annule le min-width:auto implicite des flex items, ce qui autorise le
+   texte à passer à la ligne DANS le bouton (grâce à white-space:normal)
+   plutôt que de forcer le bouton ou la barre à déborder. */
 @media (max-width: 640px) {
-  .mobile-scroll-row {
+  .mobile-fit-row {
     flex-wrap: nowrap !important;
-    overflow-x: auto;
-    justify-content: flex-start !important;
-    -webkit-overflow-scrolling: touch;
   }
-  .mobile-scroll-row > * {
-    flex-shrink: 0;
+  .mobile-fit-row > * {
+    flex: 1 1 0;
+    min-width: 0;
+    white-space: normal !important;
+    text-align: center;
+    line-height: 1.15;
+    /* Filet de sécurité : même un seul mot très long (ex: "Déconnexion")
+       peut casser au milieu plutôt que forcer un débordement/scroll. */
+    overflow-wrap: anywhere;
   }
 }
 

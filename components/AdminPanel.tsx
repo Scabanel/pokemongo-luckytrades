@@ -326,7 +326,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           Volontairement discrète (petits boutons compacts) pour laisser la
           place à l'en-tête façon page publique juste en dessous. */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
-        <div className="flex gap-2 flex-wrap mobile-scroll-row">
+        <div className="flex gap-2 flex-wrap mobile-fit-row">
           {(["entries", ...(isAdmin ? (["trainers"] as const) : []), "account"] as const).map((tab) => (
             <button
               key={tab}
@@ -361,7 +361,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             </button>
           ))}
         </div>
-        <div className="flex gap-2 flex-wrap mobile-scroll-row">
+        <div className="flex gap-2 flex-wrap mobile-fit-row">
           <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none", fontSize: "clamp(0.66rem, 2.8vw, 0.8rem)", padding: "clamp(5px, 1.6vw, 7px) clamp(9px, 3vw, 14px)" }}>
             Dresseurs
           </a>
@@ -441,7 +441,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             )}
           </header>
 
-          <div className="flex gap-2 mb-5 flex-wrap justify-center mobile-scroll-row">
+          <div className="flex gap-2 mb-5 flex-wrap justify-center mobile-fit-row">
             {CATEGORY_DISPLAY_ORDER.map((key) => (
               <button
                 key={key}
@@ -492,7 +492,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           </div>
 
           {!loadingEntries && (
-            <div className="flex flex-wrap items-center gap-2 mb-5 justify-center mobile-scroll-row">
+            <div className="flex flex-wrap items-center gap-2 mb-5 justify-center mobile-fit-row">
               <input
                 type="text"
                 value={search}
