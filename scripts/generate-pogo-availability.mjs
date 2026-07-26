@@ -117,6 +117,11 @@ export async function scrapePogoAvailability(pokemonList) {
     .sort((a, b) => a - b).map((id) => withName(id, (n) => `${n} Gigamax`));
   const missingMega = speciesIds.filter((id) => available.has(id) && !megaAvailable.has(id) && megaCandidateIds.has(id))
     .sort((a, b) => a - b).map((id) => withName(id, (n) => `Méga-${n}`));
+  // Contrairement à Gigamax/Méga (limités à certaines espèces "candidates"),
+  // Dynamax n'a pas de restriction d'espèce dans les jeux principaux :
+  // n'importe quelle espèce sortie dans GO peut un jour l'avoir.
+  const missingDynamax = speciesIds.filter((id) => available.has(id) && !dynamaxAvailable.has(id))
+    .sort((a, b) => a - b).map((id) => withName(id, (n) => `${n} (Dynamax)`));
 
   return {
     availability: {
@@ -131,9 +136,12 @@ export async function scrapePogoAvailability(pokemonList) {
     },
     missing: {
       missingEntirely: await attachResolvedSprites(missingEntirely),
-      missingShiny: await attachResolvedSprites(missingShiny),
+      // shiny: true - montrer le sprite chromatique manquant, pas le normal
+      // (voir resolve-sprite.mjs).
+      missingShiny: await attachResolvedSprites(missingShiny, 8, true),
       missingGigantamax: await attachResolvedSprites(missingGigantamax),
       missingMega: await attachResolvedSprites(missingMega),
+      missingDynamax: await attachResolvedSprites(missingDynamax),
     },
   };
 }

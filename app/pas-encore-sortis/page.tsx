@@ -40,6 +40,11 @@ const MISSING_SECTIONS: { key: MissingCategory; title: string; hint: string }[] 
     hint: "Présents dans le jeu, mais leur version chromatique n'est pas encore sortie.",
   },
   {
+    key: "missingDynamax",
+    title: "Sans Dynamax",
+    hint: "Présents dans le jeu, mais leur forme Dynamax n'est pas encore sortie.",
+  },
+  {
     key: "missingGigantamax",
     title: "Sans Gigamax",
     hint: "Espèce pouvant Gigamax dans les jeux principaux, mais pas encore dans GO.",
