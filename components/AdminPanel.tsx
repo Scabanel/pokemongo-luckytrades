@@ -365,6 +365,11 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
           <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none", fontSize: "clamp(0.66rem, 2.8vw, 0.8rem)", padding: "clamp(5px, 1.6vw, 7px) clamp(9px, 3vw, 14px)" }}>
             Dresseurs
           </a>
+          {isAdmin && (
+            <a href="/admin" className="btn-secondary" style={{ textDecoration: "none", fontSize: "clamp(0.66rem, 2.8vw, 0.8rem)", padding: "clamp(5px, 1.6vw, 7px) clamp(9px, 3vw, 14px)" }}>
+              Interface admin
+            </a>
+          )}
           <button onClick={() => setShowAddForm(true)} className="btn-primary" style={{ fontSize: "clamp(0.66rem, 2.8vw, 0.8rem)", padding: "clamp(5px, 1.6vw, 7px) clamp(9px, 3vw, 14px)" }}>
             +Ajouter un Pokémon
           </button>
