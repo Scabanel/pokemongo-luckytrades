@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import toast from "react-hot-toast";
 import PokemonSprite from "./PokemonSprite";
 import PokemonCard from "./PokemonCard";
@@ -2030,11 +2031,21 @@ function SpritePicker({
   onSelect: (url: string | null) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [sprites, setSprites] = useState<{ url: string; label: string }[]>([]);
   const [fetched, setFetched] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [manualUrl, setManualUrl] = useState("");
   const [showCostumes, setShowCostumes] = useState(false);
+
+  // .glass-card (ancestor via EntryForm/ModalOverlay) a un backdrop-filter
+  // non conditionnel, ce qui piège toute position:fixed descendante dans SA
+  // propre boîte/scroll au lieu du vrai viewport (même effet qu'un
+  // transform). Portal vers document.body, comme components/PokemonCard.tsx
+  // le fait déjà pour sa fiche détail, pour que ce picker se positionne
+  // vraiment par rapport à l'écran (corrige le bouton Fermer masqué/mal
+  // placé selon le scroll du formulaire).
+  useEffect(() => { setMounted(true); }, []);
   // Ne propose que la variante qui correspond au shiny coché sur le
   // formulaire : montrer des sprites non-shiny quand on cherche un sprite
   // shiny (et inversement) n'a jamais de sens.
@@ -2119,7 +2130,7 @@ function SpritePicker({
         )}
       </div>
 
-      {open && (
+      {mounted && open && createPortal(
         <div
           className="fixed inset-0 flex items-center justify-center p-4"
           style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 400 }}
@@ -2228,7 +2239,8 @@ function SpritePicker({
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
@@ -2354,8 +2366,13 @@ function BackgroundPicker({
   onSelect: (url: string | null) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [search, setSearch] = useState("");
   const [showAll, setShowAll] = useState(false);
+
+  // Voir le commentaire équivalent dans SpritePicker : .glass-card piège les
+  // position:fixed descendantes via son backdrop-filter, d'où le portal.
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (!autoOpenKey) return;
@@ -2405,7 +2422,7 @@ function BackgroundPicker({
         )}
       </div>
 
-      {open && (
+      {mounted && open && createPortal(
         <div
           className="fixed inset-0 flex items-center justify-center p-4"
           style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 400 }}
@@ -2485,7 +2502,8 @@ function BackgroundPicker({
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
@@ -2532,7 +2550,16 @@ function getTagColor(tag: string) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function ModalOverlay({ children }: { children: React.ReactNode }) {
-  return (
+  // Portal vers document.body : ce formulaire contient lui-même
+  // SpritePicker/BackgroundPicker, dont les popups position:fixed seraient
+  // sinon piégés par le backdrop-filter de .glass-card (voir le commentaire
+  // dans SpritePicker) — bug du bouton Fermer masqué/mal placé selon le
+  // scroll, signalé plusieurs fois.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  if (!mounted) return null;
+
+  return createPortal(
     <div
       className="fixed inset-0 flex items-center justify-center p-4"
       style={{
@@ -2547,6 +2574,7 @@ function ModalOverlay({ children }: { children: React.ReactNode }) {
       >
         {children}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
