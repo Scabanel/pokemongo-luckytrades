@@ -451,25 +451,18 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Barres de boutons/filtres (toolbar admin, onglets de catégorie, chips de
-   filtre) qui ne doivent jamais passer sur 2-3 lignes en mobile - même
-   recette éprouvée que .site-nav plus haut (texte qui reste horizontal et
-   lisible, juste plus petit), PAS le passage à la ligne dans le bouton :
-   testé en vrai, ça donnait des tours de lettres verticales illisibles dès
-   qu'il y avait plus de 3-4 boutons ou un libellé un peu long (ex: le nom du
-   dresseur inséré dans "X recherche"/"X peut donner"). overflow-x reste en
-   filet de sécurité silencieux (comme .site-nav) pour les cas vraiment
-   extrêmes (pseudo très long), pas le mécanisme principal. */
+   filtre) en mobile : texte horizontal et lisible (même recette que
+   .site-nav plus haut), PAS de passage à la ligne dans le bouton (testé en
+   vrai : des tours de lettres verticales illisibles dès qu'il y avait plus
+   de 3-4 boutons ou un libellé un peu long, ex: le nom du dresseur inséré
+   dans "X recherche"). Décision explicite de Steven : à cette taille, un
+   retour à la ligne de la BARRE ENTIÈRE (boutons entiers qui passent sur une
+   2e ligne, pas de scroll horizontal) est préférable et jugé acceptable.
+   flex-wrap normal (pas de nowrap forcé) fait exactement ça. */
 @media (max-width: 640px) {
   .mobile-fit-row {
-    flex-wrap: nowrap !important;
-    justify-content: flex-start !important;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  .mobile-fit-row > * {
-    flex-shrink: 0;
-  }
-  .mobile-fit-row {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
     gap: 4px !important;
   }
   .mobile-fit-row > button,
