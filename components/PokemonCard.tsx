@@ -423,6 +423,14 @@ export default function PokemonCard({
               fontFamily: "Exo 2, sans-serif",
             }}>✨ Shiny</span>
           )}
+          {entry.exclusiveMove && (
+            <span style={{
+              background: "rgba(255,153,0,0.15)", border: "1px solid rgba(255,153,0,0.5)",
+              borderRadius: 999, padding: "3px 12px",
+              fontSize: "0.72rem", fontWeight: 700, color: "#ff9900",
+              fontFamily: "Exo 2, sans-serif",
+            }}>Attaque exclusive</span>
+          )}
         </div>
 
         {/* Tags in modal : dynamax/gigamax ont déjà leur badge dédié juste
@@ -818,6 +826,18 @@ export default function PokemonCard({
           >
             Réservé par {entry.tradePartnerName}
           </p>
+        )}
+
+        {/* Attaque exclusive */}
+        {entry.exclusiveMove && (
+          <span style={{
+            background: "rgba(255,153,0,0.18)", border: "1px solid rgba(255,153,0,0.5)",
+            borderRadius: 999, padding: "1px 6px", marginBottom: 4,
+            fontSize: "0.55rem", fontWeight: 700, color: "#ff9900",
+            fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
+          }}>
+            Attaque exclusive
+          </span>
         )}
 
         {/* Tags */}

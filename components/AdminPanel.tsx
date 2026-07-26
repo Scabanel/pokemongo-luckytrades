@@ -1093,6 +1093,7 @@ export function EntryForm(props: EntryFormProps) {
           notes: entry.notes ?? "",
           shiny: entry.shiny ?? false,
           gender: entry.gender ?? (null as string | null),
+          exclusiveMove: entry.exclusiveMove ?? false,
           customSpriteUrl: entry.customSpriteUrl ?? (null as string | null),
           backgroundUrl: entry.backgroundUrl ?? (null as string | null),
           priority: entry.priority ?? (null as number | null),
@@ -1117,6 +1118,7 @@ export function EntryForm(props: EntryFormProps) {
           notes: "",
           shiny: false,
           gender: null as string | null,
+          exclusiveMove: false,
           customSpriteUrl: null as string | null,
           backgroundUrl: null as string | null,
           priority: null as number | null,
@@ -1237,6 +1239,7 @@ export function EntryForm(props: EntryFormProps) {
         category: form.category,
         shiny: form.shiny,
         gender: form.gender,
+        exclusiveMove: form.exclusiveMove,
         customSpriteUrl: form.customSpriteUrl,
         backgroundUrl: form.backgroundUrl,
         trainerId: form.trainerId || null,
@@ -1281,6 +1284,7 @@ export function EntryForm(props: EntryFormProps) {
           notes: "",
           shiny: false,
           gender: null,
+          exclusiveMove: false,
           customSpriteUrl: null,
           backgroundUrl: null,
           priority: null,
@@ -1559,6 +1563,27 @@ export function EntryForm(props: EntryFormProps) {
               );
             })}
           </div>
+        </div>
+
+        {/* Attaque exclusive : Hurle-Temps (Dialga), Onde de Choc (Palkia),
+            Griffe Céleste (Zacian), Comète Draco (Zamazenta)... simple case
+            à cocher plutôt qu'une liste d'attaques à maintenir par espèce. */}
+        <div>
+          <label className="field-label">ATTAQUE EXCLUSIVE (optionnel)</label>
+          <button
+            type="button"
+            onClick={() => setForm((f) => ({ ...f, exclusiveMove: !f.exclusiveMove }))}
+            style={{
+              marginTop: 4, padding: "8px 16px", borderRadius: 10, cursor: "pointer",
+              border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem",
+              transition: "all 0.2s",
+              ...(form.exclusiveMove
+                ? { background: "rgba(255,153,0,0.15)", borderColor: "rgba(255,153,0,0.5)", color: "#ff9900" }
+                : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+            }}
+          >
+            {form.exclusiveMove ? "Attaque exclusive" : "Attaque normale"}
+          </button>
         </div>
 
         {/* Tags : liste fermée (voir SELECTABLE_TAGS), à côté de SHINY pour
