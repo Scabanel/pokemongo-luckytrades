@@ -1,79 +1,35 @@
 {
-  "missingShiny": [
-    {
-      "id": 487,
-      "name": "Giratina",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/487.gif",
-      "animated": true
-    },
-    {
-      "id": 492,
-      "name": "Shaymin",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/492.gif",
-      "animated": true
-    },
-    {
-      "id": 648,
-      "name": "Meloetta",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/648.gif",
-      "animated": true
-    },
-    {
-      "id": 720,
-      "name": "Hoopa",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/720.gif",
-      "animated": true
-    },
-    {
-      "id": 721,
-      "name": "Volcanion",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/721.gif",
-      "animated": true
-    },
-    {
-      "id": 789,
-      "name": "Cosmog",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/789.gif",
-      "animated": true
-    },
-    {
-      "id": 877,
-      "name": "Morpeko",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/877.gif",
-      "animated": true
-    },
-    {
-      "id": 888,
-      "name": "Zacian",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/888.gif",
-      "animated": true
-    },
-    {
-      "id": 889,
-      "name": "Zamazenta",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/889.gif",
-      "animated": true
-    },
-    {
-      "id": 891,
-      "name": "Wushours",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/891.gif",
-      "animated": true
-    },
-    {
-      "id": 893,
-      "name": "Zarude",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/893.gif",
-      "animated": true
-    },
-    {
-      "id": 905,
-      "name": "Amovénus",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/905.gif",
-      "animated": true
-    }
-  ],
   "missingEntirely": [
+    {
+      "id": 489,
+      "name": "Phione",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/489.gif",
+      "animated": true
+    },
+    {
+      "id": 490,
+      "name": "Manaphy",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/490.gif",
+      "animated": true
+    },
+    {
+      "id": 493,
+      "name": "Arceus",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/493.gif",
+      "animated": true
+    },
+    {
+      "id": 746,
+      "name": "Froussardine",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/746.gif",
+      "animated": true
+    },
+    {
+      "id": 771,
+      "name": "Concombaffe",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/771.gif",
+      "animated": true
+    },
     {
       "id": 772,
       "name": "Type:0",
@@ -108,6 +64,24 @@
       "id": 834,
       "name": "Torgamord",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/834.gif",
+      "animated": true
+    },
+    {
+      "id": 845,
+      "name": "Nigosier",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/845.gif",
+      "animated": true
+    },
+    {
+      "id": 846,
+      "name": "Embrochet",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/846.gif",
+      "animated": true
+    },
+    {
+      "id": 847,
+      "name": "Hastacuda",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/847.gif",
       "animated": true
     },
     {
@@ -471,6 +445,404 @@
       "animated": false
     }
   ],
+  "missingShiny": [
+    {
+      "id": 494,
+      "name": "Victini",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/494.gif",
+      "animated": true
+    },
+    {
+      "id": 718,
+      "name": "Zygarde",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/718.gif",
+      "animated": true
+    },
+    {
+      "id": 720,
+      "name": "Hoopa",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/720.gif",
+      "animated": true
+    },
+    {
+      "id": 721,
+      "name": "Volcanion",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/721.gif",
+      "animated": true
+    },
+    {
+      "id": 764,
+      "name": "Guérilande",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/764.gif",
+      "animated": true
+    },
+    {
+      "id": 778,
+      "name": "Mimiqui",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/778.gif",
+      "animated": true
+    },
+    {
+      "id": 789,
+      "name": "Cosmog",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/789.gif",
+      "animated": true
+    },
+    {
+      "id": 790,
+      "name": "Cosmovum",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/790.gif",
+      "animated": true
+    },
+    {
+      "id": 792,
+      "name": "Lunala",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/792.gif",
+      "animated": true
+    },
+    {
+      "id": 802,
+      "name": "Marshadow",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/802.gif",
+      "animated": true
+    },
+    {
+      "id": 803,
+      "name": "Vémini",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/803.gif",
+      "animated": true
+    },
+    {
+      "id": 804,
+      "name": "Mandrillon",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/804.gif",
+      "animated": true
+    },
+    {
+      "id": 807,
+      "name": "Zeraora",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/807.gif",
+      "animated": true
+    },
+    {
+      "id": 824,
+      "name": "Larvadar",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/824.gif",
+      "animated": true
+    },
+    {
+      "id": 825,
+      "name": "Coléodôme",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/825.gif",
+      "animated": true
+    },
+    {
+      "id": 826,
+      "name": "Astronelle",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/826.gif",
+      "animated": true
+    },
+    {
+      "id": 827,
+      "name": "Goupilou",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/827.gif",
+      "animated": true
+    },
+    {
+      "id": 828,
+      "name": "Roublenard",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/828.gif",
+      "animated": true
+    },
+    {
+      "id": 829,
+      "name": "Tournicoton",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/829.gif",
+      "animated": true
+    },
+    {
+      "id": 830,
+      "name": "Blancoton",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/830.gif",
+      "animated": true
+    },
+    {
+      "id": 835,
+      "name": "Voltoutou",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/835.gif",
+      "animated": true
+    },
+    {
+      "id": 836,
+      "name": "Fulgudog",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/836.gif",
+      "animated": true
+    },
+    {
+      "id": 837,
+      "name": "Charbi",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/837.gif",
+      "animated": true
+    },
+    {
+      "id": 838,
+      "name": "Wagomine",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/838.gif",
+      "animated": true
+    },
+    {
+      "id": 839,
+      "name": "Monthracite",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/839.gif",
+      "animated": true
+    },
+    {
+      "id": 840,
+      "name": "Verpom",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/840.gif",
+      "animated": true
+    },
+    {
+      "id": 841,
+      "name": "Pomdrapi",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/841.gif",
+      "animated": true
+    },
+    {
+      "id": 842,
+      "name": "Dratatin",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/842.gif",
+      "animated": true
+    },
+    {
+      "id": 843,
+      "name": "Dunaja",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/843.gif",
+      "animated": true
+    },
+    {
+      "id": 844,
+      "name": "Dunaconda",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/844.gif",
+      "animated": true
+    },
+    {
+      "id": 852,
+      "name": "Poulpaf",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/852.gif",
+      "animated": true
+    },
+    {
+      "id": 853,
+      "name": "Krakos",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/853.gif",
+      "animated": true
+    },
+    {
+      "id": 872,
+      "name": "Frissonille",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/872.gif",
+      "animated": true
+    },
+    {
+      "id": 873,
+      "name": "Beldeneige",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/873.gif",
+      "animated": true
+    },
+    {
+      "id": 874,
+      "name": "Dolman",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/874.gif",
+      "animated": true
+    },
+    {
+      "id": 885,
+      "name": "Fantyrm",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/885.gif",
+      "animated": true
+    },
+    {
+      "id": 886,
+      "name": "Dispareptil",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/886.gif",
+      "animated": true
+    },
+    {
+      "id": 887,
+      "name": "Lanssorien",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/887.gif",
+      "animated": true
+    },
+    {
+      "id": 890,
+      "name": "Éthernatos",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/890.gif",
+      "animated": true
+    },
+    {
+      "id": 891,
+      "name": "Wushours",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/891.gif",
+      "animated": true
+    },
+    {
+      "id": 892,
+      "name": "Shifours",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/892.gif",
+      "animated": true
+    },
+    {
+      "id": 893,
+      "name": "Zarude",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/893.gif",
+      "animated": true
+    },
+    {
+      "id": 905,
+      "name": "Amovénus",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/905.gif",
+      "animated": true
+    },
+    {
+      "id": 917,
+      "name": "Tissenboule",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/917.gif",
+      "animated": true
+    },
+    {
+      "id": 918,
+      "name": "Filentrappe",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/918.gif",
+      "animated": true
+    },
+    {
+      "id": 931,
+      "name": "Tapatoès",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/931.gif",
+      "animated": true
+    },
+    {
+      "id": 932,
+      "name": "Selutin",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/932.gif",
+      "animated": true
+    },
+    {
+      "id": 933,
+      "name": "Amassel",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/933.gif",
+      "animated": true
+    },
+    {
+      "id": 934,
+      "name": "Gigansel",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/934.gif",
+      "animated": true
+    },
+    {
+      "id": 940,
+      "name": "Zapétrel",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/940.gif",
+      "animated": true
+    },
+    {
+      "id": 941,
+      "name": "Fulgulairo",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/941.gif",
+      "animated": true
+    },
+    {
+      "id": 944,
+      "name": "Gribouraigne",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/944.gif",
+      "animated": true
+    },
+    {
+      "id": 945,
+      "name": "Tag-Tag",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/945.gif",
+      "animated": true
+    },
+    {
+      "id": 950,
+      "name": "Craparoi",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/950.gif",
+      "animated": true
+    },
+    {
+      "id": 955,
+      "name": "Flotillon",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/955.gif",
+      "animated": true
+    },
+    {
+      "id": 956,
+      "name": "Cléopsytra",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/956.gif",
+      "animated": true
+    },
+    {
+      "id": 969,
+      "name": "Germéclat",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/969.gif",
+      "animated": true
+    },
+    {
+      "id": 970,
+      "name": "Floréclat",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/970.gif",
+      "animated": true
+    },
+    {
+      "id": 971,
+      "name": "Toutombe",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/971.gif",
+      "animated": true
+    },
+    {
+      "id": 972,
+      "name": "Tomberro",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/972.gif",
+      "animated": true
+    },
+    {
+      "id": 973,
+      "name": "Flamenroule",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/973.gif",
+      "animated": true
+    },
+    {
+      "id": 978,
+      "name": "Nigirigon",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/978.gif",
+      "animated": true
+    },
+    {
+      "id": 1011,
+      "name": "Pomdramour",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1011.gif",
+      "animated": true
+    },
+    {
+      "id": 1012,
+      "name": "Poltchageist",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1012.gif",
+      "animated": true
+    },
+    {
+      "id": 1013,
+      "name": "Théffroyable",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1013.gif",
+      "animated": true
+    },
+    {
+      "id": 1019,
+      "name": "Pomdorochi",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1019.gif",
+      "animated": true
+    }
+  ],
   "missingGigantamax": [
     {
       "id": 133,
@@ -494,12 +866,6 @@
       "id": 826,
       "name": "Astronelle Gigamax",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/826.gif",
-      "animated": true
-    },
-    {
-      "id": 834,
-      "name": "Torgamord Gigamax",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/834.gif",
       "animated": true
     },
     {
@@ -539,21 +905,15 @@
       "animated": true
     },
     {
-      "id": 869,
-      "name": "Charmilly Gigamax",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/869.gif",
-      "animated": true
-    },
-    {
-      "id": 879,
-      "name": "Pachyradjah Gigamax",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/879.gif",
-      "animated": true
-    },
-    {
       "id": 884,
       "name": "Duralugon Gigamax",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/884.gif",
+      "animated": true
+    },
+    {
+      "id": 892,
+      "name": "Shifours Gigamax",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/892.gif",
       "animated": true
     }
   ],
@@ -583,9 +943,33 @@
       "animated": true
     },
     {
+      "id": 358,
+      "name": "Méga-Éoko",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/358.gif",
+      "animated": true
+    },
+    {
+      "id": 398,
+      "name": "Méga-Étouraptor",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/398.gif",
+      "animated": true
+    },
+    {
       "id": 478,
       "name": "Méga-Momartik",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/478.gif",
+      "animated": true
+    },
+    {
+      "id": 485,
+      "name": "Méga-Heatran",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/485.gif",
+      "animated": true
+    },
+    {
+      "id": 491,
+      "name": "Méga-Darkrai",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/491.gif",
       "animated": true
     },
     {
@@ -625,6 +1009,12 @@
       "animated": true
     },
     {
+      "id": 623,
+      "name": "Méga-Golemastoc",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/623.gif",
+      "animated": true
+    },
+    {
       "id": 652,
       "name": "Méga-Blindépique",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/652.gif",
@@ -655,6 +1045,12 @@
       "animated": true
     },
     {
+      "id": 678,
+      "name": "Méga-Mistigrix",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/678.gif",
+      "animated": true
+    },
+    {
       "id": 689,
       "name": "Méga-Golgopathe",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/689.gif",
@@ -679,9 +1075,45 @@
       "animated": true
     },
     {
+      "id": 740,
+      "name": "Méga-Crabominable",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/740.gif",
+      "animated": true
+    },
+    {
+      "id": 768,
+      "name": "Méga-Sarmuraï",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/768.gif",
+      "animated": true
+    },
+    {
       "id": 780,
       "name": "Méga-Draïeul",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/780.gif",
+      "animated": true
+    },
+    {
+      "id": 807,
+      "name": "Méga-Zeraora",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/807.gif",
+      "animated": true
+    },
+    {
+      "id": 970,
+      "name": "Méga-Floréclat",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/970.gif",
+      "animated": true
+    },
+    {
+      "id": 978,
+      "name": "Méga-Nigirigon",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/978.gif",
+      "animated": true
+    },
+    {
+      "id": 998,
+      "name": "Méga-Glaivodo",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/998.gif",
       "animated": true
     }
   ]
