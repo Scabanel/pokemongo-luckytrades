@@ -10,7 +10,7 @@ import { parseTags } from "@/lib/tags";
 import gigantamaxIcons from "@/data/gigantamax-icons.json";
 import pokemonList from "@/data/pokemon.json";
 import legendarySpecies from "@/data/legendary-species.json";
-import { getGenderForCustomSprite } from "@/lib/spriteVariants";
+import { getGenderForCustomSprite, canonicalCustomSpriteUrl } from "@/lib/spriteVariants";
 
 // Sprite officiel de forme Gigamax (aspect réellement différent en jeu), pour
 // la poignée d'espèces qui en ont un, voir scripts/generate-costume-catalog.mjs.
@@ -56,10 +56,14 @@ function getTagColor(tag: string) { return TAG_COLORS[tag.toLowerCase()] ?? DEFA
 // Tauros partagent le même pokemonId ET le même pokemonName "Tauros", seul
 // customSpriteUrl distingue la race exacte). "fond" est ignoré : c'est un
 // arrière-plan d'événement, pas une forme différente du Pokémon.
+// customSpriteUrl passe par canonicalCustomSpriteUrl (voir lib/spriteVariants.ts)
+// avant comparaison : un sprite de base figé (ajout solo) et un sprite de
+// base laissé vide (ajout en masse) sont la même variante, mais ne
+// matchaient pas tant qu'on comparait la chaîne brute.
 const FORM_TAGS = new Set(["costume", "gigamax", "dynamax"]);
-function formVariantKey(customSpriteUrl: string | null | undefined, rawTags: string | null | undefined): string {
+function formVariantKey(pokemonId: number, customSpriteUrl: string | null | undefined, shiny: boolean, rawTags: string | null | undefined): string {
   const relevantTags = parseTags(rawTags).filter((t) => FORM_TAGS.has(t.toLowerCase())).sort().join(",");
-  return `${customSpriteUrl || ""}|${relevantTags}`;
+  return `${canonicalCustomSpriteUrl(pokemonId, customSpriteUrl, shiny)}|${relevantTags}`;
 }
 
 // Badge ♂/♀ en haut à gauche du sprite : bleu/rouge classique des jeux
@@ -246,7 +250,7 @@ export default function PokemonCard({
   // entryTrainerId === viewerTrainerId (le visiteur connecté, pas forcément
   // le propriétaire de la tuile qu'on regarde).
   const entryTrainerId = entry.trainer?.id;
-  const entryFormKey = formVariantKey(entry.customSpriteUrl, entry.tags);
+  const entryFormKey = formVariantKey(entry.pokemonId, entry.customSpriteUrl, !!entry.shiny, entry.tags);
   const isOwnEntry = viewerTrainerId != null && entryTrainerId === viewerTrainerId;
   const availableFrom = useMemo(() => {
     if (entry.category !== "want" || entry.linkedEntryId || !allEntries || !isOwnEntry) return [];
@@ -259,7 +263,7 @@ export default function PokemonCard({
       if (other.completed) continue;
       if (other.pokemonId !== entry.pokemonId) continue;
       if (!!other.shiny !== !!entry.shiny) continue;
-      if (formVariantKey(other.customSpriteUrl, other.tags) !== entryFormKey) continue;
+      if (formVariantKey(other.pokemonId, other.customSpriteUrl, !!other.shiny, other.tags) !== entryFormKey) continue;
       if (seen.has(otherTrainerId)) continue;
       seen.add(otherTrainerId);
       matches.push({ id: otherTrainerId, name: other.trainer!.name });
@@ -281,7 +285,7 @@ export default function PokemonCard({
       !other.linkedEntryId &&
       other.pokemonId === entry.pokemonId &&
       !!other.shiny === !!entry.shiny &&
-      formVariantKey(other.customSpriteUrl, other.tags) === entryFormKey
+      formVariantKey(other.pokemonId, other.customSpriteUrl, !!other.shiny, other.tags) === entryFormKey
     );
   }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.pokemonId, entry.shiny, entryFormKey]);
 
@@ -299,7 +303,7 @@ export default function PokemonCard({
       !other.linkedEntryId &&
       other.pokemonId === entry.pokemonId &&
       !!other.shiny === !!entry.shiny &&
-      formVariantKey(other.customSpriteUrl, other.tags) === entryFormKey
+      formVariantKey(other.pokemonId, other.customSpriteUrl, !!other.shiny, other.tags) === entryFormKey
     );
   }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.linkedEntryId, entry.pokemonId, entry.shiny, entryFormKey]);
 

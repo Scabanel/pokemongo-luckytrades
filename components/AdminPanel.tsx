@@ -1875,7 +1875,14 @@ export function EntryForm(props: EntryFormProps) {
                   autoOpenKey={spriteAutoOpenKey}
                   onSelect={(url, label) => setForm((f) => ({
                     ...f,
-                    customSpriteUrl: url,
+                    // Le sprite de base ("Officiel Pokémon GO"[ ✨]) n'a pas
+                    // besoin d'être figé : PokemonCard le reconstruit déjà
+                    // dynamiquement depuis pokemonId+shiny (comme le fait
+                    // BulkAddPicker, voir variantNeedsPinnedSprite). Le figer
+                    // quand même ici cassait le matching "Dispo chez X
+                    // dresseurs"/badges want-give avec les entrées ajoutées en
+                    // masse du même Pokémon, qui elles restent vides.
+                    customSpriteUrl: label?.startsWith("Officiel Pokémon GO") ? null : url,
                     // Même convention que l'ajout en masse ("Sabelette
                     // Alola") : un sprite du catalogue officiel (label fourni)
                     // suffixe le nom, sinon on retombe sur le nom d'espèce nu.

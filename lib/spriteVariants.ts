@@ -201,6 +201,28 @@ export function variantNeedsPinnedSprite(variant: SpriteVariant): boolean {
   return variant.tags.includes("costume") || REGIONAL_FORM_PREFIX.test(variant.label) || !!variant.gender;
 }
 
+// Deux entrées du même Pokémon/shiny SANS costume/forme/genre (juste le
+// sprite de base) doivent être reconnues comme la même variante pour le
+// matching ("Dispo chez X dresseurs", badges want/give réciproques dans
+// PokemonCard.tsx) même si l'une a customSpriteUrl vide (ajout en masse, qui
+// laisse PokemonCard reconstruire dynamiquement) et l'autre un
+// customSpriteUrl figé sur exactement ce même sprite de base (ajout solo,
+// qui jusqu'ici figeait tout ce qui était cliqué sans distinction). Sans
+// cette normalisation, deux entrées visuellement identiques ne matchaient
+// jamais si elles n'avaient pas été ajoutées par le même chemin. Calculé au
+// rendu (jamais stocké), donc s'applique aux entrées déjà existantes sans
+// backfill à maintenir — même logique que le genre/légendaire ci-dessus.
+export function canonicalCustomSpriteUrl(
+  pokemonId: number,
+  customSpriteUrl: string | null | undefined,
+  shiny: boolean
+): string {
+  if (!customSpriteUrl) return "";
+  const baseLabel = shiny ? "Officiel Pokémon GO ✨" : "Officiel Pokémon GO";
+  const isBase = getSpriteVariants(pokemonId).some((v) => v.label === baseLabel && v.url === customSpriteUrl);
+  return isBase ? "" : customSpriteUrl;
+}
+
 // Pour les entrées ajoutées avant l'existence du champ PokemonEntry.gender :
 // retrouve le genre a posteriori en retrouvant, dans le catalogue, quel
 // costume correspond exactement à ce customSpriteUrl, puis en appliquant la
