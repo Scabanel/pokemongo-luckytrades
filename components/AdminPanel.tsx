@@ -1126,6 +1126,11 @@ export function EntryForm(props: EntryFormProps) {
   );
   const [loading, setLoading] = useState(false);
   const [pokeSearch, setPokeSearch] = useState("");
+  // Nom de l'espèce SANS suffixe de costume, pour pouvoir reconstruire
+  // pokemonName proprement à chaque changement de sprite (voir le onSelect
+  // du SpritePicker plus bas) au lieu d'empiler les suffixes les uns sur les
+  // autres si on change plusieurs fois de costume.
+  const [baseSpeciesName, setBaseSpeciesName] = useState(entry?.pokemonName ?? "");
   const [tradeSearch, setTradeSearch] = useState(entry?.tradeForPokemonName ?? "");
   const [showPokeSuggestions, setShowPokeSuggestions] = useState(false);
   const [showTradeSuggestions, setShowTradeSuggestions] = useState(false);
@@ -1408,6 +1413,7 @@ export function EntryForm(props: EntryFormProps) {
                     options={pokeSuggestions}
                     onSelect={(p) => {
                       setForm((f) => ({ ...f, pokemonName: p.frenchName, pokemonId: p.id }));
+                      setBaseSpeciesName(p.frenchName);
                       setPokeSearch(p.frenchName);
                       setShowPokeSuggestions(false);
                     }}
@@ -1823,7 +1829,16 @@ export function EntryForm(props: EntryFormProps) {
                   currentUrl={form.customSpriteUrl}
                   shiny={form.shiny}
                   autoOpenKey={spriteAutoOpenKey}
-                  onSelect={(url) => setForm((f) => ({ ...f, customSpriteUrl: url }))}
+                  onSelect={(url, label) => setForm((f) => ({
+                    ...f,
+                    customSpriteUrl: url,
+                    // Même convention que l'ajout en masse ("Sabelette
+                    // Alola") : un sprite du catalogue officiel (label fourni)
+                    // suffixe le nom, sinon on retombe sur le nom d'espèce nu.
+                    pokemonName: label && !label.startsWith("Officiel")
+                      ? `${baseSpeciesName || f.pokemonName} ${label}`
+                      : (baseSpeciesName || f.pokemonName),
+                  }))}
                 />
               </div>
             )}
@@ -2028,7 +2043,11 @@ function SpritePicker({
   currentUrl: string | null;
   shiny?: boolean;
   autoOpenKey?: number;
-  onSelect: (url: string | null) => void;
+  // label : présent uniquement quand la sélection vient du catalogue de
+  // costumes officiels (pas de la recherche PokéAPI générique ni de l'URL
+  // manuelle), pour que le parent (EntryForm) puisse aligner pokemonName sur
+  // la même convention que l'ajout en masse (ex: "Sabelette Alola").
+  onSelect: (url: string | null, label?: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -2211,7 +2230,7 @@ function SpritePicker({
                 <CostumeGrid
                   costumes={officialCostumes}
                   currentUrl={currentUrl}
-                  onSelect={(url) => { onSelect(url); setOpen(false); }}
+                  onSelect={(url, label) => { onSelect(url, label); setOpen(false); }}
                 />
               )}
             </div>
@@ -2253,7 +2272,7 @@ function CostumeGrid({
 }: {
   costumes: { label: string; url: string }[];
   currentUrl: string | null;
-  onSelect: (url: string) => void;
+  onSelect: (url: string, label: string) => void;
 }) {
   const [search, setSearch] = useState("");
   const allLabels = costumes.map((c) => c.label);
@@ -2288,7 +2307,7 @@ function CostumeGrid({
           <button
             key={url}
             type="button"
-            onClick={() => onSelect(url)}
+            onClick={() => onSelect(url, label)}
             style={{
               position: "relative",
               background: currentUrl === url ? "rgba(255,153,0,0.2)" : "rgba(255,255,255,0.03)",

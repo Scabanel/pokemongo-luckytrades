@@ -124,7 +124,11 @@ export default function BulkAddPicker({
         next.set(variant.key, {
           key: variant.key,
           pokemonId: species.id,
-          pokemonName: variant.tags.length > 0 && !variant.label.startsWith("Officiel")
+          // Basé sur le label, pas sur tags.length : les formes régionales
+          // n'ont plus de tag (voir variantNeedsPinnedSprite) mais doivent
+          // quand même apparaître dans le nom ("Sabelette Alola"), sinon
+          // elles seraient indiscernables d'un Sabelette normal dans la liste.
+          pokemonName: !variant.label.startsWith("Officiel")
             ? `${species.frenchName} ${variant.label}`
             : species.frenchName,
           shiny: variant.shiny,
