@@ -364,18 +364,6 @@
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_GoTour2026_y.png"
   },
   {
-    "label": "Terres Sauvages 2025",
-    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_GOWA2025_Global.png"
-  },
-  {
-    "label": "Terres Sauvages 2024",
-    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_GOWA_fukuoka.png"
-  },
-  {
-    "label": "Terres Sauvages 2024",
-    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_GOWA_fukuoka.png"
-  },
-  {
     "label": "Id Car Free Day",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_ID_CarFreeDay.png"
   },
@@ -902,6 +890,18 @@
   {
     "label": "Team Leader Yellow",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_TeamLeader_yellow.png"
+  },
+  {
+    "label": "Terres Sauvages 2024",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_GOWA_fukuoka.png"
+  },
+  {
+    "label": "Terres Sauvages 2024",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_GOWA_fukuoka.png"
+  },
+  {
+    "label": "Terres Sauvages 2025",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_GOWA2025_Global.png"
   },
   {
     "label": "Tok Mun Koto",
