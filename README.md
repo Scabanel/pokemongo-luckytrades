@@ -179,13 +179,20 @@ l'état du backup).
 
 `app/api/cron/refresh-data`, déclenché chaque semaine tard dans la nuit
 (mercredi 02h UTC, voir `vercel.json`), refait tourner les scrapes de
-`npm run gen:costumes`/`gen:missing`/`gen:backgrounds`/`gen:events` et
+`npm run gen:costumes`/`gen:pogo`/`gen:backgrounds`/`gen:events` et
 commit sur GitHub les fichiers qui ont changé (`data/costumes.json`,
-`data/go-icons.json`, `data/backgrounds.json`, `data/missing-in-go.json`,
-`data/pokemon-backgrounds.json`, `data/upcoming-events.json`, et les
-nouvelles images dans `public/event-backgrounds/`), même mécanisme et
-mêmes variables d'environnement que le backup ci-dessus. Un commit sur
-`main` déclenche un redéploiement Vercel qui embarque les données à jour.
+`data/go-icons.json`, `data/backgrounds.json`, `data/pogo-availability.json`,
+`data/missing-in-go.json`, `data/pokemon-backgrounds.json`,
+`data/upcoming-events.json`, et les nouvelles images dans
+`public/event-backgrounds/`), même mécanisme et mêmes variables
+d'environnement que le backup ci-dessus. Un commit sur `main` déclenche un
+redéploiement Vercel qui embarque les données à jour.
+
+`data/pogo-availability.json`/`data/missing-in-go.json` viennent d'un Google
+Sheet que Steven tient à jour lui-même (source de vérité "qu'est-ce qui est
+réellement sorti dans Pokémon GO", voir `scripts/generate-pogo-availability.mjs`
+et `docs/CONTEXT.md`) — `gen:missing` (margxt.fr) reste disponible en
+autonome mais n'est plus appelé par ce cron.
 
 **Important** : cette route ne touche jamais la base de données. Les
 listes d'échanges de chaque dresseur vivent dans Postgres (Supabase),
@@ -206,7 +213,8 @@ le reste attend l'exécution suivante.
 - `app/pas-encore-sortis/page.tsx` — Pokémon/formes/shiny pas encore sortis dans GO
 - `app/evenements/page.tsx` — événements Pokémon GO en cours et à venir (source margxt.fr)
 - `components/SiteNav.tsx` — navigation partagée entre ces pages publiques
-- `app/mon-espace/` — espace personnel de chaque dresseur (auth Supabase, voir `lib/auth.ts` et `components/AuthForm.tsx`) ; `app/admin/` ne fait plus que rediriger les anciens liens
+- `app/mon-espace/` — espace personnel de chaque dresseur (auth Supabase, voir `lib/auth.ts` et `components/AuthForm.tsx`)
+- `app/admin/` — hub admin dédié (dresseurs/échanges, pas-encore-sortis, export, gestion des fonds via `components/BackgroundManager.tsx`), accessible depuis le lien "Interface admin" dans `AdminPanel.tsx`
 - `components/AdminPanel.tsx` — CRUD des échanges et dresseurs ; par défaut chacun ne voit/modifie que ses propres échanges, l'admin a en plus un onglet "Tous les dresseurs"
 - `components/PokemonCard.tsx` — carte affichée sur les pages publiques
 - `lib/types.ts` — types partagés (`Trainer`, `PokemonEntry`)

@@ -1,5 +1,12 @@
 # Règles du projet — pokemongo-luckytrades
 
+## Contexte accumulé
+
+Avant de retoucher au matching (want/give/mirror), aux sprites/costumes, aux
+fonds d'événement, ou à la pipeline de données de jeu (Google Sheet, cron
+refresh-data), lire `docs/CONTEXT.md` — ça documente les bugs déjà
+rencontrés et corrigés (et pourquoi), pour ne pas les réintroduire.
+
 ## Pas d'emoji sur le site
 
 N'utilise jamais d'emoji ni de symboles décoratifs (✓, ✕, ←, →, ⚙️, 🎒, etc.) dans
