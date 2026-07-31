@@ -66,6 +66,17 @@ function formVariantKey(pokemonId: number, customSpriteUrl: string | null | unde
   return `${canonicalCustomSpriteUrl(pokemonId, customSpriteUrl)}|${relevantTags}`;
 }
 
+// "fond" reste hors de formVariantKey (ce n'est pas une forme différente du
+// Pokémon), mais un WANT n'est pas toujours indifférent au fond : beaucoup
+// de dresseurs recherchent justement le souvenir d'un événement/lieu précis
+// (ex: le fond de GO Fest Copenhague sur un légendaire), pas n'importe quel
+// exemplaire de l'espèce. Un want SANS fond précisé reste satisfait par
+// n'importe quel give/mirror (fond ou pas) ; un want AVEC un fond précisé
+// n'est satisfait que par un give/mirror ayant EXACTEMENT ce même fond.
+function wantedBackgroundMatches(wantBackgroundUrl: string | null | undefined, otherBackgroundUrl: string | null | undefined): boolean {
+  return !wantBackgroundUrl || wantBackgroundUrl === otherBackgroundUrl;
+}
+
 // Badge ♂/♀ en haut à gauche du sprite : bleu/rouge classique des jeux
 // Pokémon, pour distinguer les quelques espèces à sprite différent selon
 // le genre (Pyroar, Frillish, Indeedee...).
@@ -264,12 +275,13 @@ export default function PokemonCard({
       if (other.pokemonId !== entry.pokemonId) continue;
       if (!!other.shiny !== !!entry.shiny) continue;
       if (formVariantKey(other.pokemonId, other.customSpriteUrl, other.tags) !== entryFormKey) continue;
+      if (!wantedBackgroundMatches(entry.backgroundUrl, other.backgroundUrl)) continue;
       if (seen.has(otherTrainerId)) continue;
       seen.add(otherTrainerId);
       matches.push({ id: otherTrainerId, name: other.trainer!.name });
     }
     return matches;
-  }, [allEntries, entry.category, entry.linkedEntryId, entry.pokemonId, entry.shiny, entryTrainerId, entryFormKey, isOwnEntry]);
+  }, [allEntries, entry.category, entry.linkedEntryId, entry.pokemonId, entry.shiny, entry.backgroundUrl, entryTrainerId, entryFormKey, isOwnEntry]);
 
   // Inverse du calcul ci-dessus : sur une tuile give/mirror qui N'appartient
   // PAS au visiteur, est-ce que LUI recherche ce Pokémon (want non lié, même
@@ -285,9 +297,10 @@ export default function PokemonCard({
       !other.linkedEntryId &&
       other.pokemonId === entry.pokemonId &&
       !!other.shiny === !!entry.shiny &&
-      formVariantKey(other.pokemonId, other.customSpriteUrl, other.tags) === entryFormKey
+      formVariantKey(other.pokemonId, other.customSpriteUrl, other.tags) === entryFormKey &&
+      wantedBackgroundMatches(other.backgroundUrl, entry.backgroundUrl)
     );
-  }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.pokemonId, entry.shiny, entryFormKey]);
+  }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.pokemonId, entry.shiny, entry.backgroundUrl, entryFormKey]);
 
   // Symétrique : sur une tuile want qui N'appartient PAS au visiteur, est-ce
   // que LUI peut donner ce Pokémon (give/mirror non lié, même forme/shiny) ?
@@ -303,9 +316,10 @@ export default function PokemonCard({
       !other.linkedEntryId &&
       other.pokemonId === entry.pokemonId &&
       !!other.shiny === !!entry.shiny &&
-      formVariantKey(other.pokemonId, other.customSpriteUrl, other.tags) === entryFormKey
+      formVariantKey(other.pokemonId, other.customSpriteUrl, other.tags) === entryFormKey &&
+      wantedBackgroundMatches(entry.backgroundUrl, other.backgroundUrl)
     );
-  }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.linkedEntryId, entry.pokemonId, entry.shiny, entryFormKey]);
+  }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.linkedEntryId, entry.pokemonId, entry.shiny, entry.backgroundUrl, entryFormKey]);
 
   useEffect(() => { setMounted(true); }, []);
 
