@@ -33,8 +33,20 @@ const FEATURES = [
     text: "Indique la quantité disponible d'un Pokémon à donner, et décompte-la au fur et à mesure des échanges.",
   },
   {
+    title: "Ajout toujours à jour avec le vrai jeu",
+    text: "Quand tu ajoutes un Pokémon, seules les variantes (Shiny, Dynamax, Gigamax, formes) réellement sorties dans Pokémon GO te sont proposées, mises à jour automatiquement au fil des sorties.",
+  },
+  {
+    title: "Recherches entre dresseurs plus fiables",
+    text: "\"Dispo chez X Dresseurs\" et les alertes \"Vous recherchez celui-ci !\"/\"Tu as celui recherché !\" détectent maintenant correctement les correspondances, quelle que soit la façon dont chacun a ajouté son Pokémon.",
+  },
+  {
+    title: "Le fond compte, quand tu le précises",
+    text: "Tu recherches un Pokémon avec le souvenir d'un événement précis ? Précise le fond sur ton entrée \"Je recherche\" : seuls les dresseurs ayant exactement ce fond remonteront comme correspondance.",
+  },
+  {
     title: "Pokémon pas encore disponibles",
-    text: "Consulte la liste des Pokémon (et formes shiny, Gigamax, Méga) qui ne sont pas encore sortis dans Pokémon GO.",
+    text: "Consulte la liste des Pokémon (et formes shiny, Dynamax, Gigamax, Méga) qui ne sont pas encore sortis dans Pokémon GO, à jour en continu.",
   },
   {
     title: "Événements de la communauté",
@@ -47,6 +59,10 @@ const FEATURES = [
   {
     title: "Partage ta page en un clic",
     text: "Copie le lien de ta page dresseur pour le balancer direct sur Discord.",
+  },
+  {
+    title: "Renomme ton profil",
+    text: "Une faute de frappe à l'inscription ? Change ton nom de dresseur à tout moment depuis Mon compte, ton lien de partage ne bouge pas.",
   },
 ];
 
