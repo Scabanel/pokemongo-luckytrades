@@ -2835,18 +2835,6 @@
       "animated": true
     },
     {
-      "id": 349,
-      "name": "Barpau (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/349.gif",
-      "animated": true
-    },
-    {
-      "id": 350,
-      "name": "Milobellus (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/350.gif",
-      "animated": true
-    },
-    {
       "id": 351,
       "name": "Morphéo (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/351.gif",
