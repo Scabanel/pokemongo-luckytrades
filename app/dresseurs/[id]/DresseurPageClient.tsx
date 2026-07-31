@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import ParticleBackground from "@/components/ParticleBackground";
 import PokemonCard from "@/components/PokemonCard";
 import CardSkeleton from "@/components/CardSkeleton";
+import CopyPogoShinyFilterButton from "@/components/CopyPogoShinyFilterButton";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import type { PokeOption } from "@/components/AdminPanel";
@@ -350,6 +351,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
             minHeight: 300,
           }}
         >
+          {!loading && <CopyPogoShinyFilterButton entries={entriesByTab[activeTab]} />}
           {loading ? (
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
               {Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}

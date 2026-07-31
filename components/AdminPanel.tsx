@@ -15,6 +15,7 @@ import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { createClient } from "@/lib/supabase/client";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
 import BulkAddPicker from "./BulkAddPicker";
+import CopyPogoShinyFilterButton from "./CopyPogoShinyFilterButton";
 import { detectCostumeGender, isCostumeShinyReleased, AVAILABLE_SPECIES, DYNAMAX_AVAILABLE_SPECIES, GIGANTAMAX_AVAILABLE_SPECIES } from "@/lib/spriteVariants";
 
 // La liste des dresseurs en admin inclut toujours le compte d'entrées
@@ -583,6 +584,11 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               minHeight: 300,
             }}
           >
+            {!loadingEntries && (
+              <CopyPogoShinyFilterButton
+                entries={{ mirror: myMirrors, want: myWants, give: myGives }[activeCategory]}
+              />
+            )}
             <EntrySection
               entries={listByCategory[activeCategory]}
               allEntries={entries}
