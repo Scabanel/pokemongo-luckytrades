@@ -61,9 +61,9 @@ function getTagColor(tag: string) { return TAG_COLORS[tag.toLowerCase()] ?? DEFA
 // base laissé vide (ajout en masse) sont la même variante, mais ne
 // matchaient pas tant qu'on comparait la chaîne brute.
 const FORM_TAGS = new Set(["costume", "gigamax", "dynamax"]);
-function formVariantKey(pokemonId: number, customSpriteUrl: string | null | undefined, shiny: boolean, rawTags: string | null | undefined): string {
+function formVariantKey(pokemonId: number, customSpriteUrl: string | null | undefined, rawTags: string | null | undefined): string {
   const relevantTags = parseTags(rawTags).filter((t) => FORM_TAGS.has(t.toLowerCase())).sort().join(",");
-  return `${canonicalCustomSpriteUrl(pokemonId, customSpriteUrl, shiny)}|${relevantTags}`;
+  return `${canonicalCustomSpriteUrl(pokemonId, customSpriteUrl)}|${relevantTags}`;
 }
 
 // Badge ♂/♀ en haut à gauche du sprite : bleu/rouge classique des jeux
@@ -250,7 +250,7 @@ export default function PokemonCard({
   // entryTrainerId === viewerTrainerId (le visiteur connecté, pas forcément
   // le propriétaire de la tuile qu'on regarde).
   const entryTrainerId = entry.trainer?.id;
-  const entryFormKey = formVariantKey(entry.pokemonId, entry.customSpriteUrl, !!entry.shiny, entry.tags);
+  const entryFormKey = formVariantKey(entry.pokemonId, entry.customSpriteUrl, entry.tags);
   const isOwnEntry = viewerTrainerId != null && entryTrainerId === viewerTrainerId;
   const availableFrom = useMemo(() => {
     if (entry.category !== "want" || entry.linkedEntryId || !allEntries || !isOwnEntry) return [];
@@ -263,7 +263,7 @@ export default function PokemonCard({
       if (other.completed) continue;
       if (other.pokemonId !== entry.pokemonId) continue;
       if (!!other.shiny !== !!entry.shiny) continue;
-      if (formVariantKey(other.pokemonId, other.customSpriteUrl, !!other.shiny, other.tags) !== entryFormKey) continue;
+      if (formVariantKey(other.pokemonId, other.customSpriteUrl, other.tags) !== entryFormKey) continue;
       if (seen.has(otherTrainerId)) continue;
       seen.add(otherTrainerId);
       matches.push({ id: otherTrainerId, name: other.trainer!.name });
@@ -285,7 +285,7 @@ export default function PokemonCard({
       !other.linkedEntryId &&
       other.pokemonId === entry.pokemonId &&
       !!other.shiny === !!entry.shiny &&
-      formVariantKey(other.pokemonId, other.customSpriteUrl, !!other.shiny, other.tags) === entryFormKey
+      formVariantKey(other.pokemonId, other.customSpriteUrl, other.tags) === entryFormKey
     );
   }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.pokemonId, entry.shiny, entryFormKey]);
 
@@ -303,7 +303,7 @@ export default function PokemonCard({
       !other.linkedEntryId &&
       other.pokemonId === entry.pokemonId &&
       !!other.shiny === !!entry.shiny &&
-      formVariantKey(other.pokemonId, other.customSpriteUrl, !!other.shiny, other.tags) === entryFormKey
+      formVariantKey(other.pokemonId, other.customSpriteUrl, other.tags) === entryFormKey
     );
   }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.linkedEntryId, entry.pokemonId, entry.shiny, entryFormKey]);
 
@@ -915,7 +915,12 @@ export default function PokemonCard({
               whiteSpace: "nowrap",
             }}
           >
-            Dispo chez {availableFrom.length} Dresseur{availableFrom.length > 1 ? "s" : ""}
+            {/* Texte complet sur desktop, version courte sur mobile : la
+                tuile ne fait plus que ~80-90px de large sur un petit écran
+                (3 par rangée), "Dispo chez X Dresseurs" y débordait
+                largement et cassait la mise en page de toute la grille. */}
+            <span className="hidden sm:inline">Dispo chez {availableFrom.length} Dresseur{availableFrom.length > 1 ? "s" : ""}</span>
+            <span className="sm:hidden">{availableFrom.length} dispo</span>
           </button>
         )}
 
@@ -931,7 +936,8 @@ export default function PokemonCard({
               whiteSpace: "nowrap",
             }}
           >
-            Vous recherchez celui-ci !
+            <span className="hidden sm:inline">Vous recherchez celui-ci !</span>
+            <span className="sm:hidden">Recherché !</span>
           </div>
         )}
 
@@ -947,7 +953,8 @@ export default function PokemonCard({
               whiteSpace: "nowrap",
             }}
           >
-            Tu as celui recherché !
+            <span className="hidden sm:inline">Tu as celui recherché !</span>
+            <span className="sm:hidden">Tu l&apos;as !</span>
           </div>
         )}
       </div>

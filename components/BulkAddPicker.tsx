@@ -196,11 +196,13 @@ export default function BulkAddPicker({
 
   if (!mounted) return null;
 
+  // Pas de fermeture au clic sur le fond : un clic accidentel en dehors
+  // (fréquent au pouce sur mobile) effaçait toute la sélection en cours sans
+  // confirmation. Seul le bouton "Fermer" ferme désormais la fenêtre.
   return createPortal(
     <div
       className="fixed inset-0 flex items-center justify-center p-4"
       style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 500 }}
-      onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
         className="glass-card overflow-y-auto"

@@ -201,26 +201,26 @@ export function variantNeedsPinnedSprite(variant: SpriteVariant): boolean {
   return variant.tags.includes("costume") || REGIONAL_FORM_PREFIX.test(variant.label) || !!variant.gender;
 }
 
-// Deux entrées du même Pokémon/shiny SANS costume/forme/genre (juste le
-// sprite de base) doivent être reconnues comme la même variante pour le
-// matching ("Dispo chez X dresseurs", badges want/give réciproques dans
-// PokemonCard.tsx) même si l'une a customSpriteUrl vide (ajout en masse, qui
-// laisse PokemonCard reconstruire dynamiquement) et l'autre un
-// customSpriteUrl figé sur exactement ce même sprite de base (ajout solo,
-// qui jusqu'ici figeait tout ce qui était cliqué sans distinction). Sans
-// cette normalisation, deux entrées visuellement identiques ne matchaient
-// jamais si elles n'avaient pas été ajoutées par le même chemin. Calculé au
+// customSpriteUrl ne représente une VRAIE variante distincte en jeu (pour le
+// matching "Dispo chez X dresseurs", badges want/give réciproques dans
+// PokemonCard.tsx) que s'il correspond exactement à un costume/forme
+// régionale/genre du catalogue (variantNeedsPinnedSprite) — càd une entrée
+// qui EXISTE dans data/costumes.json avec une apparence réellement
+// différente en jeu. Toute autre URL (sprite animé/officiel PokeAPI d'un
+// Pokémon sans aucun costume comme Kyogre/Groudon, choix esthétique
+// personnel, URL manuelle...) ne change rien à ce que le Pokémon EST dans
+// GO : deux dresseurs ayant chacun choisi un style d'affichage différent
+// pour le même Kyogre de base doivent quand même matcher entre eux. Avant ce
+// correctif, seule l'URL exacte de "Officiel Pokémon GO" était reconnue
+// comme équivalente à vide ; un sprite animé pris ailleurs (fetchAllSprites)
+// restait à tort traité comme une forme différente, cassant le matching
+// alors qu'aucune vraie variante n'existe pour ces espèces. Calculé au
 // rendu (jamais stocké), donc s'applique aux entrées déjà existantes sans
 // backfill à maintenir — même logique que le genre/légendaire ci-dessus.
-export function canonicalCustomSpriteUrl(
-  pokemonId: number,
-  customSpriteUrl: string | null | undefined,
-  shiny: boolean
-): string {
+export function canonicalCustomSpriteUrl(pokemonId: number, customSpriteUrl: string | null | undefined): string {
   if (!customSpriteUrl) return "";
-  const baseLabel = shiny ? "Officiel Pokémon GO ✨" : "Officiel Pokémon GO";
-  const isBase = getSpriteVariants(pokemonId).some((v) => v.label === baseLabel && v.url === customSpriteUrl);
-  return isBase ? "" : customSpriteUrl;
+  const isRealVariant = getSpriteVariants(pokemonId).some((v) => v.url === customSpriteUrl && variantNeedsPinnedSprite(v));
+  return isRealVariant ? customSpriteUrl : "";
 }
 
 // Pour les entrées ajoutées avant l'existence du champ PokemonEntry.gender :
