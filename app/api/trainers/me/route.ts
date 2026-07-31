@@ -13,8 +13,11 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
-  const { team, level, friendCode, preferredSpriteStyle, city } = await request.json();
+  const { name, team, level, friendCode, preferredSpriteStyle, city } = await request.json();
 
+  if (name !== undefined && !name?.trim()) {
+    return NextResponse.json({ error: "Nom obligatoire" }, { status: 400 });
+  }
   if (team !== undefined && team !== null && !TEAMS.includes(team)) {
     return NextResponse.json({ error: "Équipe invalide" }, { status: 400 });
   }
@@ -30,18 +33,27 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Niveau invalide (1-80)" }, { status: 400 });
   }
 
-  const updated = await prisma.trainer.update({
-    where: { id: trainer.id },
-    data: {
-      ...(team !== undefined && { team: team || null }),
-      ...(level !== undefined && { level: parsedLevel }),
-      ...(friendCode !== undefined && {
-        friendCode: typeof friendCode === "string" ? friendCode.trim() || null : null,
-      }),
-      ...(preferredSpriteStyle !== undefined && { preferredSpriteStyle }),
-      ...(city !== undefined && { city: city.trim() }),
-    },
-  });
-
-  return NextResponse.json(updated);
+  try {
+    const updated = await prisma.trainer.update({
+      where: { id: trainer.id },
+      data: {
+        ...(name !== undefined && { name: name.trim() }),
+        ...(team !== undefined && { team: team || null }),
+        ...(level !== undefined && { level: parsedLevel }),
+        ...(friendCode !== undefined && {
+          friendCode: typeof friendCode === "string" ? friendCode.trim() || null : null,
+        }),
+        ...(preferredSpriteStyle !== undefined && { preferredSpriteStyle }),
+        ...(city !== undefined && { city: city.trim() }),
+      },
+    });
+    return NextResponse.json(updated);
+  } catch (err: unknown) {
+    // Contrainte unique sur Trainer.name (voir prisma/schema.prisma) : un
+    // autre dresseur a déjà exactement ce nom.
+    if (typeof err === "object" && err !== null && "code" in err && err.code === "P2002") {
+      return NextResponse.json({ error: "Ce nom de dresseur est déjà pris" }, { status: 409 });
+    }
+    throw err;
+  }
 }

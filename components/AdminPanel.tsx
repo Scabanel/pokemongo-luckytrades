@@ -792,6 +792,7 @@ function MyAccountPanel({
   trainer: Trainer | null;
   onSaved: (trainer: Trainer) => void;
 }) {
+  const [name, setName] = useState(trainer?.name ?? "");
   const [team, setTeam] = useState(trainer?.team ?? "");
   const [level, setLevel] = useState(trainer?.level != null ? String(trainer.level) : "");
   const [friendCode, setFriendCode] = useState(trainer?.friendCode ?? "");
@@ -800,6 +801,7 @@ function MyAccountPanel({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setName(trainer?.name ?? "");
     setTeam(trainer?.team ?? "");
     setLevel(trainer?.level != null ? String(trainer.level) : "");
     setFriendCode(trainer?.friendCode ?? "");
@@ -825,6 +827,7 @@ function MyAccountPanel({
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          name,
           team: team || null,
           level: level ? Number(level) : null,
           friendCode: friendCode || null,
@@ -832,12 +835,15 @@ function MyAccountPanel({
           preferredSpriteStyle: spriteStyle,
         }),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || "Erreur lors de la mise à jour");
+      }
       const updated = await res.json();
       onSaved(updated);
       toast.success("Profil mis à jour");
-    } catch {
-      toast.error("Erreur lors de la mise à jour");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Erreur lors de la mise à jour");
     } finally {
       setLoading(false);
     }
@@ -869,6 +875,20 @@ function MyAccountPanel({
         )}
       </div>
       <form onSubmit={handleSave} className="flex flex-col gap-4">
+        <div>
+          <label className="field-label">NOM DE DRESSEUR</label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="glass-input mt-1"
+            placeholder="Ton nom de dresseur"
+            required
+          />
+          <p style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", marginTop: 4 }}>
+            Visible par tout le monde sur ton catalogue public. Le lien de partage ne change pas si tu le modifies.
+          </p>
+        </div>
         <div>
           <label className="field-label">VILLE</label>
           <input
