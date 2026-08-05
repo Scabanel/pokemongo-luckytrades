@@ -639,18 +639,6 @@
       "animated": true
     },
     {
-      "id": 872,
-      "name": "Frissonille",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/872.gif",
-      "animated": true
-    },
-    {
-      "id": 873,
-      "name": "Beldeneige",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/873.gif",
-      "animated": true
-    },
-    {
       "id": 874,
       "name": "Dolman",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/874.gif",
@@ -1680,12 +1668,6 @@
       "id": 124,
       "name": "Lippoutou (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/124.gif",
-      "animated": true
-    },
-    {
-      "id": 126,
-      "name": "Magmar (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/126.gif",
       "animated": true
     },
     {
@@ -3444,12 +3426,6 @@
       "id": 465,
       "name": "Bouldeneu (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/465.gif",
-      "animated": true
-    },
-    {
-      "id": 467,
-      "name": "Maganon (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/467.gif",
       "animated": true
     },
     {
