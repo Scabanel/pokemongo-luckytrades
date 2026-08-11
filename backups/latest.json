@@ -1,5 +1,5 @@
 {
-  "exportedAt": "2026-08-10T06:56:23.377Z",
+  "exportedAt": "2026-08-11T06:29:06.790Z",
   "version": 1,
   "trainers": [
     {
@@ -21654,7 +21654,7 @@
       "id": "e867b530-a41e-402a-b728-0b59709dcaa3",
       "pokemonName": "Branette",
       "pokemonId": 354,
-      "category": "mirror",
+      "category": "give",
       "trainerId": "7b9167b1-e04b-4e1d-aa23-722eb77adaba",
       "tradeForPokemonName": null,
       "tradeForPokemonId": null,
@@ -21673,7 +21673,7 @@
       "tags": null,
       "completed": false,
       "createdAt": "2026-07-25T14:42:10.499Z",
-      "updatedAt": "2026-07-25T14:42:10.499Z",
+      "updatedAt": "2026-08-10T07:27:28.099Z",
       "trainer": {
         "id": "7b9167b1-e04b-4e1d-aa23-722eb77adaba",
         "name": "Ninastein57",
