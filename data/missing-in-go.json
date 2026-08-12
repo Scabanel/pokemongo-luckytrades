@@ -321,26 +321,26 @@
     {
       "id": 1001,
       "name": "Chongjian",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1001.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1001.gif",
+      "animated": true
     },
     {
       "id": 1002,
       "name": "Baojian",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1002.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1002.gif",
+      "animated": true
     },
     {
       "id": 1003,
       "name": "Dinglu",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1003.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1003.gif",
+      "animated": true
     },
     {
       "id": 1004,
       "name": "Yuyu",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1004.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1004.gif",
+      "animated": true
     },
     {
       "id": 1005,
@@ -381,20 +381,20 @@
     {
       "id": 1014,
       "name": "Félicanis",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1014.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1014.gif",
+      "animated": true
     },
     {
       "id": 1015,
       "name": "Fortusimia",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1015.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1015.gif",
+      "animated": true
     },
     {
       "id": 1016,
       "name": "Favianos",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1016.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1016.gif",
+      "animated": true
     },
     {
       "id": 1017,
