@@ -103,7 +103,7 @@
     "title": "Aventure Céleste (Japon)",
     "category": "Événement local",
     "start": 1785164400000,
-    "end": 1788188399000,
+    "end": 1819724399000,
     "url": "https://www.margxt.fr/evenement-aventure-celeste-japon-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Jet-Collaboration.webp"
   },
@@ -135,51 +135,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2025/08/Pokemon-GO-Jours-Heureux-Offensive-Giratina-Kyotre-Obscur.jpg"
   },
   {
-    "id": "199175",
-    "title": "Méga-Braségali ✨",
-    "category": "Méga-Raids",
-    "start": 1785902400000,
-    "end": 1786478400000,
-    "url": "https://www.margxt.fr/les-meilleurs-pokemon-pour-vaincre-en-raids-mega-brasegali-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2022/06/Journee-Mega-Raids-Hoenn-scaled.jpg"
-  },
-  {
-    "id": "199155",
-    "title": "Créfadet ✨ (Amérique et Groenland)",
-    "category": "Raids",
-    "start": 1785902400000,
-    "end": 1786478400000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-crefadet-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/11/Pokemon-GO-Crefallet-Crefollet-Crefadet.jpg"
-  },
-  {
-    "id": "199154",
-    "title": "Créfollet ✨ (Europe, Afrique et Inde)",
-    "category": "Raids",
-    "start": 1785902400000,
-    "end": 1786478400000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-crefollet-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/11/Pokemon-GO-Crefallet-Crefollet-Crefadet.jpg"
-  },
-  {
-    "id": "199153",
-    "title": "Créhelf ✨ (Asie et Pacifique)",
-    "category": "Raids",
-    "start": 1785902400000,
-    "end": 1786478400000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-crehelf-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/11/Pokemon-GO-Crefallet-Crefollet-Crefadet.jpg"
-  },
-  {
-    "id": "197419",
-    "title": "Ligue Hyper + Coupe Météo : Édition Ligue Super",
-    "category": "Ligue de Combat GO",
-    "start": 1785960000000,
-    "end": 1786564800000,
-    "url": "https://www.margxt.fr/guide-ligue-de-combat-go-toujours-en-avant-saison-27-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/05/Pokemon-GO-Ligue-Combat-GO-Toujours-en-avant.jpg"
-  },
-  {
     "id": "199563",
     "title": "Festival Pokémon J.League (Japon)",
     "category": "Événement local",
@@ -187,42 +142,6 @@
     "end": 1813532399000,
     "url": "https://www.margxt.fr/evenement-festival-j-league-pokemon-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Festival-J-League.jpg"
-  },
-  {
-    "id": "199149",
-    "title": "Terhal ✨",
-    "category": "Combats Max",
-    "start": 1786334400000,
-    "end": 1786906800000,
-    "url": "https://www.margxt.fr/calendrier-des-pokemon-des-combats-max-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
-  },
-  {
-    "id": "197356",
-    "title": "Mardi Concours",
-    "category": "Découvertes quotidiennes",
-    "start": 1786399200000,
-    "end": 1786485540000,
-    "url": "https://www.margxt.fr/le-guide-complet-des-concours-pokestops-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2023/07/Pokemon-GO-Epreuves-Pokestops.webp"
-  },
-  {
-    "id": "198243",
-    "title": "Choisis ton parcours : Venin et verdure",
-    "category": "Événement",
-    "start": 1786435200000,
-    "end": 1786989600000,
-    "url": "https://www.margxt.fr/guide-de-letude-ponctuelle-choisis-ton-parcours-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/05/Pokemon-GO-Choisis-ton-parcours.jpg"
-  },
-  {
-    "id": "199156",
-    "title": "Groudon ✨",
-    "category": "Raids",
-    "start": 1786507200000,
-    "end": 1787083200000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-groudon-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/07/Pokemon-GO-Groudon-Kyogre-Rayquaza.jpg"
   },
   {
     "id": "199176",
@@ -234,13 +153,13 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2023/10/Journee-Raids-Mega-Carchacrok.jpg"
   },
   {
-    "id": "199164",
+    "id": "199156",
     "title": "Groudon ✨",
-    "category": "Heure de Raids",
-    "start": 1786550400000,
-    "end": 1786554000000,
+    "category": "Raids",
+    "start": 1786507200000,
+    "end": 1787083200000,
     "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-groudon-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2022/08/Pokemon-GO-Raids-Passe.webp"
+    "image": "https://www.margxt.fr/wp-content/uploads/2020/07/Pokemon-GO-Groudon-Kyogre-Rayquaza.jpg"
   },
   {
     "id": "197421",
@@ -252,42 +171,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/05/Pokemon-GO-Ligue-Combat-GO-Toujours-en-avant.jpg"
   },
   {
-    "id": "197359",
-    "title": "Jeudi Combat GO",
-    "category": "Découvertes quotidiennes",
-    "start": 1786572000000,
-    "end": 1786658340000,
-    "url": "https://www.margxt.fr/saison-forever-forward-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Jeudi-Combat-GO.jpg"
-  },
-  {
-    "id": "199170",
-    "title": "Chenipotte ✨ + XP x2 sur l’évolution",
-    "category": "Événement",
-    "start": 1786636800000,
-    "end": 1786640400000,
-    "url": "https://www.margxt.fr/heures-vedettes-du-mois-daout-2026-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/06/Pokemon-Go-Heures-Pokemon-Vedette.jpg"
-  },
-  {
-    "id": "197357",
-    "title": "Vendredi amitié",
-    "category": "Découvertes quotidiennes",
-    "start": 1786658400000,
-    "end": 1786744740000,
-    "url": "https://www.margxt.fr/saison-forever-forward-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Vendredi-Amitie.jpg"
-  },
-  {
-    "id": "199392",
-    "title": "Pixel Expo (Perth, Australie)",
-    "category": "Événement local",
-    "start": 1786723200000,
-    "end": 1786895999000,
-    "url": "https://www.margxt.fr/events/pixel-expo-perth-australie/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Pixel-Expo-2026.jpg"
-  },
-  {
     "id": "199447",
     "title": "Jamsil Magicarpe 2026 (Séoul, Corée du Sud)",
     "category": "Événement local",
@@ -295,24 +178,6 @@
     "end": 1788188399000,
     "url": "https://www.margxt.fr/events/jamsil-magicarpe-2026-seoul-coree-du-sud/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Magicarpe-Jamsil-2026.png"
-  },
-  {
-    "id": "197355",
-    "title": "Dimanche en plein air",
-    "category": "Découvertes quotidiennes",
-    "start": 1786831200000,
-    "end": 1786917540000,
-    "url": "https://www.margxt.fr/saison-forever-forward-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/10/Pokemon-Go-Defaut.jpg"
-  },
-  {
-    "id": "195430",
-    "title": "Goupilou ✨",
-    "category": "Community Day",
-    "start": 1786881600000,
-    "end": 1786892400000,
-    "url": "https://www.margxt.fr/evenement-community-day-goupilou-daout-2026-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/04/Pokemon-GO-Community-Day-Goupilou.jpg"
   },
   {
     "id": "199150",
@@ -324,22 +189,13 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
   },
   {
-    "id": "199145",
-    "title": "Magicarpe ✨",
-    "category": "Heure de Combats Max",
-    "start": 1786982400000,
-    "end": 1786986000000,
-    "url": "https://www.margxt.fr/calendrier-des-pokemon-des-combats-max-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
-  },
-  {
-    "id": "198540",
-    "title": "Ultra Bonus : Festival aquatique",
-    "category": "Événement",
-    "start": 1787040000000,
-    "end": 1787594400000,
-    "url": "https://www.margxt.fr/evenement-festival-de-leau-avec-nigosier-et-embrochet-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Festival-eau.jpg"
+    "id": "197356",
+    "title": "Mardi Concours",
+    "category": "Découvertes quotidiennes",
+    "start": 1787004000000,
+    "end": 1787090340000,
+    "url": "https://www.margxt.fr/le-guide-complet-des-concours-pokestops-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2023/07/Pokemon-GO-Epreuves-Pokestops.webp"
   },
   {
     "id": "198785",
@@ -349,6 +205,15 @@
     "end": 1787594400000,
     "url": "https://www.margxt.fr/guide-du-passe-go-festival-aquatique-2026-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Passe-GO-Festival-Eau-2026.jpg"
+  },
+  {
+    "id": "198540",
+    "title": "Ultra Bonus : Festival aquatique",
+    "category": "Événement",
+    "start": 1787040000000,
+    "end": 1787594400000,
+    "url": "https://www.margxt.fr/evenement-festival-de-leau-avec-nigosier-et-embrochet-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Festival-eau.jpg"
   },
   {
     "id": "199157",
@@ -387,6 +252,15 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/05/Pokemon-GO-Ligue-Combat-GO-Toujours-en-avant.jpg"
   },
   {
+    "id": "197359",
+    "title": "Jeudi Combat GO",
+    "category": "Découvertes quotidiennes",
+    "start": 1787176800000,
+    "end": 1787263140000,
+    "url": "https://www.margxt.fr/saison-forever-forward-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Jeudi-Combat-GO.jpg"
+  },
+  {
     "id": "199171",
     "title": "Magicarpe ✨ + XP x2 à la capture",
     "category": "Événement",
@@ -396,6 +270,15 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2020/06/Pokemon-Go-Heures-Pokemon-Vedette.jpg"
   },
   {
+    "id": "197357",
+    "title": "Vendredi amitié",
+    "category": "Découvertes quotidiennes",
+    "start": 1787263200000,
+    "end": 1787349540000,
+    "url": "https://www.margxt.fr/saison-forever-forward-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Vendredi-Amitie.jpg"
+  },
+  {
     "id": "198541",
     "title": "Ultra Bonus : Journée de Super Méga Raid Staross",
     "category": "Événement",
@@ -403,6 +286,15 @@
     "end": 1787410800000,
     "url": "https://www.margxt.fr/evenement-journee-de-super-mega-raids-staross-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Mega-Staross.jpg"
+  },
+  {
+    "id": "197355",
+    "title": "Dimanche en plein air",
+    "category": "Découvertes quotidiennes",
+    "start": 1787436000000,
+    "end": 1787522340000,
+    "url": "https://www.margxt.fr/saison-forever-forward-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2020/10/Pokemon-Go-Defaut.jpg"
   },
   {
     "id": "199151",
@@ -423,13 +315,22 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
   },
   {
-    "id": "199106",
-    "title": "Championnats du Monde 2026",
+    "id": "203670",
+    "title": "Célébration des Championnats du Monde 2026",
     "category": "Événement",
     "start": 1787644800000,
     "end": 1788112800000,
-    "url": "https://www.margxt.fr/events/championnats-du-monde-2026/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/10/Pokemon-Go-Defaut.jpg"
+    "url": "https://www.margxt.fr/evenement-celebration-des-championnats-du-monde-2026-avec-deux-nouveaux-pikachu-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Celebration-Championnats-Monde-2026.jpg"
+  },
+  {
+    "id": "203691",
+    "title": "Passe GO Célébration des Championnats du Monde 2026",
+    "category": "Passe GO",
+    "start": 1787644800000,
+    "end": 1788112800000,
+    "url": "https://www.margxt.fr/guide-du-passe-go-celebration-des-championnats-du-monde-2026-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Celebration-Championnats-Monde-2026-Avatar.jpg"
   },
   {
     "id": "199158",
@@ -513,6 +414,15 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2020/06/Pokemon-Go-Heures-Pokemon-Vedette.jpg"
   },
   {
+    "id": "199106",
+    "title": "Championnats du Monde 2026 - Récompenses Twitch",
+    "category": "Événement",
+    "start": 1787868000000,
+    "end": 1788040799000,
+    "url": "https://www.margxt.fr/recuperer-les-recompenses-twitch-des-championnats-du-monde-pokemon-2026-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-Championnats-Monde-2026.jpg"
+  },
+  {
     "id": "156698",
     "title": "Championnats du Monde",
     "category": null,
@@ -540,6 +450,24 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
   },
   {
+    "id": "203711",
+    "title": "Méga Ascension",
+    "category": "Événement",
+    "start": 1788163200000,
+    "end": 1788544800000,
+    "url": "https://www.margxt.fr/evenement-mega-ascension-avec-lensemble-des-pokemon-des-super-mega-raids-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Super-Mega-Raids-2.jpg"
+  },
+  {
+    "id": "202935",
+    "title": "Passe GO Méga-Finale",
+    "category": "Passe GO",
+    "start": 1788163200000,
+    "end": 1788710400000,
+    "url": "https://www.margxt.fr/guide-du-passe-go-mega-finale-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Passe-GO-Pokemon-GO-Fest-Super-Finale-2026.jpg"
+  },
+  {
     "id": "199147",
     "title": "Évoli ✨",
     "category": "Heure de Combats Max",
@@ -562,7 +490,7 @@
     "title": "Pokémon GO Fest Méga-Finale",
     "category": "Événement",
     "start": 1788595200000,
-    "end": 1788714000000,
+    "end": 1788710400000,
     "url": "https://www.margxt.fr/guide-complet-du-pokemon-go-fest-mega-finale-festival-pokemon-go-2026/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Mega-Finale-Mega-Goupelin-Mega-Amphinobi-Mega-Blindepique.jpg"
   },
@@ -573,7 +501,16 @@
     "start": 1789142400000,
     "end": 1789315199000,
     "url": "https://www.margxt.fr/celebration-des-30-ans-de-pokemon-go-en-asie-avec-pokexciting/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/06/PokeXciting.jpg"
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/06/Pokemon-GO-PokeXciting-2026.webp"
+  },
+  {
+    "id": "202913",
+    "title": "Chasse aux tampons PokéXciting 2026 (Malaisie, Taïwan, Singapour et Philippines)",
+    "category": "Événement local",
+    "start": 1789146000000,
+    "end": 1883840399000,
+    "url": "https://www.margxt.fr/evenement-chasse-aux-tampons-pokexciting-2026-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-PokeXciting-Asie-2026.jpg"
   },
   {
     "id": "201878",
@@ -690,7 +627,7 @@
     "start": 1791561600000,
     "end": 1791734399000,
     "url": "https://www.margxt.fr/celebration-des-30-ans-de-pokemon-go-en-asie-avec-pokexciting/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/06/PokeXciting.jpg"
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/06/Pokemon-GO-PokeXciting-2026.webp"
   },
   {
     "id": "201879",
@@ -753,7 +690,7 @@
     "start": 1793980800000,
     "end": 1794153599000,
     "url": "https://www.margxt.fr/celebration-des-30-ans-de-pokemon-go-en-asie-avec-pokexciting/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/06/PokeXciting.jpg"
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/06/Pokemon-GO-PokeXciting-2026.webp"
   },
   {
     "id": "198820",
@@ -825,7 +762,7 @@
     "start": 1800633600000,
     "end": 1800806399000,
     "url": "https://www.margxt.fr/celebration-des-30-ans-de-pokemon-go-en-asie-avec-pokexciting/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/06/PokeXciting.jpg"
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/06/Pokemon-GO-PokeXciting-2026.webp"
   },
   {
     "id": "197928",
@@ -834,6 +771,6 @@
     "start": 1802451600000,
     "end": 1802624399000,
     "url": "https://www.margxt.fr/celebration-des-30-ans-de-pokemon-go-en-asie-avec-pokexciting/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/06/PokeXciting.jpg"
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/06/Pokemon-GO-PokeXciting-2026.webp"
   }
 ]
