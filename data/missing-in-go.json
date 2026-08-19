@@ -543,18 +543,6 @@
       "animated": true
     },
     {
-      "id": 827,
-      "name": "Goupilou",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/827.gif",
-      "animated": true
-    },
-    {
-      "id": 828,
-      "name": "Roublenard",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/828.gif",
-      "animated": true
-    },
-    {
       "id": 829,
       "name": "Tournicoton",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/829.gif",
@@ -1680,18 +1668,6 @@
       "id": 128,
       "name": "Tauros (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/128.gif",
-      "animated": true
-    },
-    {
-      "id": 129,
-      "name": "Magicarpe (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/129.gif",
-      "animated": true
-    },
-    {
-      "id": 130,
-      "name": "Léviator (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/130.gif",
       "animated": true
     },
     {
