@@ -1,5 +1,5 @@
 {
-  "exportedAt": "2026-08-19T06:32:54.890Z",
+  "exportedAt": "2026-08-20T06:53:44.582Z",
   "version": 1,
   "trainers": [
     {
@@ -309,6 +309,17 @@
       "city": "Strasbourg",
       "preferredSpriteStyle": null,
       "createdAt": "2026-07-25T14:03:05.487Z"
+    },
+    {
+      "id": "c9ca0c32-c43f-4aaf-b8d6-e2a21ce61462",
+      "name": "m4yyy",
+      "authUserId": "9bac8efb-3ab3-4e0e-b64d-4089ea4fe084",
+      "team": "instinct",
+      "level": 55,
+      "friendCode": "811798542737",
+      "city": "Strasbourg",
+      "preferredSpriteStyle": null,
+      "createdAt": "2026-08-19T12:40:44.118Z"
     },
     {
       "id": "cb6cd74d-f38b-4b62-a5d2-fcac3a72a8cc",
