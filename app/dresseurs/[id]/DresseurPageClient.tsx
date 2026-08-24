@@ -14,6 +14,7 @@ import pokemonList from "@/data/pokemon.json";
 import type { PokemonEntry, EntryCategory, Trainer } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
+import { entriesMatch } from "@/lib/entryMatching";
 
 // Chargé à la demande seulement (voir plus bas) : cette page publique est
 // visitée par n'importe qui, y compris sans être connecté, et EntryForm
@@ -49,6 +50,11 @@ export default function DresseurPageClient({ id }: { id: string }) {
   const [activeTab, setActiveTab] = useState<EntryCategory>("mirror");
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<EntryFilters>(EMPTY_ENTRY_FILTERS);
+  // "Que je possède" (onglet "X recherche" de quelqu'un d'autre) : ne montre
+  // que les Pokémon recherchés que LE VISITEUR a déjà en give/mirror,
+  // évite de scroller toute la liste pour retrouver les quelques
+  // correspondances (voir CopyPogoShinyFilterButton pour un besoin voisin).
+  const [onlyOwned, setOnlyOwned] = useState(false);
   // Un admin qui consulte la liste publique d'un dresseur peut l'éditer
   // directement (changer un sprite, ajouter un fond...) pour l'aider, sans
   // devoir passer par son propre compte. Aucune capacité d'édition pour un
@@ -176,8 +182,16 @@ export default function DresseurPageClient({ id }: { id: string }) {
 
   const countByTab: Record<EntryCategory, number> = { mirror: mirrors.length, want: wants.length, give: gives.length };
   const entriesByTab: Record<EntryCategory, PokemonEntry[]> = { mirror: mirrors, want: wants, give: gives };
-  const visibleEntries = entriesByTab[activeTab].filter((e) => matchesEntryFilters(e, search, filters));
-  const anyFilterActive = search.trim() !== "" || Object.values(filters).some(Boolean);
+  // Le filtre "Que je possède" n'a de sens que sur le "recherche" de
+  // QUELQU'UN D'AUTRE (sur son propre catalogue, "ce que je recherche que je
+  // possède déjà" n'aide personne).
+  const isViewingOther = viewerTrainerId != null && viewerTrainerId !== trainer?.id;
+  const showOnlyOwnedToggle = activeTab === "want" && isViewingOther;
+  const viewerOwnEntries = allEntries.filter((e) => e.trainer?.id === viewerTrainerId);
+  const visibleEntries = entriesByTab[activeTab]
+    .filter((e) => matchesEntryFilters(e, search, filters))
+    .filter((e) => !onlyOwned || !showOnlyOwnedToggle || viewerOwnEntries.some((mine) => entriesMatch(e, mine)));
+  const anyFilterActive = search.trim() !== "" || Object.values(filters).some(Boolean) || (onlyOwned && showOnlyOwnedToggle);
   const activeColor = CATEGORIES[activeTab].color;
 
   if (!loading && notFound) {
@@ -328,9 +342,29 @@ export default function DresseurPageClient({ id }: { id: string }) {
                 {label}
               </button>
             ))}
+            {showOnlyOwnedToggle && (
+              <button
+                onClick={() => setOnlyOwned((v) => !v)}
+                style={{
+                  padding: "7px 14px",
+                  borderRadius: 999,
+                  fontFamily: "Exo 2, sans-serif",
+                  fontWeight: 700,
+                  fontSize: "0.78rem",
+                  cursor: "pointer",
+                  border: "1px solid",
+                  transition: "all 0.12s",
+                  ...(onlyOwned
+                    ? { background: "rgba(6,182,212,0.15)", borderColor: "rgba(6,182,212,0.4)", color: "#06b6d4" }
+                    : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "rgba(232,237,245,0.5)" }),
+                }}
+              >
+                Que je possède
+              </button>
+            )}
             {anyFilterActive && (
               <button
-                onClick={() => { setSearch(""); setFilters(EMPTY_ENTRY_FILTERS); }}
+                onClick={() => { setSearch(""); setFilters(EMPTY_ENTRY_FILTERS); setOnlyOwned(false); }}
                 className="btn-secondary"
                 style={{ padding: "7px 14px", fontSize: "0.78rem" }}
               >

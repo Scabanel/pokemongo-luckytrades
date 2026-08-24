@@ -1856,8 +1856,10 @@ export function EntryForm(props: EntryFormProps) {
               />
             </div>
 
-            {/* Priority (want only) */}
-            {form.category === "want" && (
+            {/* Priorité : want et mirror (une entrée miroir reste quelque
+                chose qu'on recherche activement en échange), pas give (une
+                simple annonce de dispo n'a pas de notion de priorité). */}
+            {(form.category === "want" || form.category === "mirror") && (
               <div>
                 <label className="field-label">PRIORITÉ (1–10, optionnel)</label>
                 <input

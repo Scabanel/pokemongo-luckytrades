@@ -193,6 +193,21 @@ export async function DELETE(
       });
     }
     await tx.pokemonEntry.delete({ where: { id } });
+
+    // Comble le trou laissé dans la numérotation (want/mirror uniquement,
+    // voir components/AdminPanel.tsx) : supprimer la priorité 1 doit faire
+    // remonter la 2 en 1, la 3 en 2, etc., plutôt que laisser une liste
+    // "2, 3, 4" qui donne l'impression que la 1 existe encore quelque part.
+    if (existing.trainerId && existing.priority != null && (existing.category === "want" || existing.category === "mirror")) {
+      await tx.pokemonEntry.updateMany({
+        where: {
+          trainerId: existing.trainerId,
+          category: existing.category,
+          priority: { gt: existing.priority },
+        },
+        data: { priority: { decrement: 1 } },
+      });
+    }
   });
 
   return NextResponse.json({ success: true });

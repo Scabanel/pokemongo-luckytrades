@@ -10,7 +10,8 @@ import { parseTags } from "@/lib/tags";
 import gigantamaxIcons from "@/data/gigantamax-icons.json";
 import pokemonList from "@/data/pokemon.json";
 import legendarySpecies from "@/data/legendary-species.json";
-import { getGenderForCustomSprite, canonicalCustomSpriteUrl } from "@/lib/spriteVariants";
+import { getGenderForCustomSprite } from "@/lib/spriteVariants";
+import { entriesMatch } from "@/lib/entryMatching";
 
 // Sprite officiel de forme Gigamax (aspect réellement différent en jeu), pour
 // la poignée d'espèces qui en ont un, voir scripts/generate-costume-catalog.mjs.
@@ -50,32 +51,6 @@ const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> =
 };
 const DEFAULT_TAG_COLOR = { bg: "rgba(100,180,255,0.15)", text: "#64b4ff", border: "rgba(100,180,255,0.4)" };
 function getTagColor(tag: string) { return TAG_COLORS[tag.toLowerCase()] ?? DEFAULT_TAG_COLOR; }
-
-// Identité de forme/costume d'une entrée, pour le matching "Dispo chez N
-// Dresseurs" : pokemonId+shiny ne suffisent pas (ex: les races de Paldea de
-// Tauros partagent le même pokemonId ET le même pokemonName "Tauros", seul
-// customSpriteUrl distingue la race exacte). "fond" est ignoré : c'est un
-// arrière-plan d'événement, pas une forme différente du Pokémon.
-// customSpriteUrl passe par canonicalCustomSpriteUrl (voir lib/spriteVariants.ts)
-// avant comparaison : un sprite de base figé (ajout solo) et un sprite de
-// base laissé vide (ajout en masse) sont la même variante, mais ne
-// matchaient pas tant qu'on comparait la chaîne brute.
-const FORM_TAGS = new Set(["costume", "gigamax", "dynamax"]);
-function formVariantKey(pokemonId: number, customSpriteUrl: string | null | undefined, rawTags: string | null | undefined): string {
-  const relevantTags = parseTags(rawTags).filter((t) => FORM_TAGS.has(t.toLowerCase())).sort().join(",");
-  return `${canonicalCustomSpriteUrl(pokemonId, customSpriteUrl)}|${relevantTags}`;
-}
-
-// "fond" reste hors de formVariantKey (ce n'est pas une forme différente du
-// Pokémon), mais un WANT n'est pas toujours indifférent au fond : beaucoup
-// de dresseurs recherchent justement le souvenir d'un événement/lieu précis
-// (ex: le fond de GO Fest Copenhague sur un légendaire), pas n'importe quel
-// exemplaire de l'espèce. Un want SANS fond précisé reste satisfait par
-// n'importe quel give/mirror (fond ou pas) ; un want AVEC un fond précisé
-// n'est satisfait que par un give/mirror ayant EXACTEMENT ce même fond.
-function wantedBackgroundMatches(wantBackgroundUrl: string | null | undefined, otherBackgroundUrl: string | null | undefined): boolean {
-  return !wantBackgroundUrl || wantBackgroundUrl === otherBackgroundUrl;
-}
 
 // Badge ♂/♀ en haut à gauche du sprite : bleu/rouge classique des jeux
 // Pokémon, pour distinguer les quelques espèces à sprite différent selon
@@ -209,6 +184,7 @@ export default function PokemonCard({
 }: PokemonCardProps) {
   const [showDetail, setShowDetail] = useState(false);
   const [showAvailableFrom, setShowAvailableFrom] = useState(false);
+  const [showWantedBy, setShowWantedBy] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const quantity = entry.quantity ?? 1;
@@ -261,7 +237,6 @@ export default function PokemonCard({
   // entryTrainerId === viewerTrainerId (le visiteur connecté, pas forcément
   // le propriétaire de la tuile qu'on regarde).
   const entryTrainerId = entry.trainer?.id;
-  const entryFormKey = formVariantKey(entry.pokemonId, entry.customSpriteUrl, entry.tags);
   const isOwnEntry = viewerTrainerId != null && entryTrainerId === viewerTrainerId;
   const availableFrom = useMemo(() => {
     if (entry.category !== "want" || entry.linkedEntryId || !allEntries || !isOwnEntry) return [];
@@ -270,18 +245,33 @@ export default function PokemonCard({
     for (const other of allEntries) {
       const otherTrainerId = other.trainer?.id;
       if (!otherTrainerId || otherTrainerId === entryTrainerId) continue;
-      if (other.category !== "give" && other.category !== "mirror") continue;
-      if (other.completed) continue;
-      if (other.pokemonId !== entry.pokemonId) continue;
-      if (!!other.shiny !== !!entry.shiny) continue;
-      if (formVariantKey(other.pokemonId, other.customSpriteUrl, other.tags) !== entryFormKey) continue;
-      if (!wantedBackgroundMatches(entry.backgroundUrl, other.backgroundUrl)) continue;
+      if (!entriesMatch(entry, other)) continue;
       if (seen.has(otherTrainerId)) continue;
       seen.add(otherTrainerId);
       matches.push({ id: otherTrainerId, name: other.trainer!.name });
     }
     return matches;
-  }, [allEntries, entry.category, entry.linkedEntryId, entry.pokemonId, entry.shiny, entry.backgroundUrl, entryTrainerId, entryFormKey, isOwnEntry]);
+  }, [allEntries, entry, entryTrainerId, isOwnEntry]);
+
+  // Symétrique : sur SA PROPRE entrée "give" (pas "mirror" — voir demande de
+  // Steven), qui d'autre la recherche ? Affiche "X Dresseurs recherchent ce
+  // Pokémon", même principe que availableFrom mais dans l'autre sens (entry
+  // est ici le give/donneur, other doit être un want qui LE recherche).
+  const wantedBy = useMemo(() => {
+    if (entry.category !== "give" || entry.linkedEntryId || entry.completed || !allEntries || !isOwnEntry) return [];
+    const seen = new Set<string>();
+    const matches: { id: string; name: string }[] = [];
+    for (const other of allEntries) {
+      const otherTrainerId = other.trainer?.id;
+      if (!otherTrainerId || otherTrainerId === entryTrainerId) continue;
+      if (other.category !== "want" || other.completed || other.linkedEntryId) continue;
+      if (!entriesMatch(other, entry)) continue;
+      if (seen.has(otherTrainerId)) continue;
+      seen.add(otherTrainerId);
+      matches.push({ id: otherTrainerId, name: other.trainer!.name });
+    }
+    return matches;
+  }, [allEntries, entry, entryTrainerId, isOwnEntry]);
 
   // Inverse du calcul ci-dessus : sur une tuile give/mirror qui N'appartient
   // PAS au visiteur, est-ce que LUI recherche ce Pokémon (want non lié, même
@@ -295,12 +285,9 @@ export default function PokemonCard({
       other.category === "want" &&
       !other.completed &&
       !other.linkedEntryId &&
-      other.pokemonId === entry.pokemonId &&
-      !!other.shiny === !!entry.shiny &&
-      formVariantKey(other.pokemonId, other.customSpriteUrl, other.tags) === entryFormKey &&
-      wantedBackgroundMatches(other.backgroundUrl, entry.backgroundUrl)
+      entriesMatch(other, entry)
     );
-  }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.pokemonId, entry.shiny, entry.backgroundUrl, entryFormKey]);
+  }, [allEntries, viewerTrainerId, isOwnEntry, entry]);
 
   // Symétrique : sur une tuile want qui N'appartient PAS au visiteur, est-ce
   // que LUI peut donner ce Pokémon (give/mirror non lié, même forme/shiny) ?
@@ -311,15 +298,10 @@ export default function PokemonCard({
     if (entry.completed || entry.linkedEntryId) return false;
     return allEntries.some((other) =>
       other.trainer?.id === viewerTrainerId &&
-      (other.category === "give" || other.category === "mirror") &&
-      !other.completed &&
       !other.linkedEntryId &&
-      other.pokemonId === entry.pokemonId &&
-      !!other.shiny === !!entry.shiny &&
-      formVariantKey(other.pokemonId, other.customSpriteUrl, other.tags) === entryFormKey &&
-      wantedBackgroundMatches(entry.backgroundUrl, other.backgroundUrl)
+      entriesMatch(entry, other)
     );
-  }, [allEntries, viewerTrainerId, isOwnEntry, entry.category, entry.completed, entry.linkedEntryId, entry.pokemonId, entry.shiny, entry.backgroundUrl, entryFormKey]);
+  }, [allEntries, viewerTrainerId, isOwnEntry, entry]);
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -938,6 +920,25 @@ export default function PokemonCard({
           </button>
         )}
 
+        {/* Symétrique de "Dispo chez" mais côté "Je peux donner" : qui
+            recherche ce Pokémon précis (voir wantedBy plus haut). */}
+        {wantedBy.length > 0 && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setShowWantedBy(true); }}
+            className="mt-auto"
+            style={{
+              marginTop: 6, padding: "4px 12px", borderRadius: 999, cursor: "pointer",
+              background: "rgba(6,182,212,0.1)", border: "1px solid rgba(6,182,212,0.3)",
+              color: "#06b6d4", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.65rem",
+              whiteSpace: "nowrap",
+            }}
+          >
+            <span className="hidden sm:inline">{wantedBy.length} Dresseur{wantedBy.length > 1 ? "s" : ""} recherchent ce Pokémon</span>
+            <span className="sm:hidden">{wantedBy.length} recherché{wantedBy.length > 1 ? "s" : ""}</span>
+          </button>
+        )}
+
         {/* Sur la liste "peut donner"/"miroir" d'un AUTRE dresseur : ce
             visiteur précis le recherche lui-même dans sa propre liste. */}
         {viewerWantsThis && (
@@ -975,41 +976,69 @@ export default function PokemonCard({
 
       {/* Modal rendered in document.body via portal to avoid transform clipping */}
       {mounted && modal && createPortal(modal, document.body)}
-      {mounted && showAvailableFrom && createPortal(
-        <div
-          className="fixed inset-0 flex items-center justify-center p-4"
-          style={{ background: "rgba(10,6,0,0.88)", backdropFilter: "blur(12px)", zIndex: 350 }}
-          onClick={(e) => { e.stopPropagation(); setShowAvailableFrom(false); }}
-        >
-          <div
-            className="glass-card overflow-y-auto"
-            style={{ maxWidth: 360, width: "100%", maxHeight: "calc(100dvh - 32px)", overscrollBehavior: "contain", padding: 24 }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 700, fontSize: "1rem" }}>
-                {entry.pokemonName} dispo chez
-              </h3>
-              <button onClick={() => setShowAvailableFrom(false)} style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#e8edf5", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>
-                Fermer
-              </button>
-            </div>
-            <div className="flex flex-col gap-2">
-              {availableFrom.map((t) => (
-                <Link
-                  key={t.id}
-                  href={`/dresseurs/${t.id}`}
-                  className="glass-card"
-                  style={{ textDecoration: "none", padding: "10px 14px", color: "#e8edf5", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem" }}
-                >
-                  {t.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>,
-        document.body
+      {mounted && showAvailableFrom && (
+        <TrainerListModal
+          title={`${entry.pokemonName} dispo chez`}
+          trainers={availableFrom}
+          onClose={() => setShowAvailableFrom(false)}
+        />
+      )}
+      {mounted && showWantedBy && (
+        <TrainerListModal
+          title={`${entry.pokemonName} recherché par`}
+          trainers={wantedBy}
+          onClose={() => setShowWantedBy(false)}
+        />
       )}
     </>
+  );
+}
+
+// Liste de dresseurs cliquable en popup, partagée par "Dispo chez"/"Recherché
+// par" ci-dessus : même contenu (nom + lien vers leur page), seul le titre
+// et la liste changent.
+function TrainerListModal({
+  title,
+  trainers,
+  onClose,
+}: {
+  title: string;
+  trainers: { id: string; name: string }[];
+  onClose: () => void;
+}) {
+  return createPortal(
+    <div
+      className="fixed inset-0 flex items-center justify-center p-4"
+      style={{ background: "rgba(10,6,0,0.88)", backdropFilter: "blur(12px)", zIndex: 350 }}
+      onClick={(e) => { e.stopPropagation(); onClose(); }}
+    >
+      <div
+        className="glass-card overflow-y-auto"
+        style={{ maxWidth: 360, width: "100%", maxHeight: "calc(100dvh - 32px)", overscrollBehavior: "contain", padding: 24 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 700, fontSize: "1rem" }}>
+            {title}
+          </h3>
+          <button onClick={onClose} style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#e8edf5", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>
+            Fermer
+          </button>
+        </div>
+        <div className="flex flex-col gap-2">
+          {trainers.map((t) => (
+            <Link
+              key={t.id}
+              href={`/dresseurs/${t.id}`}
+              className="glass-card"
+              style={{ textDecoration: "none", padding: "10px 14px", color: "#e8edf5", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem" }}
+            >
+              {t.name}
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>,
+    document.body
   );
 }
