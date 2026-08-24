@@ -21,6 +21,12 @@ export async function PATCH(
   if (!isAdmin && existing.trainerId !== trainer!.id) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 403 });
   }
+  // Snapshot AVANT la cascade "completed" plus bas (qui peut aussi marquer
+  // l'entrée liée comme échangée) : nécessaire pour combler son propre trou
+  // de priorité si elle en a un (voir closePriorityGap plus bas).
+  const existingLinked = existing.linkedEntryId
+    ? await prisma.pokemonEntry.findUnique({ where: { id: existing.linkedEntryId } })
+    : null;
 
   const body = await request.json();
   const { trainerId, tradeForPokemonName, tradeForPokemonId, tradePartnerName, notes, completed, category, shiny, gender, size, exclusiveMove, customSpriteUrl, backgroundUrl, priority, tags, quantity } =
@@ -120,6 +126,25 @@ export async function PATCH(
           where: { id: existing.linkedEntryId },
           data: { completed },
         });
+      }
+
+      // Comble le trou de priorité (want/mirror uniquement) quand une entrée
+      // priorisée devient "échangée" : même besoin que la suppression (voir
+      // DELETE plus bas), mais jusque-là seul le DELETE le faisait — marquer
+      // "Échangé" (l'action la plus courante, qui garde l'historique au lieu
+      // de supprimer) laissait le même trou "2, 3, 4..." sans jamais le
+      // combler. Ne se déclenche qu'au passage non-complété -> complété
+      // (pas à la réouverture), sur l'entrée elle-même ET, si l'échange est
+      // lié, sur l'entrée liée (un mirror peut aussi avoir sa propre priorité).
+      if (completed === true) {
+        for (const e of [existing, existingLinked]) {
+          if (!e || e.completed || !e.trainerId || e.priority == null) continue;
+          if (e.category !== "want" && e.category !== "mirror") continue;
+          await tx.pokemonEntry.updateMany({
+            where: { trainerId: e.trainerId, category: e.category, priority: { gt: e.priority } },
+            data: { priority: { decrement: 1 } },
+          });
+        }
       }
 
       return tx.pokemonEntry.update({
