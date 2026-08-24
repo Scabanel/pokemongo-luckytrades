@@ -64,6 +64,26 @@ const FEATURES = [
     title: "Renomme ton profil",
     text: "Une faute de frappe à l'inscription ? Change ton nom de dresseur à tout moment depuis Mon compte, ton lien de partage ne bouge pas.",
   },
+  {
+    title: "Copie ton filtre de recherche Pokémon GO",
+    text: "Sur une liste qui contient des shiny, un bouton copie une commande (\"chromatique&!échangé&...\") à coller direct dans la recherche du jeu : idéal pour les échanges à distance.",
+  },
+  {
+    title: "Priorité aussi pour les échanges miroir",
+    text: "Le système de priorité (1, 2, 3...) fonctionne maintenant sur \"Échanges miroir\" en plus de \"Je recherche\", et se renumérote automatiquement quand tu supprimes une entrée.",
+  },
+  {
+    title: "Retrouve vite ce que tu peux donner",
+    text: "Sur la liste \"Je recherche\" d'un autre dresseur, le filtre \"Que je possède\" ne garde que ce qu'il cherche et que tu as déjà, plus besoin de tout scroller.",
+  },
+  {
+    title: "On te dit qui recherche ce que tu donnes",
+    text: "Sur ta liste \"Je peux donner\", tu vois maintenant qui recherche chaque Pokémon que tu proposes.",
+  },
+  {
+    title: "Précise la taille recherchée",
+    text: "XXS, XS, XL, XXL : indique la taille record que tu cherches ou que tu proposes, le matching en tient compte comme pour le fond.",
+  },
 ];
 
 const UPCOMING = [
