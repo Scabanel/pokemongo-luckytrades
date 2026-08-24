@@ -17,7 +17,7 @@
       "url": "/event-backgrounds/pokemon-go-special-background-10th-anniversary.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -65,11 +65,11 @@
       "url": "/event-backgrounds/pokemon-go-special-background-10th-anniversary.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
-      "label": "Aventure Céleste au Japon28 juillet au 31 août 2026",
+      "label": "Aventure Céleste au Japon28 juillet 2026 au 31 août 2027",
       "url": "/event-backgrounds/pokemon-go-location-background-rpj.webp"
     },
     {
@@ -137,7 +137,7 @@
       "url": "/event-backgrounds/pokemon-go-special-background-10th-anniversary.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -169,11 +169,15 @@
   ],
   "10": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
   "15": [
+    {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    },
     {
       "label": "Festival Pokémon GO 2026 : Mondial – Événement spécial de raids du dimanche26 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-road-of-legends.webp"
@@ -225,6 +229,58 @@
     {
       "label": "En route pour Kalos25 février 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-ruby.webp"
+    },
+    {
+      "label": "Pokémon GO Night à Boston22 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-lieu-red-sox-boston.webp"
+    },
+    {
+      "label": "Pokémon GO Night à Seattle22 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-lieu-brewers-milwaukee.webp"
+    },
+    {
+      "label": "Pokémon GO Night à Saint Petersburg13 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-mlb-tampa-bay-rays-2.webp"
+    },
+    {
+      "label": "Pokémon GO Night à Washington30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-lieu-nationals-washington.webp"
+    },
+    {
+      "label": "Pokémon GO Night à San Francisco27 août 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-lieu-giants-san-francisco.webp"
+    },
+    {
+      "label": "Pokémon GO Night à New York25 août 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-lieu-mets-new-york.webp"
+    },
+    {
+      "label": "Pokémon GO Night à Arlington22 août 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-lieu-rangers-texas.webp"
+    },
+    {
+      "label": "Pokémon GO Night à Phoenix11 août 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-lieu-diamondbacks-arizona.webp"
+    },
+    {
+      "label": "Pokémon GO Night à Miami7 août 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-souvenir-mlb-miami-floride-marlins.webp"
+    },
+    {
+      "label": "Pokémon GO Night à Baltimore4 août 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-lieu-orioles-baltimore.webp"
+    },
+    {
+      "label": "Nippon Professional Baseball au Japon à Tokyo28 et 29 juillet 2026",
+      "url": "/event-backgrounds/pokemon-go-lc-2026-npb-yomiurigiants.png"
+    },
+    {
+      "label": "Pokémon GO Night à Chicago8 juillet 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-lieu-chicago-white-sox.webp"
+    },
+    {
+      "label": "Pokémon GO Night à Cleveland2 juillet 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-cleveland-mlb.webp"
     },
     {
       "label": "Chasse aux tampons Pokémon Center Fukuoka1er juillet 2026 au 31 août 2027",
@@ -475,56 +531,12 @@
       "url": "/event-backgrounds/pokemon-go-fond-rallye-tampon-jeju.png"
     },
     {
-      "label": "Partenariat MLB : Rangers du Texas7 septembre 2025",
-      "url": "/event-backgrounds/pokemon-go-fond-lieu-rangers-texas.webp"
-    },
-    {
       "label": "Partenariat MLB : Twins du Minnesota31 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-lieu-twins-minnesota.webp"
     },
     {
-      "label": "Partenariat MLB : Giants de San Francsico31 août 2025",
-      "url": "/event-backgrounds/pokemon-go-fond-lieu-giants-san-francisco.webp"
-    },
-    {
-      "label": "Partenariat MLB : Red Sox de Boston29 août 2025",
-      "url": "/event-backgrounds/pokemon-go-fond-lieu-red-sox-boston.webp"
-    },
-    {
-      "label": "Partenariat MLB : Mets de New-York25 août 2025",
-      "url": "/event-backgrounds/pokemon-go-fond-lieu-mets-new-york.webp"
-    },
-    {
-      "label": "Partenariat MLB : Cleveland Guardians14 août 2025",
-      "url": "/event-backgrounds/pokemon-go-fond-cleveland-mlb.webp"
-    },
-    {
-      "label": "Partenariat MLB : Orioles de Baltimore13 août 2025",
-      "url": "/event-backgrounds/pokemon-go-fond-lieu-orioles-baltimore.webp"
-    },
-    {
-      "label": "Partenariat MLB : Chicago White Sox11 août 2025",
-      "url": "/event-backgrounds/pokemon-go-fond-lieu-chicago-white-sox.webp"
-    },
-    {
-      "label": "Partenariat MLB : Diamondbacks de l’Arizona10 août 2025",
-      "url": "/event-backgrounds/pokemon-go-fond-lieu-diamondbacks-arizona.webp"
-    },
-    {
-      "label": "Partenariat MLB : Nationals de Washington5 août 2025",
-      "url": "/event-backgrounds/pokemon-go-fond-lieu-nationals-washington.webp"
-    },
-    {
-      "label": "Partenariat MLB : Brewers de Milwaukee25 juillet 2025",
-      "url": "/event-backgrounds/pokemon-go-fond-lieu-brewers-milwaukee.webp"
-    },
-    {
       "label": "Partenariat MLB : Tampa Bay Rays20 juillet 2025",
       "url": "/event-backgrounds/pokemon-go-fond-lieu-tampa-bay-rays.webp"
-    },
-    {
-      "label": "Partenariat MLB : Marlins de Miami18 juillet 2025",
-      "url": "/event-backgrounds/pokemon-go-fond-souvenir-mlb-miami-floride-marlins.webp"
     },
     {
       "label": "Partenariat MLB : Mariners de Seattle2 juillet 2025",
@@ -535,7 +547,7 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-lotte-giants.webp"
     },
     {
-      "label": "Chasse aux tampons à SuitaDerpuis le 9 mai 2025",
+      "label": "Chasse aux tampons à SuitaDepuis le 9 mai 2025",
       "url": "/event-backgrounds/pokemon-go-fond-suita-japon-2025.webp"
     },
     {
@@ -595,7 +607,7 @@
   ],
   "66": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -619,11 +631,11 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-community-day.webp"
     },
     {
-      "label": "Triomphe Collectif24 au 31 août 2024",
+      "label": "Triomphe Collectif23 au 31 août 2024",
       "url": "/event-backgrounds/pokemon-go-fond-special-instinct.webp"
     },
     {
-      "label": "Triomphe Collectif24 au 31 août 2024",
+      "label": "Triomphe Collectif23 au 31 août 2024",
       "url": "/event-backgrounds/pokemon-go-fond-special-mystic.webp"
     }
   ],
@@ -635,13 +647,13 @@
   ],
   "92": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
   "98": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
@@ -652,6 +664,10 @@
     }
   ],
   "127": [
+    {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    },
     {
       "label": "Festival Pokémon GO 2026 : Mondial – Événement spécial de raids du dimanche26 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-road-of-legends.webp"
@@ -693,11 +709,11 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-delightful-days.webp"
     },
     {
-      "label": "Triomphe Collectif24 au 31 août 2024",
+      "label": "Triomphe Collectif23 au 31 août 2024",
       "url": "/event-backgrounds/pokemon-go-fond-special-valor.webp"
     },
     {
-      "label": "Triomphe Collectif24 au 31 août 2024",
+      "label": "Triomphe Collectif23 au 31 août 2024",
       "url": "/event-backgrounds/pokemon-go-fond-special-instinct.webp"
     },
     {
@@ -707,6 +723,10 @@
     {
       "label": "Chasse aux tampons au Taipei Children’s Amusement Park21 octobre au 16 novembre 2025",
       "url": "/event-backgrounds/pokemon-go-fond-taipei-children-amusement-park.webp"
+    },
+    {
+      "label": "Festival Aquatique de Jangheung28 juillet au 3 août 2025",
+      "url": "/event-backgrounds/pokemon-go-fond-jangheung-water-festival.webp"
     }
   ],
   "132": [
@@ -805,13 +825,13 @@
   ],
   "138": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
   "140": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
@@ -843,7 +863,7 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-mystic.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -881,11 +901,11 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-mystic.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
-      "label": "Passe de Combat GO d’août5 août au 2 septembre 2025",
+      "label": "Passe de Combat GO de juillet1er juillet au 5 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-delightful-days.webp"
     },
     {
@@ -919,8 +939,12 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-mystic.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
+    },
+    {
+      "label": "Passe de Combat GO d’août5 août au 2 septembre 2025",
+      "url": "/event-backgrounds/pokemon-go-fond-special-delightful-days.webp"
     },
     {
       "label": "Pokémon GO Fest Copenhague12 au 14 juin 2026",
@@ -938,6 +962,10 @@
     }
   ],
   "150": [
+    {
+      "label": "Étude ponctuelle Célébration du 10e anniversaire13 août au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-10th-anniversary-mewtwo.webp"
+    },
     {
       "label": "Festival Pokémon GO 2026 : Mondial – Événement spécial de raids du dimanche26 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-road-of-legends.webp"
@@ -1035,6 +1063,10 @@
   ],
   "181": [
     {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    },
+    {
       "label": "Pokémon GO Fest Global11 et 12 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-road-of-legends.webp"
     },
@@ -1061,6 +1093,116 @@
       "url": "/event-backgrounds/pokemon-go-location-background-tokmun-minato.webp"
     }
   ],
+  "187": [
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-cliveden.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mottisfont.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-nymans.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-polesden-lacey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-scotney-castle.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stowe-gardens.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-anglesey-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-attingham-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-belton-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-calke-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-clumber-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hanbury-hall.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hardwick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-wimpole-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-dunham-massey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-fountains-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-gibside.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lyme.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mount-stewart.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-killerton.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-kingston-lacy.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lacock.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stourhead.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-trelissick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tyntesfield.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-chirk.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tredegar-house.webp"
+    }
+  ],
   "202": [
     {
       "label": "Ultra Bonus : Édition 10ᵉ anniversaire21 au 27 juillet 2026",
@@ -1079,6 +1221,116 @@
       "url": "/event-backgrounds/pokemon-go-special-background-10th-anniversary.webp"
     }
   ],
+  "204": [
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-cliveden.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mottisfont.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-nymans.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-polesden-lacey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-scotney-castle.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stowe-gardens.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-anglesey-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-attingham-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-belton-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-calke-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-clumber-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hanbury-hall.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hardwick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-wimpole-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-dunham-massey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-fountains-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-gibside.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lyme.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mount-stewart.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-killerton.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-kingston-lacy.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lacock.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stourhead.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-trelissick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tyntesfield.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-chirk.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tredegar-house.webp"
+    }
+  ],
   "210": [
     {
       "label": "Terres Sauvages (Wild Area) Nagasaki7 au 9 novembre 2025",
@@ -1087,7 +1339,7 @@
   ],
   "213": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
@@ -1117,11 +1369,11 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-instinct.webp"
     },
     {
-      "label": "Triomphe Collectif24 au 31 août 2024",
+      "label": "Triomphe Collectif23 au 31 août 2024",
       "url": "/event-backgrounds/pokemon-go-fond-special-valor.webp"
     },
     {
-      "label": "Triomphe Collectif24 au 31 août 2024",
+      "label": "Triomphe Collectif23 au 31 août 2024",
       "url": "/event-backgrounds/pokemon-go-fond-special-mystic.webp"
     }
   ],
@@ -1135,7 +1387,7 @@
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -1153,7 +1405,7 @@
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -1171,7 +1423,7 @@
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -1239,6 +1491,334 @@
     {
       "label": "Ultra Bonus : Édition 10ᵉ anniversaire21 au 27 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-10th-anniversary.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-cliveden.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mottisfont.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-nymans.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-polesden-lacey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-scotney-castle.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stowe-gardens.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-anglesey-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-attingham-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-belton-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-calke-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-clumber-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hanbury-hall.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hardwick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-wimpole-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-dunham-massey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-fountains-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-gibside.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lyme.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mount-stewart.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-killerton.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-kingston-lacy.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lacock.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stourhead.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-trelissick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tyntesfield.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-chirk.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tredegar-house.webp"
+    }
+  ],
+  "253": [
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-cliveden.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mottisfont.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-nymans.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-polesden-lacey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-scotney-castle.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stowe-gardens.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-anglesey-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-attingham-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-belton-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-calke-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-clumber-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hanbury-hall.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hardwick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-wimpole-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-dunham-massey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-fountains-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-gibside.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lyme.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mount-stewart.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-killerton.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-kingston-lacy.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lacock.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stourhead.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-trelissick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tyntesfield.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-chirk.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tredegar-house.webp"
+    }
+  ],
+  "254": [
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-cliveden.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mottisfont.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-nymans.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-polesden-lacey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-scotney-castle.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stowe-gardens.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-anglesey-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-attingham-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-belton-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-calke-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-clumber-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hanbury-hall.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hardwick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-wimpole-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-dunham-massey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-fountains-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-gibside.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lyme.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mount-stewart.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-killerton.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-kingston-lacy.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lacock.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stourhead.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-trelissick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tyntesfield.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-chirk.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tredegar-house.webp"
     }
   ],
   "255": [
@@ -1277,6 +1857,116 @@
       "url": "/event-backgrounds/pokemon-go-special-background-10th-anniversary.webp"
     }
   ],
+  "273": [
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-cliveden.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mottisfont.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-nymans.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-polesden-lacey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-scotney-castle.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stowe-gardens.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-anglesey-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-attingham-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-belton-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-calke-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-clumber-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hanbury-hall.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hardwick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-wimpole-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-dunham-massey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-fountains-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-gibside.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lyme.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mount-stewart.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-killerton.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-kingston-lacy.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lacock.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stourhead.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-trelissick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tyntesfield.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-chirk.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tredegar-house.webp"
+    }
+  ],
   "278": [
     {
       "label": "Chasse aux tampons à KotoDepuis le 25 mai 2026",
@@ -1297,14 +1987,24 @@
   ],
   "302": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
   "303": [
     {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    },
+    {
       "label": "Terres Sauvages (Wild Area) Nagasaki7 au 9 novembre 2025",
       "url": "/event-backgrounds/pokemon-go-fond-lieu-wild-area-nagasaki.webp"
+    }
+  ],
+  "306": [
+    {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
     }
   ],
   "307": [
@@ -1313,13 +2013,29 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-might-and-mastery.png"
     }
   ],
+  "319": [
+    {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    }
+  ],
   "320": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
+  "323": [
+    {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    }
+  ],
   "334": [
+    {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    },
     {
       "label": "Pokémon GO Tour Los Angeles20 au 22 février 2026",
       "url": "/event-backgrounds/pokemon-go-location-background-los-angeles-29.webp"
@@ -1343,7 +2059,7 @@
   ],
   "374": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -1425,7 +2141,7 @@
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -1459,7 +2175,7 @@
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -1871,11 +2587,11 @@
       "url": "/event-backgrounds/pokemon-go-special-background-10th-anniversary.webp"
     },
     {
-      "label": "Pokémon Presents 202527 février",
+      "label": "Pokémon Presents 202527 février 2025",
       "url": "/event-backgrounds/pokemon-go-tour-2025-fond-special-1.png"
     },
     {
-      "label": "Pokémon Presents 202527 février",
+      "label": "Pokémon Presents 202527 février 2025",
       "url": "/event-backgrounds/pokemon-go-tour-2025-fond-special-4.png"
     }
   ],
@@ -1901,11 +2617,11 @@
       "url": "/event-backgrounds/pokemon-go-fond-transformations-fabuleuses.png"
     },
     {
-      "label": "Pokémon Presents 202527 février",
+      "label": "Pokémon Presents 202527 février 2025",
       "url": "/event-backgrounds/pokemon-go-tour-2025-fond-special-1.png"
     },
     {
-      "label": "Pokémon Presents 202527 février",
+      "label": "Pokémon Presents 202527 février 2025",
       "url": "/event-backgrounds/pokemon-go-tour-2025-fond-special-4.png"
     }
   ],
@@ -1927,11 +2643,11 @@
       "url": "/event-backgrounds/pokemon-go-special-background-10th-anniversary.webp"
     },
     {
-      "label": "Pokémon Presents 202527 février",
+      "label": "Pokémon Presents 202527 février 2025",
       "url": "/event-backgrounds/pokemon-go-tour-2025-fond-special-1.png"
     },
     {
-      "label": "Pokémon Presents 202527 février",
+      "label": "Pokémon Presents 202527 février 2025",
       "url": "/event-backgrounds/pokemon-go-tour-2025-fond-special-4.png"
     }
   ],
@@ -1955,7 +2671,7 @@
   ],
   "519": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -2013,6 +2729,10 @@
   ],
   "531": [
     {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    },
+    {
       "label": "Festival Pokémon GO 2026 : Mondial – Événement spécial de raids du dimanche26 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-road-of-legends.webp"
     },
@@ -2061,6 +2781,114 @@
     {
       "label": "Community Day Global21 et 22 décembre 2024",
       "url": "/event-backgrounds/pokemon-go-fond-special-community-day.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-cliveden.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mottisfont.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-nymans.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-polesden-lacey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-scotney-castle.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stowe-gardens.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-anglesey-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-attingham-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-belton-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-calke-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-clumber-park.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hanbury-hall.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-hardwick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-wimpole-estate.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-dunham-massey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-fountains-abbey.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-gibside.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lyme.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-mount-stewart.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-killerton.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-kingston-lacy.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-lacock.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-stourhead.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-trelissick.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tyntesfield.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-chirk.webp"
+    },
+    {
+      "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-national-trust-tredegar-house.webp"
     }
   ],
   "551": [
@@ -2083,7 +2911,7 @@
   ],
   "554": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -2159,7 +2987,7 @@
   ],
   "568": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
@@ -2197,6 +3025,10 @@
     {
       "label": "Pique-nique floral à Taipei28 mars au 6 avril 2026",
       "url": "/event-backgrounds/pokemon-go-lc-taipeiflowerfestival-2026.png"
+    },
+    {
+      "label": "Festival Aquatique de Jangheung28 juillet au 3 août 2025",
+      "url": "/event-backgrounds/pokemon-go-fond-jangheung-water-festival.webp"
     },
     {
       "label": "Festival des fleurs de printemps Yeongdeungpo30 mars au 8 avril 2025",
@@ -2271,7 +3103,7 @@
   ],
   "615": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
@@ -2307,7 +3139,7 @@
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
     },
     {
-      "label": "Passe de Combat GO de septembre2 septembre au 7 octobre",
+      "label": "Passe de Combat GO de septembre2 septembre au 7 octobre 2025",
       "url": "/event-backgrounds/pokemon-go-fond-transformations-fabuleuses.png"
     },
     {
@@ -2329,7 +3161,7 @@
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
     },
     {
-      "label": "Passe de Combat GO de octobre7 octobre au 4 novembre",
+      "label": "Passe de Combat GO de octobre7 octobre au 4 novembre 2025",
       "url": "/event-backgrounds/pokemon-go-fond-transformations-fabuleuses.png"
     },
     {
@@ -2351,7 +3183,7 @@
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
     },
     {
-      "label": "Passe de Combat GO de novembre4 novembre au 2 décembre",
+      "label": "Passe de Combat GO de novembre4 novembre au 2 décembre 2025",
       "url": "/event-backgrounds/pokemon-go-fond-transformations-fabuleuses.png"
     },
     {
@@ -2539,6 +3371,10 @@
   ],
   "650": [
     {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    },
+    {
       "label": "Ultra Bonus : Édition 10ᵉ anniversaire21 au 27 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-fond-special-valor.webp"
     },
@@ -2561,10 +3397,20 @@
     {
       "label": "Étude ponctuelle Une journée de belles célébrations !28 février et 1er mars 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-y.webp"
+    }
+  ],
+  "652": [
+    {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
     }
   ],
   "653": [
     {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    },
+    {
       "label": "Ultra Bonus : Édition 10ᵉ anniversaire21 au 27 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-fond-special-valor.webp"
     },
@@ -2589,7 +3435,17 @@
       "url": "/event-backgrounds/pokemon-go-special-background-y.webp"
     }
   ],
+  "655": [
+    {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    }
+  ],
   "656": [
+    {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    },
     {
       "label": "Ultra Bonus : Édition 10ᵉ anniversaire21 au 27 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-fond-special-valor.webp"
@@ -2613,6 +3469,12 @@
     {
       "label": "Étude ponctuelle Une journée de belles célébrations !28 février et 1er mars 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-y.webp"
+    }
+  ],
+  "658": [
+    {
+      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
     }
   ],
   "669": [
@@ -2851,7 +3713,7 @@
   ],
   "766": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
@@ -3413,7 +4275,7 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-community-day-2026.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
@@ -3439,7 +4301,7 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-community-day-2026.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
@@ -3465,13 +4327,13 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-community-day-2026.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
   "819": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
@@ -3481,19 +4343,19 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-delightful-days.webp"
     },
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
   "831": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
   "849": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
@@ -3507,7 +4369,7 @@
   ],
   "856": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
@@ -3541,7 +4403,7 @@
   ],
   "870": [
     {
-      "label": "Sombres cieuxLundi 18 au samedi 23 août 2025",
+      "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],

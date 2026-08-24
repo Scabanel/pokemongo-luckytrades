@@ -321,26 +321,26 @@
     {
       "id": 1001,
       "name": "Chongjian",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1001.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1001.gif",
+      "animated": true
     },
     {
       "id": 1002,
       "name": "Baojian",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1002.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1002.gif",
+      "animated": true
     },
     {
       "id": 1003,
       "name": "Dinglu",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1003.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1003.gif",
+      "animated": true
     },
     {
       "id": 1004,
       "name": "Yuyu",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1004.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1004.gif",
+      "animated": true
     },
     {
       "id": 1005,
@@ -381,20 +381,20 @@
     {
       "id": 1014,
       "name": "Félicanis",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1014.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1014.gif",
+      "animated": true
     },
     {
       "id": 1015,
       "name": "Fortusimia",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1015.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1015.gif",
+      "animated": true
     },
     {
       "id": 1016,
       "name": "Favianos",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1016.png",
-      "animated": false
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/1016.gif",
+      "animated": true
     },
     {
       "id": 1017,
@@ -543,18 +543,6 @@
       "animated": true
     },
     {
-      "id": 827,
-      "name": "Goupilou",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/827.gif",
-      "animated": true
-    },
-    {
-      "id": 828,
-      "name": "Roublenard",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/828.gif",
-      "animated": true
-    },
-    {
       "id": 829,
       "name": "Tournicoton",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/829.gif",
@@ -636,18 +624,6 @@
       "id": 853,
       "name": "Krakos",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/853.gif",
-      "animated": true
-    },
-    {
-      "id": 872,
-      "name": "Frissonille",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/872.gif",
-      "animated": true
-    },
-    {
-      "id": 873,
-      "name": "Beldeneige",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/873.gif",
       "animated": true
     },
     {
@@ -1683,12 +1659,6 @@
       "animated": true
     },
     {
-      "id": 126,
-      "name": "Magmar (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/126.gif",
-      "animated": true
-    },
-    {
       "id": 127,
       "name": "Scarabrute (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/127.gif",
@@ -1698,18 +1668,6 @@
       "id": 128,
       "name": "Tauros (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/128.gif",
-      "animated": true
-    },
-    {
-      "id": 129,
-      "name": "Magicarpe (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/129.gif",
-      "animated": true
-    },
-    {
-      "id": 130,
-      "name": "Léviator (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/130.gif",
       "animated": true
     },
     {
@@ -3444,12 +3402,6 @@
       "id": 465,
       "name": "Bouldeneu (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/465.gif",
-      "animated": true
-    },
-    {
-      "id": 467,
-      "name": "Maganon (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/467.gif",
       "animated": true
     },
     {

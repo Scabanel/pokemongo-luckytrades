@@ -1893,6 +1893,14 @@
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fPOP_STAR.s.icon.png"
     },
     {
+      "label": "Pxp 2026",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fPXP_2026.icon.png"
+    },
+    {
+      "label": "Pxp 2026 ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fPXP_2026.s.icon.png"
+    },
+    {
       "label": "Rock Star",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fROCK_STAR.icon.png"
     },
@@ -2115,6 +2123,14 @@
     {
       "label": "Wcs 2025 (2) ✨",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fWCS_2025.g2.s.icon.png"
+    },
+    {
+      "label": "Wcs 2026",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fWCS_2026.icon.png"
+    },
+    {
+      "label": "Wcs 2026 ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fWCS_2026.s.icon.png"
     },
     {
       "label": "Winter 2020",
@@ -10245,6 +10261,10 @@
     {
       "label": "Sky ✨",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm492.fSKY.s.icon.png"
+    },
+    {
+      "label": "Officiel Pokémon GO ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm492.s.icon.png"
     }
   ],
   "493": [
@@ -12319,6 +12339,14 @@
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm652.icon.png"
     },
     {
+      "label": "Mega",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm652.fMEGA.icon.png"
+    },
+    {
+      "label": "Mega ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm652.fMEGA.s.icon.png"
+    },
+    {
       "label": "Officiel Pokémon GO ✨",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm652.s.icon.png"
     }
@@ -12347,6 +12375,14 @@
     {
       "label": "Officiel Pokémon GO",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm655.icon.png"
+    },
+    {
+      "label": "Mega",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm655.fMEGA.icon.png"
+    },
+    {
+      "label": "Mega ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm655.fMEGA.s.icon.png"
     },
     {
       "label": "Officiel Pokémon GO ✨",
@@ -12401,6 +12437,14 @@
     {
       "label": "Fall 2024 ✨",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm658.cFALL_2024.s.icon.png"
+    },
+    {
+      "label": "Mega",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm658.fMEGA.icon.png"
+    },
+    {
+      "label": "Mega ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm658.fMEGA.s.icon.png"
     },
     {
       "label": "Officiel Pokémon GO ✨",
