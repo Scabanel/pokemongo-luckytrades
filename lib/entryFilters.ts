@@ -1,5 +1,5 @@
 import type { PokemonEntry } from "./types";
-import { parseTags } from "./tags";
+import { parseTags, REGIONAL_FORM_NAME } from "./tags";
 import legendarySpecies from "@/data/legendary-species.json";
 
 // Légendaires/Mythiques/Ultra-Chimères : liste de dex ID validée (source :
@@ -41,7 +41,7 @@ export function matchesEntryFilters(entry: PokemonEntry, search: string, filters
   const nameAndTags = (name + " " + parseTags(entry.tags).join(" ")).toLowerCase();
   const isGigamax = nameAndTags.includes("gigamax");
   const isDynamax = nameAndTags.includes("dynamax") && !isGigamax;
-  const isCostume = !isGigamax && !isDynamax && name.trim().includes(" ");
+  const isCostume = !isGigamax && !isDynamax && !REGIONAL_FORM_NAME.test(name) && name.trim().includes(" ");
   const isShiny = entry.shiny || (entry.notes?.toLowerCase().includes("shiny") ?? false);
   const hasFond = !!entry.backgroundUrl;
   const isLegendary = LEGENDARY_SPECIES.has(entry.pokemonId);

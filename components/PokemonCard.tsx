@@ -6,12 +6,12 @@ import Link from "next/link";
 import PokemonSprite from "./PokemonSprite";
 import type { PokemonEntry } from "@/lib/types";
 import { CATEGORIES, getCategory } from "@/lib/categories";
-import { parseTags } from "@/lib/tags";
+import { parseTags, REGIONAL_FORM_NAME } from "@/lib/tags";
 import gigantamaxIcons from "@/data/gigantamax-icons.json";
 import pokemonList from "@/data/pokemon.json";
 import legendarySpecies from "@/data/legendary-species.json";
 import { getGenderForCustomSprite } from "@/lib/spriteVariants";
-import { entriesMatch } from "@/lib/entryMatching";
+import { entriesMatch, entriesMatchMirror } from "@/lib/entryMatching";
 
 // Sprite officiel de forme Gigamax (aspect réellement différent en jeu), pour
 // la poignée d'espèces qui en ont un, voir scripts/generate-costume-catalog.mjs.
@@ -104,7 +104,7 @@ function getEventTheme(name: string, tags: string[]): {
     boxShadow: "0 8px 32px rgba(255,200,0,0.18)",
     glow: "radial-gradient(circle, rgba(255,210,50,0.3) 0%, transparent 70%)",
   };
-  if (name.trim().includes(" ")) return {
+  if (!REGIONAL_FORM_NAME.test(name) && name.trim().includes(" ")) return {
     borderColor: "rgba(200,100,255,0.3)",
     boxShadow: "0 8px 32px rgba(180,80,255,0.12)",
     glow: "radial-gradient(circle, rgba(200,100,255,0.25) 0%, transparent 70%)",
@@ -228,9 +228,11 @@ export default function PokemonCard({
   const categoryColor = getCategory(entry.category)?.color ?? CATEGORIES.want.color;
   const categoryGlow = getCategory(entry.category)?.glow ?? CATEGORIES.give.glow;
 
-  // Dresseurs (autres que soi) ayant ce Pokémon dispo en "give"/"mirror" :
-  // masqué si un partenaire est déjà associé (linkedEntryId) ou si ce n'est
-  // pas une entrée "want". Dérivé de allEntries, donc se met à jour tout
+  // Dresseurs (autres que soi) ayant ce Pokémon dispo en "give" (pas
+  // "mirror" : un échange miroir reste dans son propre bassin réciproque,
+  // voir entryMatching.ts) : masqué si un partenaire est déjà associé
+  // (linkedEntryId) ou si ce n'est pas une entrée "want". Dérivé de
+  // allEntries, donc se met à jour tout
   // seul dès que le parent refetch (pas de polling séparé à gérer ici).
   // N'a de sens que sur SA PROPRE entrée want : sur la page publique d'un
   // AUTRE dresseur, ses want à lui ne nous regardent pas — d'où le check
@@ -274,23 +276,34 @@ export default function PokemonCard({
   }, [allEntries, entry, entryTrainerId, isOwnEntry]);
 
   // Inverse du calcul ci-dessus : sur une tuile give/mirror qui N'appartient
-  // PAS au visiteur, est-ce que LUI recherche ce Pokémon (want non lié, même
-  // forme/shiny) ? Affiche "Vous recherchez celui-ci !" + surligne la tuile.
+  // PAS au visiteur, est-ce que LUI a une entrée correspondante chez lui ?
+  // Pour "give" : est-ce qu'il le recherche (want, "Vous recherchez celui-ci !").
+  // Pour "mirror" : est-ce qu'il l'a AUSSI en miroir (mirror uniquement — un
+  // miroir ne matche jamais un "Je recherche", voir entryMatching.ts).
   const viewerWantsThis = useMemo(() => {
-    if (isOwnEntry || !viewerTrainerId || !allEntries) return false;
-    if (entry.category !== "give" && entry.category !== "mirror") return false;
-    if (entry.completed) return false;
-    return allEntries.some((other) =>
-      other.trainer?.id === viewerTrainerId &&
-      other.category === "want" &&
-      !other.completed &&
-      !other.linkedEntryId &&
-      entriesMatch(other, entry)
-    );
+    if (isOwnEntry || !viewerTrainerId || !allEntries || entry.completed) return false;
+    if (entry.category === "give") {
+      return allEntries.some((other) =>
+        other.trainer?.id === viewerTrainerId &&
+        other.category === "want" &&
+        !other.completed &&
+        !other.linkedEntryId &&
+        entriesMatch(other, entry)
+      );
+    }
+    if (entry.category === "mirror") {
+      if (entry.linkedEntryId) return false;
+      return allEntries.some((other) =>
+        other.trainer?.id === viewerTrainerId &&
+        !other.linkedEntryId &&
+        entriesMatchMirror(entry, other)
+      );
+    }
+    return false;
   }, [allEntries, viewerTrainerId, isOwnEntry, entry]);
 
   // Symétrique : sur une tuile want qui N'appartient PAS au visiteur, est-ce
-  // que LUI peut donner ce Pokémon (give/mirror non lié, même forme/shiny) ?
+  // que LUI peut donner ce Pokémon (give uniquement, non lié, même forme/shiny) ?
   // Affiche "Tu as celui recherché !".
   const viewerHasThis = useMemo(() => {
     if (isOwnEntry || !viewerTrainerId || !allEntries) return false;
@@ -911,12 +924,13 @@ export default function PokemonCard({
               whiteSpace: "nowrap",
             }}
           >
-            {/* Texte complet sur desktop, version courte sur mobile : la
-                tuile ne fait plus que ~80-90px de large sur un petit écran
-                (3 par rangée), "Dispo chez X Dresseurs" y débordait
-                largement et cassait la mise en page de toute la grille. */}
-            <span className="hidden sm:inline">Dispo chez {availableFrom.length} Dresseur{availableFrom.length > 1 ? "s" : ""}</span>
-            <span className="sm:hidden">{availableFrom.length} dispo</span>
+            {/* Toujours la version courte : la grille va jusqu'à 6-7
+                colonnes (voir grid-cols-* dans DresseurPageClient/AdminPanel),
+                donc la tuile reste étroite même sur un écran large, pas
+                seulement sur mobile — un split "long sur desktop, court sur
+                mobile" basé sur la largeur de PAGE (comme essayé avant)
+                déborde quand même dès que la grille est dense. */}
+            {availableFrom.length} dispo
           </button>
         )}
 
@@ -934,13 +948,14 @@ export default function PokemonCard({
               whiteSpace: "nowrap",
             }}
           >
-            <span className="hidden sm:inline">{wantedBy.length} Dresseur{wantedBy.length > 1 ? "s" : ""} recherchent ce Pokémon</span>
-            <span className="sm:hidden">{wantedBy.length} recherché{wantedBy.length > 1 ? "s" : ""}</span>
+            {wantedBy.length} recherché{wantedBy.length > 1 ? "s" : ""}
           </button>
         )}
 
-        {/* Sur la liste "peut donner"/"miroir" d'un AUTRE dresseur : ce
-            visiteur précis le recherche lui-même dans sa propre liste. */}
+        {/* Sur la liste "peut donner" d'un AUTRE dresseur : ce visiteur
+            précis le recherche lui-même dans sa propre liste. Sur sa liste
+            "miroir" : ce visiteur l'a AUSSI en miroir (voir viewerWantsThis
+            plus haut, deux bassins de matching séparés). */}
         {viewerWantsThis && (
           <div
             className="mt-auto"
@@ -951,8 +966,7 @@ export default function PokemonCard({
               whiteSpace: "nowrap",
             }}
           >
-            <span className="hidden sm:inline">Vous recherchez celui-ci !</span>
-            <span className="sm:hidden">Recherché !</span>
+            {entry.category === "mirror" ? "Toi aussi en miroir !" : "Recherché !"}
           </div>
         )}
 
@@ -968,8 +982,7 @@ export default function PokemonCard({
               whiteSpace: "nowrap",
             }}
           >
-            <span className="hidden sm:inline">Tu as celui recherché !</span>
-            <span className="sm:hidden">Tu l&apos;as !</span>
+            Tu l&apos;as !
           </div>
         )}
       </div>

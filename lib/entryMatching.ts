@@ -33,18 +33,39 @@ export function wantedBackgroundMatches(wantBackgroundUrl: string | null | undef
   return !wantBackgroundUrl || wantBackgroundUrl === otherBackgroundUrl;
 }
 
-// True si `give` (give ou mirror, actif, non lié à un autre échange) satisfait
-// exactement ce que `want` recherche (même espèce/variante/shiny, et le fond
-// si le want en précise un). Ne vérifie PAS que `want` est lui-même une
-// entrée "want" active/non liée : à l'appelant de filtrer ça avant, selon le
-// sens dans lequel il utilise la comparaison (voir les 3 usages dans
-// PokemonCard.tsx pour l'exemple).
+// Même espèce/variante/shiny, indépendamment de la catégorie ou du fond
+// (voir wantedBackgroundMatches pour le fond, géré à part par les
+// catégories qui en ont besoin).
+export function sameVariant(a: PokemonEntry, b: PokemonEntry): boolean {
+  if (a.pokemonId !== b.pokemonId) return false;
+  if (!!a.shiny !== !!b.shiny) return false;
+  return formVariantKey(a.pokemonId, a.customSpriteUrl, a.tags) === formVariantKey(b.pokemonId, b.customSpriteUrl, b.tags);
+}
+
+// True si `give` (catégorie "give" UNIQUEMENT, actif, non lié à un autre
+// échange) satisfait exactement ce que `want` recherche (même
+// espèce/variante/shiny, et le fond si le want en précise un). "mirror" ne
+// compte PAS comme un give ici : un échange miroir ne reste dans son propre
+// bassin réciproque (voir entriesMatchMirror ci-dessous), il ne satisfait
+// jamais un "Je recherche" de quelqu'un d'autre. Ne vérifie PAS que `want`
+// est lui-même une entrée "want" active/non liée : à l'appelant de filtrer
+// ça avant, selon le sens dans lequel il utilise la comparaison (voir les
+// usages dans PokemonCard.tsx pour l'exemple).
 export function entriesMatch(want: PokemonEntry, give: PokemonEntry): boolean {
   if (give.completed || give.linkedEntryId) return false;
-  if (give.category !== "give" && give.category !== "mirror") return false;
-  if (give.pokemonId !== want.pokemonId) return false;
-  if (!!give.shiny !== !!want.shiny) return false;
-  if (formVariantKey(give.pokemonId, give.customSpriteUrl, give.tags) !== formVariantKey(want.pokemonId, want.customSpriteUrl, want.tags)) return false;
+  if (give.category !== "give") return false;
+  if (!sameVariant(want, give)) return false;
   if (!wantedBackgroundMatches(want.backgroundUrl, give.backgroundUrl)) return false;
   return true;
+}
+
+// Paire symétrique "échange miroir" : les DEUX entrées doivent être
+// "mirror" (un mirror ne matche jamais un want/give, voir entriesMatch
+// ci-dessus). Ni l'une ni l'autre n'est "la demandeuse" au sens d'un want,
+// donc pas de traitement à part pour le fond ici (ignoré, comme pour un
+// give classique sans want en face).
+export function entriesMatchMirror(a: PokemonEntry, b: PokemonEntry): boolean {
+  if (a.category !== "mirror" || b.category !== "mirror") return false;
+  if (b.completed || b.linkedEntryId) return false;
+  return sameVariant(a, b);
 }
