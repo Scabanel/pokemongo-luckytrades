@@ -55,6 +55,10 @@ export default function DresseurPageClient({ id }: { id: string }) {
   // évite de scroller toute la liste pour retrouver les quelques
   // correspondances (voir CopyPogoShinyFilterButton pour un besoin voisin).
   const [onlyOwned, setOnlyOwned] = useState(false);
+  // Symétrique sur l'onglet "X peut donner" de quelqu'un d'autre : ne montre
+  // que ce que LE VISITEUR recherche lui-même dans sa propre liste "Je
+  // recherche".
+  const [onlyWanted, setOnlyWanted] = useState(false);
   // Un admin qui consulte la liste publique d'un dresseur peut l'éditer
   // directement (changer un sprite, ajouter un fond...) pour l'aider, sans
   // devoir passer par son propre compte. Aucune capacité d'édition pour un
@@ -182,16 +186,32 @@ export default function DresseurPageClient({ id }: { id: string }) {
 
   const countByTab: Record<EntryCategory, number> = { mirror: mirrors.length, want: wants.length, give: gives.length };
   const entriesByTab: Record<EntryCategory, PokemonEntry[]> = { mirror: mirrors, want: wants, give: gives };
-  // Le filtre "Que je possède" n'a de sens que sur le "recherche" de
+  // "Que je possède"/"Que je recherche" n'ont de sens que sur le catalogue de
   // QUELQU'UN D'AUTRE (sur son propre catalogue, "ce que je recherche que je
   // possède déjà" n'aide personne).
   const isViewingOther = viewerTrainerId != null && viewerTrainerId !== trainer?.id;
   const showOnlyOwnedToggle = activeTab === "want" && isViewingOther;
+  const showOnlyWantedToggle = activeTab === "give" && isViewingOther;
   const viewerOwnEntries = allEntries.filter((e) => e.trainer?.id === viewerTrainerId);
+  // entriesMatch ne valide QUE le rôle "give" (2e argument) — catégorie
+  // "give", non complété, non lié (voir lib/entryMatching.ts). Le rôle
+  // "want" (1er argument) n'est pas validé par la fonction : "Que je
+  // possède" passe `e` en position want, qui vient déjà de l'onglet "want"
+  // (donc sûr) ; "Que je recherche" passe `mine` en position want, qui vient
+  // de TOUTES les entrées du visiteur (want/give/mirror mélangées) — sans ce
+  // filtre explicite sur la catégorie et le lien, une entrée "give"/"mirror"
+  // du visiteur, ou un want déjà réservé, compterait à tort comme "je le
+  // recherche".
+  const viewerActiveWants = viewerOwnEntries.filter((e) => e.category === "want" && !e.linkedEntryId);
   const visibleEntries = entriesByTab[activeTab]
     .filter((e) => matchesEntryFilters(e, search, filters))
-    .filter((e) => !onlyOwned || !showOnlyOwnedToggle || viewerOwnEntries.some((mine) => entriesMatch(e, mine)));
-  const anyFilterActive = search.trim() !== "" || Object.values(filters).some(Boolean) || (onlyOwned && showOnlyOwnedToggle);
+    .filter((e) => !onlyOwned || !showOnlyOwnedToggle || viewerOwnEntries.some((mine) => entriesMatch(e, mine)))
+    .filter((e) => !onlyWanted || !showOnlyWantedToggle || viewerActiveWants.some((mine) => entriesMatch(mine, e)));
+  const anyFilterActive =
+    search.trim() !== "" ||
+    Object.values(filters).some(Boolean) ||
+    (onlyOwned && showOnlyOwnedToggle) ||
+    (onlyWanted && showOnlyWantedToggle);
   const activeColor = CATEGORIES[activeTab].color;
 
   if (!loading && notFound) {
@@ -362,9 +382,29 @@ export default function DresseurPageClient({ id }: { id: string }) {
                 Que je possède
               </button>
             )}
+            {showOnlyWantedToggle && (
+              <button
+                onClick={() => setOnlyWanted((v) => !v)}
+                style={{
+                  padding: "7px 14px",
+                  borderRadius: 999,
+                  fontFamily: "Exo 2, sans-serif",
+                  fontWeight: 700,
+                  fontSize: "0.78rem",
+                  cursor: "pointer",
+                  border: "1px solid",
+                  transition: "all 0.12s",
+                  ...(onlyWanted
+                    ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.4)", color: "#ffd700" }
+                    : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "rgba(232,237,245,0.5)" }),
+                }}
+              >
+                Que je recherche
+              </button>
+            )}
             {anyFilterActive && (
               <button
-                onClick={() => { setSearch(""); setFilters(EMPTY_ENTRY_FILTERS); setOnlyOwned(false); }}
+                onClick={() => { setSearch(""); setFilters(EMPTY_ENTRY_FILTERS); setOnlyOwned(false); setOnlyWanted(false); }}
                 className="btn-secondary"
                 style={{ padding: "7px 14px", fontSize: "0.78rem" }}
               >
