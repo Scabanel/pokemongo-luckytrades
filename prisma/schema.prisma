@@ -82,6 +82,12 @@ model PokemonEntry {
   // "male" | "female" | null (non précisé/asexué) : utile pour les quelques
   // espèces à sprite différent selon le genre (Pyroar, Frillish, Indeedee...).
   gender              String?
+  // "XXS" | "XS" | "XL" | "XXL" | null (taille non précisée) : les records
+  // de taille (le plus petit/grand jamais capturé d'une espèce) sont
+  // recherchés/échangés pour eux-mêmes en Pokémon GO, indépendamment du
+  // costume/shiny. Sur un want, une taille précisée restreint le matching à
+  // cette taille exacte (voir wantedSizeMatches, même principe que le fond).
+  size                String?
   // Ex: Hurle-Temps sur Dialga, Onde de Choc sur Palkia... simple case à
   // cocher (pas de liste par espèce à maintenir), affiché comme badge.
   exclusiveMove       Boolean  @default(false)

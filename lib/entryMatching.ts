@@ -33,6 +33,17 @@ export function wantedBackgroundMatches(wantBackgroundUrl: string | null | undef
   return !wantBackgroundUrl || wantBackgroundUrl === otherBackgroundUrl;
 }
 
+// Records de taille (le plus petit/grand jamais capturé d'une espèce) :
+// recherchés/échangés pour eux-mêmes en Pokémon GO. Même principe que le
+// fond : un want SANS taille précisée reste satisfait par n'importe quelle
+// taille (ou aucune) côté give ; un want AVEC une taille précisée n'est
+// satisfait que par un give ayant EXACTEMENT cette même taille.
+export const POKEMON_SIZES = ["XXS", "XS", "XL", "XXL"] as const;
+export type PokemonSize = (typeof POKEMON_SIZES)[number];
+export function wantedSizeMatches(wantSize: string | null | undefined, otherSize: string | null | undefined): boolean {
+  return !wantSize || wantSize === otherSize;
+}
+
 // Même espèce/variante/shiny, indépendamment de la catégorie ou du fond
 // (voir wantedBackgroundMatches pour le fond, géré à part par les
 // catégories qui en ont besoin).
@@ -44,7 +55,7 @@ export function sameVariant(a: PokemonEntry, b: PokemonEntry): boolean {
 
 // True si `give` (catégorie "give" UNIQUEMENT, actif, non lié à un autre
 // échange) satisfait exactement ce que `want` recherche (même
-// espèce/variante/shiny, et le fond si le want en précise un). "mirror" ne
+// espèce/variante/shiny, et le fond/la taille si le want en précise un). "mirror" ne
 // compte PAS comme un give ici : un échange miroir ne reste dans son propre
 // bassin réciproque (voir entriesMatchMirror ci-dessous), il ne satisfait
 // jamais un "Je recherche" de quelqu'un d'autre. Ne vérifie PAS que `want`
@@ -56,6 +67,7 @@ export function entriesMatch(want: PokemonEntry, give: PokemonEntry): boolean {
   if (give.category !== "give") return false;
   if (!sameVariant(want, give)) return false;
   if (!wantedBackgroundMatches(want.backgroundUrl, give.backgroundUrl)) return false;
+  if (!wantedSizeMatches(want.size, give.size)) return false;
   return true;
 }
 

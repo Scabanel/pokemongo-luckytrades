@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentTrainer } from "@/lib/auth";
+import { POKEMON_SIZES } from "@/lib/entryMatching";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -38,6 +39,7 @@ export async function POST(request: NextRequest) {
     notes,
     shiny,
     gender,
+    size,
     exclusiveMove,
     customSpriteUrl,
     backgroundUrl,
@@ -60,6 +62,10 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  if (size != null && !(POKEMON_SIZES as readonly string[]).includes(size)) {
+    return NextResponse.json({ error: "Taille invalide" }, { status: 400 });
+  }
+
   // Un compte non-admin ne peut créer une entrée que sous son propre
   // dresseur, quelle que soit la valeur envoyée par le client.
   const effectiveTrainerId = isAdmin ? trainerId || null : trainer!.id;
@@ -80,6 +86,7 @@ export async function POST(request: NextRequest) {
           notes: notes || null,
           shiny: shiny === true,
           gender: gender === "male" || gender === "female" ? gender : null,
+          size: size != null ? size : null,
           exclusiveMove: exclusiveMove === true,
           customSpriteUrl: customSpriteUrl || null,
           backgroundUrl: backgroundUrl || null,

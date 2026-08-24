@@ -444,6 +444,14 @@ export default function PokemonCard({
               fontFamily: "Exo 2, sans-serif",
             }}>Attaque exclusive</span>
           )}
+          {entry.size && (
+            <span style={{
+              background: "rgba(100,220,180,0.15)", border: "1px solid rgba(100,220,180,0.5)",
+              borderRadius: 999, padding: "3px 12px",
+              fontSize: "0.72rem", fontWeight: 700, color: "#64dcb4",
+              fontFamily: "Exo 2, sans-serif",
+            }}>{entry.size}</span>
+          )}
         </div>
 
         {/* Tags in modal : dynamax/gigamax ont déjà leur badge dédié juste
@@ -842,6 +850,18 @@ export default function PokemonCard({
           >
             Réservé par {entry.tradePartnerName}
           </p>
+        )}
+
+        {/* Taille (record XXS/XS/XL/XXL) */}
+        {entry.size && (
+          <span style={{
+            background: "rgba(100,220,180,0.18)", border: "1px solid rgba(100,220,180,0.5)",
+            borderRadius: 999, padding: "1px 6px", marginBottom: 4,
+            fontSize: "0.55rem", fontWeight: 700, color: "#64dcb4",
+            fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
+          }}>
+            {entry.size}
+          </span>
         )}
 
         {/* Attaque exclusive */}

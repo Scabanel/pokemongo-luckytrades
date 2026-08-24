@@ -17,6 +17,7 @@ import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type Entr
 import BulkAddPicker from "./BulkAddPicker";
 import CopyPogoShinyFilterButton from "./CopyPogoShinyFilterButton";
 import { detectCostumeGender, isCostumeShinyReleased, AVAILABLE_SPECIES, DYNAMAX_AVAILABLE_SPECIES, GIGANTAMAX_AVAILABLE_SPECIES } from "@/lib/spriteVariants";
+import { POKEMON_SIZES } from "@/lib/entryMatching";
 
 // La liste des dresseurs en admin inclut toujours le compte d'entrées
 // (contrairement à PokemonEntry.trainer ailleurs, qui n'en a pas besoin).
@@ -1128,6 +1129,7 @@ export function EntryForm(props: EntryFormProps) {
           notes: entry.notes ?? "",
           shiny: entry.shiny ?? false,
           gender: entry.gender ?? (null as string | null),
+          size: entry.size ?? (null as string | null),
           exclusiveMove: entry.exclusiveMove ?? false,
           customSpriteUrl: entry.customSpriteUrl ?? (null as string | null),
           backgroundUrl: entry.backgroundUrl ?? (null as string | null),
@@ -1153,6 +1155,7 @@ export function EntryForm(props: EntryFormProps) {
           notes: "",
           shiny: false,
           gender: null as string | null,
+          size: null as string | null,
           exclusiveMove: false,
           customSpriteUrl: null as string | null,
           backgroundUrl: null as string | null,
@@ -1274,6 +1277,7 @@ export function EntryForm(props: EntryFormProps) {
         category: form.category,
         shiny: form.shiny,
         gender: form.gender,
+        size: form.size,
         exclusiveMove: form.exclusiveMove,
         customSpriteUrl: form.customSpriteUrl,
         backgroundUrl: form.backgroundUrl,
@@ -1319,6 +1323,7 @@ export function EntryForm(props: EntryFormProps) {
           notes: "",
           shiny: false,
           gender: null,
+          size: null,
           exclusiveMove: false,
           customSpriteUrl: null,
           backgroundUrl: null,
@@ -1594,6 +1599,36 @@ export function EntryForm(props: EntryFormProps) {
                   }}
                 >
                   {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Taille : les records (le plus petit/grand jamais capturé d'une
+            espèce) sont recherchés/échangés pour eux-mêmes en Pokémon GO.
+            Sur un want, préciser une taille restreint le matching à cette
+            taille exacte (voir wantedSizeMatches dans lib/entryMatching.ts). */}
+        <div>
+          <label className="field-label">TAILLE (optionnel)</label>
+          <div className="flex gap-2 flex-wrap mt-1">
+            {POKEMON_SIZES.map((key) => {
+              const active = form.size === key;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setForm((f) => ({ ...f, size: f.size === key ? null : key }))}
+                  style={{
+                    padding: "8px 16px", borderRadius: 10, cursor: "pointer",
+                    border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem",
+                    transition: "all 0.2s",
+                    ...(active
+                      ? { background: "rgba(100,220,180,0.15)", borderColor: "rgba(100,220,180,0.5)", color: "#64dcb4" }
+                      : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                  }}
+                >
+                  {key}
                 </button>
               );
             })}

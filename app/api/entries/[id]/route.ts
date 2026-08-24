@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentTrainer } from "@/lib/auth";
+import { POKEMON_SIZES } from "@/lib/entryMatching";
 
 export async function PATCH(
   request: NextRequest,
@@ -22,8 +23,12 @@ export async function PATCH(
   }
 
   const body = await request.json();
-  const { trainerId, tradeForPokemonName, tradeForPokemonId, tradePartnerName, notes, completed, category, shiny, gender, exclusiveMove, customSpriteUrl, backgroundUrl, priority, tags, quantity } =
+  const { trainerId, tradeForPokemonName, tradeForPokemonId, tradePartnerName, notes, completed, category, shiny, gender, size, exclusiveMove, customSpriteUrl, backgroundUrl, priority, tags, quantity } =
     body;
+
+  if (size !== undefined && size !== null && !(POKEMON_SIZES as readonly string[]).includes(size)) {
+    return NextResponse.json({ error: "Taille invalide" }, { status: 400 });
+  }
   // Réassigné si on réserve 1 exemplaire d'un stock (voir plus bas) : l'id
   // effectivement lié à cette entrée devient alors la fiche dédiée créée
   // pour la réservation, pas la pile d'origine.
@@ -143,6 +148,7 @@ export async function PATCH(
           ...(category !== undefined && { category }),
           ...(shiny !== undefined && { shiny: shiny === true }),
           ...(gender !== undefined && { gender: gender === "male" || gender === "female" ? gender : null }),
+          ...(size !== undefined && { size: size || null }),
           ...(exclusiveMove !== undefined && { exclusiveMove: exclusiveMove === true }),
           ...(customSpriteUrl !== undefined && { customSpriteUrl: customSpriteUrl || null }),
           ...(backgroundUrl !== undefined && { backgroundUrl: backgroundUrl || null }),

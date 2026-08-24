@@ -35,6 +35,8 @@ export interface PokemonEntry {
   notes?: string | null;
   shiny?: boolean;
   gender?: string | null;
+  // "XXS" | "XS" | "XL" | "XXL" | null (voir lib/entryMatching.ts, POKEMON_SIZES).
+  size?: string | null;
   exclusiveMove?: boolean;
   customSpriteUrl?: string | null;
   backgroundUrl?: string | null;
