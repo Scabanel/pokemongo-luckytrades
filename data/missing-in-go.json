@@ -67,24 +67,6 @@
       "animated": true
     },
     {
-      "id": 845,
-      "name": "Nigosier",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/845.gif",
-      "animated": true
-    },
-    {
-      "id": 846,
-      "name": "Embrochet",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/846.gif",
-      "animated": true
-    },
-    {
-      "id": 847,
-      "name": "Hastacuda",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/847.gif",
-      "animated": true
-    },
-    {
       "id": 868,
       "name": "Crèmy",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/868.gif",
@@ -495,12 +477,6 @@
       "animated": true
     },
     {
-      "id": 792,
-      "name": "Lunala",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/792.gif",
-      "animated": true
-    },
-    {
       "id": 802,
       "name": "Marshadow",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/802.gif",
@@ -612,6 +588,24 @@
       "id": 844,
       "name": "Dunaconda",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/844.gif",
+      "animated": true
+    },
+    {
+      "id": 845,
+      "name": "Nigosier",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/845.gif",
+      "animated": true
+    },
+    {
+      "id": 846,
+      "name": "Embrochet",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/846.gif",
+      "animated": true
+    },
+    {
+      "id": 847,
+      "name": "Hastacuda",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/847.gif",
       "animated": true
     },
     {
@@ -898,12 +892,6 @@
       "id": 36,
       "name": "Méga-Mélodelfe",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/36.gif",
-      "animated": true
-    },
-    {
-      "id": 121,
-      "name": "Méga-Staross",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/121.gif",
       "animated": true
     },
     {
@@ -5316,6 +5304,24 @@
       "id": 844,
       "name": "Dunaconda (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/844.gif",
+      "animated": true
+    },
+    {
+      "id": 845,
+      "name": "Nigosier (Dynamax)",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/845.gif",
+      "animated": true
+    },
+    {
+      "id": 846,
+      "name": "Embrochet (Dynamax)",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/846.gif",
+      "animated": true
+    },
+    {
+      "id": 847,
+      "name": "Hastacuda (Dynamax)",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/847.gif",
       "animated": true
     },
     {
