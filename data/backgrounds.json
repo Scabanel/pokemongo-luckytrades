@@ -584,6 +584,10 @@
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_Paris2025_02.png"
   },
   {
+    "label": "Pattern Wild",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_PatternWild.png"
+  },
+  {
     "label": "Pokecenter Fukuoka",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_pokecenter_fukuoka.png"
   },
@@ -920,6 +924,22 @@
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_TokMun_shinagawa.png"
   },
   {
+    "label": "Tpc 30 Th Malaysia",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_tpc30th_malaysia.png"
+  },
+  {
+    "label": "Tpc 30 Th Philippines",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_tpc30th_philippines.png"
+  },
+  {
+    "label": "Tpc 30 Th Singapore",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_tpc30th_singapore.png"
+  },
+  {
+    "label": "Tpc 30 Th Taiwan",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_tpc30th_taiwan.png"
+  },
+  {
     "label": "Wcs 2024 Honolulu",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_Wcs2024_honolulu.png"
   },
@@ -930,5 +950,9 @@
   {
     "label": "Wcs 2026 San Francisco",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_Wcs2026_sanFrancisco.png"
+  },
+  {
+    "label": "World Special Blue",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_WorldSpecial_Blue.png"
   }
 ]
