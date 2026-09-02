@@ -645,6 +645,12 @@
       "url": "/event-backgrounds/pokemon-go-location-background-tokmun-shinagawa.webp"
     }
   ],
+  "87": [
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
+    }
+  ],
   "92": [
     {
       "label": "Sombres cieux18 au 23 août 2025",
@@ -655,6 +661,18 @@
     {
       "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
+    }
+  ],
+  "99": [
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
+    }
+  ],
+  "103": [
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
     }
   ],
   "113": [
@@ -1857,6 +1875,12 @@
       "url": "/event-backgrounds/pokemon-go-special-background-10th-anniversary.webp"
     }
   ],
+  "263": [
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
+    }
+  ],
   "273": [
     {
       "label": "Pokémon GO National Trust en Irlande et en Angleterre18 juillet au 6 septembre 2026",
@@ -2283,6 +2307,10 @@
     {
       "label": "Pokémon GO Fest Global11 et 12 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
+    },
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
     },
     {
       "label": "Pokémon GO Fest New-York18 au 20 août 2023",
@@ -4407,6 +4435,12 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
+  "884": [
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
+    }
+  ],
   "888": [
     {
       "label": "Festival Pokémon GO 2026 : Mondial – Événement spécial de raids du dimanche26 juillet 2026",
@@ -4553,6 +4587,10 @@
     {
       "label": "Community Day Chochodile8 mars 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-might-and-mastery.png"
+    },
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
     }
   ],
   "912": [
@@ -4599,6 +4637,12 @@
     {
       "label": "Community Day Forgerette11 avril 2026",
       "url": "/event-backgrounds/pokemon-go-fond-special-community-day-2026.webp"
+    }
+  ],
+  "959": [
+    {
+      "label": "Étude ponctuelle bonus Champion du Monde Pokémon 202528 au 31 août 2026",
+      "url": "/event-backgrounds/pokemon-go-special-background-worlds-special-blue.webp"
     }
   ],
   "973": [
