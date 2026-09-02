@@ -979,24 +979,6 @@
       "animated": true
     },
     {
-      "id": 652,
-      "name": "Méga-Blindépique",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/652.gif",
-      "animated": true
-    },
-    {
-      "id": 655,
-      "name": "Méga-Goupelin",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/655.gif",
-      "animated": true
-    },
-    {
-      "id": 658,
-      "name": "Méga-Amphinobi",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/658.gif",
-      "animated": true
-    },
-    {
       "id": 668,
       "name": "Méga-Némélios",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/668.gif",
@@ -2196,12 +2178,6 @@
       "id": 236,
       "name": "Debugant (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/236.gif",
-      "animated": true
-    },
-    {
-      "id": 237,
-      "name": "Kapoera (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/237.gif",
       "animated": true
     },
     {
