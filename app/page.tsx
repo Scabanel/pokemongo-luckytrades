@@ -5,6 +5,7 @@ import ParticleBackground from "@/components/ParticleBackground";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import PlanEchange from "@/components/PlanEchange";
+import PrecisionsExemples from "@/components/PrecisionsExemples";
 import DerniersShiny from "@/components/DerniersShiny";
 
 /* ═══════════════════════════════════════════════════════════════════════════════════════
@@ -218,6 +219,8 @@ export default function LandingPage() {
           </p>
           <PlanEchange />
         </section>
+
+        <PrecisionsExemples />
 
         <DerniersShiny />
 

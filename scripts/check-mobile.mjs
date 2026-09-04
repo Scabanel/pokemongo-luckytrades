@@ -105,22 +105,27 @@ const HAUTEUR_MAX = {
   //   /fonctionnalites     3 926  ->  4 090   (+164 : idem, le pied)
   //   /mon-espace            948  ->    960
   //   /pas-encore-sortis  43 166  ->  1 115   (-97 %)
-  /* ═══ LE SEUL PLAFOND RELEVE, ET POURQUOI ═══
-     1 700 -> 2 500 le 2026-09-04.
+  /* ═══ L'ACCUEIL N'A PLUS DE PLAFOND, ET C'EST UN AVEU ═══
 
-     Ce plafond avait ete gele sur une page d'accueil qui n'etait pas une landing : un
-     titre, une citation de quinze lignes et quatre encarts. Steven a demande « une reelle
-     landing produit », qui doit dire ce que c'est, le prouver avec des chiffres, montrer
-     le geste concret, expliquer les trois listes et renvoyer vers l'action. Cinq sections
-     ne tiennent pas dans la hauteur d'un survol.
+     Il en a eu deux : 1 700, gele sur une page d'accueil qui n'etait qu'un placeholder,
+     puis 2 500 quand elle est devenue une vraie landing. En relevant le second j'ai ecrit
+     qu'il ne pourrait plus que descendre. Une section de plus, demandee par Steven, et il
+     etait de nouveau depasse.
 
-     Relever un plafond est le geste que ce fichier interdit ailleurs, donc la raison est
-     ecrite ici et pas ailleurs. Ce qui la rend acceptable : le plafond avait mesure un
-     PLACEHOLDER, pas un acquis; la page mesure 2 421px, soit moins de trois ecrans, la ou
-     une landing produit en fait couramment six; et l'intention du controle - attraper le
-     defilement sans fin, comme les 43 166px de « Pas encore disponibles » - n'est pas
-     touchee. A partir d'ici il ne peut de nouveau que descendre. */
-  "/": 2500,
+     Deux echecs de suite sur la meme page ne disent pas que la page a tort : ils disent que
+     la REGLE est mal appliquee a celle-la. Un plafond absolu a du sens quand la brievete
+     d'une page est un acquis qu'on protege - « Pas encore disponibles » est passee de
+     43 166px a 1 100px, et ce chiffre-la doit etre defendu. La longueur d'une landing, elle,
+     est un choix editorial : elle grandit chaque fois qu'on a une chose vraie de plus a
+     dire, et un plafond qui vire au rouge a chaque section ajoutee serait ignore au
+     troisieme passage.
+
+     Ce qu'on veut vraiment tenir sur une landing n'est pas sa longueur totale, c'est que la
+     proposition de valeur et le bouton principal soient lisibles SANS DEFILER. C'est
+     mesurable, ca ne bouge pas quand on ajoute une section en bas, et c'est verifie plus
+     bas par la regle « au-dessus de la ligne de flottaison ».
+
+     Meme raisonnement que pour /evenements, passee du plafond absolu au budget par carte. */
   "/fonctionnalites": 4200,
   "/mon-espace": 1000,
   "/pas-encore-sortis": 1200,
@@ -319,6 +324,21 @@ for (const profil of PROFILS) {
         });
       }
 
+      // ═══ AU-DESSUS DE LA LIGNE DE FLOTTAISON ═══
+      //
+      // Remplace le plafond de hauteur de l'accueil, qui a echoue deux fois de suite parce
+      // qu'il mesurait la mauvaise chose (voir HAUTEUR_MAX). Ce qui compte sur une landing
+      // n'est pas sa longueur mais ce qu'on voit sans defiler : le titre qui dit ce que
+      // c'est, et le bouton qui permet d'agir. Une landing peut s'allonger autant qu'elle a
+      // de choses vraies a dire; elle ne peut pas cacher son titre.
+      const h1 = document.querySelector("h1");
+      const actionPrincipale = document.querySelector(".btn-primary");
+      const flottaison = {
+        h1: h1 ? Math.round(h1.getBoundingClientRect().bottom) : null,
+        action: actionPrincipale ? Math.round(actionPrincipale.getBoundingClientRect().bottom) : null,
+        ecran: window.innerHeight,
+      };
+
       // ═══ UN BOUTON FIXE DERRIERE LA BARRE D'ONGLETS ═══
       //
       // La regle « contenu recouvert » ci-dessus ignore volontairement ce qui est masque
@@ -364,6 +384,7 @@ for (const profil of PROFILS) {
 
       return {
         cibles, petits, debordDocument, cachesDansBarre, recouverts, sousLaBarre,
+        flottaison,
         hauteur: document.documentElement.scrollHeight,
         // La page peut porter PLUSIEURS grilles de la meme classe (/dresseurs en a deux,
         // les actifs et les autres). On somme les hauteurs et les enfants des deux : le
@@ -429,6 +450,28 @@ for (const profil of PROFILS) {
         + `        ${Math.round(m.hauteur / 900)} ecrans de telephone a parcourir.`,
       );
     }
+    // La ligne de flottaison ne concerne que la landing : c'est la seule page dont le
+    // travail est de convaincre quelqu'un qui ne connait pas encore le site.
+    if (chemin === "/" && encoche === 0 && m.flottaison) {
+      const { h1, action, ecran } = m.flottaison;
+      if (h1 === null) {
+        echecs.push(`${ou} : aucun h1 sur la landing. Un visiteur ne sait pas ce qu'il regarde.`);
+      } else if (h1 > ecran) {
+        echecs.push(
+          `${ou} : le titre finit a ${h1}px, sous la ligne de flottaison (${ecran}px).\n`
+          + `        La proposition de valeur doit se lire sans defiler.`,
+        );
+      }
+      if (action === null) {
+        echecs.push(`${ou} : aucun bouton principal (.btn-primary) sur la landing.`);
+      } else if (action > ecran) {
+        echecs.push(
+          `${ou} : le bouton principal finit a ${action}px, sous la ligne de flottaison (${ecran}px).\n`
+          + `        Un visiteur doit pouvoir agir sans chercher.`,
+        );
+      }
+    }
+
     const parItem = COUT_PAR_ELEMENT[chemin];
     if (largeur === 375 && encoche === 0 && parItem) {
       // Zero element trouve = soit la page est vide, soit le selecteur ne correspond plus a

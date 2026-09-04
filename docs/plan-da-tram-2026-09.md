@@ -159,3 +159,73 @@ d'ici il ne peut de nouveau que descendre.
 - **Vulnérabilités npm préexistantes** (babel, hono, humanfs) signalées par `npm audit`.
   Elles ne viennent pas de `qrcode` et n'ont pas été touchées : `--force` au milieu d'une
   refonte n'est pas une bonne idée.
+
+---
+
+## Lot 8 - Les précisions du matching, montrées sur la landing
+
+Steven : « Mets bien sur la landing des exemples de pokémon à fonds, à taille, à genre
+différents et dis bien que le matching de recherche fonctionne sur ça aussi !! »
+
+### La vérification a changé la demande
+
+Le fond et la taille entraient bien dans `entriesMatch`. **Le genre, non** : il était
+affiché sur la carte par `GenderBadge` et complètement ignoré par le matching.
+
+Écrire sur la landing que « les correspondances en tiennent compte » aurait donc été une
+promesse fausse, sur la page dont le travail est précisément d'établir la confiance. Deux
+sorties possibles : écrire une phrase vraie mais bancale (« ça marche pour deux des trois »),
+ou rendre la promesse vraie. Steven a confirmé la seconde de lui-même, avec le bon argument :
+« Il faut que le genre rentre dans le matching pour les pikachu (ils ont une queue
+différente selon le genre). »
+
+`wantedGenderMatches` a donc la sémantique **exacte** de la taille et du fond, pour qu'il n'y
+ait pas trois règles à retenir : un « Je recherche » sans genre précisé reste satisfait par
+n'importe quel genre; avec un genre précisé, seul ce genre convient.
+
+**C'est un changement de comportement sur des données réelles**, pas un simple ajout : un
+« Je recherche » qui portait déjà un genre voit désormais moins de correspondances. C'est le
+comportement attendu, mais il faut le dire. Appliqué à toutes les espèces et pas seulement
+à celles dont l'apparence diffère : la règle ne se déclenche que si quelqu'un a
+délibérément renseigné un genre, donc une liste d'espèces à maintenir n'aurait apporté
+qu'une source de bugs.
+
+Les échanges miroir continuent d'ignorer fond, taille et genre, comme avant, et c'était déjà
+documenté dans `entriesMatchMirror`.
+
+### Les exemples sont illustratifs, et c'est assumé
+
+Cette section explique une FONCTION, elle n'annonce pas un stock. Les chiffres de la landing
+sont réels parce qu'ils prétendent décrire l'activité du site; ici, un Dracaufeu sur un fond
+de Go Fest montre à quoi ressemble un fond. Le fond et les tailles viennent quand même des
+données du site (`data/backgrounds.json`, `POKEMON_SIZES`), donc ce sont les mêmes que dans
+le formulaire.
+
+### Le plafond de hauteur de l'accueil a été retiré, et c'est un aveu
+
+Il a échoué **deux fois de suite** : relevé de 1 700 à 2 500 pour la landing produit, puis
+dépassé dès la section suivante. En le relevant j'avais écrit qu'il ne pourrait plus que
+descendre.
+
+Deux échecs de suite sur la même page ne disent pas que la page a tort, ils disent que la
+règle est mal appliquée à celle-là. Un plafond absolu protège une brièveté qui est un acquis
+(« Pas encore disponibles » est passée de 43 166px à 1 100px, et ce chiffre doit être
+défendu). La longueur d'une landing est un choix éditorial : elle grandit chaque fois qu'on a
+une chose vraie de plus à dire, et un contrôle qui vire au rouge à chaque section serait
+ignoré au troisième passage.
+
+Il est donc remplacé par une mesure qui veut dire quelque chose sur une landing : **le titre
+et le bouton principal doivent être lisibles sans défiler**. Vérifié à toutes les largeurs,
+et vérifié comme mordant en abaissant artificiellement la ligne de flottaison à 100px.
+
+Même raisonnement que pour `/evenements`, passée du plafond absolu au budget par carte.
+
+### Ce que les sondes ont attrapé sur ce lot
+
+1. **Le badge « XXL » était à 11px**, sous mon propre plancher de 12. D'autant plus grave
+   que le zoom vient d'être retiré : ce plancher n'est plus une bonne pratique, c'est tout
+   ce qui reste.
+2. **Débordement horizontal de 18px à 768px.** Deux cadres de 66px côte à côte ne laissaient
+   que 59px de large au texte dans une colonne de 233px. J'ai d'abord ajouté `minWidth: 0`
+   en devinant, sans effet, avant de mesurer et de trouver le vrai coupable. Les cadres sont
+   maintenant empilés, ce qui garde la même largeur quel qu'en soit le nombre.

@@ -38,6 +38,34 @@ export function wantedBackgroundMatches(wantBackgroundUrl: string | null | undef
 // fond : un want SANS taille précisée reste satisfait par n'importe quelle
 // taille (ou aucune) côté give ; un want AVEC une taille précisée n'est
 // satisfait que par un give ayant EXACTEMENT cette même taille.
+/* ═══ LE GENRE ENTRE DANS LE MATCHING ═══
+   Ajoute le 2026-09-04.
+
+   Steven, en demandant d'annoncer sur la landing que « le matching de recherche fonctionne
+   sur ca aussi » pour les fonds, les tailles ET les genres. La verification a montre que
+   c'etait vrai des deux premiers et faux du troisieme : le genre etait affiche sur la carte
+   (GenderBadge) mais `entriesMatch` l'ignorait completement. Plutot que d'ecrire une
+   promesse fausse sur la page dont le travail est d'etablir la confiance, la promesse est
+   rendue vraie.
+
+   Meme semantique exacte que la taille et le fond, pour qu'il n'y ait pas trois regles a
+   retenir : un want SANS genre precise reste satisfait par n'importe quel give; un want
+   AVEC un genre precise n'est satisfait que par ce genre-la.
+
+   ═══ CE QUE CA CHANGE POUR LES ENTREES EXISTANTES ═══
+
+   Un « Je recherche » qui portait deja un genre voit desormais moins de correspondances
+   qu'avant. C'est le comportement attendu - si on a precise un genre, c'est qu'on le veut -
+   mais c'est bien un changement de comportement sur des donnees reelles, pas un simple
+   ajout. Il vit sur la branche v2-refonte-da et pas en production. */
+export function wantedGenderMatches(wantGender: string | null | undefined, otherGender: string | null | undefined): boolean {
+  // Seuls "male" et "female" sont des genres au sens de GenderBadge. Toute autre valeur
+  // (chaine vide, null, valeur heritee) est traitee comme « peu importe », ce qui evite
+  // qu'un champ mal rempli fasse disparaitre des correspondances en silence.
+  const precise = wantGender === "male" || wantGender === "female";
+  return !precise || wantGender === otherGender;
+}
+
 export const POKEMON_SIZES = ["XXS", "XS", "XL", "XXL"] as const;
 export type PokemonSize = (typeof POKEMON_SIZES)[number];
 export function wantedSizeMatches(wantSize: string | null | undefined, otherSize: string | null | undefined): boolean {
@@ -68,6 +96,7 @@ export function entriesMatch(want: PokemonEntry, give: PokemonEntry): boolean {
   if (!sameVariant(want, give)) return false;
   if (!wantedBackgroundMatches(want.backgroundUrl, give.backgroundUrl)) return false;
   if (!wantedSizeMatches(want.size, give.size)) return false;
+  if (!wantedGenderMatches(want.gender, give.gender)) return false;
   return true;
 }
 
