@@ -74,17 +74,44 @@ const HAUTEUR_MAX = {
   //
   // Rappel des valeurs AVANT cette passe, pour mesurer le chemin parcouru :
   //   /                    1 549  ->  1 651   (+102 : le pied est passe dans le flux)
-  //   /dresseurs           6 725  ->  3 864   (-43 %)
-  //   /evenements         13 759  ->  8 040   (-42 %)
+  //   /dresseurs           6 725  ->  3 864   (-43 %)  [passe au budget par carte]
+  //   /evenements         13 759  ->  8 040   (-42 %)  [passe au budget par carte]
   //   /fonctionnalites     3 926  ->  4 090   (+164 : idem, le pied)
   //   /mon-espace            948  ->    960
   //   /pas-encore-sortis  43 166  ->  1 115   (-97 %)
   "/": 1700,
-  "/dresseurs": 3950,
-  "/evenements": 8200,
   "/fonctionnalites": 4200,
   "/mon-espace": 1000,
   "/pas-encore-sortis": 1200,
+};
+
+// ═══ LES PAGES QUI GRANDISSENT AVEC LES DONNEES NE SE JUGENT PAS EN PIXELS ABSOLUS ═══
+//
+// Constate le 2026-09-04 en poussant en production : le rebase a ramene 22 commits du cron
+// (backup quotidien, refresh evenements), /evenements est passe de 8 040 a 8 898px et la
+// sonde est passee au rouge. Aucune regression : le flux avait simplement gagne des
+// evenements.
+//
+// Un plafond en pixels absolus sur une page nourrie par un cron quotidien vire au rouge
+// tous les quelques jours pour une raison qui n'est pas un defaut. Et une sonde qui crie au
+// loup finit par etre ignoree - c'est la meme panne que la sonde muette, par l'autre bout :
+// dans les deux cas elle cesse de dire quoi que ce soit.
+//
+// Ce qu'on veut vraiment tenir n'est pas la longueur de la page, c'est le cout d'UNE carte.
+// Ce budget-la ne bouge pas quand le flux grossit, et il attrape la vraie regression : une
+// carte qui grandit. La longueur totale reste affichee, sans etre un critere.
+//
+// On mesure la GRILLE, pas le document. Diviser la hauteur de la page par le nombre de
+// cartes ferait entrer l'en-tete et le pied - environ 400px constants - dans le cout d'une
+// carte : a 60 cartes ils pesent 7px chacune, mais un jour creux a 10 evenements ils en
+// pesent 40, et la sonde virerait au rouge alors que rien n'a bouge. La hauteur de la
+// grille divisee par ses enfants ne depend que des cartes.
+//
+// Budgets releves le 2026-09-04 sur la grille seule, arrondis au-dessus avec ~8 % de marge
+// pour absorber une carte a titre long. Comme les plafonds, ils ne peuvent que descendre.
+const COUT_PAR_ELEMENT = {
+  "/evenements": { grille: ".event-grid", budget: 140 },   // mesure 131px le 2026-09-04
+  "/dresseurs": { grille: ".trainer-grid", budget: 58 },    // mesure 53px le 2026-09-04
 };
 
 const echecs = [];
@@ -108,7 +135,7 @@ for (const largeur of LARGEURS) {
     // Les particules et les listes montent apres le premier rendu.
     await page.waitForTimeout(1800);
 
-    const m = await page.evaluate(({ cibleMin, texteMin }) => {
+    const m = await page.evaluate(({ cibleMin, texteMin, selecteurGrille }) => {
       const vw = window.innerWidth;
 
       // ── Cibles tactiles ──
@@ -219,8 +246,25 @@ for (const largeur of LARGEURS) {
       return {
         cibles, petits, debordDocument, cachesDansBarre, recouverts,
         hauteur: document.documentElement.scrollHeight,
+        // La page peut porter PLUSIEURS grilles de la meme classe (/dresseurs en a deux,
+        // les actifs et les autres). On somme les hauteurs et les enfants des deux : le
+        // cout moyen d'une carte est le meme des deux cotes, et n'en mesurer qu'une
+        // laisserait la seconde sans surveillance.
+        grille: (() => {
+          if (!selecteurGrille) return null;
+          const g = [...document.querySelectorAll(selecteurGrille)];
+          if (g.length === 0) return { hauteur: 0, items: 0 };
+          return {
+            hauteur: Math.round(g.reduce((s, e) => s + e.getBoundingClientRect().height, 0)),
+            items: g.reduce((s, e) => s + e.children.length, 0),
+          };
+        })(),
       };
-    }, { cibleMin: CIBLE_MIN_PX, texteMin: TEXTE_MIN_PX });
+    }, {
+      cibleMin: CIBLE_MIN_PX,
+      texteMin: TEXTE_MIN_PX,
+      selecteurGrille: COUT_PAR_ELEMENT[chemin]?.grille || null,
+    });
 
     tableau.push({ largeur, chemin, ...m });
 
@@ -259,18 +303,44 @@ for (const largeur of LARGEURS) {
         + `        ${Math.round(m.hauteur / 900)} ecrans de telephone a parcourir.`,
       );
     }
+    const parItem = COUT_PAR_ELEMENT[chemin];
+    if (largeur === 375 && parItem) {
+      // Zero element trouve = soit la page est vide, soit le selecteur ne correspond plus a
+      // rien apres un renommage de classe. Dans les deux cas la sonde ne mesure PLUS rien,
+      // et se taire serait le pire des deux comportements possibles.
+      if (!m.grille || m.grille.items === 0) {
+        echecs.push(
+          `${ou} : aucune carte sous « ${parItem.grille} ».\n`
+          + `        Le budget par carte ne mesure plus rien - classe renommee, ou page vide.`,
+        );
+      } else {
+        const cout = Math.round(m.grille.hauteur / m.grille.items);
+        if (cout > parItem.budget) {
+          echecs.push(
+            `${ou} : ${cout}px par carte (${m.grille.items} cartes, grille ${m.grille.hauteur}px),`
+            + ` budget ${parItem.budget}px.\n`
+            + `        La page a le droit de s'allonger quand le flux grossit, pas la carte.`,
+          );
+        }
+      }
+    }
   }
 }
 await nav.close();
 
 console.log("check:mobile\n");
 console.log(`${PAGES.length} pages x ${LARGEURS.length} largeurs = ${tableau.length} mesures\n`);
-console.log("LARG  PAGE                  CIBLES<44  TEXTE<12  RECOUVERTS  HAUTEUR");
+console.log("LARG  PAGE                  CIBLES<44  TEXTE<12  RECOUVERTS  HAUTEUR    PX/CARTE");
 for (const t of tableau) {
   console.log(
     `${String(t.largeur).padEnd(6)}${t.chemin.padEnd(22)}`
     + `${String(t.cibles.length).padEnd(11)}${String(t.petits.length).padEnd(10)}`
-    + `${String(t.recouverts.length).padEnd(12)}${t.hauteur}px`,
+    + `${String(t.recouverts.length).padEnd(12)}${String(t.hauteur + "px").padEnd(11)}`
+    // Affiche le cout par carte la ou il est le critere, un tiret ailleurs : une colonne
+    // vide laisserait croire a une mesure ratee plutot qu'a une mesure sans objet.
+    + (t.grille && t.grille.items
+        ? `${Math.round(t.grille.hauteur / t.grille.items)}px (${t.grille.items})`
+        : "-"),
   );
 }
 
@@ -289,7 +359,8 @@ console.log("    pointer-events: none, donc la regle de recouvrement en est aveu
 console.log("    construction. Ce cas se verifie en lisant le z-index, pas ici.");
 
 if (echecs.length === 0) {
-  console.log("\n[OK] Planchers tactiles et de lisibilite tenus, rien de recouvert, hauteurs sous plafond.");
+  console.log("\n[OK] Planchers tactiles et de lisibilite tenus, rien de recouvert,");
+  console.log("     hauteurs sous plafond, cout par carte sous budget.");
   process.exit(0);
 }
 console.log(`\n[FAIL] ${echecs.length} probleme(s) :\n`);
