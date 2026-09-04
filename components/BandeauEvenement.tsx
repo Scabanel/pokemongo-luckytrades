@@ -62,10 +62,27 @@ export default function BandeauEvenement() {
     <div className="bandeau-evenement" role="status">
       <div className="bandeau-piste">
         <span className="bandeau-texte">{ANNONCE}</span>
-        {/* La copie rend le defilement continu : quand la premiere sort a gauche, la
-            seconde arrive a droite. Masquee aux lecteurs d'ecran, qui liraient sinon
-            l'annonce deux fois de suite. */}
-        <span className="bandeau-texte" aria-hidden="true">{ANNONCE}</span>
+        {/* ═══ POURQUOI QUATRE COPIES ET NON UNE ═══
+
+            Steven, sur PC : « le bandeau ne loop pas, il se duplique deux fois mais apres
+            il y a du vide jusqu'a ce que tout ait disparu. »
+
+            Deux copies suffisent tant que l'ecran est plus etroit qu'UNE copie. Mesure :
+            une copie fait 996px, la piste en faisait 1991. Pour que la boucle soit
+            continue il faut que la piste mesure au moins la largeur de l'ecran PLUS une
+            copie - sinon, au moment ou l'animation revient a son point de depart, la fin
+            de la piste est deja passee et il reste du vide a droite. A 1440px il manquait
+            445px, a 2560px il en manquait 1565.
+
+            Avec cinq copies au total et un `min-width` de 50vw sur chacune, l'invariant
+            tient a toute largeur et pour n'importe quelle longueur de texte : la piste
+            mesure au moins 250 % de l'ecran, donc toujours plus que l'ecran plus une copie.
+
+            Les copies sont masquees aux lecteurs d'ecran, qui liraient sinon l'annonce
+            cinq fois de suite. */}
+        {[1, 2, 3, 4].map((n) => (
+          <span key={n} className="bandeau-texte" aria-hidden="true">{ANNONCE}</span>
+        ))}
       </div>
     </div>
   );

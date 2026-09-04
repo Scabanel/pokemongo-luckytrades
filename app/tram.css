@@ -361,13 +361,22 @@ body {
   white-space: nowrap;
   /* La respiration entre la fin d'une copie et le debut de la suivante. */
   padding-right: 3rem;
+  /* Chaque copie fait au moins la moitie de l ecran. C est ce qui rend la boucle continue
+     QUEL QUE SOIT le texte : cinq copies font alors au moins 250 % de l ecran, donc
+     toujours plus que l ecran plus une copie - la condition pour qu il n y ait jamais de
+     vide a droite. Sans ce plancher, un texte court sur un grand ecran reproduirait
+     exactement le defaut signale par Steven. */
+  min-width: 50vw;
 }
 
 @keyframes bandeau-defile {
-  /* -50 % et non -100 % : la piste contient DEUX copies, donc la moitie de sa largeur est
-     exactement une longueur de texte. A -100 % le bandeau se viderait avant de reboucler. */
+  /* Un cinquieme de la piste, soit exactement UNE copie sur les cinq : au terme de
+     l animation, la piste a avance d une copie et l image est identique au point de depart,
+     donc le retour est invisible.
+     C etait -50 % quand il y avait deux copies. Le principe est le meme : le pas vaut
+     toujours 100 % divise par le nombre de copies. */
   from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  to { transform: translateX(-20%); }
 }
 
 /* Qui a demande moins d'animations a son systeme n'a pas demande un texte tronque : le

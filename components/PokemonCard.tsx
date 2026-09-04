@@ -784,12 +784,21 @@ export default function PokemonCard({
             aria-label="Shiny"
             title="Shiny"
             style={{
-              // Descend sous l icone shiny quand elle occupe le coin haut gauche.
-              position: "absolute", top: isShiny ? 30 : 3, left: 3, zIndex: 6,
-              width: 22, height: 22, borderRadius: "50%",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              background: "var(--or)", color: "var(--or-encre)",
-              fontSize: 12, lineHeight: 1,
+              /* Steven : « l'icone shiny est illisible sur les tuiles. Mets juste la
+                 sparkle en haut a gauche de la tuile, dans le coin. Et pas un rond orange
+                 avec du jaune dessus ca ne va pas du tout. »
+
+                 Il a raison : le sparkle est deja jaune, donc l'enfermer dans une pastille
+                 doree revenait a poser du jaune sur du jaune. Le contraste tombait, et la
+                 pastille attirait l'oeil plus que le signe qu'elle contenait. Le sparkle
+                 seul, plus grand, se lit d'un coup et coute deux fois moins de place.
+
+                 Il etait en plus mal place : un remplacement global de ma part lui avait
+                 donne la condition du badge de priorite, `top: isShiny ? 30 : 3`, donc il
+                 se poussait lui-meme a 30px alors qu'il ne s'affiche que quand isShiny est
+                 vrai. Il n'a jamais ete dans le coin. */
+              position: "absolute", top: 2, left: 4, zIndex: 6,
+              fontSize: 16, lineHeight: 1,
             }}
           >
             ✨
