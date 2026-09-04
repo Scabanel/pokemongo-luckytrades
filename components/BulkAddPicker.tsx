@@ -202,7 +202,7 @@ export default function BulkAddPicker({
   return createPortal(
     <div
       className="fixed inset-0 flex items-center justify-center p-4"
-      style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 500 }}
+      style={{ background: "color-mix(in srgb, var(--papier) 92%, transparent)", backdropFilter: "blur(10px)", zIndex: 500 }}
     >
       <div
         className="glass-card overflow-y-auto"
@@ -210,15 +210,15 @@ export default function BulkAddPicker({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 700, fontSize: "1.1rem" }}>
+          <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "var(--encre)", fontWeight: 700, fontSize: "1.1rem" }}>
             Ajouter plusieurs Pokémon
           </h3>
-          <button onClick={onClose} style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#e8edf5", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>
+          <button onClick={onClose} style={{ background: "none", border: "1px solid var(--trait-leger)", borderRadius: 8, color: "var(--encre)", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>
             Fermer
           </button>
         </div>
 
-        <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.45)", marginBottom: 12 }}>
+        <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", marginBottom: 12 }}>
           Cherche un Pokémon ou parcours par région, puis clique sur chaque sprite (shiny, costume, Gigamax, Dynamax...)
           que tu veux ajouter. Les fonds d&apos;événement s&apos;ajoutent ensuite au cas par cas via l&apos;édition.
         </p>
@@ -234,8 +234,8 @@ export default function BulkAddPicker({
                 padding: "6px 14px", borderRadius: 999, cursor: "pointer",
                 border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.78rem",
                 ...(category === c
-                  ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.4)", color: "#ffd700" }
-                  : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                  ? { background: "color-mix(in srgb, var(--encre) 15%, transparent)", borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)", color: "var(--encre)" }
+                  : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-douce)" }),
               }}
             >
               {CATEGORY_LABELS[c]}
@@ -263,8 +263,8 @@ export default function BulkAddPicker({
                   padding: "6px 14px", borderRadius: 999, cursor: "pointer",
                   border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.78rem",
                   ...(openRegion === r.name
-                    ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.4)", color: "#ffd700" }
-                    : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                    ? { background: "color-mix(in srgb, var(--encre) 15%, transparent)", borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)", color: "var(--encre)" }
+                    : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-douce)" }),
                 }}
               >
                 {r.name}
@@ -284,8 +284,8 @@ export default function BulkAddPicker({
                 padding: "6px 14px", borderRadius: 999, cursor: "pointer",
                 border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.78rem",
                 ...(filters.has(f)
-                  ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.4)", color: "#ffd700" }
-                  : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                  ? { background: "color-mix(in srgb, var(--encre) 15%, transparent)", borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)", color: "var(--encre)" }
+                  : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-douce)" }),
               }}
             >
               {FILTER_LABELS[f]}
@@ -298,8 +298,8 @@ export default function BulkAddPicker({
               padding: "6px 14px", borderRadius: 999, cursor: "pointer",
               border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.78rem",
               ...(legendaryOnly
-                ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.4)", color: "#ffd700" }
-                : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                ? { background: "color-mix(in srgb, var(--encre) 15%, transparent)", borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)", color: "var(--encre)" }
+                : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-douce)" }),
             }}
           >
             Légendaire
@@ -307,7 +307,7 @@ export default function BulkAddPicker({
         </div>
 
         {speciesList.length === 0 ? (
-          <p style={{ color: "rgba(232,237,245,0.35)", fontSize: "0.85rem", padding: "16px 0" }}>
+          <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", padding: "16px 0" }}>
             {searchResults ? "Aucun résultat." : "Choisis une région, ou cherche un Pokémon par nom."}
           </p>
         ) : (
@@ -340,8 +340,8 @@ export default function BulkAddPicker({
           </>
         )}
 
-        <div className="flex items-center justify-between gap-3 flex-wrap" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 16 }}>
-          <span style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#ffd700", fontSize: "0.9rem" }}>
+        <div className="flex items-center justify-between gap-3 flex-wrap" style={{ borderTop: "1px solid var(--trait-leger)", paddingTop: 16 }}>
+          <span style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "var(--encre)", fontSize: "0.9rem" }}>
             {staged.size} sélectionné{staged.size > 1 ? "s" : ""}
           </span>
           <button
@@ -369,9 +369,9 @@ function VariantBadges({ variant }: { variant: SpriteVariant }) {
             position: "absolute", top: 2, left: 2,
             width: 16, height: 16, borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
-            background: variant.gender === "male" ? "#3b82f6" : "#ff2d78",
-            color: "#fff", fontWeight: 800, fontSize: "0.75rem",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.5)",
+            background: variant.gender === "male" ? "var(--ligne-cherche)" : "var(--tag-max)",
+            color: "var(--surface)", fontWeight: 800, fontSize: "0.75rem",
+            boxShadow: "none",
           }}
         >
           {variant.gender === "male" ? "♂" : "♀"}
@@ -382,7 +382,9 @@ function VariantBadges({ variant }: { variant: SpriteVariant }) {
           title="Shiny"
           style={{
             position: "absolute", top: 2, right: 2, fontSize: "0.75rem",
-            lineHeight: 1, filter: "drop-shadow(0 0 2px rgba(0,0,0,0.9))",
+            // Le liseré servait a detacher ce symbole d'un fond sombre. Sur du papier il
+            // n'a plus rien a detacher, et c'etait le dernier halo du depot.
+            lineHeight: 1,
           }}
         >
           ✨
@@ -427,10 +429,10 @@ function SpeciesBlock({
   return (
     <div>
       <div className="flex items-center gap-2" style={{ marginBottom: 6 }}>
-        <span style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)" }}>#{species.id}</span>
-        <span style={{ color: "#e8edf5", fontSize: "0.85rem", fontWeight: 600 }}>{species.frenchName}</span>
+        <span style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)" }}>#{species.id}</span>
+        <span style={{ color: "var(--encre)", fontSize: "0.85rem", fontWeight: 600 }}>{species.frenchName}</span>
         {stagedCountForSpecies > 0 && (
-          <span style={{ fontSize: "0.75rem", color: "#ffd700", fontWeight: 700 }}>
+          <span style={{ fontSize: "0.75rem", color: "var(--encre)", fontWeight: 700 }}>
             {stagedCountForSpecies} sélectionné{stagedCountForSpecies > 1 ? "s" : ""}
           </span>
         )}
@@ -448,8 +450,8 @@ function SpeciesBlock({
               style={{
                 position: "relative", display: "flex", alignItems: "center", justifyContent: "center",
                 aspectRatio: "1", padding: 4, borderRadius: 8, cursor: "pointer", overflow: "hidden",
-                background: isStaged ? "rgba(255,215,0,0.18)" : "rgba(255,255,255,0.04)",
-                border: `1px solid ${isStaged ? "rgba(255,215,0,0.5)" : "rgba(255,255,255,0.08)"}`,
+                background: isStaged ? "color-mix(in srgb, var(--encre) 18%, transparent)" : "var(--surface-creuse)",
+                border: `1px solid ${isStaged ? "color-mix(in srgb, var(--encre) 50%, transparent)" : "var(--trait-leger)"}`,
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}

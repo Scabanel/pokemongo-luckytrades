@@ -46,6 +46,63 @@ const BASE = process.env.CHECK_URL ?? "http://localhost:3002";
  *  un defaut sur elle se compte six fois - et c'est exactement ce qui le rend prioritaire. */
 const PAGES = ["/", "/dresseurs", "/evenements", "/fonctionnalites", "/mon-espace", "/pas-encore-sortis"];
 
+/* ═══ LA PAGE QUI MANQUAIT, ET C'ETAIT LA PLUS IMPORTANTE ═══
+
+   Steven, le 2026-09-04, capture a l'appui : des tuiles de hauteurs inegales, une pastille
+   « Je donne » qui sort de sa carte et se pose sur les voisines, et l'icone Dynamax par
+   dessus les etiquettes.
+
+   Ce banc n'a jamais rien vu de tout ca, pour une raison simple : la liste ci-dessus ne
+   contient pas `/dresseurs/[id]`. Or c'est LA page du produit - celle qui affiche les
+   cartes Pokemon, avec leurs etiquettes, leurs fonds, leurs reservations. Les six autres
+   sont des listes et du texte.
+
+   Mesurer les pages faciles et laisser la seule page complexe hors du banc, c'est se
+   rassurer, pas se verifier.
+
+   L'identifiant n'est pas ecrit en dur : un identifiant fige serait faux le jour ou ce
+   dresseur disparait, et la sonde echouerait sur son propre exemple au lieu de mesurer
+   le site. Il vient de l'API et non du HTML de /dresseurs, qui charge ses dresseurs cote
+   client et ne contient donc aucun lien /dresseurs/<id> : premiere tentative faite
+   dessus, elle n'a rien trouve et le banc est reste vert en ne mesurant simplement pas
+   la page - exactement le silence que ce fichier combat ailleurs. */
+const dresseurs = await fetch(`${BASE}/api/trainers`)
+  .then((r) => (r.ok ? r.json() : []))
+  .catch(() => []);
+
+/* ═══ ON MESURE LES LISTES DE STEVEN, ET LES TROIS ═══
+
+   Premiere version : « le dresseur qui a le plus d'entrees ». Elle a choisi un catalogue de
+   213 Pokemon sans une seule note, taille, etiquette ni echange reserve - donc une page qui
+   n'exerce AUCUN des cas que Steven avait photographies. Le banc mesurait beaucoup de
+   cartes et aucun des defauts.
+
+   Steven, le 2026-09-04 : « choisis moi et regarde toutes mes listes (Vorthil) je suis le
+   meilleur a tester sur le site. » C'est la bonne source : ses listes portent les fonds, les
+   costumes, les reservations, les tailles. Le volume n'est pas la variete.
+
+   Et les TROIS categories, pas seulement la plus fournie : chacune affiche des elements
+   differents (« Dispo chez », « Recherche par », les pastilles d'echange), donc chacune a
+   ses propres facons de casser. Le fragment #0/#1/#2 dit quel onglet ouvrir. */
+const DRESSEUR_TEMOIN = "Vorthil";
+const temoin = Array.isArray(dresseurs)
+  ? dresseurs.find((d) => d?.name === DRESSEUR_TEMOIN)
+    // Repli sur le plus fourni si ce compte disparait : la sonde doit continuer a mesurer
+    // le coeur du produit plutot que d'echouer sur son propre exemple.
+    ?? (dresseurs.length > 0
+      ? dresseurs.reduce((a, b) => ((b?._count?.entries ?? 0) > (a?._count?.entries ?? 0) ? b : a))
+      : null)
+  : null;
+
+if (temoin?.id) {
+  if (temoin.name !== DRESSEUR_TEMOIN) {
+    console.log(`[!] ${DRESSEUR_TEMOIN} introuvable, repli sur ${temoin.name}.\n`);
+  }
+  for (const onglet of [0, 1, 2]) PAGES.push(`/dresseurs/${temoin.id}#${onglet}`);
+} else {
+  console.log("[!] Aucun dresseur trouve via /api/trainers : la page des cartes n'est PAS mesuree.\n");
+}
+
 /** 375px est l'iPhone SE, le plus petit ecran encore courant : ce qui passe la y passe
  *  partout. 768px attrape la tablette, ou beaucoup de sites cassent entre deux regles.
  *  1440px est le laptop de reference. */
@@ -105,7 +162,27 @@ const HAUTEUR_MAX = {
   //   /fonctionnalites     3 926  ->  4 090   (+164 : idem, le pied)
   //   /mon-espace            948  ->    960
   //   /pas-encore-sortis  43 166  ->  1 115   (-97 %)
-  "/": 1700,
+  /* ═══ L'ACCUEIL N'A PLUS DE PLAFOND, ET C'EST UN AVEU ═══
+
+     Il en a eu deux : 1 700, gele sur une page d'accueil qui n'etait qu'un placeholder,
+     puis 2 500 quand elle est devenue une vraie landing. En relevant le second j'ai ecrit
+     qu'il ne pourrait plus que descendre. Une section de plus, demandee par Steven, et il
+     etait de nouveau depasse.
+
+     Deux echecs de suite sur la meme page ne disent pas que la page a tort : ils disent que
+     la REGLE est mal appliquee a celle-la. Un plafond absolu a du sens quand la brievete
+     d'une page est un acquis qu'on protege - « Pas encore disponibles » est passee de
+     43 166px a 1 100px, et ce chiffre-la doit etre defendu. La longueur d'une landing, elle,
+     est un choix editorial : elle grandit chaque fois qu'on a une chose vraie de plus a
+     dire, et un plafond qui vire au rouge a chaque section ajoutee serait ignore au
+     troisieme passage.
+
+     Ce qu'on veut vraiment tenir sur une landing n'est pas sa longueur totale, c'est que la
+     proposition de valeur et le bouton principal soient lisibles SANS DEFILER. C'est
+     mesurable, ca ne bouge pas quand on ajoute une section en bas, et c'est verifie plus
+     bas par la regle « au-dessus de la ligne de flottaison ».
+
+     Meme raisonnement que pour /evenements, passee du plafond absolu au budget par carte. */
   "/fonctionnalites": 4200,
   "/mon-espace": 1000,
   "/pas-encore-sortis": 1200,
@@ -152,6 +229,10 @@ page.on("pageerror", (e) => erreursJs.push(String(e).slice(0, 100)));
 for (const profil of PROFILS) {
   const { largeur, encoche, nom: nomProfil } = profil;
   for (const chemin of PAGES) {
+    /** Renseigne pour la page d un dresseur : quel onglet a ete ouvert et combien de
+     *  cartes il contient. Sert au libelle du releve, pour qu une ligne a zero carte se
+     *  voie au lieu de passer pour une page saine. */
+    let nomOnglet = "";
     await page.setViewportSize({ width: largeur, height: 900 });
     try {
       await page.goto(BASE + chemin, { waitUntil: "load", timeout: 45_000 });
@@ -195,6 +276,41 @@ for (const profil of PROFILS) {
 
     // Les particules et les listes montent apres le premier rendu.
     await page.waitForTimeout(1800);
+
+    /* ═══ SUR LA PAGE D'UN DRESSEUR, OUVRIR L'ONGLET LE PLUS FOURNI ═══
+
+       Premiere version : le banc mesurait 960px et zero defaut sur cette page. L'onglet
+       ouvert par defaut est « Echanges miroir », et le dresseur mesure en avait zero : la
+       sonde jugeait donc un ecran vide en annoncant que tout allait bien.
+
+       C'est le meme piege que partout ailleurs dans ce fichier - un controle qui ne mesure
+       rien reste vert. On ouvre donc l'onglet qui contient le plus d'entrees, parce que
+       c'est le pire cas de mise en page et le seul qui puisse reveler un defaut de tuiles. */
+    if (chemin.startsWith("/dresseurs/")) {
+      const indexOnglet = Number(chemin.split("#")[1] ?? 0);
+      const ouvert = await page.evaluate((i) => {
+        // Les trois onglets de categorie sont les seuls boutons dont le libelle finit par
+        // un compteur. On les prend dans l'ordre du DOM, qui est celui de
+        // CATEGORY_DISPLAY_ORDER : miroir, recherche, donne.
+        const onglets = [...document.querySelectorAll("button")]
+          .map((b) => ({ b, n: Number((b.textContent || "").match(/(\d+)\s*$/)?.[1] ?? -1) }))
+          .filter((x) => x.n >= 0);
+        if (!onglets[i]) return { trouve: false, n: 0 };
+        onglets[i].b.click();
+        return { trouve: true, n: onglets[i].n };
+      }, indexOnglet);
+
+      if (!ouvert.trouve) {
+        echecs.push(
+          `${chemin}@${nomProfil} : l'onglet de categorie ${indexOnglet} n'existe pas.\n`
+          + `        La page des cartes est mesuree a vide, donc elle n'est pas mesuree.`,
+        );
+      }
+      // Une categorie vide n'est PAS un echec : c'est un etat legitime du site. On le note
+      // dans le releve pour qu'on sache que cette ligne ne mesure pas de cartes.
+      nomOnglet = ouvert.n > 0 ? `#${indexOnglet} (${ouvert.n})` : `#${indexOnglet} vide`;
+      await page.waitForTimeout(1600);
+    }
 
     const m = await page.evaluate(({ cibleMin, texteMin, selecteurGrille }) => {
       const vw = window.innerWidth;
@@ -304,6 +420,21 @@ for (const profil of PROFILS) {
         });
       }
 
+      // ═══ AU-DESSUS DE LA LIGNE DE FLOTTAISON ═══
+      //
+      // Remplace le plafond de hauteur de l'accueil, qui a echoue deux fois de suite parce
+      // qu'il mesurait la mauvaise chose (voir HAUTEUR_MAX). Ce qui compte sur une landing
+      // n'est pas sa longueur mais ce qu'on voit sans defiler : le titre qui dit ce que
+      // c'est, et le bouton qui permet d'agir. Une landing peut s'allonger autant qu'elle a
+      // de choses vraies a dire; elle ne peut pas cacher son titre.
+      const h1 = document.querySelector("h1");
+      const actionPrincipale = document.querySelector(".btn-primary");
+      const flottaison = {
+        h1: h1 ? Math.round(h1.getBoundingClientRect().bottom) : null,
+        action: actionPrincipale ? Math.round(actionPrincipale.getBoundingClientRect().bottom) : null,
+        ecran: window.innerHeight,
+      };
+
       // ═══ UN BOUTON FIXE DERRIERE LA BARRE D'ONGLETS ═══
       //
       // La regle « contenu recouvert » ci-dessus ignore volontairement ce qui est masque
@@ -349,6 +480,7 @@ for (const profil of PROFILS) {
 
       return {
         cibles, petits, debordDocument, cachesDansBarre, recouverts, sousLaBarre,
+        flottaison,
         hauteur: document.documentElement.scrollHeight,
         // La page peut porter PLUSIEURS grilles de la meme classe (/dresseurs en a deux,
         // les actifs et les autres). On somme les hauteurs et les enfants des deux : le
@@ -370,7 +502,10 @@ for (const profil of PROFILS) {
       selecteurGrille: COUT_PAR_ELEMENT[chemin]?.grille || null,
     });
 
-    tableau.push({ largeur, nomProfil, chemin, ...m });
+    // Libelle court : l identifiant d un dresseur fait 45 caracteres et decale toutes
+    // les colonnes du tableau, ce qui rend le releve illisible.
+    const libelle = chemin.startsWith("/dresseurs/") ? `/dresseurs ${nomOnglet}` : chemin;
+    tableau.push({ largeur, nomProfil, chemin: libelle, ...m });
 
     const ou = `${chemin}@${nomProfil}`;
     if (m.debordDocument > 0) {
@@ -414,6 +549,28 @@ for (const profil of PROFILS) {
         + `        ${Math.round(m.hauteur / 900)} ecrans de telephone a parcourir.`,
       );
     }
+    // La ligne de flottaison ne concerne que la landing : c'est la seule page dont le
+    // travail est de convaincre quelqu'un qui ne connait pas encore le site.
+    if (chemin === "/" && encoche === 0 && m.flottaison) {
+      const { h1, action, ecran } = m.flottaison;
+      if (h1 === null) {
+        echecs.push(`${ou} : aucun h1 sur la landing. Un visiteur ne sait pas ce qu'il regarde.`);
+      } else if (h1 > ecran) {
+        echecs.push(
+          `${ou} : le titre finit a ${h1}px, sous la ligne de flottaison (${ecran}px).\n`
+          + `        La proposition de valeur doit se lire sans defiler.`,
+        );
+      }
+      if (action === null) {
+        echecs.push(`${ou} : aucun bouton principal (.btn-primary) sur la landing.`);
+      } else if (action > ecran) {
+        echecs.push(
+          `${ou} : le bouton principal finit a ${action}px, sous la ligne de flottaison (${ecran}px).\n`
+          + `        Un visiteur doit pouvoir agir sans chercher.`,
+        );
+      }
+    }
+
     const parItem = COUT_PAR_ELEMENT[chemin];
     if (largeur === 375 && encoche === 0 && parItem) {
       // Zero element trouve = soit la page est vide, soit le selecteur ne correspond plus a

@@ -8,7 +8,7 @@ const labelStyle: React.CSSProperties = {
   display: "block",
   fontSize: "0.75rem",
   fontWeight: 600,
-  color: "#ffd700",
+  color: "var(--encre)",
   marginBottom: 6,
   letterSpacing: "0.06em",
   fontFamily: "Exo 2, sans-serif",
@@ -109,15 +109,15 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex items-center justify-center p-4" style={{ background: "var(--papier)" }}>
       <ParticleBackground />
 
       <div className="glass-card animate-scale-in relative z-10 w-full max-w-sm p-8">
         <div className="text-center mb-8">
-          <h1 className="neon-text" style={{ fontFamily: "Exo 2, sans-serif", fontSize: "1.5rem", fontWeight: 800, color: "#ffd700" }}>
+          <h1 className="neon-text" style={{ fontFamily: "Exo 2, sans-serif", fontSize: "1.5rem", fontWeight: 800, color: "var(--encre)" }}>
             {titles[mode]}
           </h1>
-          <p style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.85rem", marginTop: 4 }}>
+          <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", marginTop: 4 }}>
             Échanges chanceux du V
           </p>
         </div>
@@ -156,14 +156,14 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               <button
                 type="button"
                 onClick={() => { resetMessages(); setMode("forgot"); }}
-                style={{ color: "rgba(232,237,245,0.68)", fontSize: "0.8125rem", background: "none", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}
+                style={{ color: "var(--encre-douce)", fontSize: "0.8125rem", background: "none", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}
               >
                 Mot de passe oublié ?
               </button>
               <button
                 type="button"
                 onClick={() => { resetMessages(); setMode("signup"); }}
-                style={{ color: "#ffd700", fontSize: "0.8125rem", background: "none", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}
+                style={{ color: "var(--encre)", fontSize: "0.8125rem", background: "none", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}
               >
                 Pas encore de compte ? Inscris-toi
               </button>
@@ -260,7 +260,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               <button
                 type="button"
                 onClick={() => { resetMessages(); setMode("login"); }}
-                style={{ color: "#ffd700", fontSize: "0.8125rem", background: "none", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}
+                style={{ color: "var(--encre)", fontSize: "0.8125rem", background: "none", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}
               >
                 Déjà un compte ? Connecte-toi
               </button>
@@ -290,7 +290,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               <button
                 type="button"
                 onClick={() => { resetMessages(); setMode("login"); }}
-                style={{ color: "#ffd700", fontSize: "0.8125rem", background: "none", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}
+                style={{ color: "var(--encre)", fontSize: "0.8125rem", background: "none", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}
               >
                 Retour à la connexion
               </button>
@@ -299,7 +299,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
         )}
 
         <div className="text-center mt-6">
-          <a href="/dresseurs" style={{ color: "rgba(232,237,245,0.68)", fontSize: "0.8125rem", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}>
+          <a href="/dresseurs" style={{ color: "var(--encre-douce)", fontSize: "0.8125rem", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}>
             Voir les dresseurs
           </a>
         </div>
@@ -315,13 +315,13 @@ function Messages({ error, info }: { error: string; info: string }) {
         <p
           className="animate-fade-in-up"
           style={{
-            color: "#ff6b6b",
+            color: "var(--alerte)",
             fontSize: "0.8rem",
             textAlign: "center",
-            background: "rgba(255,107,107,0.1)",
+            background: "color-mix(in srgb, var(--alerte) 10%, transparent)",
             padding: "8px 12px",
             borderRadius: 8,
-            border: "1px solid rgba(255,107,107,0.2)",
+            border: "1px solid color-mix(in srgb, var(--alerte) 20%, transparent)",
           }}
         >
           {error}
@@ -331,13 +331,13 @@ function Messages({ error, info }: { error: string; info: string }) {
         <p
           className="animate-fade-in-up"
           style={{
-            color: "#ffd700",
+            color: "var(--encre)",
             fontSize: "0.8rem",
             textAlign: "center",
-            background: "rgba(255, 215, 0,0.1)",
+            background: "color-mix(in srgb, var(--encre) 10%, transparent)",
             padding: "8px 12px",
             borderRadius: 8,
-            border: "1px solid rgba(255, 215, 0,0.2)",
+            border: "1px solid color-mix(in srgb, var(--encre) 20%, transparent)",
           }}
         >
           {info}

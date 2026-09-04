@@ -1,6 +1,7 @@
 import type { PokemonEntry } from "./types";
 import { parseTags } from "./tags";
 import { canonicalCustomSpriteUrl } from "./spriteVariants";
+import genderDifferences from "@/data/gender-differences.json";
 
 // Partagé entre components/PokemonCard.tsx (badges want/give réciproques,
 // "Dispo chez X Dresseurs"/"X Dresseurs recherchent ce Pokémon") et tout
@@ -44,6 +45,57 @@ export function wantedSizeMatches(wantSize: string | null | undefined, otherSize
   return !wantSize || wantSize === otherSize;
 }
 
+/* ═══ LE GENRE ENTRE DANS LE MATCHING ═══
+   Ajoute le 2026-09-04.
+
+   Steven, en demandant d'annoncer sur la landing que « le matching de recherche fonctionne
+   sur ca aussi » pour les fonds, les tailles ET les genres. La verification a montre que
+   c'etait vrai des deux premiers et faux du troisieme : le genre etait affiche sur la carte
+   (GenderBadge) mais `entriesMatch` l'ignorait completement. Plutot que d'ecrire une
+   promesse fausse sur la page dont le travail est d'etablir la confiance, la promesse est
+   rendue vraie.
+
+   Meme semantique exacte que la taille et le fond, pour qu'il n'y ait pas trois regles a
+   retenir : un want SANS genre precise reste satisfait par n'importe quel give; un want
+   AVEC un genre precise n'est satisfait que par ce genre-la.
+
+   ═══ CE QUE CA CHANGE POUR LES ENTREES EXISTANTES ═══
+
+   Un « Je recherche » qui portait deja un genre voit desormais moins de correspondances
+   qu'avant. C'est le comportement attendu - si on a precise un genre, c'est qu'on le veut -
+   mais c'est bien un changement de comportement sur des donnees reelles, pas un simple
+   ajout. Il vit sur la branche v2-refonte-da et pas en production. */
+/** Les especes dont le male et la femelle n ont pas la meme apparence a l ecran.
+ *  Genere : voir scripts/generate-gender-differences.mjs. */
+const ESPECES_A_GENRE_VISIBLE = new Set<number>(genderDifferences.ids);
+
+export function wantedGenderMatches(
+  wantGender: string | null | undefined,
+  otherGender: string | null | undefined,
+  pokemonId: number,
+): boolean {
+  // ═══ RESTREINT AUX ESPECES A DEUX APPARENCES ═══
+  //
+  // Steven, apres coup : « Restreint aux especes a apparence differentes selon le genre. »
+  //
+  // Sur une espece dont le male et la femelle sont identiques a l'ecran, le genre n'est
+  // qu'une etiquette : filtrer dessus ferait disparaitre des correspondances parfaitement
+  // valables, parce que quelqu'un a rempli un champ sans y attacher d'intention. Sur un
+  // Pikachu, dont la queue differe, c'est l'inverse : c'est bien un autre Pokemon a l'oeil.
+  //
+  // La liste vient de data/gender-differences.json, genere depuis PokeAPI (voir
+  // scripts/generate-gender-differences.mjs). Elle n'a PAS ete ecrite de memoire : une
+  // liste fausse dans un sens fait disparaitre des correspondances legitimes, dans l'autre
+  // elle en laisse passer de mauvaises, et dans les deux cas en silence.
+  if (!ESPECES_A_GENRE_VISIBLE.has(pokemonId)) return true;
+
+  // Seuls "male" et "female" sont des genres au sens de GenderBadge. Toute autre valeur
+  // (chaine vide, null, valeur heritee) est traitee comme « peu importe », ce qui evite
+  // qu'un champ mal rempli fasse disparaitre des correspondances en silence.
+  const precise = wantGender === "male" || wantGender === "female";
+  return !precise || wantGender === otherGender;
+}
+
 // Même espèce/variante/shiny, indépendamment de la catégorie ou du fond
 // (voir wantedBackgroundMatches pour le fond, géré à part par les
 // catégories qui en ont besoin).
@@ -68,6 +120,7 @@ export function entriesMatch(want: PokemonEntry, give: PokemonEntry): boolean {
   if (!sameVariant(want, give)) return false;
   if (!wantedBackgroundMatches(want.backgroundUrl, give.backgroundUrl)) return false;
   if (!wantedSizeMatches(want.size, give.size)) return false;
+  if (!wantedGenderMatches(want.gender, give.gender, want.pokemonId)) return false;
   return true;
 }
 

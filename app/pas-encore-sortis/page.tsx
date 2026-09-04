@@ -8,7 +8,7 @@ import SiteFooter from "@/components/SiteFooter";
 import missingInGo from "@/data/missing-in-go.json";
 import pokemonList from "@/data/pokemon.json";
 
-const MISSING_COLOR = "#ff6b6b";
+const MISSING_COLOR = "var(--alerte)";
 // Dernier recours si spriteUrl est absent (jamais résolu, ou cas d'un ajout
 // manuel qui n'en a pas) : official-artwork est maintenu à jour pour chaque
 // nouvelle espèce.
@@ -165,7 +165,7 @@ export default function PasEncoreSortisPage() {
       : [];
 
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "var(--papier)" }}>
       <ParticleBackground />
       <div className="scanlines" />
 
@@ -180,12 +180,12 @@ export default function PasEncoreSortisPage() {
               fontWeight: 900,
               color: MISSING_COLOR,
               textTransform: "uppercase",
-              textShadow: "0 0 8px rgba(255,107,107,0.3)",
+              textShadow: "none",
             }}
           >
             Pokémon pas encore disponibles
           </h1>
-          <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 6 }}>
+          <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", marginTop: 6 }}>
             Pokémon, formes ou variantes chromatiques qui manquent encore à l&apos;appel.
           </p>
         </header>
@@ -194,8 +194,8 @@ export default function PasEncoreSortisPage() {
           <div
             className="relative flex flex-wrap items-center gap-2 mb-4"
             style={{
-              background: "rgba(255,107,107,0.06)",
-              border: "1px solid rgba(255,107,107,0.25)",
+              background: "color-mix(in srgb, var(--alerte) 6%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--alerte) 25%, transparent)",
               borderRadius: 12,
               padding: 12,
             }}
@@ -226,8 +226,8 @@ export default function PasEncoreSortisPage() {
                     top: "calc(100% + 4px)",
                     left: 0,
                     right: 0,
-                    background: "#141926",
-                    border: "1px solid rgba(255,107,107,0.3)",
+                    background: "var(--papier)",
+                    border: "1px solid color-mix(in srgb, var(--alerte) 30%, transparent)",
                     borderRadius: 10,
                     zIndex: 20,
                     overflow: "hidden",
@@ -241,7 +241,7 @@ export default function PasEncoreSortisPage() {
                       style={{
                         width: "100%", textAlign: "left", padding: "8px 12px",
                         background: "transparent", border: "none", cursor: "pointer",
-                        color: "#e8edf5", fontSize: "0.85rem",
+                        color: "var(--encre)", fontSize: "0.85rem",
                       }}
                     >
                       {p.frenchName}
@@ -255,8 +255,7 @@ export default function PasEncoreSortisPage() {
 
         <div
           style={{
-            background: "rgba(8,11,20,0.5)",
-            backdropFilter: "blur(10px)",
+            background: "color-mix(in srgb, var(--papier) 50%, transparent)",
             border: `1px solid ${MISSING_COLOR}18`,
             borderTop: `2px solid ${MISSING_COLOR}`,
             borderRadius: 10,
@@ -310,15 +309,15 @@ export default function PasEncoreSortisPage() {
                         symboles decoratifs. Le mot dit l'action, ce qui est de toute facon
                         plus clair qu'un triangle. */}
                     <span>{title} ({list.length})</span>
-                    <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "rgba(232,237,245,0.55)", marginLeft: "auto" }}>
+                    <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--encre-douce)", marginLeft: "auto" }}>
                       {estOuverte ? "Masquer" : "Afficher"}
                     </span>
                   </button>
-                  <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.55)", marginBottom: 12 }}>
+                  <p style={{ fontSize: "0.75rem", color: "var(--encre-douce)", marginBottom: 12 }}>
                     {hint}
                   </p>
                   {!estOuverte ? null : list.length === 0 ? (
-                    <p style={{ fontSize: "0.8rem", color: "rgba(232,237,245,0.3)", padding: "8px 0" }}>
+                    <p style={{ fontSize: "0.8rem", color: "var(--encre-tres-douce)", padding: "8px 0" }}>
                       Aucun résultat.
                     </p>
                   ) : (
@@ -344,9 +343,9 @@ export default function PasEncoreSortisPage() {
                                 width: 18,
                                 height: 18,
                                 borderRadius: "50%",
-                                background: "rgba(255,107,107,0.15)",
-                                border: "1px solid rgba(255,107,107,0.5)",
-                                color: "#ff6b6b",
+                                background: "color-mix(in srgb, var(--alerte) 15%, transparent)",
+                                border: "1px solid color-mix(in srgb, var(--alerte) 50%, transparent)",
+                                color: "var(--alerte)",
                                 fontSize: "0.75rem",
                                 fontWeight: 700,
                                 lineHeight: 1,
@@ -376,7 +375,7 @@ export default function PasEncoreSortisPage() {
                           <span
                             style={{
                               fontSize: "0.75rem",
-                              color: "rgba(232,237,245,0.6)",
+                              color: "var(--encre-douce)",
                               textAlign: "center",
                               textTransform: "capitalize",
                               lineHeight: 1.2,

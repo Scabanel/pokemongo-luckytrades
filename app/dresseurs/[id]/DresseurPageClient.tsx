@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import ParticleBackground from "@/components/ParticleBackground";
 import PokemonCard from "@/components/PokemonCard";
 import CardSkeleton from "@/components/CardSkeleton";
-import CopyPogoShinyFilterButton from "@/components/CopyPogoShinyFilterButton";
+import PartageListe from "@/components/PartageListe";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import type { PokeOption } from "@/components/AdminPanel";
@@ -15,6 +15,7 @@ import type { PokemonEntry, EntryCategory, Trainer } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
 import { entriesMatch } from "@/lib/entryMatching";
+import GrilleParRegion from "@/components/GrilleParRegion";
 
 // Chargé à la demande seulement (voir plus bas) : cette page publique est
 // visitée par n'importe qui, y compris sans être connecté, et EntryForm
@@ -216,16 +217,16 @@ export default function DresseurPageClient({ id }: { id: string }) {
 
   if (!loading && notFound) {
     return (
-      <div className="relative min-h-screen flex flex-col items-center justify-center" style={{ background: "#0b0700" }}>
+      <div className="relative min-h-screen flex flex-col items-center justify-center" style={{ background: "var(--papier)" }}>
         <ParticleBackground />
-        <p style={{ color: "rgba(232,237,245,0.5)", marginBottom: 16 }}>Ce dresseur n&apos;existe pas.</p>
+        <p style={{ color: "var(--encre-tres-douce)", marginBottom: 16 }}>Ce dresseur n&apos;existe pas.</p>
         <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none" }}>Dresseurs</a>
       </div>
     );
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "var(--papier)" }}>
       <ParticleBackground />
       <div className="scanlines" />
 
@@ -233,7 +234,13 @@ export default function DresseurPageClient({ id }: { id: string }) {
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
         <header className="text-center mb-8">
-          <a href="/dresseurs" style={{ color: "rgba(232,237,245,0.35)", fontSize: "0.75rem", textDecoration: "none" }}>
+          <a
+            href="/dresseurs"
+            style={{
+              color: "var(--encre-douce)", fontSize: "0.8125rem", textDecoration: "underline",
+              minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px",
+            }}
+          >
             Tous les dresseurs
           </a>
           <div className="flex items-center justify-center gap-3 flex-wrap" style={{ marginTop: 6 }}>
@@ -242,9 +249,9 @@ export default function DresseurPageClient({ id }: { id: string }) {
                 fontFamily: "Exo 2, sans-serif",
                 fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
                 fontWeight: 900,
-                color: "#ffd700",
+                color: "var(--encre)",
                 textTransform: "uppercase",
-                textShadow: "0 0 8px rgba(255,215,0,0.3)",
+                textShadow: "none",
               }}
             >
               {loading ? "…" : trainer?.name}
@@ -261,13 +268,13 @@ export default function DresseurPageClient({ id }: { id: string }) {
             )}
           </div>
           {trainer?.team && (
-            <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 4 }}>
+            <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", marginTop: 4 }}>
               {trainer.team.charAt(0).toUpperCase() + trainer.team.slice(1)} · Niveau {trainer.level ?? "?"}
             </p>
           )}
           {trainer?.friendCode && (
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 8 }}>
-              <span style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem" }}>
+              <span style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem" }}>
                 Code ami : {trainer.friendCode}
               </span>
               <button
@@ -292,9 +299,12 @@ export default function DresseurPageClient({ id }: { id: string }) {
                 gap: 8,
                 padding: "9px 20px",
                 borderRadius: 6,
+                // 42px de haut avant : sous le plancher de 44, mesure a 768 et 1440px des
+                // que la page des cartes est entree dans le banc.
+                minHeight: 44,
                 fontFamily: "Exo 2, sans-serif",
                 fontWeight: 800,
-                fontSize: "0.82rem",
+                fontSize: "0.8125rem",
                 letterSpacing: "0.05em",
                 textTransform: "uppercase",
                 cursor: "pointer",
@@ -307,22 +317,22 @@ export default function DresseurPageClient({ id }: { id: string }) {
                       color: CATEGORIES[key].color,
                     }
                   : {
-                      background: "rgba(255,255,255,0.03)",
-                      borderColor: "rgba(255,255,255,0.07)",
-                      color: "rgba(232,237,245,0.38)",
+                      background: "var(--surface-creuse)",
+                      borderColor: "var(--trait-leger)",
+                      color: "var(--encre-tres-douce)",
                     }),
               }}
             >
               <span>{tabLabel(key, trainer?.name ?? "…")}</span>
               <span
                 style={{
-                  background: activeTab === key ? `${CATEGORIES[key].color}18` : "rgba(255,255,255,0.05)",
-                  border: `1px solid ${activeTab === key ? `${CATEGORIES[key].color}38` : "rgba(255,255,255,0.08)"}`,
+                  background: activeTab === key ? `${CATEGORIES[key].color}18` : "var(--surface-creuse)",
+                  border: `1px solid ${activeTab === key ? `${CATEGORIES[key].color}38` : "var(--trait-leger)"}`,
                   borderRadius: 4,
                   padding: "1px 7px",
                   fontSize: "0.75rem",
                   fontWeight: 800,
-                  color: activeTab === key ? CATEGORIES[key].color : "rgba(232,237,245,0.3)",
+                  color: activeTab === key ? CATEGORIES[key].color : "var(--encre-tres-douce)",
                 }}
               >
                 {loading ? "…" : countByTab[key]}
@@ -346,17 +356,28 @@ export default function DresseurPageClient({ id }: { id: string }) {
                 key={key}
                 onClick={() => setFilters((f) => ({ ...f, [key]: !f[key] }))}
                 style={{
-                  padding: "7px 14px",
+                  // Plancher tactile : ces pastilles faisaient 26px de haut, mesure par
+                  // check:mobile des que la page des cartes est entree dans le banc. Les
+                  // trois familles de pastilles de cette page avaient le meme defaut.
+                  minHeight: 44,
+                  // Et minWidth : « Fond » mesurait 42,8px de large pour 44 de haut. Un
+                  // plancher tactile vaut dans les DEUX sens, sinon une pastille a libelle
+                  // court reste ratable.
+                  minWidth: 44,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 14px",
                   borderRadius: 999,
                   fontFamily: "Exo 2, sans-serif",
                   fontWeight: 700,
-                  fontSize: "0.78rem",
+                  fontSize: "0.8125rem",
                   cursor: "pointer",
                   border: "1px solid",
                   transition: "all 0.12s",
                   ...(filters[key]
-                    ? { background: "rgba(255, 215, 0,0.15)", borderColor: "rgba(255, 215, 0,0.4)", color: "#ffd700" }
-                    : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "rgba(232,237,245,0.5)" }),
+                    ? { background: "color-mix(in srgb, var(--encre) 15%, transparent)", borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)", color: "var(--encre)" }
+                    : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-tres-douce)" }),
                 }}
               >
                 {label}
@@ -366,17 +387,28 @@ export default function DresseurPageClient({ id }: { id: string }) {
               <button
                 onClick={() => setOnlyOwned((v) => !v)}
                 style={{
-                  padding: "7px 14px",
+                  // Plancher tactile : ces pastilles faisaient 26px de haut, mesure par
+                  // check:mobile des que la page des cartes est entree dans le banc. Les
+                  // trois familles de pastilles de cette page avaient le meme defaut.
+                  minHeight: 44,
+                  // Et minWidth : « Fond » mesurait 42,8px de large pour 44 de haut. Un
+                  // plancher tactile vaut dans les DEUX sens, sinon une pastille a libelle
+                  // court reste ratable.
+                  minWidth: 44,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 14px",
                   borderRadius: 999,
                   fontFamily: "Exo 2, sans-serif",
                   fontWeight: 700,
-                  fontSize: "0.78rem",
+                  fontSize: "0.8125rem",
                   cursor: "pointer",
                   border: "1px solid",
                   transition: "all 0.12s",
                   ...(onlyOwned
-                    ? { background: "rgba(6,182,212,0.15)", borderColor: "rgba(6,182,212,0.4)", color: "#06b6d4" }
-                    : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "rgba(232,237,245,0.5)" }),
+                    ? { background: "color-mix(in srgb, var(--tag-saison) 15%, transparent)", borderColor: "color-mix(in srgb, var(--tag-saison) 40%, transparent)", color: "var(--tag-saison)" }
+                    : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-tres-douce)" }),
                 }}
               >
                 Que je possède
@@ -386,17 +418,28 @@ export default function DresseurPageClient({ id }: { id: string }) {
               <button
                 onClick={() => setOnlyWanted((v) => !v)}
                 style={{
-                  padding: "7px 14px",
+                  // Plancher tactile : ces pastilles faisaient 26px de haut, mesure par
+                  // check:mobile des que la page des cartes est entree dans le banc. Les
+                  // trois familles de pastilles de cette page avaient le meme defaut.
+                  minHeight: 44,
+                  // Et minWidth : « Fond » mesurait 42,8px de large pour 44 de haut. Un
+                  // plancher tactile vaut dans les DEUX sens, sinon une pastille a libelle
+                  // court reste ratable.
+                  minWidth: 44,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 14px",
                   borderRadius: 999,
                   fontFamily: "Exo 2, sans-serif",
                   fontWeight: 700,
-                  fontSize: "0.78rem",
+                  fontSize: "0.8125rem",
                   cursor: "pointer",
                   border: "1px solid",
                   transition: "all 0.12s",
                   ...(onlyWanted
-                    ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.4)", color: "#ffd700" }
-                    : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "rgba(232,237,245,0.5)" }),
+                    ? { background: "color-mix(in srgb, var(--encre) 15%, transparent)", borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)", color: "var(--encre)" }
+                    : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-tres-douce)" }),
                 }}
               >
                 Que je recherche
@@ -416,8 +459,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
 
         <div
           style={{
-            background: "rgba(8,11,20,0.5)",
-            backdropFilter: "blur(10px)",
+            background: "color-mix(in srgb, var(--papier) 50%, transparent)",
             border: `1px solid ${activeColor}18`,
             borderTop: `2px solid ${activeColor}`,
             borderRadius: 10,
@@ -425,33 +467,44 @@ export default function DresseurPageClient({ id }: { id: string }) {
             minHeight: 300,
           }}
         >
-          {!loading && <CopyPogoShinyFilterButton entries={entriesByTab[activeTab]} />}
+          {/* Le QR code et le filtre a coller dans le jeu. Remplace un bouton secondaire
+              qui ne copiait que les shiny et se perdait en haut de la liste : Steven veut
+              pouvoir degainer sa liste en dix secondes devant quelqu un. */}
+          {!loading && (
+            <PartageListe
+              nomDresseur={trainer?.name ?? "ce dresseur"}
+              entriesParCategorie={entriesByTab}
+              categorieActive={activeTab}
+            />
+          )}
           {loading ? (
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
+            <div className="grid grille-tuiles gap-3">
               {Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}
             </div>
           ) : visibleEntries.length === 0 ? (
-            <p style={{ textAlign: "center", color: "rgba(232,237,245,0.3)", padding: 32 }}>
+            <p style={{ textAlign: "center", color: "var(--encre-tres-douce)", padding: 32 }}>
               {anyFilterActive ? "Aucun résultat pour ces filtres." : "Rien ici pour le moment."}
             </p>
           ) : (
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
-              {visibleEntries.map((entry, i) => (
+            /* Meme mise en page que « Mon espace », par le meme composant : voir
+               components/GrilleParRegion.tsx pour la raison. */
+            <GrilleParRegion
+              entries={visibleEntries}
+              carte={(entry) => (
                 <PokemonCard
                   key={entry.id}
                   entry={entry}
                   allEntries={allEntries}
                   viewerTrainerId={viewerTrainerId}
                   showTrainerBadge={false}
-                  style={{ animationDelay: `${i * 0.04}s` }}
                   canEdit={isAdmin}
                   onEdit={isAdmin ? () => setEditingEntry(entry) : undefined}
                   onDelete={isAdmin ? () => handleDeleteEntry(entry.id) : undefined}
                   onComplete={isAdmin ? () => handleCompleteEntry(entry) : undefined}
                   onQuantityChange={isAdmin ? (delta) => handleQuantityChange(entry, delta) : undefined}
                 />
-              ))}
-            </div>
+              )}
+            />
           )}
         </div>
       </div>

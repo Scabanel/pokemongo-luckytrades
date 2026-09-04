@@ -1,0 +1,583 @@
+/* ═══════════════════════════════════════════════════════════════════════════════════════
+   LE LANGAGE DU PLAN DE RESEAU
+
+   Importe APRES globals.css, dont il reprend les selecteurs pour les redefinir. Les noms
+   de classe restent ceux du JSX existant (`.glass-card`, `.btn-primary`...) : renommer
+   trois cents attributs `className` n'aurait rien apporte visuellement et aurait multiplie
+   les occasions de casser du JSX.
+
+   ═══ LE PRINCIPE, EN UNE PHRASE ═══
+
+   Le mobilier est noir et blanc, la couleur n'appartient qu'aux lignes.
+
+   C'est ce qui distingue un plan de reseau d'une interface coloree : le cadre, les
+   libelles, les traits sont a l'encre; le violet, le teal et l'ambre ne servent qu'a dire
+   de quelle categorie d'echange on parle. #ffd700 comptait 190 usages dans l'ancienne
+   version - la couleur de tout, donc la couleur de rien.
+
+   ═══ CE QUI A DISPARU, ET POURQUOI ═══
+
+   Verre depoli, halos, ombres portees, degrades, scanlines, filigrane lumineux. Ils
+   hierarchisaient par la lueur, ce qui exige un fond sombre. Sur du papier, un halo
+   devient une salissure. Ici c'est l'EPAISSEUR DU TRAIT qui hierarchise : 1px pour une
+   separation, 2px pour une carte, 3px pour ce qui est actif.
+   ═══════════════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Le fond de page : plus de texture ──────────────────────────────────────────────── */
+
+body {
+  background: var(--papier);
+  color: var(--encre);
+}
+
+/* Le grain et les scanlines etaient de la texture d'ecran cathodique. Neutralises par
+   `content: none` plutot que supprimes du JSX : le composant `.scanlines` est rendu par
+   six pages, et le retirer de chacune aurait touche six fichiers pour zero pixel. */
+body::after { content: none; }
+.scanlines { display: none; }
+.watermark-text { display: none; }
+
+/* Les animations de lueur n'ont plus d'objet. On garde les classes pour ne pas toucher au
+   JSX, mais elles ne font plus rien. */
+.animate-glow-pulse,
+.glitch-title,
+.neon-text,
+.neon-yellow { animation: none; text-shadow: none; }
+
+/* ── La carte : blanche, cernee, sans ombre ─────────────────────────────────────────── */
+
+.glass-card {
+  background: var(--surface);
+  border: var(--trait-moyen) solid var(--encre);
+  border-radius: var(--rayon);
+  box-shadow: none;
+  transition: border-color 0.12s ease, transform 0.12s ease;
+}
+
+/* Au survol, le trait s'epaissit visuellement par assombrissement plutot que par un
+   deplacement : sur une grille de soixante cartes, un `translateY` fait sauter la mise en
+   page ligne par ligne au passage de la souris. */
+.glass-card:hover {
+  border-color: var(--encre);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Les boutons : aplats francs, cernes ────────────────────────────────────────────── */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-success {
+  font-family: "Exo 2", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: var(--rayon-pastille);
+  border: var(--trait-moyen) solid var(--encre);
+  box-shadow: none;
+  text-shadow: none;
+  transition: background 0.12s ease, color 0.12s ease;
+  /* Plancher tactile tenu a toutes les largeurs, verifie par check:mobile. */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 16px;
+}
+
+/* L'action principale est la seule a inverser encre et papier : sur un plan, ce qui est
+   plein attire l'oeil avant ce qui est cerne. */
+.btn-primary { background: var(--encre); color: var(--surface); }
+.btn-primary:hover { background: var(--encre-douce); color: var(--surface); }
+.btn-primary:disabled { background: var(--surface-creuse); color: var(--encre-tres-douce); border-color: var(--trait-leger); }
+
+.btn-secondary { background: var(--surface); color: var(--encre); }
+.btn-secondary:hover { background: var(--surface-creuse); }
+
+/* Le rouge ne sert qu'a la destruction et au manquant. Il n'est jamais decoratif, sinon
+   il cesse d'alerter. */
+.btn-danger { background: var(--surface); color: var(--alerte); border-color: var(--alerte); }
+.btn-danger:hover { background: var(--alerte-pale); }
+
+.btn-success { background: var(--surface); color: var(--bon); border-color: var(--bon); }
+.btn-success:hover { background: var(--bon-pale); }
+
+/* ── Les champs ─────────────────────────────────────────────────────────────────────── */
+
+.glass-input {
+  background: var(--surface);
+  color: var(--encre);
+  border: var(--trait-moyen) solid var(--trait-leger);
+  border-radius: 8px;
+  box-shadow: none;
+  min-height: 44px;
+}
+.glass-input:focus {
+  border-color: var(--encre);
+  outline: var(--trait-moyen) solid var(--encre);
+  outline-offset: 1px;
+  box-shadow: none;
+}
+.glass-input::placeholder { color: var(--encre-tres-douce); }
+.glass-input option { background: var(--surface); color: var(--encre); }
+.toast-glass { background: var(--surface); border: var(--trait-moyen) solid var(--encre); box-shadow: none; }
+
+/* ── Les pastilles : une station porte un nom, un aplat pale porte une ligne ────────── */
+
+.trainer-pill,
+.exchange-badge {
+  border-radius: var(--rayon-pastille);
+  box-shadow: none;
+  text-shadow: none;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+/* Les trois lignes du reseau. `.section-want` et `.section-give` existaient deja et
+   portaient un degrade; elles portent maintenant le filet de leur ligne. */
+.section-want,
+.section-give,
+.section-mirror {
+  background: none;
+  border-left: var(--trait-fort) solid var(--ligne-cherche);
+  padding-left: 12px;
+  border-radius: 0;
+}
+.section-give { border-left-color: var(--ligne-donne); }
+.section-mirror { border-left-color: var(--ligne-miroir); }
+
+/* ── Le header : une barre de plan, pas une vitre ──────────────────────────────────── */
+
+.site-nav {
+  background: var(--surface);
+  border-bottom: var(--trait-fort) solid var(--encre);
+}
+.site-nav-link {
+  border-radius: var(--rayon-pastille);
+  border-width: var(--trait-moyen) !important;
+}
+
+.site-footer {
+  background: var(--surface);
+  border-top: var(--trait-fin) solid var(--trait-leger);
+}
+
+/* ── La barre d'onglets : cinq stations sur une ligne ──────────────────────────────── */
+
+/* ── Le pied disparait sur telephone ────────────────────────────────────────────────────
+   Steven : « enlever le footer sur mobile, avec le menu en bas ca suffit je pense. »
+
+   Ses quatre liens ne sont pas perdus pour autant : le Discord, la page d'informations et
+   le credit sont repris en bas de la landing, a un seul appui de l'onglet Accueil. Les
+   retirer sans les remettre quelque part aurait coupe la communaute de son Discord depuis
+   un telephone, ce qui est exactement l'usage principal du site. */
+@media (max-width: 640px) {
+  .site-footer { display: none; }
+}
+
+@media (max-width: 640px) {
+  .mobile-tabs {
+    background: var(--surface);
+    border-top: var(--trait-fort) solid var(--encre);
+  }
+  .mobile-tab {
+    color: var(--encre-douce);
+    /* Un trait vertical entre les stations, a l'encre et non en blanc translucide. */
+    border-left: var(--trait-fin) solid var(--trait-leger);
+  }
+  .mobile-tab:first-child { border-left: none; }
+  /* L'onglet courant : aplat pale et lisere plein. Le lisere est un `inset`, donc il
+     survit a la regle qui interdit les ombres portees, et c'en est bien un trait. */
+  .mobile-tab-active {
+    color: var(--encre);
+    background: var(--surface-creuse);
+    box-shadow: inset 0 var(--trait-fort) 0 0 var(--encre);
+  }
+}
+
+/* ── Les squelettes de chargement ──────────────────────────────────────────────────── */
+
+.skeleton {
+  background: var(--surface-creuse);
+  animation: none;
+}
+
+/* ── La pastille de station ─────────────────────────────────────────────────────────────
+   Le seul motif VRAIMENT nouveau de cette DA, et le seul qui merite de l'etre : un titre
+   de section porte le point d'une station, comme sur un plan. Applique aux titres de
+   categorie et aux noms de dresseur. */
+
+.station {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.station::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: var(--trait-fort) solid currentColor;
+  flex: 0 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════════════
+   RENDRE LE PLAN LISIBLE, ET LE SITE MOINS TRISTE
+
+   Steven, apres avoir vu la premiere version : « C'est beau mais un peu triste. Et on
+   comprend pas trop le cote plan de metro (c'est un tram a Strasbourg en plus) d'ou un peu
+   plus de decoration dans la DA peut-etre ? »
+
+   Deux constats justes, et une meme cause : le reseau ne vivait qu'en fond a 7 %
+   d'opacite. Personne ne peut lire un plan qu'on ne voit pas, et une page dont la couleur
+   n'apparait que dans de petites pastilles est effectivement terne.
+
+   ═══ CE QU'ON N'A PAS FAIT, ET POURQUOI ═══
+
+   Donner une couleur a chacune des cinq sections. C'etait la reponse evidente pour
+   « ajouter de la couleur », et elle aurait installe DEUX systemes de couleur cote a cote :
+   les lignes qui disent la categorie d'echange, et des teintes qui disent la page. Deux
+   systemes, et plus aucun ne veut dire quelque chose.
+
+   Le plan devient donc lisible par la FORME - stations, connecteurs, bandeau de lignes -
+   et la couleur reste ce qu'elle etait : les trois categories, et l'or de la chance.
+   ═══════════════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Le bandeau de lignes, sous le header ───────────────────────────────────────────────
+   Trois bandes franches aux couleurs des trois categories, sur toute la largeur. C'est le
+   geste le moins cher qui dit « plan de reseau » avant meme qu'on ait lu un mot, et il
+   n'introduit aucune couleur nouvelle. Pose sur le header par un pseudo-element, donc sans
+   toucher au JSX de SiteNav. */
+.site-nav {
+  position: relative;
+}
+.site-nav::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* -6px et non -9 : la bande fait 6px de haut, donc son bord SUPERIEUR se pose
+     exactement sous la bordure du header. A -9px elle descendait 3px plus bas que la place
+     reservee par margin-bottom, et le bandeau d annonce lui passait dessus. */
+  bottom: -6px;
+  height: 6px;
+  background: linear-gradient(
+    to right,
+    var(--ligne-miroir) 0 33.333%,
+    var(--ligne-cherche) 33.333% 66.666%,
+    var(--ligne-donne) 66.666% 100%
+  );
+}
+/* Le bandeau descend de 6px sous le header : le contenu doit donc commencer plus bas,
+   sinon la premiere ligne de texte passe dessous. */
+.site-nav { margin-bottom: 6px; }
+
+/* ── La trame du papier ─────────────────────────────────────────────────────────────────
+   Un plan est imprime. Une trame de points tres pale donne cette matiere sans faire de
+   bruit : a 2 % d'encre elle ne se voit pas, elle se sent. Elle remplace le grain d'ecran
+   cathodique de l'ancienne DA, qui etait une texture de tube et pas de papier. */
+body {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--encre) 7%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+  /* PAS de background-attachment: fixed. Il y etait, et c'etait une erreur de ma part :
+     sur iOS un fond attache au viewport se repeint a chaque changement de hauteur, et la
+     hauteur change en continu pendant que la barre du navigateur se replie. C'est l'un des
+     deux amplificateurs du tremblement decrit par Steven. Le fond defile donc avec la page,
+     ce qui ne se voit pas sur une trame de points reguliere. */
+}
+
+/* ── Le connecteur de route ─────────────────────────────────────────────────────────────
+   Une suite de stations reliees par un trait vertical : c'est litteralement une ligne du
+   plan, et ca transforme une liste d'etapes en itineraire. Applique aux etapes de la
+   landing. Le trait est tire derriere les pastilles, pas entre elles, pour ne pas dependre
+   de leur hauteur exacte. */
+.itineraire {
+  position: relative;
+}
+.itineraire::before {
+  content: "";
+  position: absolute;
+  left: 16px;             /* le centre d'une pastille de 34px */
+  top: 22px;
+  bottom: 22px;
+  width: var(--trait-fort);
+  background: var(--encre);
+  z-index: 0;
+}
+.itineraire > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── La pastille de station, en plus grand ──────────────────────────────────────────────
+   Elle existait deja (`.station`), a 11px. A cette taille elle passait pour une puce de
+   liste. A 14px avec un trait de 3px, on reconnait le disque blanc cercle d'un plan. */
+.station::before {
+  width: 14px;
+  height: 14px;
+}
+
+/* ── Le bandeau d'annonce (components/BandeauEvenement.tsx) ─────────────────────────────
+   Un bandeau fin sous le header, dont le texte defile. Demande par Steven le 2026-09-04
+   pour la Mega-Finale du Go Fest, et il porte sa date de fin dans le composant.
+
+   L'ANNONCE EST DE L'ENCRE SUR LE PAPIER, pas une couleur d'accent : les trois couleurs de
+   lignes disent la categorie d'un echange, et une annonce n'en est pas une. Le liseré
+   au-dessus suffit a la detacher du header. */
+
+.bandeau-evenement {
+  /* `overflow: hidden` n'est pas cosmetique ici : sans lui, la piste qui depasse a droite
+     s'ajoute au scrollWidth du document et la page se met a defiler horizontalement.
+     Exactement le « c'est le bordel » que Steven decrivait a propos du zoom. */
+  overflow: hidden;
+  background: var(--surface-creuse);
+  border-bottom: var(--trait-fin) solid var(--trait-leger);
+  /* Pas de hauteur fixe : le texte se met sur deux lignes quand l'animation est coupee,
+     et une hauteur figee le couperait. */
+  padding: 5px 0;
+}
+
+.bandeau-piste {
+  display: flex;
+  /* `max-content` pour que les deux copies restent sur une seule ligne et que la largeur
+     de la piste soit celle du texte, pas celle de l'ecran. */
+  width: max-content;
+  animation: bandeau-defile 34s linear infinite;
+}
+
+.bandeau-texte {
+  /* 12px pile : le plancher de lisibilite, et il compte double depuis qu'on a retire le
+     zoom sur telephone. */
+  font-size: 0.75rem;
+  font-family: "Exo 2", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--encre);
+  white-space: nowrap;
+  /* La respiration entre la fin d'une copie et le debut de la suivante. */
+  padding-right: 3rem;
+  /* Chaque copie fait au moins la moitie de l ecran. C est ce qui rend la boucle continue
+     QUEL QUE SOIT le texte : cinq copies font alors au moins 250 % de l ecran, donc
+     toujours plus que l ecran plus une copie - la condition pour qu il n y ait jamais de
+     vide a droite. Sans ce plancher, un texte court sur un grand ecran reproduirait
+     exactement le defaut signale par Steven. */
+  min-width: 50vw;
+}
+
+@keyframes bandeau-defile {
+  /* Un cinquieme de la piste, soit exactement UNE copie sur les cinq : au terme de
+     l animation, la piste a avance d une copie et l image est identique au point de depart,
+     donc le retour est invisible.
+     C etait -50 % quand il y avait deux copies. Le principe est le meme : le pas vaut
+     toujours 100 % divise par le nombre de copies. */
+  from { transform: translateX(0); }
+  to { transform: translateX(-20%); }
+}
+
+/* Qui a demande moins d'animations a son systeme n'a pas demande un texte tronque : le
+   defilement s'arrete, la copie disparait, et l'annonce passe sur autant de lignes qu'il
+   faut pour se lire en entier. */
+@media (prefers-reduced-motion: reduce) {
+  .bandeau-piste {
+    animation: none;
+    width: auto;
+    padding: 0 14px;
+  }
+  .bandeau-texte {
+    white-space: normal;
+    padding-right: 0;
+  }
+  .bandeau-texte[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+/* ── Le bloc collant du haut ────────────────────────────────────────────────────────────
+   Contient le header et, sur la landing seulement, le bandeau d'annonce. Le `sticky` est
+   porte ici et non par le header pour que les deux restent a l'ecran ensemble, sans avoir
+   a maintenir a la main un `top` egal a la hauteur du header - chiffre qui serait faux des
+   que le header change de taille, ce qu'il fait deja entre mobile et bureau.
+
+   Le fond est opaque : le contenu de la page defile DERRIERE ce bloc, et un fond
+   translucide laisserait lire deux textes superposes. L'ancienne DA reglait ca avec un
+   verre depoli, qui n'a plus cours ici. */
+.site-nav-bloc {
+  background: var(--papier);
+}
+
+/* ── La barre d'onglets ne doit pas trembler ────────────────────────────────────────────
+   Steven, sur Chrome iOS : « quand tu scrolles vers le bas et que le menu du navigateur
+   disparait, il y a du vide en dessous du menu et il gigotte quand on bouge. Il tremble de
+   bas en haut ne sachant pas ou s'afficher. »
+
+   Trois causes, traitees ensemble :
+
+     1. `min-height: 100dvh` sur le body, dont la valeur change pendant que la barre du
+        navigateur se replie. Passe a `svh` dans globals.css.
+     2. `background-attachment: fixed` sur le body, qui force le repeint d'un fond de la
+        taille du viewport a chaque changement de hauteur. Retire ci-dessus.
+     3. La barre elle-meme, recalculee par le moteur a chaque image parce qu'elle vit dans
+        la meme couche que le document. `translateZ(0)` la promeut sur sa propre couche de
+        composition : iOS la deplace alors sans repasser par la mise en page.
+
+   CE QUE JE NE PEUX PAS AFFIRMER : que ce soit resolu. Ce comportement appartient a la
+   facon dont iOS anime le repli de sa barre d'adresse, et je n'ai pas d'iPhone pour le
+   verifier - Chrome pilote ne reproduit pas ce repli du tout. Les trois causes ci-dessus
+   sont reelles et documentees, deux d'entre elles venaient de moi, mais c'est Steven qui
+   dira si le tremblement a disparu.
+
+   La solution structurelle, si celle-ci ne suffit pas : un chassis a hauteur fixe
+   (`height: 100svh` avec un conteneur interne qui defile, barre en position statique
+   dedans). Elle supprime le probleme par construction, parce que plus rien n'est fixe. Elle
+   demande en revanche de revoir le defilement des six pages et casse le header collant, qui
+   repose sur le defilement du document. C'est un chantier, pas un correctif. */
+@media (max-width: 640px) {
+  .mobile-tabs {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════════════
+   LA TUILE POKEMON EST UN CARRE
+
+   Steven, le 2026-09-04 : « Y'a pas un monde ou on peut pas avoir des tuiles en forme de
+   carre partout ? C'est pas possible avec tous les tags et tout j'imagine ? »
+
+   Si, c'est possible, et ce n'etait pas les etiquettes le probleme. Le probleme etait que
+   la tuile laissait son CONTENU decider de sa hauteur : onze blocs conditionnels empiles,
+   dont un champ de notes libre. Une rangee de grille prend la hauteur de sa carte la plus
+   bavarde, donc une seule note de deux lignes creusait du vide dans toutes ses voisines.
+   C'est exactement ce qu'on voyait sur sa capture.
+
+   En imposant le carre, le rapport s'inverse : la tuile fixe sa taille et le contenu s'y
+   plie. La grille devient alors parfaitement reguliere quelle que soit la donnee, et aucune
+   entree ne peut plus deformer ses voisines.
+
+   ═══ CE QUE CA COUTE, ET POURQUOI C'EST ACCEPTABLE ═══
+
+   Ce qui ne rentre pas est coupe. Ce serait inacceptable si l'information disparaissait,
+   mais elle ne disparait pas : la tuile s'ouvre au clic sur une fiche qui affiche tout, les
+   etiquettes au-dela de trois portent un « +N » avec la liste en infobulle, et les notes
+   tronquees gardent leur texte complet en `title`.
+
+   Une tuile est un APERCU. Elle doit permettre de reconnaitre un Pokemon et de decider si
+   on l'ouvre; elle n'a jamais eu a tout dire.
+   ═══════════════════════════════════════════════════════════════════════════════════════ */
+
+.tuile-pokemon {
+  aspect-ratio: 1;
+  /* Le contenu est centre VERTICALEMENT dans la tuile.
+     Il etait cale en haut, ce qui laissait un vide sous le nom des cartes courtes et
+     donnait une grille visuellement irreguliere alors que les tuiles, elles, sont
+     identiques. Steven : « Fait un effort pour centrer les elements et sprites quand
+     meme. » */
+  justify-content: center;
+  /* Le decoupage est ce qui rend la promesse du carre vraie : sans lui, un contenu trop
+     grand deborderait de la tuile au lieu de s'y plier, et on aurait un carre qui bave.
+     Les deux badges qui pendaient hors de la carte (priorite, selection) sont rentres
+     dedans pour cette raison, voir components/PokemonCard.tsx. */
+  overflow: hidden;
+}
+
+/* Le sprite ne prend qu'une part fixe de la tuile, au lieu de sa taille naturelle : c'est
+   ce qui laisse une place previsible au nom et aux etiquettes. */
+.tuile-pokemon > div:has(> img),
+.tuile-pokemon .pokemon-sprite {
+  flex: 0 0 auto;
+}
+
+/* Le nom : deux lignes au plus, coupees proprement. Un nom long comme
+   « Sablaireau d'Alola » en prend deja deux. */
+.tuile-pokemon h3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+/* ── Le contenu se plie a la tuile ──────────────────────────────────────────────────────
+   Premiere version du carre : geometriquement parfaite (toutes les tuiles carrees), et
+   inutilisable - 1 323 enfants depassaient de leur tuile, parce qu'un sprite dimensionne a
+   134px ne rentre pas dans un carre de 93px. Le decoupage cachait le probleme au lieu de
+   le resoudre : on obtenait des sprites coupes en deux.
+
+   Le sprite prend donc une PART de la tuile et non une taille absolue, et les elements du
+   bas s'effacent quand il n'y a plus de place. */
+
+/* Le bloc du sprite : la moitie de la tuile, pas 134px. */
+/* ═══ LA TAILLE DU SPRITE, ET POURQUOI LES GIGAMAX PARAISSAIENT PETITS ═══
+
+   56 % au depart, quand la tuile portait encore un nom, des etiquettes et une ligne d'etat.
+   Les etiquettes ayant disparu, la place est libre : 66 %.
+
+   Mais la vraie cause de « Dracaufeu gigamax c'est pas dingue » est ailleurs, et la mesure
+   l'a montree : les sprites normaux font 256x256, les GIGAMAX non - 163x150, 165x104,
+   247x126. Dans une boite carree, object-fit: contain ajuste une image large sur sa
+   LARGEUR et laisse jusqu'a un tiers de la hauteur vide. Le sujet paraissait donc petit et
+   flottant, alors que le centrage etait exact (decalage mesure : 0px sur toutes les cartes).
+
+   Agrandir la boite agrandit donc directement ces sprites-la, qui etaient les plus penalises. */
+.tuile-pokemon > .mt-7 {
+  margin-top: 0 !important;
+  margin-bottom: 2px !important;
+  width: 74% !important;
+  max-width: 74% !important;
+  flex: 0 0 auto;
+}
+
+.tuile-pokemon h3 {
+  font-size: 0.75rem;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+/* Les etiquettes et le bas de tuile : une seule ligne, et on masque le surplus plutot que
+   de le laisser pousser. `flex-wrap: nowrap` avec decoupe garde l'alignement. */
+.tuile-pokemon > div.flex-wrap {
+  flex-wrap: nowrap !important;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* ═══ RIEN NE SE COMPRIME DANS UNE TUILE ═══
+
+   Ce bloc autorisait la compression : `flex-shrink: 1` sur tous les enfants, pour qu ils
+   se tassent au lieu de deborder. Vu sur telephone, le resultat etait pire que le
+   debordement : les pastilles ecrasees a \« gi \», \« f \», \« o \», et les textes qui se
+   chevauchaient parce qu un bloc comprime sous la hauteur de sa ligne passe sur son voisin.
+
+   Une pastille illisible n informe pas, elle occupe. Donc plus aucune compression : ce qui
+   tient s affiche, ce qui ne tient pas est coupe net par l `overflow: hidden` de la
+   tuile, et la fiche porte le detail complet. */
+.tuile-pokemon > * {
+  flex-shrink: 0;
+}
+
+/* Les pastilles ne rapetissent jamais : elles tiennent ou elles sortent du cadre. */
+.tuile-pokemon > div.flex-wrap > * {
+  flex: 0 0 auto;
+}
+
+/* ── La grille des tuiles s'adapte, elle ne compte pas les colonnes ─────────────────────
+   Le nombre de colonnes etait ecrit par palier : 3 sur mobile, 4, 5, 6, 7 ensuite. Avec des
+   tuiles carrees, ce choix decide de leur TAILLE, et 3 colonnes sur un ecran de 375px
+   donnaient des carres de 93px - un sprite illisible et des etiquettes coupees.
+
+   Passe a 2 colonnes en dur, les carres faisaient 146px et tout devenait lisible, mais la
+   liste de 253 Pokemon de Steven passait a 20 730px, soit 23 ecrans de telephone.
+
+   `auto-fill` avec un minimum de 132px resout les deux : la largeur disponible decide, et
+   la tuile ne descend jamais sous la taille ou elle devient illisible. Un iPhone SE (375px)
+   obtient 2 colonnes, un iPhone recent (393 a 430px) en obtient 3, une tablette 5, un
+   laptop 8. Il n'y a plus de paliers a maintenir, et surtout plus de largeur d'ecran ou la
+   tuile soit trop petite pour son contenu. */
+.grille-tuiles {
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+}

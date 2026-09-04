@@ -30,24 +30,24 @@ export default function AdminPage() {
 
   if (!checked || !isAdmin) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center" style={{ background: "#0b0700" }}>
+      <div className="fixed inset-0 flex items-center justify-center" style={{ background: "var(--papier)" }}>
         <div
           className="animate-glow-pulse"
-          style={{ width: 48, height: 48, border: "3px solid #ffd700", borderTop: "3px solid transparent", borderRadius: "50%", animation: "spin-slow 0.8s linear infinite" }}
+          style={{ width: 48, height: 48, border: "3px solid var(--encre)", borderTop: "3px solid transparent", borderRadius: "50%", animation: "spin-slow 0.8s linear infinite" }}
         />
       </div>
     );
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "var(--papier)" }}>
       <ParticleBackground />
       <SiteNav active="/admin" />
       <div className="flex-1" style={{ maxWidth: 1100, margin: "0 auto", width: "100%", padding: "24px clamp(12px, 4vw, 24px)" }}>
-        <h1 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 800, fontSize: "1.6rem", marginBottom: 6 }}>
+        <h1 style={{ fontFamily: "Exo 2, sans-serif", color: "var(--encre)", fontWeight: 800, fontSize: "1.6rem", marginBottom: 6 }}>
           Administration
         </h1>
-        <p style={{ color: "rgba(232,237,245,0.5)", fontSize: "0.85rem", marginBottom: 20 }}>
+        <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", marginBottom: 20 }}>
           Toutes les fonctionnalités réservées à l&apos;administration, au même endroit.
         </p>
 
@@ -79,10 +79,10 @@ function AdminCard({ title, desc, href }: { title: string; desc: string; href: s
       className="glass-card"
       style={{ padding: 16, textDecoration: "none", display: "block", transition: "transform 0.15s" }}
     >
-      <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 700, fontSize: "0.95rem", marginBottom: 6 }}>
+      <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "var(--encre)", fontWeight: 700, fontSize: "0.95rem", marginBottom: 6 }}>
         {title}
       </h3>
-      <p style={{ color: "rgba(232,237,245,0.5)", fontSize: "0.78rem", lineHeight: 1.4 }}>{desc}</p>
+      <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.78rem", lineHeight: 1.4 }}>{desc}</p>
     </a>
   );
 }
@@ -90,10 +90,10 @@ function AdminCard({ title, desc, href }: { title: string; desc: string; href: s
 function ExportCard() {
   return (
     <div className="glass-card" style={{ padding: 16 }}>
-      <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 700, fontSize: "0.95rem", marginBottom: 6 }}>
+      <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "var(--encre)", fontWeight: 700, fontSize: "0.95rem", marginBottom: 6 }}>
         Export des données
       </h3>
-      <p style={{ color: "rgba(232,237,245,0.5)", fontSize: "0.78rem", lineHeight: 1.4, marginBottom: 10 }}>
+      <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.78rem", lineHeight: 1.4, marginBottom: 10 }}>
         Télécharge un export complet (dresseurs, échanges) au format JSON.
       </p>
       <a href="/api/export" className="btn-secondary" style={{ fontSize: "0.78rem", display: "inline-block", textDecoration: "none" }}>

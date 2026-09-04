@@ -17,7 +17,10 @@
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "check:mobile": "node scripts/check-mobile.mjs",
-    "check:evenements": "node --experimental-strip-types --no-warnings scripts/check-evenements.mjs"
+    "check:evenements": "node --experimental-strip-types --no-warnings scripts/check-evenements.mjs",
+    "check:da": "node scripts/check-da.mjs",
+    "check:matching": "node --import ./scripts/resolveur-alias.mjs --experimental-strip-types --no-warnings scripts/check-matching.mjs",
+    "check:agencement": "node scripts/check-agencement.mjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
@@ -27,6 +30,7 @@
     "next": "16.1.6",
     "pg": "^8.20.0",
     "prisma": "^7.5.0",
+    "qrcode": "^1.5.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hot-toast": "^2.6.0",
@@ -36,6 +40,7 @@
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/pg": "^8.18.0",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "cheerio": "^1.2.0",

@@ -1,15 +1,8 @@
 @import "tailwindcss";
+/* La source unique des couleurs. Voir le bandeau de ce fichier. */
+@import "./tokens.css";
 
 :root {
-  --teal: #ffd700;
-  --yellow: #ffd93d;
-  --coral: #ff6b6b;
-  --success: #4ade80;
-  --navy: #0b0700;
-  --navy-mid: #180d03;
-  --navy-light: #251505;
-  --glass-bg: rgba(16, 9, 1, 0.65);
-  --glass-border: rgba(255, 140, 30, 0.13);
   /* Hauteur du footer fixe (components/SiteFooter.tsx) : réservée en bas de
      chaque page pour que le contenu ne passe jamais derrière. */
   --footer-height: 48px;
@@ -73,14 +66,37 @@ html {
 
 body {
   background: var(--navy);
-  color: #e8edf5;
+  color: var(--encre);
   font-family: "Inter", sans-serif;
-  /* dvh (pas vh) : sur mobile, vh vaut la hauteur "barre d'adresse cachée",
-     plus grande que ce qui est réellement visible tant qu'elle s'affiche.
-     Ce décalage est ce qui faisait apparaître le contenu de la page sous le
-     footer fixe pendant le scroll (la barre d'adresse d'Android/iOS qui
-     se réduit/redéploie change la hauteur visible sans que ce vh recalcule). */
-  min-height: 100dvh;
+  /* ═══ svh, ET PLUS dvh ═══
+
+     `dvh` etait un choix delibere, et il avait sa raison : le pied de page etait fixe, et
+     `vh` le laissait recouvrir le contenu quand la barre d'adresse se repliait. Ce pied
+     n'est plus fixe sur mobile depuis le 2026-09-04, donc cette raison a disparu.
+
+     Ce qui reste, en revanche, c'est le defaut de `dvh` : sa valeur CHANGE pendant que la
+     barre du navigateur se replie. La hauteur du body bouge donc en continu pendant le
+     defilement, et avec elle le bloc de reference de la barre d'onglets fixe. C'est le
+     tremblement que Steven a decrit sur Chrome iOS : « il gigotte quand on bouge, il
+     tremble de bas en haut ne sachant pas ou s'afficher ».
+
+     Premier essai : `svh`, la hauteur avec la barre du navigateur VISIBLE. Constante, donc
+     plus de tremblement - mais Steven a immediatement signale l'effet de bord : « en bas de
+     liste quand c'est terminé je peux partir vers l'infini et l'au delà ». Le body etant
+     dimensionne sur la PLUS PETITE hauteur, il devient plus court que la zone visible des
+     que la barre se replie, et on voit le fond nu sous la barre d'onglets restee en place.
+
+     `lvh` est la hauteur avec la barre du navigateur REPLIEE, donc la plus grande. Elle est
+     constante comme `svh` - pas de tremblement - et toujours superieure ou egale a la zone
+     visible, donc plus de vide. C'est aussi ce que vaut `vh` sur iOS, donc la meme valeur
+     que le `min-h-screen` porte par la racine de chaque page : les deux cessent d'etre en
+     desaccord.
+
+     Le prix : quand la barre du navigateur est visible, le body depasse legerement la zone
+     visible, donc une page courte devient defilable de la hauteur de cette barre. Un
+     defilement de quelques dizaines de pixels sur une page vide est un bien moindre defaut
+     qu'un trou de plusieurs centaines. */
+  min-height: 100lvh;
   overflow-x: hidden;
   overscroll-behavior-y: contain;
   padding-bottom: var(--footer-height);
@@ -107,8 +123,8 @@ body::after {
     0deg,
     transparent,
     transparent 3px,
-    rgba(0, 0, 0, 0.025) 3px,
-    rgba(0, 0, 0, 0.025) 4px
+    color-mix(in srgb, var(--encre) 3%, transparent) 3px,
+    color-mix(in srgb, var(--encre) 3%, transparent) 4px
   );
 }
 
@@ -119,41 +135,27 @@ h1, h2, h3, h4, h5, h6 {
 /* ── Glass card ── */
 .glass-card {
   background: var(--glass-bg);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
   border: 1px solid var(--glass-border);
   border-radius: 10px;
-  box-shadow:
-    0 6px 28px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 215, 0, 0.05);
+  box-shadow: none;
   transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
 }
 
 .glass-card:hover {
   transform: translateY(-4px) scale(1.015);
-  box-shadow:
-    4px 8px 0 rgba(255, 215, 0, 0.07),
-    0 18px 50px rgba(0, 0, 0, 0.7),
-    0 0 0 1px rgba(255, 215, 0, 0.38),
-    inset 0 1px 0 rgba(255, 215, 0, 0.12);
-  border-color: rgba(255, 215, 0, 0.42);
+  box-shadow: none;
+  border-color: color-mix(in srgb, var(--encre) 42%, transparent);
 }
 
 /* ── Float title ── */
 @keyframes title-float {
   0%, 100% {
     transform: translateY(0px);
-    text-shadow:
-      0 0 10px rgba(255, 215, 0, 0.7),
-      0 0 30px rgba(255, 160, 0, 0.3),
-      0 0 60px rgba(255, 120, 0, 0.12);
+    text-shadow: none;
   }
   50% {
     transform: translateY(-7px);
-    text-shadow:
-      0 0 16px rgba(255, 215, 0, 0.9),
-      0 0 45px rgba(255, 160, 0, 0.45),
-      0 0 90px rgba(255, 120, 0, 0.18);
+    text-shadow: none;
   }
 }
 
@@ -164,16 +166,11 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Neon text ── */
 .neon-text {
-  text-shadow:
-    0 0 10px rgba(255, 215, 0, 0.7),
-    0 0 30px rgba(255, 160, 0, 0.3),
-    0 0 60px rgba(255, 120, 0, 0.12);
+  text-shadow: none;
 }
 
 .neon-yellow {
-  text-shadow:
-    0 0 10px rgba(255, 217, 61, 0.7),
-    0 0 30px rgba(255, 217, 61, 0.3);
+  text-shadow: none;
 }
 
 /* ── Watermark background text ── */
@@ -185,16 +182,16 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 0.88;
   letter-spacing: -0.02em;
   position: fixed;
-  color: rgba(255, 215, 0, 0.028);
+  color: color-mix(in srgb, var(--encre) 3%, transparent);
 }
 
 /* ── Glow pulse animation ── */
 @keyframes glow-pulse {
   0%, 100% {
-    box-shadow: 0 0 8px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.15);
+    box-shadow: none;
   }
   50% {
-    box-shadow: 0 0 16px rgba(255, 215, 0, 0.7), 0 0 40px rgba(255, 215, 0, 0.3);
+    box-shadow: none;
   }
 }
 
@@ -258,12 +255,12 @@ h1, h2, h3, h4, h5, h6 {
 .pokemon-sprite {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  filter: drop-shadow(0 4px 12px rgba(255, 160, 20, 0.2));
+  filter: drop-shadow(0 4px 12px color-mix(in srgb, var(--encre) 20%, transparent));
   transition: filter 0.2s ease;
 }
 
 .glass-card:hover .pokemon-sprite {
-  filter: drop-shadow(0 4px 22px rgba(255, 217, 61, 0.55)) brightness(1.05);
+  filter: drop-shadow(0 4px 22px color-mix(in srgb, var(--encre) 55%, transparent)) brightness(1.05);
 }
 
 /* ── Skeleton loader ── */
@@ -281,19 +278,19 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Section header gradient ── */
 .section-want {
-  background: linear-gradient(135deg, rgba(78, 168, 255, 0.08), rgba(78, 168, 255, 0.02));
-  border-top: 3px solid #4ea8ff;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--ligne-cherche) 8%, transparent), color-mix(in srgb, var(--ligne-cherche) 2%, transparent));
+  border-top: 3px solid var(--ligne-cherche);
 }
 
 .section-give {
-  background: linear-gradient(135deg, rgba(255, 217, 61, 0.08), rgba(255, 217, 61, 0.02));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--encre) 8%, transparent), color-mix(in srgb, var(--encre) 2%, transparent));
   border-top: 3px solid var(--yellow);
 }
 
 /* ── Trainer pill ── */
 .trainer-pill {
-  background: rgba(255, 215, 0, 0.08);
-  border: 1px solid rgba(255, 215, 0, 0.22);
+  background: color-mix(in srgb, var(--encre) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--encre) 22%, transparent);
   border-radius: 4px;
   padding: 2px 10px;
   font-size: 0.75rem;
@@ -305,8 +302,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Exchange badge ── */
 .exchange-badge {
-  background: rgba(255, 217, 61, 0.08);
-  border: 1px solid rgba(255, 217, 61, 0.25);
+  background: color-mix(in srgb, var(--encre) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--encre) 25%, transparent);
   border-radius: 6px;
   padding: 4px 8px;
   display: flex;
@@ -335,8 +332,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 3px 3px 0 rgba(255, 215, 0, 0.25), 0 10px 28px rgba(255, 215, 0, 0.3);
-  background: #0eeece;
+  box-shadow: none;
+  background: var(--tag-fond);
 }
 
 .btn-primary:disabled {
@@ -347,9 +344,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-danger {
-  background: rgba(255, 107, 107, 0.1);
+  background: color-mix(in srgb, var(--alerte) 10%, transparent);
   color: var(--coral);
-  border: 1px solid rgba(255, 107, 107, 0.28);
+  border: 1px solid color-mix(in srgb, var(--alerte) 28%, transparent);
   border-radius: 6px;
   padding: 6px 14px;
   cursor: pointer;
@@ -363,15 +360,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-danger:hover {
-  background: rgba(255, 107, 107, 0.2);
+  background: color-mix(in srgb, var(--alerte) 20%, transparent);
   border-color: var(--coral);
-  box-shadow: 2px 2px 0 rgba(255, 107, 107, 0.2);
+  box-shadow: none;
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
-  color: #9aabb8;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: var(--surface-creuse);
+  color: var(--encre-douce);
+  border: 1px solid var(--trait-leger);
   border-radius: 6px;
   padding: 8px 16px;
   cursor: pointer;
@@ -385,17 +382,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.09);
-  color: #e8edf5;
-  border-color: rgba(255, 255, 255, 0.18);
+  background: var(--surface-creuse);
+  color: var(--encre);
+  border-color: var(--trait-leger);
 }
 
 /* Action "marquer comme échangé" : le geste le plus fréquent en session de jeu,
    mis en avant visuellement (vert succès) plutôt qu'un bouton secondaire neutre. */
 .btn-success {
-  background: rgba(74, 222, 128, 0.1);
+  background: color-mix(in srgb, var(--bon) 10%, transparent);
   color: var(--success);
-  border: 1px solid rgba(74, 222, 128, 0.3);
+  border: 1px solid color-mix(in srgb, var(--bon) 30%, transparent);
   border-radius: 6px;
   padding: 8px 16px;
   cursor: pointer;
@@ -409,9 +406,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-success:hover {
-  background: rgba(74, 222, 128, 0.2);
+  background: color-mix(in srgb, var(--bon) 20%, transparent);
   border-color: var(--success);
-  box-shadow: 2px 2px 0 rgba(74, 222, 128, 0.2);
+  box-shadow: none;
 }
 
 /* Zones tactiles agrandies sur mobile : ajouter/marquer échangé sont les gestes
@@ -575,9 +572,8 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     right: 0;
     z-index: 30;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(11, 7, 0, 0.96);
-    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--trait-leger);
+    background: color-mix(in srgb, var(--papier) 96%, transparent);
     /* La zone sûre des iPhone à encoche : sans elle, le dernier tiers des onglets
        tombe sous la barre de gestes du système et devient intouchable. */
     padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -598,21 +594,21 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.15;
     letter-spacing: 0;
     text-decoration: none;
-    color: rgba(232, 237, 245, 0.62);
+    color: var(--encre-douce);
     /* Une bordure entre les onglets plutôt qu'autour : cinq cadres côte à côte font
        une grille de boutons, alors qu'il s'agit d'un seul objet à cinq zones. */
-    border-left: 1px solid rgba(255, 255, 255, 0.06);
+    border-left: 1px solid var(--trait-leger);
   }
   .mobile-tab:first-child {
     border-left: none;
   }
 
   .mobile-tab-active {
-    color: #ffd700;
-    background: rgba(255, 215, 0, 0.1);
+    color: var(--encre);
+    background: color-mix(in srgb, var(--encre) 10%, transparent);
     /* Un liseré haut marque l'onglet courant sans halo : sur cinq onglets serrés, un
        glow déborderait sur les voisins et brouillerait lequel est actif. */
-    box-shadow: inset 0 2px 0 0 #ffd700;
+    box-shadow: inset 0 2px 0 0 var(--encre);
   }
 }
 
@@ -651,10 +647,10 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Input styles ── */
 .glass-input {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 215, 0, 0.18);
+  background: var(--surface-creuse);
+  border: 1px solid color-mix(in srgb, var(--encre) 18%, transparent);
   border-radius: 8px;
-  color: #e8edf5;
+  color: var(--encre);
   padding: 10px 14px;
   font-family: "Inter", sans-serif;
   font-size: 0.9rem;
@@ -665,23 +661,23 @@ h1, h2, h3, h4, h5, h6 {
 
 .glass-input:focus {
   border-color: var(--teal);
-  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.08), 2px 2px 0 rgba(255, 215, 0, 0.06);
+  box-shadow: none;
 }
 
 .glass-input::placeholder {
-  color: rgba(255, 255, 255, 0.25);
+  color: color-mix(in srgb, var(--encre) 55%, transparent);
 }
 
 .glass-input option {
   background: var(--navy-mid);
-  color: #e8edf5;
+  color: var(--encre);
 }
 
 /* ── Toast overrides ── */
 .toast-glass {
   background: var(--navy-mid) !important;
   border: 1px solid var(--glass-border) !important;
-  color: #e8edf5 !important;
+  color: var(--encre) !important;
   border-radius: 8px !important;
   font-family: "Inter", sans-serif !important;
 }
@@ -691,7 +687,7 @@ h1, h2, h3, h4, h5, h6 {
   display: block;
   font-size: 0.75rem;
   font-weight: 800;
-  color: rgba(255, 215, 0, 0.65);
+  color: color-mix(in srgb, var(--encre) 65%, transparent);
   letter-spacing: 0.1em;
   font-family: "Exo 2", sans-serif;
   text-transform: uppercase;
@@ -705,11 +701,11 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--navy);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 215, 0, 0.2);
+  background: color-mix(in srgb, var(--encre) 20%, transparent);
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 215, 0, 0.4);
+  background: color-mix(in srgb, var(--encre) 40%, transparent);
 }
 
 

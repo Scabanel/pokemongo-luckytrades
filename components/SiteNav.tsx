@@ -23,6 +23,8 @@
 //
 // Décision de Steven, 2026-09-04.
 
+import BandeauEvenement from "@/components/BandeauEvenement";
+
 const LINKS = [
   // `short` sert UNIQUEMENT à la barre d'onglets, où chaque onglet dispose de 375/5 = 75px.
   // « Pas encore disponibles » y est illisible; le libellé complet reste sur le header de
@@ -40,24 +42,49 @@ const STYLE_MARQUE: React.CSSProperties = {
   fontWeight: 900,
   letterSpacing: "0.04em",
   textTransform: "uppercase",
-  color: "#ffd700",
+  color: "var(--encre)",
   // Halo réduit de 12px à 6px et d'opacité 0.35 à 0.25 : sur du jaune posé sur du noir,
   // un halo large fait baver les contours et REDUIT le contraste perçu au lieu de
   // l'augmenter. Voir le lot 3 du plan de refonte.
-  textShadow: "0 0 6px rgba(255,215,0,0.25)",
+  textShadow: "none",
 };
 
-export default function SiteNav({ active }: { active: string }) {
+export default function SiteNav({
+  active,
+  annonce = false,
+}: {
+  active: string;
+  /**
+   * Affiche le bandeau d'annonce sous le header. Uniquement passe par la landing.
+   *
+   * Steven, le 2026-09-04 : « En continu sur la landing uniquement sinon ? Et pas present
+   * ailleurs ? » L'annonce appartient a la page d'arrivee : c'est la qu'un visiteur du
+   * Discord tombe, et c'est la seule page dont le travail est de l'informer. Les autres
+   * sont des pages de travail, ou une banniere qui defile en permanence prend de la place
+   * et de l'attention sans rien apporter a qui cherche un Pokemon precis.
+   */
+  annonce?: boolean;
+}) {
   return (
     <>
-      <header
-        className="site-nav sticky top-0 z-20 flex items-center gap-4"
-        style={{
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
-          background: "rgba(11,7,0,0.92)",
-          backdropFilter: "blur(10px)",
-        }}
-      >
+      {/* ═══ UN SEUL BLOC COLLANT, HEADER ET ANNONCE ENSEMBLE ═══
+
+          Le `sticky` est porte par ce conteneur et non par le header, pour que l'annonce
+          reste a l'ecran avec lui. L'alternative etait de rendre le bandeau collant a part,
+          avec un `top` egal a la hauteur du header - un chiffre a maintenir a la main, faux
+          des que le header change de taille, et il en change deja entre mobile et bureau.
+          Ici la geometrie se deduit toute seule. */}
+      <div className="site-nav-bloc sticky top-0 z-20">
+      {/* Ni bordure ni fond en ligne : ils vivent dans app/tram.css.
+
+          Ils etaient ici, en 1px gris clair sur un fond translucide - la recette du verre
+          depoli de l'ancienne DA. Un style en ligne bat une feuille quelle que soit sa
+          specificite, donc les regles ecrites pour `.site-nav` dans tram.css (3px d'encre,
+          fond opaque) ne s'appliquaient pas du tout : la DA etait ecrite et morte.
+
+          Constate en mesurant les styles calcules, pas en regardant une capture - a cette
+          taille les deux se ressemblent assez pour tromper l'oeil. */}
+      <header className="site-nav flex items-center gap-4">
         {/* ═══ SUR MOBILE, LA MARQUE EST UN TITRE, PAS UN LIEN ═══
 
             Le titre complet sortait de l'écran et s'affichait « ÉCHANGES POKÉMON
@@ -89,7 +116,7 @@ export default function SiteNav({ active }: { active: string }) {
             style={{ imageRendering: "pixelated" }}
           />
           <span className="site-nav-brand-text" style={STYLE_MARQUE}>
-            Échanges Pokémon Strasbourg GO Events!
+            Échanges Strasbourg Go Events
           </span>
         </a>
 
@@ -104,7 +131,7 @@ export default function SiteNav({ active }: { active: string }) {
             style={{ imageRendering: "pixelated" }}
           />
           <span className="site-nav-brand-text" style={STYLE_MARQUE}>
-            Échanges Pokémon Strasbourg
+            Échanges Strasbourg Go Events
           </span>
         </span>
         <nav className="site-nav-links flex" style={{ marginLeft: "auto" }}>
@@ -122,14 +149,14 @@ export default function SiteNav({ active }: { active: string }) {
                 transition: "border-color 0.15s, color 0.15s, background 0.15s",
                 ...(active === href
                   ? {
-                      background: "rgba(255, 215, 0,0.12)",
-                      borderColor: "rgba(255, 215, 0,0.4)",
-                      color: "#ffd700",
+                      background: "color-mix(in srgb, var(--encre) 12%, transparent)",
+                      borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)",
+                      color: "var(--encre)",
                     }
                   : {
                       background: "transparent",
-                      borderColor: "rgba(255,255,255,0.08)",
-                      color: "rgba(232,237,245,0.5)",
+                      borderColor: "var(--trait-leger)",
+                      color: "var(--encre-tres-douce)",
                     }),
               }}
             >
@@ -138,6 +165,12 @@ export default function SiteNav({ active }: { active: string }) {
           ))}
         </nav>
       </header>
+
+      {/* Dans le bloc collant, donc l'annonce reste a l'ecran pendant le defilement.
+          Uniquement sur la landing (voir la prop `annonce`). Le bandeau porte sa propre
+          date de fin : passe le 6 septembre 18h15, il ne rend plus rien meme ici. */}
+      {annonce && <BandeauEvenement />}
+      </div>
 
       {/* La barre d'onglets. Rendue toujours, masquée par CSS au-dessus de 640px : un rendu
           conditionnel en JavaScript ferait clignoter la barre à l'hydratation, et le serveur

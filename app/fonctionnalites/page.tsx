@@ -4,8 +4,8 @@ import ParticleBackground from "@/components/ParticleBackground";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 
-const FEATURES_COLOR = "#b464ff";
-const UPCOMING_COLOR = "#ffd93d";
+const FEATURES_COLOR = "var(--ligne-miroir)";
+const UPCOMING_COLOR = "var(--encre)";
 
 const FEATURES = [
   {
@@ -97,7 +97,7 @@ const UPCOMING = [
 
 export default function FonctionnalitesPage() {
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "var(--papier)" }}>
       <ParticleBackground />
       <div className="scanlines" />
 
@@ -112,12 +112,12 @@ export default function FonctionnalitesPage() {
               fontWeight: 900,
               color: FEATURES_COLOR,
               textTransform: "uppercase",
-              textShadow: `0 0 20px ${FEATURES_COLOR}59`,
+              textShadow: "none",
             }}
           >
             Fonctionnalités et prochaines mises à jour
           </h1>
-          <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 6 }}>
+          <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", marginTop: 6 }}>
             Ce que l'appli sait déjà faire pour toi, et ce qui arrive bientôt.
           </p>
         </header>
@@ -141,14 +141,14 @@ export default function FonctionnalitesPage() {
                   style={{
                     fontFamily: "Exo 2, sans-serif",
                     fontWeight: 700,
-                    color: "#e8edf5",
+                    color: "var(--encre)",
                     fontSize: "0.95rem",
                     marginBottom: 6,
                   }}
                 >
                   {title}
                 </h3>
-                <p style={{ color: "rgba(232,237,245,0.5)", fontSize: "0.85rem", lineHeight: 1.5 }}>
+                <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", lineHeight: 1.5 }}>
                   {text}
                 </p>
               </div>
@@ -177,7 +177,7 @@ export default function FonctionnalitesPage() {
                     display: "flex",
                     alignItems: "flex-start",
                     gap: 10,
-                    color: "rgba(232,237,245,0.75)",
+                    color: "var(--encre-douce)",
                     fontSize: "0.9rem",
                     lineHeight: 1.5,
                   }}
@@ -190,9 +190,9 @@ export default function FonctionnalitesPage() {
           </div>
         </section>
 
-        <p style={{ textAlign: "center", color: "rgba(232,237,245,0.45)", fontSize: "0.85rem" }}>
+        <p style={{ textAlign: "center", color: "var(--encre-tres-douce)", fontSize: "0.85rem" }}>
           Si tu as des propositions de fonctionnalités ou des bugs à remonter, contacte-moi
-          directement sur Discord ! <span style={{ color: "#ffd700", fontWeight: 700 }}>@Vorthil</span>
+          directement sur Discord ! <span style={{ color: "var(--encre)", fontWeight: 700 }}>@Vorthil</span>
         </p>
       </div>
 

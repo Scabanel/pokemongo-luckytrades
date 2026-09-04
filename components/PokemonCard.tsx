@@ -34,22 +34,23 @@ function getGigantamaxSpriteUrl(pokemonId: number, shiny: boolean): string | nul
 }
 
 const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  halloween:    { bg: "rgba(255,107,0,0.2)",   text: "#ff6b00", border: "rgba(255,107,0,0.5)" },
-  noel:         { bg: "rgba(80,200,255,0.2)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
-  "noël":       { bg: "rgba(80,200,255,0.2)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
-  holiday:      { bg: "rgba(80,200,255,0.2)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
-  anniversaire: { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
-  fete:         { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
-  "fête":       { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
-  gigamax:      { bg: "rgba(255,40,140,0.2)",   text: "#ff288c", border: "rgba(255,40,140,0.5)" },
-  dynamax:      { bg: "rgba(210,40,40,0.2)",    text: "#e03030", border: "rgba(210,40,40,0.5)" },
-  costume:      { bg: "rgba(200,100,255,0.2)",  text: "#c864ff", border: "rgba(200,100,255,0.5)" },
-  evenement:    { bg: "rgba(180,100,255,0.2)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
-  "événement":  { bg: "rgba(180,100,255,0.2)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
-  fond:         { bg: "rgba(100,220,180,0.2)",  text: "#64dcb4", border: "rgba(100,220,180,0.5)" },
-  legendaire:   { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
+  halloween:    { bg: "color-mix(in srgb, var(--tag-fete) 20%, transparent)",   text: "var(--tag-fete)", border: "color-mix(in srgb, var(--tag-fete) 50%, transparent)" },
+  noel:         { bg: "color-mix(in srgb, var(--tag-saison) 20%, transparent)",   text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
+  "noël":       { bg: "color-mix(in srgb, var(--tag-saison) 20%, transparent)",   text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
+  holiday:      { bg: "color-mix(in srgb, var(--tag-saison) 20%, transparent)",   text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
+  anniversaire: { bg: "color-mix(in srgb, var(--tag-fete) 20%, transparent)",    text: "var(--tag-fete)", border: "color-mix(in srgb, var(--tag-fete) 50%, transparent)" },
+  fete:         { bg: "color-mix(in srgb, var(--tag-fete) 20%, transparent)",    text: "var(--tag-fete)", border: "color-mix(in srgb, var(--tag-fete) 50%, transparent)" },
+  "fête":       { bg: "color-mix(in srgb, var(--tag-fete) 20%, transparent)",    text: "var(--tag-fete)", border: "color-mix(in srgb, var(--tag-fete) 50%, transparent)" },
+  gigamax:      { bg: "color-mix(in srgb, var(--tag-max) 20%, transparent)",   text: "var(--tag-max)", border: "color-mix(in srgb, var(--tag-max) 50%, transparent)" },
+  dynamax:      { bg: "color-mix(in srgb, var(--tag-max) 20%, transparent)",    text: "var(--tag-max)", border: "color-mix(in srgb, var(--tag-max) 50%, transparent)" },
+  costume:      { bg: "color-mix(in srgb, var(--tag-costume) 20%, transparent)",  text: "var(--tag-costume)", border: "color-mix(in srgb, var(--tag-costume) 50%, transparent)" },
+  evenement:    { bg: "color-mix(in srgb, var(--ligne-miroir) 20%, transparent)",  text: "var(--ligne-miroir)", border: "color-mix(in srgb, var(--ligne-miroir) 50%, transparent)" },
+  "événement":  { bg: "color-mix(in srgb, var(--ligne-miroir) 20%, transparent)",  text: "var(--ligne-miroir)", border: "color-mix(in srgb, var(--ligne-miroir) 50%, transparent)" },
+  fond:         { bg: "color-mix(in srgb, var(--tag-fond) 20%, transparent)",  text: "var(--tag-fond)", border: "color-mix(in srgb, var(--tag-fond) 50%, transparent)" },
+  legendaire:   { bg: "color-mix(in srgb, var(--or) 20%, transparent)",    text: "var(--or)", border: "color-mix(in srgb, var(--or) 50%, transparent)" },
 };
-const DEFAULT_TAG_COLOR = { bg: "rgba(100,180,255,0.15)", text: "#64b4ff", border: "rgba(100,180,255,0.4)" };
+
+const DEFAULT_TAG_COLOR = { bg: "color-mix(in srgb, var(--tag-neutre) 15%, transparent)", text: "var(--tag-neutre)", border: "color-mix(in srgb, var(--tag-neutre) 40%, transparent)" };
 function getTagColor(tag: string) { return TAG_COLORS[tag.toLowerCase()] ?? DEFAULT_TAG_COLOR; }
 
 // Badge ♂/♀ en haut à gauche du sprite : bleu/rouge classique des jeux
@@ -65,9 +66,9 @@ function GenderBadge({ gender, size = 20 }: { gender: string | null | undefined;
         top: 2, left: 2, zIndex: 1,
         width: size, height: size, borderRadius: "50%",
         display: "flex", alignItems: "center", justifyContent: "center",
-        background: isMale ? "#3b82f6" : "#ff2d78",
-        color: "#fff", fontWeight: 800, fontSize: size * 0.65,
-        boxShadow: "0 2px 6px rgba(0,0,0,0.4)",
+        background: isMale ? "var(--ligne-cherche)" : "var(--tag-max)",
+        color: "var(--surface)", fontWeight: 800, fontSize: size * 0.65,
+        boxShadow: "none",
       }}
     >
       {isMale ? "♂" : "♀"}
@@ -80,34 +81,34 @@ function getEventTheme(name: string, tags: string[]): {
 } | null {
   const combined = (name + " " + tags.join(" ")).toLowerCase();
   if (combined.includes("gigamax")) return {
-    borderColor: "rgba(255,40,140,0.4)",
-    boxShadow: "0 8px 32px rgba(255,0,120,0.22), 0 0 0 1px rgba(255,40,140,0.15)",
-    glow: "radial-gradient(circle, rgba(255,40,140,0.35) 0%, transparent 70%)",
+    borderColor: "color-mix(in srgb, var(--tag-max) 40%, transparent)",
+    boxShadow: "none",
+    glow: "radial-gradient(circle, color-mix(in srgb, var(--tag-max) 35%, transparent) 0%, transparent 70%)",
   };
   if (combined.includes("dynamax")) return {
-    borderColor: "rgba(210,40,40,0.4)",
-    boxShadow: "0 8px 32px rgba(200,0,0,0.22), 0 0 0 1px rgba(210,40,40,0.15)",
-    glow: "radial-gradient(circle, rgba(210,40,40,0.35) 0%, transparent 70%)",
+    borderColor: "color-mix(in srgb, var(--tag-max) 40%, transparent)",
+    boxShadow: "none",
+    glow: "radial-gradient(circle, color-mix(in srgb, var(--tag-max) 35%, transparent) 0%, transparent 70%)",
   };
   if (combined.includes("halloween")) return {
-    borderColor: "rgba(255,107,20,0.4)",
-    boxShadow: "0 8px 32px rgba(255,80,0,0.18)",
-    glow: "radial-gradient(circle, rgba(255,120,0,0.3) 0%, transparent 70%)",
+    borderColor: "color-mix(in srgb, var(--tag-fete) 40%, transparent)",
+    boxShadow: "none",
+    glow: "radial-gradient(circle, color-mix(in srgb, var(--tag-fete) 30%, transparent) 0%, transparent 70%)",
   };
   if (combined.includes("noël") || combined.includes("noel") || combined.includes("holiday")) return {
-    borderColor: "rgba(80,200,255,0.4)",
-    boxShadow: "0 8px 32px rgba(60,160,255,0.18)",
-    glow: "radial-gradient(circle, rgba(80,200,255,0.3) 0%, transparent 70%)",
+    borderColor: "color-mix(in srgb, var(--tag-saison) 40%, transparent)",
+    boxShadow: "none",
+    glow: "radial-gradient(circle, color-mix(in srgb, var(--tag-saison) 30%, transparent) 0%, transparent 70%)",
   };
   if (combined.includes("anniversaire") || combined.includes("fête") || combined.includes("fete") || combined.includes("chapeau")) return {
-    borderColor: "rgba(255,200,50,0.4)",
-    boxShadow: "0 8px 32px rgba(255,200,0,0.18)",
-    glow: "radial-gradient(circle, rgba(255,210,50,0.3) 0%, transparent 70%)",
+    borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)",
+    boxShadow: "none",
+    glow: "radial-gradient(circle, color-mix(in srgb, var(--encre) 30%, transparent) 0%, transparent 70%)",
   };
   if (!REGIONAL_FORM_NAME.test(name) && name.trim().includes(" ")) return {
-    borderColor: "rgba(200,100,255,0.3)",
-    boxShadow: "0 8px 32px rgba(180,80,255,0.12)",
-    glow: "radial-gradient(circle, rgba(200,100,255,0.25) 0%, transparent 70%)",
+    borderColor: "color-mix(in srgb, var(--tag-costume) 30%, transparent)",
+    boxShadow: "none",
+    glow: "radial-gradient(circle, color-mix(in srgb, var(--tag-costume) 25%, transparent) 0%, transparent 70%)",
   };
   return null;
 }
@@ -160,10 +161,13 @@ const CATEGORY_LABEL: Record<string, string> = {
 };
 
 function getPriorityStyle(priority: number): { bg: string; border: string; color: string; shadow: string } {
-  if (priority === 1) return { bg: "rgba(255,215,0,0.25)", border: "#ffd700", color: "#ffd700", shadow: "0 0 12px rgba(255,215,0,0.5)" };
-  if (priority === 2) return { bg: "rgba(192,192,192,0.2)", border: "#c0c0c0", color: "#d4d4d4", shadow: "0 0 8px rgba(192,192,192,0.3)" };
-  if (priority === 3) return { bg: "rgba(205,127,50,0.2)", border: "#cd7f32", color: "#e09850", shadow: "0 0 8px rgba(205,127,50,0.3)" };
-  return { bg: "rgba(100,180,255,0.15)", border: "#64b4ff", color: "#64b4ff", shadow: "none" };
+    // La premiere place etait #ffd700 : la migration l a prise pour de l or decoratif et
+  // l a passee en encre, ce qui laissait un podium sans premiere place a cote d un argent
+  // et d un bronze intacts. Une medaille est exactement ce a quoi l or a droit.
+  if (priority === 1) return { bg: "var(--or-pale)", border: "var(--medaille-or)", color: "var(--medaille-or)", shadow: "none" };
+  if (priority === 2) return { bg: "color-mix(in srgb, var(--medaille-argent) 20%, transparent)", border: "var(--medaille-argent)", color: "var(--medaille-argent)", shadow: "none" };
+  if (priority === 3) return { bg: "color-mix(in srgb, var(--medaille-bronze) 20%, transparent)", border: "var(--medaille-bronze)", color: "var(--medaille-bronze)", shadow: "none" };
+  return { bg: "color-mix(in srgb, var(--tag-neutre) 15%, transparent)", border: "var(--tag-neutre)", color: "var(--tag-neutre)", shadow: "none" };
 }
 
 export default function PokemonCard({
@@ -193,11 +197,12 @@ export default function PokemonCard({
     setShowDetail(false);
     setConfirmDelete(false);
   };
-  const trainerColor = entry.trainer ? "#00dc64" : "#ffd700";
+  const trainerColor = entry.trainer ? "var(--bon)" : "var(--encre)";
   const isMirror = entry.category === "mirror";
   const isShiny = entry.shiny === true || (entry.notes?.toLowerCase().includes("shiny") ?? false);
   const hasPriority = entry.priority != null && entry.priority >= 1 && entry.priority <= 10;
   const priorityStyle = hasPriority ? getPriorityStyle(entry.priority!) : null;
+
   const tags = parseTags(entry.tags);
   // Badge "légendaire" calculé au rendu (voir LEGENDARY_SPECIES plus haut),
   // jamais stocké en base : ajouté uniquement à la liste affichée, pas à
@@ -316,14 +321,51 @@ export default function PokemonCard({
     );
   }, [allEntries, viewerTrainerId, isOwnEntry, entry]);
 
+  /* ═══════════════════════════════════════════════════════════════════════════════════
+     UNE SEULE LIGNE SOUS LE NOM
+
+     Steven, capture a l'appui : « C'est illisible. Corrige le probleme ! »
+
+     La tuile pouvait empiler SIX lignes secondaires - reserve par, etiquettes, notes,
+     pastille d'echange, « N dispo », « N recherche », « Recherche ! ». Sur un carre de
+     146px il y a la place pour le sprite, le nom, et une ligne. J'avais essaye de faire
+     tenir les six en autorisant la compression : le resultat etait des pastilles ecrasees
+     a « gi », « f », « o » et des textes qui se chevauchaient. Comprimer six choses dans
+     la place d'une ne donne pas six choses plus petites, ca donne six choses illisibles.
+
+     Une seule ligne s'affiche donc, choisie par ordre d'importance pour quelqu'un qui
+     PARCOURT une grille :
+
+       1. reserve   l'entree est prise. C'est l'etat qui change tout, avant l'identite.
+       2. echange   contre quoi elle part, si ce n'est pas encore attribue a quelqu'un.
+       3. signal    « Recherche ! », « Toi aussi en miroir ! » : la correspondance avec le
+                    visiteur, plus utile qu'un costume.
+       4. qualificatifs  costume, taille, legendaire : l'identite fine du Pokemon.
+       5. action    « N dispo », « N recherche » : utile mais consultable en ouvrant.
+
+     Les notes ne sont plus sur la tuile du tout : un champ libre n'a pas de longueur
+     previsible, donc pas de place previsible. Tout le reste est dans la fiche, qui s'ouvre
+     au clic et ne manque pas de place.
+     ═══════════════════════════════════════════════════════════════════════════════════ */
+  // Les etiquettes ne comptent plus : elles ne sont plus affichees sur la tuile. Les
+  // laisser dans cette condition ferait choisir la ligne « qualificatifs » pour une entree
+  // dont le seul qualificatif est une etiquette, et la ligne s'afficherait vide.
+  const aQualificatifsVisibles = !!entry.size || !!entry.exclusiveMove;
+  const ligneTuile: "reserve" | "echange" | "signal" | "qualificatifs" | "action" | null =
+    entry.tradePartnerName ? "reserve"
+    : (entry.tradeForPokemonName && entry.tradeForPokemonId) ? "echange"
+    : (viewerWantsThis || viewerHasThis) ? "signal"
+    : aQualificatifsVisibles ? "qualificatifs"
+    : (availableFrom.length > 0 || wantedBy.length > 0) ? "action"
+    : null;
+
   useEffect(() => { setMounted(true); }, []);
 
   const modal = showDetail && (
     <div
       className="fixed inset-0 flex items-center justify-center p-4"
       style={{
-        background: "rgba(10,6,0,0.88)",
-        backdropFilter: "blur(12px)",
+        background: "color-mix(in srgb, var(--papier) 88%, transparent)",
         zIndex: 300,
       }}
       onClick={closeDetail}
@@ -337,25 +379,25 @@ export default function PokemonCard({
           overscrollBehavior: "contain",
           padding: 32,
           ...(entry.backgroundUrl && {
-            backgroundImage: `linear-gradient(rgba(8,11,20,0.55), rgba(8,11,20,0.8)), url(${entry.backgroundUrl})`,
+            backgroundImage: `linear-gradient(color-mix(in srgb, var(--papier) 55%, transparent), color-mix(in srgb, var(--papier) 80%, transparent)), url(${entry.backgroundUrl})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }),
           ...(isMirror && {
-            borderColor: "rgba(180,100,255,0.3)",
-            boxShadow: "0 16px 64px rgba(180,100,255,0.15)",
+            borderColor: "color-mix(in srgb, var(--ligne-miroir) 30%, transparent)",
+            boxShadow: "none",
           }),
           ...(hasTrainerBadge && {
-            borderColor: "rgba(0,220,100,0.5)",
-            boxShadow: "0 16px 64px rgba(0,200,80,0.25), 0 0 0 1px rgba(0,220,100,0.2)",
+            borderColor: "color-mix(in srgb, var(--bon) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(viewerWantsThis && {
-            borderColor: "rgba(255,45,120,0.5)",
-            boxShadow: "0 16px 64px rgba(255,45,120,0.25), 0 0 0 1px rgba(255,45,120,0.2)",
+            borderColor: "color-mix(in srgb, var(--tag-max) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(viewerHasThis && {
-            borderColor: "rgba(6,182,212,0.5)",
-            boxShadow: "0 16px 64px rgba(6,182,212,0.25), 0 0 0 1px rgba(6,182,212,0.2)",
+            borderColor: "color-mix(in srgb, var(--tag-saison) 50%, transparent)",
+            boxShadow: "none",
           }),
         }}
         onClick={(e) => e.stopPropagation()}
@@ -365,8 +407,8 @@ export default function PokemonCard({
           onClick={closeDetail}
           style={{
             position: "absolute", top: 12, right: 12,
-            background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
-            borderRadius: 8, color: "#e8edf5", cursor: "pointer",
+            background: "var(--trait-leger)", border: "1px solid var(--trait-leger)",
+            borderRadius: 8, color: "var(--encre)", cursor: "pointer",
             fontSize: "0.75rem", padding: "4px 10px",
           }}
         >
@@ -406,49 +448,49 @@ export default function PokemonCard({
           </span>
           {(entry.quantity ?? 1) > 1 && (
             <span style={{
-              background: "rgba(100,180,255,0.15)", border: "1px solid rgba(100,180,255,0.5)",
+              background: "color-mix(in srgb, var(--tag-neutre) 15%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-neutre) 50%, transparent)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.75rem", fontWeight: 800, color: "#64b4ff",
+              fontSize: "0.75rem", fontWeight: 800, color: "var(--tag-neutre)",
               fontFamily: "Exo 2, sans-serif",
             }}>×{entry.quantity} disponibles</span>
           )}
           {isGigamax && (
             <span style={{
-              background: "rgba(255,40,140,0.18)", border: "1px solid rgba(255,40,140,0.5)",
+              background: "color-mix(in srgb, var(--tag-max) 18%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-max) 50%, transparent)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.75rem", fontWeight: 800, color: "#ff288c",
+              fontSize: "0.75rem", fontWeight: 800, color: "var(--tag-max)",
               fontFamily: "Exo 2, sans-serif",
             }}>Gigamax</span>
           )}
           {isDynamax && (
             <span style={{
-              background: "rgba(210,40,40,0.18)", border: "1px solid rgba(210,40,40,0.5)",
+              background: "color-mix(in srgb, var(--tag-max) 18%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-max) 50%, transparent)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.75rem", fontWeight: 800, color: "#e03030",
+              fontSize: "0.75rem", fontWeight: 800, color: "var(--tag-max)",
               fontFamily: "Exo 2, sans-serif",
             }}>Dynamax</span>
           )}
           {isShiny && (
             <span style={{
-              background: "rgba(255,215,0,0.15)", border: "1px solid rgba(255,215,0,0.5)",
+              background: "color-mix(in srgb, var(--encre) 15%, transparent)", border: "1px solid color-mix(in srgb, var(--encre) 50%, transparent)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.75rem", fontWeight: 700, color: "#ffd700",
+              fontSize: "0.75rem", fontWeight: 700, color: "var(--encre)",
               fontFamily: "Exo 2, sans-serif",
             }}>✨ Shiny</span>
           )}
           {entry.exclusiveMove && (
             <span style={{
-              background: "rgba(255,153,0,0.15)", border: "1px solid rgba(255,153,0,0.5)",
+              background: "color-mix(in srgb, var(--encre) 15%, transparent)", border: "1px solid color-mix(in srgb, var(--encre) 50%, transparent)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.75rem", fontWeight: 700, color: "#ff9900",
+              fontSize: "0.75rem", fontWeight: 700, color: "var(--encre)",
               fontFamily: "Exo 2, sans-serif",
             }}>Attaque exclusive</span>
           )}
           {entry.size && (
             <span style={{
-              background: "rgba(100,220,180,0.15)", border: "1px solid rgba(100,220,180,0.5)",
+              background: "color-mix(in srgb, var(--tag-fond) 15%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-fond) 50%, transparent)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.75rem", fontWeight: 700, color: "#64dcb4",
+              fontSize: "0.75rem", fontWeight: 700, color: "var(--tag-fond)",
               fontFamily: "Exo 2, sans-serif",
             }}>{entry.size}</span>
           )}
@@ -479,7 +521,7 @@ export default function PokemonCard({
             <div
               style={{
                 width: 24, height: 24, borderRadius: "50%",
-                background: trainerColor, color: "#0b0f1a",
+                background: trainerColor, color: "var(--papier)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: "0.75rem", fontWeight: 700,
               }}
@@ -521,7 +563,7 @@ export default function PokemonCard({
           className="text-center font-bold mb-2"
           style={{
             fontFamily: "Exo 2, sans-serif", fontSize: "1.2rem",
-            color: "#e8edf5", wordBreak: "break-word",
+            color: "var(--encre)", wordBreak: "break-word",
           }}
         >
           {entry.pokemonName}
@@ -531,7 +573,7 @@ export default function PokemonCard({
         {entry.tradePartnerName && (
           <p
             className="text-center mb-2"
-            style={{ fontSize: "0.78rem", color: "#ffd700", fontWeight: 600 }}
+            style={{ fontSize: "0.78rem", color: "var(--encre)", fontWeight: 600 }}
           >
             Réservé par {entry.tradePartnerName}
           </p>
@@ -541,7 +583,7 @@ export default function PokemonCard({
         {entry.notes && (
           <p
             className="text-center mb-3"
-            style={{ fontSize: "0.8rem", color: "rgba(232,237,245,0.6)", maxWidth: 260 }}
+            style={{ fontSize: "0.8rem", color: "var(--encre-douce)", maxWidth: 260 }}
           >
             {entry.notes}
           </p>
@@ -552,14 +594,14 @@ export default function PokemonCard({
           <div
             className="flex items-center gap-3 mt-2 p-3"
             style={{
-              background: hasTrainerBadge ? "rgba(0,200,80,0.1)" : "rgba(255,217,61,0.07)",
-              border: hasTrainerBadge ? "1px solid rgba(0,220,100,0.35)" : "1px solid rgba(255,217,61,0.2)",
+              background: hasTrainerBadge ? "color-mix(in srgb, var(--bon) 10%, transparent)" : "color-mix(in srgb, var(--encre) 7%, transparent)",
+              border: hasTrainerBadge ? "1px solid color-mix(in srgb, var(--bon) 35%, transparent)" : "1px solid color-mix(in srgb, var(--encre) 20%, transparent)",
               borderRadius: 12,
               width: "100%",
               justifyContent: "center",
             }}
           >
-            <span style={{ fontSize: "0.75rem", color: "#ffd93d", fontWeight: 600 }}>
+            <span style={{ fontSize: "0.75rem", color: "var(--encre)", fontWeight: 600 }}>
               {entry.category === "want" ? "Je donne" : entry.category === "mirror" ? "Échange" : "Je reçois"}
             </span>
             <PokemonSprite
@@ -570,7 +612,7 @@ export default function PokemonCard({
               customSpriteUrl={entry.tradeForCustomSpriteUrl}
               preferStatic={preferStatic}
             />
-            <span style={{ fontSize: "0.85rem", color: "#e8edf5", fontWeight: 500 }}>
+            <span style={{ fontSize: "0.85rem", color: "var(--encre)", fontWeight: 500 }}>
               {entry.tradeForPokemonName}
             </span>
           </div>
@@ -580,11 +622,11 @@ export default function PokemonCard({
         {canEdit && (
           <div
             className="w-full flex flex-col items-center gap-2 mt-4 pt-4"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
+            style={{ borderTop: "1px solid var(--trait-leger)" }}
           >
             {confirmDelete ? (
               <div className="flex items-center gap-2 flex-wrap justify-center">
-                <span style={{ fontSize: "0.8rem", color: "#ff6b6b" }}>Supprimer cette entrée ?</span>
+                <span style={{ fontSize: "0.8rem", color: "var(--alerte)" }}>Supprimer cette entrée ?</span>
                 <button onClick={() => onDelete?.()} className="btn-danger">Oui</button>
                 <button onClick={() => setConfirmDelete(false)} className="btn-secondary" style={{ padding: "6px 12px" }}>
                   Non
@@ -629,41 +671,41 @@ export default function PokemonCard({
   return (
     <>
       <div
-        className="glass-card animate-scale-in p-2 sm:p-3 md:p-4 flex flex-col items-center relative cursor-pointer select-none"
+        className="glass-card animate-scale-in tuile-pokemon p-2 sm:p-3 md:p-4 flex flex-col items-center relative cursor-pointer select-none"
         style={{
           ...style,
           ...(entry.backgroundUrl && {
-            backgroundImage: `linear-gradient(rgba(8,11,20,0.55), rgba(8,11,20,0.75)), url(${entry.backgroundUrl})`,
+            backgroundImage: `linear-gradient(color-mix(in srgb, var(--papier) 55%, transparent), color-mix(in srgb, var(--papier) 75%, transparent)), url(${entry.backgroundUrl})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }),
           ...(hasPriority && entry.priority === 1 && {
-            borderColor: "rgba(255,215,0,0.5)",
-            boxShadow: "0 8px 32px rgba(255,215,0,0.22), 0 0 0 1px rgba(255,215,0,0.2)",
+            borderColor: "color-mix(in srgb, var(--encre) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(hasPriority && entry.priority === 2 && {
-            borderColor: "rgba(192,192,192,0.5)",
-            boxShadow: "0 8px 32px rgba(192,192,192,0.18), 0 0 0 1px rgba(192,192,192,0.18)",
+            borderColor: "color-mix(in srgb, var(--medaille-argent) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(hasPriority && entry.priority === 3 && {
-            borderColor: "rgba(205,127,50,0.5)",
-            boxShadow: "0 8px 32px rgba(205,127,50,0.2), 0 0 0 1px rgba(205,127,50,0.18)",
+            borderColor: "color-mix(in srgb, var(--medaille-bronze) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(hasTrainerBadge && {
-            borderColor: "rgba(0, 220, 100, 0.5)",
-            boxShadow: "0 8px 32px rgba(0, 200, 80, 0.28), 0 0 0 1px rgba(0, 220, 100, 0.2), inset 0 1px 0 rgba(0, 220, 100, 0.06)",
+            borderColor: "color-mix(in srgb, var(--bon) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(viewerWantsThis && {
-            borderColor: "rgba(255, 45, 120, 0.5)",
-            boxShadow: "0 8px 32px rgba(255, 45, 120, 0.28), 0 0 0 1px rgba(255, 45, 120, 0.2)",
+            borderColor: "color-mix(in srgb, var(--tag-max) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(viewerHasThis && {
-            borderColor: "rgba(6, 182, 212, 0.5)",
-            boxShadow: "0 8px 32px rgba(6, 182, 212, 0.28), 0 0 0 1px rgba(6, 182, 212, 0.2)",
+            borderColor: "color-mix(in srgb, var(--tag-saison) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(selected && {
-            borderColor: "rgba(255, 215, 0,0.6)",
-            boxShadow: "0 8px 32px rgba(255, 215, 0,0.25), 0 0 0 2px rgba(255, 215, 0,0.35)",
+            borderColor: "color-mix(in srgb, var(--encre) 60%, transparent)",
+            boxShadow: "none",
           }),
           transition: "transform 0.15s, box-shadow 0.15s",
         }}
@@ -678,25 +720,65 @@ export default function PokemonCard({
           (e.currentTarget as HTMLDivElement).style.transform = "scale(1)";
         }}
       >
-        {/* Priority badge */}
-        {hasPriority && (
-          <div
-            style={{
-              position: "absolute", top: -8, left: -8,
-              width: 26, height: 26, borderRadius: "50%",
-              background: priorityStyle!.bg,
-              border: `2px solid ${priorityStyle!.border}`,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: "0.75rem", fontWeight: 800,
-              color: priorityStyle!.color,
-              fontFamily: "Exo 2, sans-serif",
-              boxShadow: priorityStyle!.shadow,
-              zIndex: 10,
-            }}
-          >
-            {entry.priority}
-          </div>
-        )}
+        {/* ═══ LA COLONNE DU COIN HAUT GAUCHE ═══
+
+            Steven : « Place mieux l'icone Dynamax et Gigamax. Il faut qu'ils soient
+            affiches juste en dessous de l'icone shiny, comme il est bien aligne la c'est
+            le bon endroit. »
+
+            Ces trois marqueurs - shiny, forme Dynamax/Gigamax, rang de priorite - se
+            posaient jusqu'ici chacun de son cote, avec des decalages calcules a la main du
+            genre `top: isShiny ? 30 : 3`. Cette arithmetique a deja produit un bug : le
+            sparkle avait herite de la condition du badge de priorite et se poussait
+            lui-meme a 30px alors qu'il ne s'affiche que quand isShiny est vrai.
+
+            Une colonne flex supprime le calcul. Chaque marqueur se place tout seul sous le
+            precedent, dans l'ordre du JSX, et en ajouter un quatrieme ne demandera de
+            toucher a aucun decalage. */}
+        <div
+          className="flex flex-col items-center"
+          style={{ position: "absolute", top: 3, left: 4, zIndex: 10, gap: 2 }}
+        >
+          {isShiny && (
+            <span
+              aria-label="Shiny"
+              title="Shiny"
+              style={{ fontSize: 16, lineHeight: 1 }}
+            >
+              ✨
+            </span>
+          )}
+
+          {/* Le logo officiel de la forme. Il etait pose en bas a droite du sprite, ou il
+              se melangeait au dessin; ici il rejoint les autres marqueurs d'etat, qui sont
+              tous des informations SUR la carte et non des elements du Pokemon. */}
+          {(isGigamax || isDynamax) && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={isGigamax ? "/gigamax.png" : "/dynamax.png"}
+              alt={isGigamax ? "Gigamax" : "Dynamax"}
+              title={isGigamax ? "Gigamax" : "Dynamax"}
+              style={{ width: 18, height: 18, display: "block" }}
+            />
+          )}
+
+          {hasPriority && (
+            <div
+              style={{
+                width: 22, height: 22, borderRadius: "50%",
+                background: priorityStyle!.bg,
+                border: `2px solid ${priorityStyle!.border}`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "0.75rem", fontWeight: 800,
+                color: priorityStyle!.color,
+                fontFamily: "Exo 2, sans-serif",
+                boxShadow: priorityStyle!.shadow,
+              }}
+            >
+              {entry.priority}
+            </div>
+          )}
+        </div>
 
         {/* Sélection multiple (Mon espace uniquement) */}
         {selectable && (
@@ -704,40 +786,51 @@ export default function PokemonCard({
             onClick={(e) => { e.stopPropagation(); onToggleSelect?.(); }}
             aria-label={selected ? `Désélectionner ${entry.pokemonName}` : `Sélectionner ${entry.pokemonName}`}
             style={{
-              position: "absolute", top: -8, right: -8, zIndex: 10,
+              position: "absolute", top: 3, right: 3, zIndex: 10,
               width: 26, height: 26, borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
               cursor: "pointer",
-              background: selected ? "#ffd700" : "rgba(8,11,20,0.7)",
-              border: `2px solid ${selected ? "#ffd700" : "rgba(255,255,255,0.3)"}`,
-              color: selected ? "#0b0f1a" : "rgba(232,237,245,0.4)",
+              background: selected ? "var(--encre)" : "color-mix(in srgb, var(--papier) 70%, transparent)",
+              border: `2px solid ${selected ? "var(--encre)" : "var(--trait-leger)"}`,
+              color: selected ? "var(--papier)" : "var(--encre-tres-douce)",
               fontSize: "0.75rem",
               fontWeight: 900,
-              boxShadow: selected ? "0 0 12px rgba(255, 215, 0,0.5)" : "none",
+              // Selection marquee par un trait, pas par une lueur : le halo appartenait au
+              // fond sombre, et sur du papier il salit la carte au lieu de la designer.
+              boxShadow: "none",
+              outline: selected ? "var(--trait-fort) solid var(--encre)" : "none",
+              outlineOffset: 1,
               transition: "all 0.12s",
             }}
           />
         )}
 
-        {/* Top-right badges */}
-        <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
+
+        {/* Top-right badges.
+            Decales vers le bas quand la selection multiple est active : le cercle de
+            selection occupe desormais ce coin, apres etre rentre dans la carte pour
+            survivre au decoupage de la tuile carree. */}
+        <div
+          className="absolute right-3 flex flex-col items-end gap-1"
+          style={{ top: selectable ? 34 : 12 }}
+        >
           {(entry.quantity ?? 1) > 1 && (
             <div style={{
-              background: "rgba(100,180,255,0.2)", border: "1px solid rgba(100,180,255,0.55)",
+              background: "color-mix(in srgb, var(--tag-neutre) 20%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-neutre) 55%, transparent)",
               borderRadius: 8, padding: "1px 6px", fontSize: "0.75rem", fontWeight: 800,
-              color: "#64b4ff", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
+              color: "var(--tag-neutre)", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
             }}>×{entry.quantity}</div>
           )}
           {isMirror && (
             <div
               style={{
-                background: "rgba(180,100,255,0.18)",
-                border: "1px solid rgba(180,100,255,0.4)",
+                background: "color-mix(in srgb, var(--ligne-miroir) 18%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--ligne-miroir) 40%, transparent)",
                 borderRadius: 8,
                 padding: "1px 6px",
                 fontSize: "0.75rem",
                 fontWeight: 700,
-                color: "#b464ff",
+                color: "var(--ligne-miroir)",
                 fontFamily: "Exo 2, sans-serif",
                 letterSpacing: "0.04em",
               }}
@@ -745,35 +838,44 @@ export default function PokemonCard({
               MIROIR
             </div>
           )}
-          {isShiny && (
-            <div
-              style={{
-                background: "rgba(255,215,0,0.18)",
-                border: "1px solid rgba(255,215,0,0.5)",
-                borderRadius: 8,
-                padding: "1px 6px",
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                color: "#ffd700",
-                fontFamily: "Exo 2, sans-serif",
-                letterSpacing: "0.04em",
-              }}
-            >
-              ✨ SHINY
-            </div>
-          )}
+          {/* Le badge shiny a quitte cette colonne : il est devenu une icone seule, en
+              haut a gauche. Voir plus haut. */}
+
         </div>
 
-        {/* Logo Dynamax/Gigamax officiel, en bas à droite de la tuile */}
-        {(isGigamax || isDynamax) && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={isGigamax ? "/gigamax.png" : "/dynamax.png"}
-            alt={isGigamax ? "Gigamax" : "Dynamax"}
-            className="absolute"
-            style={{ bottom: 6, right: 6, width: 26, height: 26, zIndex: 1 }}
-          />
-        )}
+        {/* Le logo Dynamax/Gigamax a quitte le bas de la tuile : voir le bloc du sprite,
+            ou il est desormais pose. Il etait ancre en bas a droite, la ou s'empilent les
+            etiquettes, et passait dessus - signale par Steven, capture a l'appui. */}
+
+        {/* ═══ LA LOUPE, POUR DIRE QUE LA TUILE S'OUVRE ═══
+
+            Steven, le 2026-09-04 : « il faut pas afficher les notes des dresseurs sur les
+            tuiles aussi. C'est trop risque. Un icone de loupe sera mieux. Les gens
+            cliqueront sur les tuiles. »
+
+            Les notes sont un champ libre : leur longueur est imprevisible, donc la hauteur
+            de la tuile l'etait aussi. Elles ont quitte la tuile. Mais retirer une
+            information sans dire ou elle est passee, c'est la perdre : la loupe est le
+            signal qu'il y a plus a voir, et que c'est ici qu'on appuie.
+
+            Dessinee en SVG et non en emoji : la regle du projet interdit les symboles
+            decoratifs dans l'interface, avec le sparkle du shiny pour seule exception. Un
+            trace vectoriel n'est pas un caractere, il suit la couleur du texte, et il reste
+            net a toutes les tailles. */}
+        <span
+          aria-hidden="true"
+          style={{
+            position: "absolute", bottom: 4, right: 4, zIndex: 4,
+            width: 16, height: 16, color: "var(--encre-tres-douce)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            pointerEvents: "none",
+          }}
+        >
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="6.8" cy="6.8" r="4.4" />
+            <line x1="10.2" y1="10.2" x2="14" y2="14" strokeLinecap="round" />
+          </svg>
+        </span>
 
         {/* Trainer pill */}
         {hasTrainerBadge && entry.trainer && (
@@ -781,7 +883,7 @@ export default function PokemonCard({
             <div
               style={{
                 width: 18, height: 18, borderRadius: "50%", flexShrink: 0,
-                background: "#00dc64", color: "#0b0f1a",
+                background: "var(--bon)", color: "var(--papier)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: "0.75rem", fontWeight: 700,
               }}
@@ -790,9 +892,9 @@ export default function PokemonCard({
             </div>
             <span
               style={{
-                background: "rgba(0,220,100,0.12)", border: "1px solid rgba(0,220,100,0.4)",
+                background: "color-mix(in srgb, var(--bon) 12%, transparent)", border: "1px solid color-mix(in srgb, var(--bon) 40%, transparent)",
                 borderRadius: 999, padding: "2px 8px", fontSize: "0.75rem",
-                fontWeight: 600, color: "#00dc64", letterSpacing: "0.03em",
+                fontWeight: 600, color: "var(--bon)", letterSpacing: "0.03em",
                 fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
                 overflow: "hidden", textOverflow: "ellipsis", maxWidth: 80,
               }}
@@ -809,10 +911,10 @@ export default function PokemonCard({
           <div
             className="absolute inset-0 rounded-full blur-xl opacity-25"
             style={{ background:
-              hasTrainerBadge ? "radial-gradient(circle, #00dc64 0%, transparent 70%)" :
-              entry.priority === 1 ? "radial-gradient(circle, #ffd700 0%, transparent 70%)" :
-              entry.priority === 2 ? "radial-gradient(circle, #c0c0c0 0%, transparent 70%)" :
-              entry.priority === 3 ? "radial-gradient(circle, #cd7f32 0%, transparent 70%)" :
+              hasTrainerBadge ? "radial-gradient(circle, var(--bon) 0%, transparent 70%)" :
+              entry.priority === 1 ? "radial-gradient(circle, var(--encre) 0%, transparent 70%)" :
+              entry.priority === 2 ? "radial-gradient(circle, var(--medaille-argent) 0%, transparent 70%)" :
+              entry.priority === 3 ? "radial-gradient(circle, var(--medaille-bronze) 0%, transparent 70%)" :
               undefined
             }}
           />
@@ -835,7 +937,7 @@ export default function PokemonCard({
           className="text-center font-bold"
           style={{
             fontFamily: "Exo 2, sans-serif", fontSize: "0.82rem",
-            color: "#e8edf5", lineHeight: 1.3, marginBottom: 4,
+            color: "var(--encre)", lineHeight: 1.3, marginBottom: 4,
             maxWidth: "100%", wordBreak: "break-word",
           }}
         >
@@ -843,104 +945,181 @@ export default function PokemonCard({
         </h3>
 
         {/* Réservé par : qui a accepté l'échange (voir tradePartnerName) */}
-        {entry.tradePartnerName && (
+        {ligneTuile === "reserve" && entry.tradePartnerName && (
           <p
             className="text-center"
-            style={{ fontSize: "0.75rem", color: "#ffd700", fontWeight: 700, marginBottom: 2, lineHeight: 1.2 }}
+            style={{ fontSize: "0.75rem", color: "var(--encre)", fontWeight: 700, marginBottom: 2, lineHeight: 1.2 }}
           >
             Réservé par {entry.tradePartnerName}
           </p>
         )}
 
-        {/* Taille (record XXS/XS/XL/XXL) */}
-        {entry.size && (
-          <span style={{
-            background: "rgba(100,220,180,0.18)", border: "1px solid rgba(100,220,180,0.5)",
-            borderRadius: 999, padding: "1px 6px", marginBottom: 4,
-            fontSize: "0.75rem", fontWeight: 700, color: "#64dcb4",
-            fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
-          }}>
-            {entry.size}
-          </span>
-        )}
+        {/* ═══ UNE SEULE LIGNE D'ETIQUETTES, ET NON UNE PILE ═══
 
-        {/* Attaque exclusive */}
-        {entry.exclusiveMove && (
-          <span style={{
-            background: "rgba(255,153,0,0.18)", border: "1px solid rgba(255,153,0,0.5)",
-            borderRadius: 999, padding: "1px 6px", marginBottom: 4,
-            fontSize: "0.75rem", fontWeight: 700, color: "#ff9900",
-            fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
-          }}>
-            Attaque exclusive
-          </span>
-        )}
+            Steven, le 2026-09-04, capture a l'appui : « Il y a un probleme de tuiles la. Il
+            faut revoir les tags et les infos de facon qu'il n'y en ait pas d'inutiles et
+            que tout soit toujours lisible. »
 
-        {/* Tags */}
-        {displayTags.length > 0 && (
-          <div className="flex flex-wrap gap-1 justify-center mb-1" style={{ maxWidth: 160 }}>
-            {displayTags.slice(0, 2).map((tag) => {
-              const c = getTagColor(tag);
-              return (
-                <span key={tag} style={{
-                  background: c.bg, border: `1px solid ${c.border}`,
+            La taille, l'attaque exclusive et les tags occupaient TROIS blocs empiles, chacun
+            conditionnel. Une tuile pouvait donc mesurer trois lignes de plus qu'une autre,
+            et c'est ce qui cassait l'alignement de la grille : chaque rangee prenait la
+            hauteur de sa carte la plus bavarde et laissait les autres a moitie vides.
+
+            Toutes ces informations sont de meme nature - un qualificatif court sur un
+            Pokemon - donc elles tiennent sur une seule ligne qui passe a la ligne si besoin,
+            avec un plafond a trois et un « +N » pour le reste. Le detail complet reste dans
+            la fiche, qui s'ouvre au clic. */}
+        {ligneTuile === "qualificatifs" && (() => {
+          const qualificatifs: { cle: string; texte: string; couleurs: { bg: string; text: string; border: string } }[] = [];
+          if (entry.size) {
+            qualificatifs.push({
+              cle: `taille-${entry.size}`, texte: entry.size,
+              couleurs: getTagColor("fond"),
+            });
+          }
+          if (entry.exclusiveMove) {
+            qualificatifs.push({
+              cle: "attaque", texte: "Attaque excl.",
+              couleurs: { bg: "var(--surface-creuse)", text: "var(--encre)", border: "var(--encre)" },
+            });
+          }
+          /* ═══ LES ETIQUETTES QUI NE DISENT RIEN NE S'AFFICHENT PAS ═══
+
+             Steven, le 2026-09-04, capture a l'appui : « C'est illisible. Deja pas besoin
+             d'afficher les tags fonds ou dynamax ou gigamax si ca se voit avec les fonds ou
+             icones ! »
+
+             Il a raison, et c'est le coeur du probleme de place :
+
+               « fond »              le fond d'evenement EST l'image de fond de la tuile;
+               « dynamax »/« gigamax »  le logo officiel est pose sur le sprite.
+
+             Ces trois etiquettes repetaient donc en mots ce que la tuile montrait deja en
+             image, et elles mangeaient toute la largeur - au point que les pastilles
+             restantes se retrouvaient ecrasees a « gi », « f », « o ». Une etiquette n'a de
+             valeur que si elle ajoute une information invisible autrement.
+
+             Elles restent dans la fiche, ou la place ne manque pas et ou elles servent de
+             rappel explicite. */
+          /* ═══ AUCUNE ETIQUETTE SUR LA TUILE ═══
+
+             Steven, le 2026-09-04 : « Justement retire les etiquettes creees c'est plus
+             utile ! Legendaire pas besoin de l'afficher sur la tuile le filtre fera le
+             travail. »
+
+             Sa regle est simple et elle se tient : ce que le FILTRE sait trouver, ou que
+             l'IMAGE montre deja, n'a rien a faire sur la tuile. Shiny, fond, costume,
+             gigamax, dynamax, legendaire ont tous leur pastille de filtre en haut de page,
+             et le costume comme le fond se voient sur la carte. Les afficher en mots
+             revenait a payer de la place pour redire ce qui est deja accessible autrement.
+
+             Il reste ce que ni le filtre ni l'image ne donnent : le record de TAILLE et
+             l'ATTAQUE EXCLUSIVE. Aucun des deux n'a de pastille de filtre (voir
+             ENTRY_FILTER_CHIPS), aucun des deux ne se lit sur le sprite, et les deux
+             changent la valeur d'un echange.
+
+             Toutes les etiquettes restent dans la fiche, qui s'ouvre au clic. */
+          if (qualificatifs.length === 0) return null;
+
+          // Deux au plus, et non trois : sur un carre de 146px, une troisieme pastille
+          // pousse la ligne a deux hauteurs et fait deborder le budget de la tuile.
+          const MAX = 2;
+          const visibles = qualificatifs.slice(0, MAX);
+          const reste = qualificatifs.length - visibles.length;
+          return (
+            <div
+              className="flex flex-wrap gap-1 justify-center"
+              style={{ maxWidth: "100%", marginBottom: 4 }}
+            >
+              {visibles.map((q) => (
+                <span key={q.cle} style={{
+                  background: q.couleurs.bg, border: `1px solid ${q.couleurs.border}`,
                   borderRadius: 999, padding: "1px 6px",
-                  fontSize: "0.75rem", fontWeight: 700, color: c.text,
-                  fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
-                }}>{tag}</span>
-              );
-            })}
-            {displayTags.length > 2 && (
-              <span style={{
-                background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)",
-                borderRadius: 999, padding: "1px 5px",
-                fontSize: "0.75rem", fontWeight: 700, color: "rgba(232,237,245,0.4)",
-                fontFamily: "Exo 2, sans-serif",
-              }}>+{displayTags.length - 2}</span>
-            )}
-          </div>
-        )}
+                  fontSize: "0.75rem", fontWeight: 700, color: q.couleurs.text,
+                  fontFamily: "Exo 2, sans-serif",
+                  // Une pastille ne rapetisse pas et ne se casse pas sur deux lignes :
+                  // elle se TRONQUE. « legendaire » debordait de 6px a droite faute de
+                  // pouvoir faire l'un ou l'autre. Le libelle complet reste en infobulle.
+                  maxWidth: "100%", whiteSpace: "nowrap",
+                  overflow: "hidden", textOverflow: "ellipsis",
+                }} title={q.texte}>{q.texte}</span>
+              ))}
+              {reste > 0 && (
+                <span
+                  title={qualificatifs.slice(MAX).map((q) => q.texte).join(", ")}
+                  style={{
+                    background: "var(--trait-leger)", border: "1px solid var(--trait-leger)",
+                    borderRadius: 999, padding: "1px 5px",
+                    fontSize: "0.75rem", fontWeight: 700, color: "var(--encre-tres-douce)",
+                    fontFamily: "Exo 2, sans-serif",
+                  }}
+                >+{reste}</span>
+              )}
+            </div>
+          );
+        })()}
 
-        {/* Notes */}
-        {entry.notes && (
-          <p
-            className="text-center leading-snug"
-            style={{ fontSize: "0.75rem", opacity: 0.65, marginBottom: 4, maxWidth: 150 }}
-          >
-            {entry.notes}
-          </p>
-        )}
+        {/* Les notes ne sont PLUS sur la tuile. Un champ libre n'a pas de longueur
+            previsible, donc pas de place previsible : c'etait le principal responsable des
+            hauteurs inegales, et sur un carre il n'y a de place que pour UNE ligne
+            secondaire, qui sert a dire un etat (reserve, echange) plutot qu'un commentaire.
+            Le texte entier est dans la fiche, qui s'ouvre au clic. */}
 
         {/* Exchange badge */}
-        {entry.tradeForPokemonName && entry.tradeForPokemonId && (
-          <div className="exchange-badge mt-auto" style={{ marginTop: "auto", paddingTop: 4, ...(hasTrainerBadge && { background: "rgba(0,200,80,0.12)", borderColor: "rgba(0,220,100,0.4)" }) }}>
-            <span style={{ fontSize: "0.75rem", color: "#ffd93d", fontWeight: 600, whiteSpace: "nowrap" }}>
-              {entry.category === "want" ? "Je donne" : entry.category === "mirror" ? "Échange" : "Je reçois"}
-            </span>
+        {ligneTuile === "echange" && entry.tradeForPokemonName && entry.tradeForPokemonId && (
+          /* ═══ LA PASTILLE QUI SORTAIT DE SA CARTE ═══
+
+             Sur la capture de Steven, « Je donne [sprite] Kyogr... » s'etalait par-dessus
+             les deux tuiles voisines. La cause : trois elements en `white-space: nowrap`
+             cote a cote, dont le libelle de categorie, sans aucune largeur maximale ni
+             decoupe sur le conteneur. La pastille faisait donc la largeur de son contenu,
+             quelle que soit celle de la tuile.
+
+             Deux corrections, et la premiere est une SUPPRESSION : le libelle de categorie
+             degage. « Je donne » s'affichait sur chaque carte d'un onglet qui s'appelle
+             deja « peut donner », donc il repetait le titre de l'ecran en volant la moitie
+             de la largeur. C'est exactement l'information inutile que Steven demande de
+             retirer. Le sprite echange et son nom suffisent, et la fiche donne le detail.
+
+             Ensuite le conteneur est borne a la largeur de la tuile et decoupe ce qui
+             depasse, pour qu'aucune valeur de donnee ne puisse plus le faire grandir. */
+          <div
+            className="exchange-badge mt-auto"
+            style={{
+              marginTop: "auto", paddingTop: 4,
+              maxWidth: "100%", overflow: "hidden",
+              ...(hasTrainerBadge && { background: "color-mix(in srgb, var(--bon) 12%, transparent)", borderColor: "color-mix(in srgb, var(--bon) 40%, transparent)" }),
+            }}
+            title={`${entry.category === "want" ? "Je donne" : entry.category === "mirror" ? "Échange" : "Je reçois"} : ${entry.tradeForPokemonName}`}
+          >
             <PokemonSprite
               pokemonId={entry.tradeForPokemonId}
               alt={entry.tradeForPokemonName}
-              size={29}
+              size={26}
               shiny={entry.tradeForShiny === true}
               customSpriteUrl={entry.tradeForCustomSpriteUrl}
               preferStatic={preferStatic}
             />
-            <span style={{ fontSize: "0.75rem", color: "#e8edf5", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 70 }}>
+            <span style={{
+              fontSize: "0.75rem", color: "var(--encre)", fontWeight: 600,
+              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+              minWidth: 0,
+            }}>
               {entry.tradeForPokemonName}
             </span>
           </div>
         )}
 
         {/* Dispo chez d'autres dresseurs (want uniquement, pas déjà associé) */}
-        {availableFrom.length > 0 && (
+        {ligneTuile === "action" && availableFrom.length > 0 && (
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); setShowAvailableFrom(true); }}
             className="mt-auto"
             style={{
               marginTop: 6, padding: "4px 12px", borderRadius: 999, cursor: "pointer",
-              background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.3)",
-              color: "#ffd700", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
+              background: "color-mix(in srgb, var(--encre) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--encre) 30%, transparent)",
+              color: "var(--encre)", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
               whiteSpace: "nowrap",
             }}
           >
@@ -956,15 +1135,15 @@ export default function PokemonCard({
 
         {/* Symétrique de "Dispo chez" mais côté "Je peux donner" : qui
             recherche ce Pokémon précis (voir wantedBy plus haut). */}
-        {wantedBy.length > 0 && (
+        {ligneTuile === "action" && wantedBy.length > 0 && (
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); setShowWantedBy(true); }}
             className="mt-auto"
             style={{
               marginTop: 6, padding: "4px 12px", borderRadius: 999, cursor: "pointer",
-              background: "rgba(6,182,212,0.1)", border: "1px solid rgba(6,182,212,0.3)",
-              color: "#06b6d4", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
+              background: "color-mix(in srgb, var(--tag-saison) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-saison) 30%, transparent)",
+              color: "var(--tag-saison)", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
               whiteSpace: "nowrap",
             }}
           >
@@ -976,13 +1155,13 @@ export default function PokemonCard({
             précis le recherche lui-même dans sa propre liste. Sur sa liste
             "miroir" : ce visiteur l'a AUSSI en miroir (voir viewerWantsThis
             plus haut, deux bassins de matching séparés). */}
-        {viewerWantsThis && (
+        {ligneTuile === "signal" && viewerWantsThis && (
           <div
             className="mt-auto"
             style={{
               marginTop: 6, padding: "4px 12px", borderRadius: 999,
-              background: "rgba(255,45,120,0.12)", border: "1px solid rgba(255,45,120,0.35)",
-              color: "#ff2d78", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
+              background: "color-mix(in srgb, var(--tag-max) 12%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-max) 35%, transparent)",
+              color: "var(--tag-max)", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
               whiteSpace: "nowrap",
             }}
           >
@@ -992,13 +1171,13 @@ export default function PokemonCard({
 
         {/* Symétrique : sur la liste "recherche" d'un AUTRE dresseur, ce
             visiteur peut lui-même donner ce Pokémon. */}
-        {viewerHasThis && (
+        {ligneTuile === "signal" && viewerHasThis && (
           <div
             className="mt-auto"
             style={{
               marginTop: 6, padding: "4px 12px", borderRadius: 999,
-              background: "rgba(6,182,212,0.12)", border: "1px solid rgba(6,182,212,0.35)",
-              color: "#06b6d4", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
+              background: "color-mix(in srgb, var(--tag-saison) 12%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-saison) 35%, transparent)",
+              color: "var(--tag-saison)", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
               whiteSpace: "nowrap",
             }}
           >
@@ -1042,7 +1221,7 @@ function TrainerListModal({
   return createPortal(
     <div
       className="fixed inset-0 flex items-center justify-center p-4"
-      style={{ background: "rgba(10,6,0,0.88)", backdropFilter: "blur(12px)", zIndex: 350 }}
+      style={{ background: "color-mix(in srgb, var(--papier) 88%, transparent)", backdropFilter: "blur(12px)", zIndex: 350 }}
       onClick={(e) => { e.stopPropagation(); onClose(); }}
     >
       <div
@@ -1051,10 +1230,10 @@ function TrainerListModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
-          <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 700, fontSize: "1rem" }}>
+          <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "var(--encre)", fontWeight: 700, fontSize: "1rem" }}>
             {title}
           </h3>
-          <button onClick={onClose} style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#e8edf5", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>
+          <button onClick={onClose} style={{ background: "none", border: "1px solid var(--trait-leger)", borderRadius: 8, color: "var(--encre)", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>
             Fermer
           </button>
         </div>
@@ -1064,7 +1243,7 @@ function TrainerListModal({
               key={t.id}
               href={`/dresseurs/${t.id}`}
               className="glass-card"
-              style={{ textDecoration: "none", padding: "10px 14px", color: "#e8edf5", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem" }}
+              style={{ textDecoration: "none", padding: "10px 14px", color: "var(--encre)", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem" }}
             >
               {t.name}
             </Link>

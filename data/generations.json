@@ -1,0 +1,70 @@
+{
+  "_source": "PokeAPI GraphQL, pokemon_v2_generation et son agregat d'especes",
+  "_releve_le": "2026-09-04",
+  "_regenerer": "node scripts/generate-generations.mjs",
+  "bornes": [
+    {
+      "generation": 1,
+      "region": "Kanto",
+      "du": 1,
+      "au": 151,
+      "especes": 151
+    },
+    {
+      "generation": 2,
+      "region": "Johto",
+      "du": 152,
+      "au": 251,
+      "especes": 100
+    },
+    {
+      "generation": 3,
+      "region": "Hoenn",
+      "du": 252,
+      "au": 386,
+      "especes": 135
+    },
+    {
+      "generation": 4,
+      "region": "Sinnoh",
+      "du": 387,
+      "au": 493,
+      "especes": 107
+    },
+    {
+      "generation": 5,
+      "region": "Unys",
+      "du": 494,
+      "au": 649,
+      "especes": 156
+    },
+    {
+      "generation": 6,
+      "region": "Kalos",
+      "du": 650,
+      "au": 721,
+      "especes": 72
+    },
+    {
+      "generation": 7,
+      "region": "Alola",
+      "du": 722,
+      "au": 809,
+      "especes": 88
+    },
+    {
+      "generation": 8,
+      "region": "Galar",
+      "du": 810,
+      "au": 905,
+      "especes": 96
+    },
+    {
+      "generation": 9,
+      "region": "Paldea",
+      "du": 906,
+      "au": 1025,
+      "especes": 120
+    }
+  ]
+}

@@ -1,7 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+// APRES globals.css, et c est le point important : tram.css redefinit des selecteurs de
+// globals, et a specificite egale c est l ordre de chargement qui tranche. Il etait
+// d abord importe EN HAUT de globals.css - le CSS impose les @import en tete de feuille -
+// donc les regles de globals passaient apres et gagnaient : le bouton principal restait
+// teal au lieu de l encre pleine.
+import "./tram.css";
 import { Toaster } from "react-hot-toast";
 import KonamiEasterEgg from "@/components/KonamiEasterEgg";
+import SansZoom from "@/components/SansZoom";
 
 export const metadata: Metadata = {
   title: "Échanges Pokémon Go Strasbourg",
@@ -9,6 +16,16 @@ export const metadata: Metadata = {
   icons: {
     icon: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // Respectes par Android Chrome, IGNORES par iOS Safari depuis iOS 10. Ils sont
+  // declares quand meme, et components/SansZoom.tsx fait le travail sur iOS en annulant
+  // les evenements gesture de WebKit. Voir le bandeau de ce fichier-la.
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -29,6 +46,7 @@ export default function RootLayout({
       <body className="antialiased" suppressHydrationWarning>
         {children}
         <KonamiEasterEgg />
+        <SansZoom />
         <Toaster
           position="bottom-right"
           /* 64px en dur passait derriere la barre d'onglets sur un iPhone a encoche, ou
@@ -37,17 +55,17 @@ export default function RootLayout({
           containerStyle={{ bottom: "calc(var(--bas-occupe) + 16px)" }}
           toastOptions={{
             style: {
-              background: "#141926",
-              border: "1px solid rgba(255, 215, 0, 0.18)",
-              color: "#e8edf5",
+              background: "var(--papier)",
+              border: "1px solid color-mix(in srgb, var(--encre) 18%, transparent)",
+              color: "var(--encre)",
               borderRadius: "14px",
               fontFamily: "Inter, sans-serif",
             },
             success: {
-              iconTheme: { primary: "#ffd700", secondary: "#0b0f1a" },
+              iconTheme: { primary: "var(--encre)", secondary: "var(--papier)" },
             },
             error: {
-              iconTheme: { primary: "#ff6b6b", secondary: "#0b0f1a" },
+              iconTheme: { primary: "var(--alerte)", secondary: "var(--papier)" },
             },
           }}
         />

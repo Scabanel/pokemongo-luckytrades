@@ -110,8 +110,7 @@ export default function KonamiEasterEgg() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "rgba(8,5,0,0.82)",
-        backdropFilter: "blur(6px)",
+        background: "color-mix(in srgb, var(--papier) 82%, transparent)",
         opacity: visible ? 1 : 0,
         transition: `opacity ${FADE_MS}ms ease`,
         cursor: "pointer",
@@ -147,8 +146,8 @@ export default function KonamiEasterEgg() {
             inset: 0,
             borderRadius: 20,
             padding: 10,
-            background: "linear-gradient(155deg, #ffd700 0%, #b464ff 55%, #0b0700 100%)",
-            boxShadow: "0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,215,0,0.4)",
+            background: "linear-gradient(155deg, var(--encre) 0%, var(--ligne-miroir) 55%, var(--papier) 100%)",
+            boxShadow: "none",
           }}
         >
           <div
@@ -156,7 +155,7 @@ export default function KonamiEasterEgg() {
               width: "100%",
               height: "100%",
               borderRadius: 14,
-              background: "#0b0700",
+              background: "var(--papier)",
               display: "flex",
               flexDirection: "column",
               overflow: "hidden",
@@ -178,10 +177,10 @@ export default function KonamiEasterEgg() {
                   fontFamily: "Exo 2, sans-serif",
                   fontWeight: 900,
                   fontSize: "clamp(1.1rem, 3.2vw, 1.5rem)",
-                  color: "#ffd700",
+                  color: "var(--encre)",
                   textTransform: "uppercase",
                   letterSpacing: "0.02em",
-                  textShadow: "0 0 6px rgba(255,215,0,0.35)",
+                  textShadow: "none",
                 }}
               >
                 Saphire
@@ -191,7 +190,7 @@ export default function KonamiEasterEgg() {
                   fontFamily: "Exo 2, sans-serif",
                   fontWeight: 700,
                   fontSize: "0.75rem",
-                  color: "#b464ff",
+                  color: "var(--ligne-miroir)",
                   textTransform: "uppercase",
                   letterSpacing: "0.05em",
                 }}
@@ -206,10 +205,10 @@ export default function KonamiEasterEgg() {
                 margin: "0 12px",
                 borderRadius: 10,
                 overflow: "hidden",
-                border: "2px solid rgba(255,215,0,0.5)",
+                border: "2px solid color-mix(in srgb, var(--encre) 50%, transparent)",
                 flex: 1,
                 position: "relative",
-                background: "#000",
+                background: "var(--encre)",
               }}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -237,7 +236,7 @@ export default function KonamiEasterEgg() {
                   margin: 0,
                   fontFamily: "Exo 2, sans-serif",
                   fontSize: "0.75rem",
-                  color: "rgba(232,237,245,0.7)",
+                  color: "var(--encre-douce)",
                 }}
               >
                 Capturée par
@@ -248,7 +247,7 @@ export default function KonamiEasterEgg() {
                   fontFamily: "Exo 2, sans-serif",
                   fontWeight: 700,
                   fontSize: "0.85rem",
-                  color: "#ffd700",
+                  color: "var(--encre)",
                 }}
               >
                 Sayen974 &amp; Estelle97417
@@ -264,7 +263,7 @@ export default function KonamiEasterEgg() {
                 mixBlendMode: "color-dodge",
                 opacity: "var(--glare-opacity)",
                 background:
-                  "repeating-linear-gradient(115deg, #ff6b6b 0%, #ffd700 12%, #4ade80 24%, #4ea8ff 36%, #b464ff 48%, #ff6b6b 60%)",
+                  "repeating-linear-gradient(115deg, var(--alerte) 0%, var(--encre) 12%, var(--bon) 24%, var(--ligne-cherche) 36%, var(--ligne-miroir) 48%, var(--alerte) 60%)",
                 backgroundSize: "300% 300%",
                 backgroundPosition: "var(--px) var(--py)",
               }}
@@ -278,7 +277,7 @@ export default function KonamiEasterEgg() {
                 mixBlendMode: "overlay",
                 opacity: "var(--glare-opacity)",
                 background:
-                  "radial-gradient(circle at var(--px) var(--py), rgba(255,255,255,0.85) 0%, transparent 60%)",
+                  "radial-gradient(circle at var(--px) var(--py), var(--encre) 0%, transparent 60%)",
               }}
             />
           </div>

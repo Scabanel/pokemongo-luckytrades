@@ -8,13 +8,30 @@ export async function GET(request: NextRequest) {
   const showCompleted = searchParams.get("completed") === "true";
   const trainerId = searchParams.get("trainerId");
 
+  /* ═══ UNE LIMITE, POUR NE PAS PAYER 2 000 ENTREES POUR EN MONTRER 18 ═══
+
+     Ajoutee le 2026-09-04 pour la bande de shiny de la landing. Sans elle, la page la plus
+     visitee du site tirait les 1 988 entrees avec leur dresseur joint pour en afficher une
+     poignee : un cout de base de donnees a chaque visite, pour de la decoration.
+
+     Bornee a 200 cote serveur et pas seulement cote appelant : une limite qu'on peut
+     demander a 100 000 n'est pas une limite, c'est une suggestion. Absente, le
+     comportement ne change pas, donc aucun appelant existant n'est affecte. */
+  const limiteDemandee = Number(searchParams.get("limit"));
+  const limite = Number.isFinite(limiteDemandee) && limiteDemandee > 0
+    ? Math.min(Math.floor(limiteDemandee), 200)
+    : undefined;
+  const seulementShiny = searchParams.get("shiny") === "true";
+
   const entries = await prisma.pokemonEntry.findMany({
     where: {
       ...(showCompleted ? undefined : { completed: false }),
       ...(trainerId ? { trainerId } : undefined),
+      ...(seulementShiny ? { shiny: true } : undefined),
     },
     include: { trainer: true },
     orderBy: { createdAt: "desc" },
+    ...(limite ? { take: limite } : undefined),
   });
 
   return NextResponse.json(entries);

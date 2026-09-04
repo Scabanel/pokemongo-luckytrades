@@ -1,0 +1,125 @@
+/* ═══════════════════════════════════════════════════════════════════════════════════════
+   LES COULEURS DU SITE, ET RIEN D'AUTRE
+
+   Source unique. Toute couleur ecrite ailleurs dans le depot est un bug, et
+   `npm run check:da` echoue dessus. Une seule exception, nommee dans ce script :
+   ParticleBackground.tsx peint dans un canvas, ou var() n'existe pas, et lit donc ces
+   valeurs en JavaScript.
+
+   ═══ LA DIRECTION : LE PLAN DE TRAM ═══
+
+   Choisie par Steven le 2026-09-04 parmi trois propositions, en CLAIR uniquement.
+   Il n'y a donc volontairement pas de theme sombre, et body peint un fond explicite.
+
+   Le langage est celui d'un plan de reseau : aplats francs, traits epais, pastilles de
+   station, aucune ombre diffuse, aucun halo. Il n'est pas plaque sur le contenu, il le
+   decrit : les trois categories du site SONT trois lignes, les dresseurs sont les
+   stations, un echange miroir est une correspondance.
+
+   ═══ LE CONTRASTE SE CALCULE ═══
+
+   Les couleurs d'avant etaient posees sur un fond quasi noir. Sur du papier, le jaune
+   #ffd93d en texte donne 1,4:1 : illisible. Chaque role a donc ici un equivalent
+   saturé et sombre, et le rapport de contraste de chaque paire reellement utilisee est
+   verifie par check:da. Une regle de DA en prose finit violee; celle-ci sort en code
+   d'erreur non nul.
+   ═══════════════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Le papier et l'encre ────────────────────────────────────────────────────────────
+     Un blanc casse legerement froid plutot que le blanc pur : sur un ecran de telephone
+     en exterieur, le blanc pur eblouit et fait vibrer les traits noirs. Le gris de fond
+     est tire vers le bleu du reseau, pas neutre - un gris parfaitement neutre a l'air
+     non choisi. */
+  /* Rechauffe le 2026-09-04 : Steven trouvait le site « beau mais un peu triste ». Un
+     gris froid a 244,244,241 lit comme un ecran eteint; un papier legerement creme lit
+     comme un plan imprime, ce qui est exactement le referent de cette DA. */
+  --papier: #F6F4EE;          /* fond de page */
+  --surface: #FFFFFF;         /* cartes, barres */
+  --surface-creuse: #E9E9E4;  /* champs, zones inertes */
+  --encre: #14161A;           /* texte principal, traits structurels */
+  --encre-douce: #55595F;     /* texte secondaire */
+  --encre-tres-douce: #73767D;/* mentions, horodatages */
+  --trait: #14161A;           /* les traits d'un plan sont noirs et francs */
+  --trait-leger: #CFCFC9;     /* separations mineures */
+
+  /* ── Les lignes ──────────────────────────────────────────────────────────────────────
+     Les trois categories du site. Ce sont les couleurs les plus chargees de sens de
+     toute l'interface : elles disent ce qu'un dresseur cherche, offre, ou echange en
+     miroir. Chacune est assez sombre pour servir de TEXTE sur le papier, ce que leurs
+     versions d'avant ne pouvaient pas. */
+  --ligne-miroir: #6D28A8;    /* violet - echanges miroir */
+  --ligne-cherche: #0B6E8F;   /* bleu-teal - je recherche */
+  --ligne-donne: #A65600;     /* ambre brule - je peux donner */
+
+  /* Les memes, en aplat clair pour les fonds de pastille. Le texte pose dessus est
+     l'encre ou la ligne elle-meme, jamais du blanc : du blanc sur ces aplats clairs
+     tomberait sous 4,5:1. */
+  --miroir-pale: #F0E6F8;
+  --cherche-pale: #DFF0F5;
+  --donne-pale: #FBEBD9;
+
+  /* ── L'or, et rien que la chance ─────────────────────────────────────────────────────
+     #ffd700 comptait 182 usages dans l'ancienne version : la couleur de tout, donc la
+     couleur de rien. Ici l'or ne dit qu'une chose - shiny, medaille, coup de chance -
+     et check:da echoue s'il apparait ailleurs.
+
+     Il ne sert JAMAIS de couleur de texte sur le papier : #F2A900 sur blanc donne
+     2,1:1. Il sert de fond, avec l'encre posee dessus. */
+  --or: #F2A900;
+  --or-encre: #14161A;        /* le texte pose SUR l'or */
+  --or-pale: #FDF0D2;
+
+  /* ── Les signaux ─────────────────────────────────────────────────────────────────────
+     Semantiques, distincts des lignes : une ligne dit de quoi on parle, un signal dit
+     comment ca va. */
+  --alerte: #B3122B;          /* manquant, suppression, danger */
+  --alerte-pale: #FBE3E6;
+  --bon: #0B6B3F;             /* disponible, valide */
+  --bon-pale: #DDF0E5;
+
+  /* ── Les medailles ───────────────────────────────────────────────────────────────────
+     Assombries pour rester lisibles en texte sur le papier; l'argent d'origine
+     (#c0c0c0) donnait 1,7:1. */
+  --medaille-or: #96700B;
+  --medaille-argent: #5F646B;
+  --medaille-bronze: #8A5222;
+
+  /* ── Les etiquettes de contenu ───────────────────────────────────────────────────────
+     Halloween, Noel, Gigamax, costume... Elles decrivent le Pokemon, pas l'echange.
+     Volontairement moins nombreuses qu'avant : quatorze couleurs d'etiquette sur un
+     plan de reseau, c'est un plan illisible. Elles se regroupent par famille. */
+  --tag-saison: #0B5E8A;      /* Noel, evenements saisonniers */
+  --tag-fete: #96700B;        /* anniversaire, fete, legendaire */
+  --tag-max: #A3123F;         /* Dynamax, Gigamax */
+  --tag-costume: #6D28A8;     /* costume, evenement */
+  --tag-fond: #0B6B3F;        /* fonds d'ecran */
+  --tag-neutre: #55595F;      /* tout le reste */
+
+  /* ── Le sexe du Pokemon, code couleur des jeux ──────────────────────────────────────
+     Assombri pour tenir sur le papier. Ce n'est pas une decision de DA, c'est une
+     convention que les joueurs lisent depuis vingt ans. */
+  --male: #1257A3;
+  --femelle: #B3125E;
+
+  /* ── Geometrie du reseau ─────────────────────────────────────────────────────────────
+     Un plan de reseau n'a ni ombre portee ni degrade. L'epaisseur du trait y remplace
+     la profondeur : c'est elle qui hierarchise. */
+  --trait-fin: 1px;
+  --trait-moyen: 2px;
+  --trait-fort: 3px;
+  --rayon: 10px;              /* cartes */
+  --rayon-pastille: 999px;    /* badges et stations */
+
+  /* Compatibilite : ces noms sont lus par du code existant, ils pointent desormais sur
+     les tokens ci-dessus au lieu de valeurs en dur. */
+  --teal: var(--ligne-cherche);
+  --yellow: var(--or);
+  --coral: var(--alerte);
+  --success: var(--bon);
+  --navy: var(--papier);
+  --navy-mid: var(--surface);
+  --navy-light: var(--surface-creuse);
+  --glass-bg: var(--surface);
+  --glass-border: var(--trait-leger);
+}
