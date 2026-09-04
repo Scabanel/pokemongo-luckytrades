@@ -51,6 +51,32 @@ const PAGES = ["/", "/dresseurs", "/evenements", "/fonctionnalites", "/mon-espac
  *  1440px est le laptop de reference. */
 const LARGEURS = [375, 768, 1440];
 
+/**
+ * ═══ LE PROFIL A ENCOCHE, ET POURQUOI IL A FALLU L'AJOUTER ═══
+ *
+ * Chrome pilote rend `env(safe-area-inset-bottom)` a 0px : il n'a pas d'encoche. Tous les
+ * iPhone depuis le X en ont une, et la barre de gestes du systeme mange environ 34px de
+ * plus en bas de l'ecran.
+ *
+ * Ce n'est pas un detail cosmetique, c'est une geometrie differente. Le 2026-09-04, Steven
+ * a photographie le bouton « +Ajouter un Pokemon » passant derriere la barre d'onglets sur
+ * son telephone, alors que ce banc etait vert : a zone sure nulle la barre fait 57px et le
+ * bouton passait 7px au-dessus; a 34px elle en fait 91 et le bouton tombe 27px dedans.
+ *
+ * Mesurer uniquement a zone sure nulle, c'est donc tester la minorite des telephones. Le
+ * profil ci-dessous rejoue 375px avec l'encoche simulee, en surchargeant exactement ce que
+ * le systeme surcharge.
+ *
+ * La simulation reste une simulation : elle reproduit la geometrie, pas iOS Safari.
+ */
+const ENCOCHE_PX = 34;
+
+/** Les configurations mesurees : trois largeurs, plus 375px avec encoche. */
+const PROFILS = [
+  ...LARGEURS.map((largeur) => ({ largeur, encoche: 0, nom: `${largeur}` })),
+  { largeur: 375, encoche: ENCOCHE_PX, nom: "375+enc" },
+];
+
 /** Planchers. Ce sont des PLANCHERS et non des cibles : on ne les ajuste pas pour faire
  *  passer un lot. Si un lot demande de les baisser, c'est le lot qui est faux. */
 const CIBLE_MIN_PX = 44;
@@ -123,15 +149,50 @@ const page = await contexte.newPage();
 const erreursJs = [];
 page.on("pageerror", (e) => erreursJs.push(String(e).slice(0, 100)));
 
-for (const largeur of LARGEURS) {
+for (const profil of PROFILS) {
+  const { largeur, encoche, nom: nomProfil } = profil;
   for (const chemin of PAGES) {
     await page.setViewportSize({ width: largeur, height: 900 });
     try {
       await page.goto(BASE + chemin, { waitUntil: "load", timeout: 45_000 });
     } catch {
-      echecs.push(`${chemin}@${largeur}px : la page n'a pas charge. Le serveur tourne-t-il sur ${BASE} ?`);
+      echecs.push(`${chemin}@${nomProfil} : la page n'a pas charge. Le serveur tourne-t-il sur ${BASE} ?`);
       continue;
     }
+    // On surcharge exactement ce que le systeme surcharge sur un telephone a encoche :
+    // la zone sure ajoutee sous la barre d'onglets, et la place que le reste de la page
+    // doit lui reserver. Injecte APRES le chargement, donc avant toute mesure.
+    if (encoche > 0) {
+      await page.addStyleTag({
+        content: `
+          .mobile-tabs { padding-bottom: ${encoche}px !important; }
+          :root { --bas-occupe: calc(var(--tabs-height) + ${encoche}px) !important; }
+          body { padding-bottom: calc(var(--tabs-height) + ${encoche}px) !important; }
+        `,
+      });
+    }
+
+    // ═══ LE TEMOIN : COMMENT SAVOIR QUE LA REGLE « DERRIERE LA BARRE » TIRE ═══
+    //
+    // Le bouton « +Ajouter un Pokemon » n'existe qu'une fois connecte et apres defilement.
+    // Ce banc visite les pages en anonyme, donc il ne le rencontrera jamais : sa regle
+    // pourrait etre cassee sans que rien ne vire au rouge, ce qui est precisement la panne
+    // que ce projet cherche a eviter partout ailleurs.
+    //
+    //   CHECK_TEMOIN=1 npm run check:mobile
+    //
+    // injecte un bouton fixe avec l'ANCIENNE geometrie, celle qui a produit la capture de
+    // Steven. Le banc DOIT alors echouer sur le profil 375+enc. S'il reste vert, la regle
+    // ne mesure plus rien et c'est elle qu'il faut reparer.
+    if (process.env.CHECK_TEMOIN === "1") {
+      await page.evaluate(() => {
+        const b = document.createElement("button");
+        b.textContent = "temoin +Ajouter un Pokemon";
+        b.style.cssText = "position:fixed;right:20px;z-index:150;bottom:calc(var(--footer-height) + 16px)";
+        document.body.appendChild(b);
+      });
+    }
+
     // Les particules et les listes montent apres le premier rendu.
     await page.waitForTimeout(1800);
 
@@ -243,8 +304,51 @@ for (const largeur of LARGEURS) {
         });
       }
 
+      // ═══ UN BOUTON FIXE DERRIERE LA BARRE D'ONGLETS ═══
+      //
+      // La regle « contenu recouvert » ci-dessus ignore volontairement ce qui est masque
+      // par une barre fixe ou collante : du contenu qui defile SOUS une barre, c'est ce
+      // qu'on demande a la barre. Ce raisonnement est juste pour du contenu dans le flux,
+      // et faux pour un element lui-meme FIXE : celui-la est cense rester visible en
+      // permanence, il ne defile jamais hors de la barre, il est perdu pour de bon.
+      //
+      // Signale par Steven sur un vrai telephone le 2026-09-04, capture a l'appui : le
+      // bouton « +Ajouter un Pokemon » se calait sur --footer-height, une hauteur qui
+      // n'existe plus en bas d'ecran depuis que le pied est repasse dans le flux. Il
+      // passait donc derriere les onglets. Mon banc etait vert : c'est exactement l'angle
+      // mort que cette regle ferme.
+      //
+      // Inerte au-dessus de 640px, ou la barre d'onglets est en display:none et n'a donc
+      // aucune surface.
+      const sousLaBarre = [];
+      const barre = document.querySelector(".mobile-tabs");
+      const rBarre = barre ? barre.getBoundingClientRect() : null;
+      if (rBarre && rBarre.height > 0) {
+        for (const el of document.querySelectorAll("button, a, input, select, [role=button]")) {
+          if (barre.contains(el)) continue;
+          const r = el.getBoundingClientRect();
+          if (r.width === 0 || r.height === 0) continue;
+          if (getComputedStyle(el).visibility === "hidden") continue;
+          // Seuls les elements FIXES sont juges : un element du flux qui croise la barre
+          // est simplement du contenu qu'on n'a pas encore fait defiler.
+          let ancre = false;
+          for (let n = el; n && n !== document.body; n = n.parentElement) {
+            if (/fixed|sticky/.test(getComputedStyle(n).position)) { ancre = true; break; }
+          }
+          if (!ancre) continue;
+          const chevauche = r.bottom > rBarre.top && r.top < rBarre.bottom;
+          if (chevauche) {
+            sousLaBarre.push({
+              t: (el.textContent || el.getAttribute("aria-label") || el.tagName).trim().slice(0, 34),
+              bas: Math.round(r.bottom),
+              hautBarre: Math.round(rBarre.top),
+            });
+          }
+        }
+      }
+
       return {
-        cibles, petits, debordDocument, cachesDansBarre, recouverts,
+        cibles, petits, debordDocument, cachesDansBarre, recouverts, sousLaBarre,
         hauteur: document.documentElement.scrollHeight,
         // La page peut porter PLUSIEURS grilles de la meme classe (/dresseurs en a deux,
         // les actifs et les autres). On somme les hauteurs et les enfants des deux : le
@@ -266,9 +370,9 @@ for (const largeur of LARGEURS) {
       selecteurGrille: COUT_PAR_ELEMENT[chemin]?.grille || null,
     });
 
-    tableau.push({ largeur, chemin, ...m });
+    tableau.push({ largeur, nomProfil, chemin, ...m });
 
-    const ou = `${chemin}@${largeur}px`;
+    const ou = `${chemin}@${nomProfil}`;
     if (m.debordDocument > 0) {
       echecs.push(`${ou} : le document deborde de ${m.debordDocument}px.`);
     }
@@ -296,15 +400,22 @@ for (const largeur of LARGEURS) {
         `${ou} : ${m.recouverts.length} texte(s) recouvert(s), ex. « ${x.t} » par <${x.par}>.`,
       );
     }
+    for (const b of (m.sousLaBarre || []).slice(0, 3)) {
+      echecs.push(
+        `${ou} : « ${b.t} » est fixe et passe derriere la barre d'onglets.\n`
+        + `        Son bas est a ${b.bas}px, la barre commence a ${b.hautBarre}px.\n`
+        + `        Un element fixe ne defile jamais hors de la barre : il est perdu.`,
+      );
+    }
     const plafond = HAUTEUR_MAX[chemin];
-    if (largeur === 375 && plafond && m.hauteur > plafond) {
+    if (largeur === 375 && encoche === 0 && plafond && m.hauteur > plafond) {
       echecs.push(
         `${ou} : ${m.hauteur}px de haut, plafond ${plafond}px.\n`
         + `        ${Math.round(m.hauteur / 900)} ecrans de telephone a parcourir.`,
       );
     }
     const parItem = COUT_PAR_ELEMENT[chemin];
-    if (largeur === 375 && parItem) {
+    if (largeur === 375 && encoche === 0 && parItem) {
       // Zero element trouve = soit la page est vide, soit le selecteur ne correspond plus a
       // rien apres un renommage de classe. Dans les deux cas la sonde ne mesure PLUS rien,
       // et se taire serait le pire des deux comportements possibles.
@@ -329,11 +440,12 @@ for (const largeur of LARGEURS) {
 await nav.close();
 
 console.log("check:mobile\n");
-console.log(`${PAGES.length} pages x ${LARGEURS.length} largeurs = ${tableau.length} mesures\n`);
-console.log("LARG  PAGE                  CIBLES<44  TEXTE<12  RECOUVERTS  HAUTEUR    PX/CARTE");
+console.log(`${PAGES.length} pages x ${PROFILS.length} profils = ${tableau.length} mesures`);
+console.log(`(« 375+enc » simule les ${ENCOCHE_PX}px de zone sure d'un iPhone a encoche)\n`);
+console.log("PROFIL   PAGE                  CIBLES<44  TEXTE<12  RECOUVERTS  HAUTEUR    PX/CARTE");
 for (const t of tableau) {
   console.log(
-    `${String(t.largeur).padEnd(6)}${t.chemin.padEnd(22)}`
+    `${String(t.nomProfil).padEnd(9)}${t.chemin.padEnd(22)}`
     + `${String(t.cibles.length).padEnd(11)}${String(t.petits.length).padEnd(10)}`
     + `${String(t.recouverts.length).padEnd(12)}${String(t.hauteur + "px").padEnd(11)}`
     // Affiche le cout par carte la ou il est le critere, un tiret ailleurs : une colonne

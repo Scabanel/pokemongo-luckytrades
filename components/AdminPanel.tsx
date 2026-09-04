@@ -707,10 +707,14 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
       {activeTab === "entries" && showFloatingAdd && !showAddForm && (
         <button
           onClick={() => setShowAddForm(true)}
-          className="btn-primary"
+          className="btn-primary floating-add"
           style={{
             position: "fixed",
-            bottom: "calc(var(--footer-height) + 16px)",
+            // Le décalage du bas vit dans globals.css (.floating-add) et non ici : en bas
+            // d'écran, ce n'est plus le pied qui occupe la place sur mobile mais la barre
+            // d'onglets, et seule une media query connaît la différence. Écrit en ligne,
+            // ce bouton se calait sur --footer-height, une hauteur qui n'existe plus là,
+            // et passait derrière les onglets. Signalé par Steven, capture à l'appui.
             right: 20,
             zIndex: 150,
             borderRadius: 999,

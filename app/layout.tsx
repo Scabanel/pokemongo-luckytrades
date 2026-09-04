@@ -31,7 +31,10 @@ export default function RootLayout({
         <KonamiEasterEgg />
         <Toaster
           position="bottom-right"
-          containerStyle={{ bottom: 64 }}
+          /* 64px en dur passait derriere la barre d'onglets sur un iPhone a encoche, ou
+             les 60px d'onglets plus 34px de zone sure en font 94. Meme variable que le
+             bouton flottant : ce qui occupe le bas de l'ecran ne se recopie pas. */
+          containerStyle={{ bottom: "calc(var(--bas-occupe) + 16px)" }}
           toastOptions={{
             style: {
               background: "#141926",

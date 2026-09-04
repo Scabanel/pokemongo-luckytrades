@@ -34,6 +34,19 @@ const LINKS = [
   { href: "/mon-espace", label: "Mon espace", short: "Mon espace" },
 ];
 
+/** Partagé par les deux versions de la marque, pour qu'elles ne divergent jamais. */
+const STYLE_MARQUE: React.CSSProperties = {
+  fontFamily: "Exo 2, sans-serif",
+  fontWeight: 900,
+  letterSpacing: "0.04em",
+  textTransform: "uppercase",
+  color: "#ffd700",
+  // Halo réduit de 12px à 6px et d'opacité 0.35 à 0.25 : sur du jaune posé sur du noir,
+  // un halo large fait baver les contours et REDUIT le contraste perçu au lieu de
+  // l'augmenter. Voir le lot 3 du plan de refonte.
+  textShadow: "0 0 6px rgba(255,215,0,0.25)",
+};
+
 export default function SiteNav({ active }: { active: string }) {
   return (
     <>
@@ -45,6 +58,22 @@ export default function SiteNav({ active }: { active: string }) {
           backdropFilter: "blur(10px)",
         }}
       >
+        {/* ═══ SUR MOBILE, LA MARQUE EST UN TITRE, PAS UN LIEN ═══
+
+            Le titre complet sortait de l'écran et s'affichait « ÉCHANGES POKÉMON
+            STRASBOURG GO EVEN... » : trois quarts d'une ligne pour une phrase coupée.
+            Signalé par Steven sur son téléphone le 2026-09-04.
+
+            Deux choses en découlent. Le libellé raccourci tient en entier à 375px, donc
+            plus d'ellipse. Et il cesse d'être un LIEN : un lien doit faire 44px de haut
+            pour rester atteignable au pouce, ce qui imposait à lui seul la hauteur du
+            header, alors qu'il ne mène qu'à l'accueil - déjà présent en bas dans la barre
+            d'onglets, en cible de 56px sous le pouce. Le rendre non cliquable ne retire
+            donc aucun chemin, et rend une vingtaine de pixels d'écran sur chaque page.
+
+            Les deux versions sont RENDUES, l'une masquée par CSS selon la largeur : le
+            serveur ne connaît pas la taille de l'écran, et un rendu conditionnel en
+            JavaScript ferait clignoter le header à l'hydratation. */}
         <a
           href="/"
           className="site-nav-brand flex items-center gap-2"
@@ -59,23 +88,25 @@ export default function SiteNav({ active }: { active: string }) {
             height={22}
             style={{ imageRendering: "pixelated" }}
           />
-          <span
-            className="site-nav-brand-text"
-            style={{
-              fontFamily: "Exo 2, sans-serif",
-              fontWeight: 900,
-              letterSpacing: "0.04em",
-              textTransform: "uppercase",
-              color: "#ffd700",
-              // Halo réduit de 12px à 6px et d'opacité 0.35 à 0.25 : sur du jaune posé sur
-              // du noir, un halo large fait baver les contours et REDUIT le contraste
-              // perçu au lieu de l'augmenter. Voir le lot 3 du plan de refonte.
-              textShadow: "0 0 6px rgba(255,215,0,0.25)",
-            }}
-          >
+          <span className="site-nav-brand-text" style={STYLE_MARQUE}>
             Échanges Pokémon Strasbourg GO Events!
           </span>
         </a>
+
+        <span className="site-nav-titre flex items-center gap-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className="site-nav-brand-icon"
+            src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+            alt=""
+            width={18}
+            height={18}
+            style={{ imageRendering: "pixelated" }}
+          />
+          <span className="site-nav-brand-text" style={STYLE_MARQUE}>
+            Échanges Pokémon Strasbourg
+          </span>
+        </span>
         <nav className="site-nav-links flex" style={{ marginLeft: "auto" }}>
           {LINKS.map(({ href, label }) => (
             <a

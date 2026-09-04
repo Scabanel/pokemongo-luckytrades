@@ -15,10 +15,56 @@
   --footer-height: 48px;
   /* Hauteur reservee en bas sur mobile pour la barre d'onglets (SiteNav.tsx). */
   --tabs-height: 60px;
+  /* ═══ CE QUI OCCUPE LE BAS DE L'ECRAN, SELON LA LARGEUR ═══
+
+     Une seule variable pour tout ce qui doit flotter AU-DESSUS du mobilier du bas :
+     le bouton d'ajout flottant, les toasts. Sur grand ecran c'est le pied fixe; sur
+     mobile le pied est repasse dans le flux et c'est la barre d'onglets, zone sure de
+     l'iPhone comprise.
+
+     Ecrite une fois ici plutot que recopiee sur chaque element : le bouton d'ajout se
+     calait en dur sur --footer-height, une hauteur qui n'existe plus en bas d'ecran sur
+     mobile, et passait donc derriere les onglets. Signale par Steven sur un vrai
+     telephone le 2026-09-04. Un deuxieme element (les toasts) avait le meme defaut a
+     64px, invisible tant qu'aucun iPhone a encoche ne l'affichait. */
+  --bas-occupe: var(--footer-height);
+}
+
+@media (max-width: 640px) {
+  :root {
+    --bas-occupe: calc(var(--tabs-height) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* Le bouton d'ajout flottant (components/AdminPanel.tsx). */
+.floating-add {
+  bottom: calc(var(--bas-occupe) + 16px);
+}
+
+/* Le titre de marque non cliquable du header mobile (components/SiteNav.tsx).
+   Masque au-dessus de 640px, ou c'est le lien .site-nav-brand qui s'affiche. */
+.site-nav-titre {
+  display: none;
 }
 
 * {
   box-sizing: border-box;
+  /* ═══ PLUS DE ZOOM AU DOUBLE-TAP ═══
+
+     Steven, le 2026-09-04 : « il faudrait empêcher le double touch sur téléphone qui
+     fait zoomer. Ou le pinch. Parce qu'on a du défilement horizontal qui apparaît après
+     et c'est le bordel. »
+
+     `manipulation` supprime le zoom au double-tap et les gestes non standard, et LAISSE
+     le panoramique et le pinch. C'est exactement le geste accidentel visé : on tape deux
+     fois sur une carte Pokémon, la page zoome, et il faut ensuite la faire défiler
+     horizontalement pour revenir.
+
+     Le pinch n'est volontairement pas touché, et ce n'est pas un oubli : iOS Safari
+     ignore `user-scalable=no` depuis iOS 10, donc la seule chose qu'on gagnerait à
+     l'écrire serait de casser le zoom sur Android pour les gens qui en ont besoin pour
+     lire, sans rien changer sur l'iPhone de Steven. */
+  touch-action: manipulation;
 }
 
 html {
@@ -455,31 +501,32 @@ h1, h2, h3, h4, h5, h6 {
 */
 @media (max-width: 640px) {
   .site-nav {
-    padding: 10px 14px;
+    /* 6px et non 10 : la marque n'est plus un lien ici, donc plus de plancher tactile de
+       44px a respecter. Le header passe d'environ 65px a environ 38px, rendus au
+       contenu sur les six pages. */
+    padding: 6px 14px;
     gap: 8px;
     flex-wrap: nowrap;
     /* Plus d'overflow-x : il n'y a plus rien à faire défiler ici. */
   }
   .site-nav-brand-icon {
-    /* 22px et non 16 : c'est aussi la seule cible cliquable du header mobile. */
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     flex-shrink: 0;
   }
   .site-nav-brand-text {
-    /* Le titre complet ne tient pas, mais le masquer entièrement laissait un header
-       anonyme avec une pokéball seule. Une version courte identifie le site. */
-    display: inline;
     font-size: 0.8125rem;   /* 13px */
     line-height: 1.2;
+    /* Plus d'ellipse : le libelle court tient en entier a 375px. La laisser serait
+       garder le filet de securite qui masquait le probleme. */
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
   .site-nav-brand {
-    /* Cible tactile : le lien de la marque doit faire 44px de haut comme le reste. */
-    min-height: 44px;
-    min-width: 44px;
+    /* La version cliquable part sur mobile; c'est .site-nav-titre qui s'affiche. */
+    display: none;
+  }
+  .site-nav-titre {
+    display: flex;
   }
   .site-nav-links {
     /* Les liens vivent maintenant dans .mobile-tabs. */
