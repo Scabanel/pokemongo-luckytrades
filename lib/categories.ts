@@ -26,8 +26,13 @@ export const CATEGORIES: Record<
   },
   give: {
     label: "Je peux donner",
-    color: "var(--encre)",
-    glow: "radial-gradient(circle, var(--encre) 0%, transparent 70%)",
+    // La couleur d'origine etait #ffd93d, un jaune. La migration vers les tokens l'a prise
+    // pour de l'or decoratif et l'a passee en encre, ce qui a fait perdre a cette
+    // categorie sa ligne : sur le panneau de partage, « Je peux donner » s'affichait en
+    // noir a cote de « Je recherche » en teal. C'est bien une ligne du reseau, pas du
+    // mobilier, et l'ambre brule est le jaune rendu lisible sur du papier.
+    color: "var(--ligne-donne)",
+    glow: "radial-gradient(circle, var(--ligne-donne) 0%, transparent 70%)",
   },
 };
 

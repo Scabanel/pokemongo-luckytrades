@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import ParticleBackground from "@/components/ParticleBackground";
 import PokemonCard from "@/components/PokemonCard";
 import CardSkeleton from "@/components/CardSkeleton";
-import CopyPogoShinyFilterButton from "@/components/CopyPogoShinyFilterButton";
+import PartageListe from "@/components/PartageListe";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import type { PokeOption } from "@/components/AdminPanel";
@@ -424,7 +424,16 @@ export default function DresseurPageClient({ id }: { id: string }) {
             minHeight: 300,
           }}
         >
-          {!loading && <CopyPogoShinyFilterButton entries={entriesByTab[activeTab]} />}
+          {/* Le QR code et le filtre a coller dans le jeu. Remplace un bouton secondaire
+              qui ne copiait que les shiny et se perdait en haut de la liste : Steven veut
+              pouvoir degainer sa liste en dix secondes devant quelqu un. */}
+          {!loading && (
+            <PartageListe
+              nomDresseur={trainer?.name ?? "ce dresseur"}
+              entriesParCategorie={entriesByTab}
+              categorieActive={activeTab}
+            />
+          )}
           {loading ? (
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
               {Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}

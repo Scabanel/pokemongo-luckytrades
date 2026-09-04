@@ -38,9 +38,9 @@ const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> =
   noel:         { bg: "color-mix(in srgb, var(--tag-saison) 20%, transparent)",   text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
   "noël":       { bg: "color-mix(in srgb, var(--tag-saison) 20%, transparent)",   text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
   holiday:      { bg: "color-mix(in srgb, var(--tag-saison) 20%, transparent)",   text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
-  anniversaire: { bg: "color-mix(in srgb, var(--encre) 20%, transparent)",    text: "var(--encre)", border: "color-mix(in srgb, var(--encre) 50%, transparent)" },
-  fete:         { bg: "color-mix(in srgb, var(--encre) 20%, transparent)",    text: "var(--encre)", border: "color-mix(in srgb, var(--encre) 50%, transparent)" },
-  "fête":       { bg: "color-mix(in srgb, var(--encre) 20%, transparent)",    text: "var(--encre)", border: "color-mix(in srgb, var(--encre) 50%, transparent)" },
+  anniversaire: { bg: "color-mix(in srgb, var(--tag-fete) 20%, transparent)",    text: "var(--tag-fete)", border: "color-mix(in srgb, var(--tag-fete) 50%, transparent)" },
+  fete:         { bg: "color-mix(in srgb, var(--tag-fete) 20%, transparent)",    text: "var(--tag-fete)", border: "color-mix(in srgb, var(--tag-fete) 50%, transparent)" },
+  "fête":       { bg: "color-mix(in srgb, var(--tag-fete) 20%, transparent)",    text: "var(--tag-fete)", border: "color-mix(in srgb, var(--tag-fete) 50%, transparent)" },
   gigamax:      { bg: "color-mix(in srgb, var(--tag-max) 20%, transparent)",   text: "var(--tag-max)", border: "color-mix(in srgb, var(--tag-max) 50%, transparent)" },
   dynamax:      { bg: "color-mix(in srgb, var(--tag-max) 20%, transparent)",    text: "var(--tag-max)", border: "color-mix(in srgb, var(--tag-max) 50%, transparent)" },
   costume:      { bg: "color-mix(in srgb, var(--tag-costume) 20%, transparent)",  text: "var(--tag-costume)", border: "color-mix(in srgb, var(--tag-costume) 50%, transparent)" },
@@ -160,9 +160,12 @@ const CATEGORY_LABEL: Record<string, string> = {
 };
 
 function getPriorityStyle(priority: number): { bg: string; border: string; color: string; shadow: string } {
-  if (priority === 1) return { bg: "color-mix(in srgb, var(--encre) 25%, transparent)", border: "var(--encre)", color: "var(--encre)", shadow: "0 0 12px color-mix(in srgb, var(--encre) 50%, transparent)" };
-  if (priority === 2) return { bg: "color-mix(in srgb, var(--medaille-argent) 20%, transparent)", border: "var(--medaille-argent)", color: "var(--medaille-argent)", shadow: "0 0 8px color-mix(in srgb, var(--medaille-argent) 30%, transparent)" };
-  if (priority === 3) return { bg: "color-mix(in srgb, var(--medaille-bronze) 20%, transparent)", border: "var(--medaille-bronze)", color: "var(--medaille-bronze)", shadow: "0 0 8px color-mix(in srgb, var(--medaille-bronze) 30%, transparent)" };
+    // La premiere place etait #ffd700 : la migration l a prise pour de l or decoratif et
+  // l a passee en encre, ce qui laissait un podium sans premiere place a cote d un argent
+  // et d un bronze intacts. Une medaille est exactement ce a quoi l or a droit.
+  if (priority === 1) return { bg: "var(--or-pale)", border: "var(--medaille-or)", color: "var(--medaille-or)", shadow: "none" };
+  if (priority === 2) return { bg: "color-mix(in srgb, var(--medaille-argent) 20%, transparent)", border: "var(--medaille-argent)", color: "var(--medaille-argent)", shadow: "none" };
+  if (priority === 3) return { bg: "color-mix(in srgb, var(--medaille-bronze) 20%, transparent)", border: "var(--medaille-bronze)", color: "var(--medaille-bronze)", shadow: "none" };
   return { bg: "color-mix(in srgb, var(--tag-neutre) 15%, transparent)", border: "var(--tag-neutre)", color: "var(--tag-neutre)", shadow: "none" };
 }
 
@@ -712,7 +715,11 @@ export default function PokemonCard({
               color: selected ? "var(--papier)" : "var(--encre-tres-douce)",
               fontSize: "0.75rem",
               fontWeight: 900,
-              boxShadow: selected ? "0 0 12px color-mix(in srgb, var(--encre) 50%, transparent)" : "none",
+              // Selection marquee par un trait, pas par une lueur : le halo appartenait au
+              // fond sombre, et sur du papier il salit la carte au lieu de la designer.
+              boxShadow: "none",
+              outline: selected ? "var(--trait-fort) solid var(--encre)" : "none",
+              outlineOffset: 1,
               transition: "all 0.12s",
             }}
           />

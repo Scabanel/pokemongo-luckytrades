@@ -223,6 +223,21 @@ const INTERDITS = [
   [/backdrop-filter\s*:/gi, "backdrop-filter", "le verre depoli appartient a l'ancienne DA"],
   [/text-shadow\s*:(?!\s*none)/gi, "text-shadow", "un plan de reseau n'a pas de texte lumineux"],
   [/textShadow\s*:\s*["'](?!none)/g, "textShadow", "un plan de reseau n'a pas de texte lumineux"],
+  /* ═══ LA FORME D'UN HALO, PAS LE NOM DE SA PROPRIETE ═══
+
+     Trois halos avaient survecu au nettoyage parce qu'ils ne s'appelaient ni box-shadow ni
+     boxShadow : `getPriorityStyle` renvoyait un champ nomme `shadow`, applique plus loin.
+     Chercher les noms de propriete ratait donc exactement les cas les moins visibles.
+
+     Un halo se reconnait a sa forme : deux decalages nuls, un flou, puis une COULEUR.
+     `0 0 12px rgba(...)` est toujours une lueur, quel que soit le nom de la variable qui
+     la transporte. Une vraie ombre portee, elle, a un decalage.
+
+     Premiere version : elle cherchait `0 0 Npx` sans exiger la couleur, et signalait
+     `margin: "0 0 4px"` - un raccourci de marge a exactement la meme forme. Deux faux
+     positifs sur trois signalements, ce qui est le debut d'une sonde qu'on ignore. */
+  [/0\s+0\s+\d+px\s+(?:var\(|color-mix|rgba?\(|#)/g, "valeur en forme de halo",
+    "une lueur, quel que soit le nom de la propriete qui la porte"],
 ];
 for (const f of fichiers) {
   const rel = relative(RACINE, f).split("\\").join("/");

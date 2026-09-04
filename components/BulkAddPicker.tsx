@@ -382,7 +382,9 @@ function VariantBadges({ variant }: { variant: SpriteVariant }) {
           title="Shiny"
           style={{
             position: "absolute", top: 2, right: 2, fontSize: "0.75rem",
-            lineHeight: 1, filter: "drop-shadow(0 0 2px color-mix(in srgb, var(--encre) 90%, transparent))",
+            // Le liseré servait a detacher ce symbole d'un fond sombre. Sur du papier il
+            // n'a plus rien a detacher, et c'etait le dernier halo du depot.
+            lineHeight: 1,
           }}
         >
           ✨
