@@ -223,7 +223,7 @@ export default function BackgroundManager() {
                 onClick={() => setSelectedDexId(p.id)}
                 style={{
                   padding: "5px 12px", borderRadius: 999, cursor: "pointer",
-                  border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.72rem",
+                  border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.75rem",
                   ...(selectedDexId === p.id
                     ? { background: "rgba(180,100,255,0.15)", borderColor: "rgba(180,100,255,0.4)", color: "#b464ff" }
                     : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
@@ -277,7 +277,7 @@ export default function BackgroundManager() {
                     value={b.label}
                     onChange={(e) => handleRename(index, e.target.value)}
                     className="glass-input"
-                    style={{ fontSize: "0.7rem", padding: "4px 8px" }}
+                    style={{ fontSize: "0.75rem", padding: "4px 8px" }}
                   />
                   <div className="flex gap-1">
                     <button
@@ -285,7 +285,7 @@ export default function BackgroundManager() {
                       onClick={() => triggerUpload(index)}
                       disabled={uploadingKey === key}
                       style={{
-                        flex: 1, padding: "4px 6px", borderRadius: 6, cursor: "pointer", fontSize: "0.65rem",
+                        flex: 1, padding: "4px 6px", borderRadius: 6, cursor: "pointer", fontSize: "0.75rem",
                         background: "rgba(100,220,180,0.1)", border: "1px solid rgba(100,220,180,0.3)", color: "#64dcb4",
                       }}
                     >
@@ -295,7 +295,7 @@ export default function BackgroundManager() {
                       type="button"
                       onClick={() => handleDelete(index)}
                       style={{
-                        padding: "4px 8px", borderRadius: 6, cursor: "pointer", fontSize: "0.65rem",
+                        padding: "4px 8px", borderRadius: 6, cursor: "pointer", fontSize: "0.75rem",
                         background: "rgba(255,107,107,0.1)", border: "1px solid rgba(255,107,107,0.3)", color: "#ff6b6b",
                       }}
                     >

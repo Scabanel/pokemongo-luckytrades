@@ -156,14 +156,14 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               <button
                 type="button"
                 onClick={() => { resetMessages(); setMode("forgot"); }}
-                style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.75rem", background: "none" }}
+                style={{ color: "rgba(232,237,245,0.68)", fontSize: "0.8125rem", background: "none", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}
               >
                 Mot de passe oublié ?
               </button>
               <button
                 type="button"
                 onClick={() => { resetMessages(); setMode("signup"); }}
-                style={{ color: "#ffd700", fontSize: "0.8rem", background: "none" }}
+                style={{ color: "#ffd700", fontSize: "0.8125rem", background: "none", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}
               >
                 Pas encore de compte ? Inscris-toi
               </button>
@@ -260,7 +260,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               <button
                 type="button"
                 onClick={() => { resetMessages(); setMode("login"); }}
-                style={{ color: "#ffd700", fontSize: "0.8rem", background: "none" }}
+                style={{ color: "#ffd700", fontSize: "0.8125rem", background: "none", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}
               >
                 Déjà un compte ? Connecte-toi
               </button>
@@ -290,7 +290,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
               <button
                 type="button"
                 onClick={() => { resetMessages(); setMode("login"); }}
-                style={{ color: "#ffd700", fontSize: "0.8rem", background: "none" }}
+                style={{ color: "#ffd700", fontSize: "0.8125rem", background: "none", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}
               >
                 Retour à la connexion
               </button>
@@ -299,7 +299,7 @@ export default function AuthForm({ onSuccess }: { onSuccess: () => void }) {
         )}
 
         <div className="text-center mt-6">
-          <a href="/dresseurs" style={{ color: "rgba(232,237,245,0.3)", fontSize: "0.75rem" }}>
+          <a href="/dresseurs" style={{ color: "rgba(232,237,245,0.68)", fontSize: "0.8125rem", minHeight: 44, display: "inline-flex", alignItems: "center", padding: "0 8px" }}>
             Voir les dresseurs
           </a>
         </div>

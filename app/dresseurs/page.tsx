@@ -21,9 +21,14 @@ export default function DresseursPage() {
   }, []);
 
   const searchTrimmed = search.trim().toLowerCase();
-  const visibleTrainers = searchTrimmed
+  const visibleTrainers = (searchTrimmed
     ? trainers.filter((t) => t.name.toLowerCase().includes(searchTrimmed))
-    : trainers;
+    : trainers
+  )
+    .slice()   // l'API rend un tableau partage : le trier en place muterait l'etat
+    .sort((a, b) =>
+      b._count.entries - a._count.entries
+      || a.name.localeCompare(b.name, "fr", { sensitivity: "base" }));
 
   return (
     <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
@@ -42,7 +47,7 @@ export default function DresseursPage() {
               color: "#ffd700",
               letterSpacing: "-0.02em",
               textTransform: "uppercase",
-              textShadow: "0 0 20px rgba(255,215,0,0.4)",
+              textShadow: "0 0 8px rgba(255,215,0,0.3)",
             }}
           >
             Les dresseurs inscrits
@@ -62,7 +67,7 @@ export default function DresseursPage() {
         />
 
         {loading ? (
-          <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))" }}>
+          <div className="grid trainer-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))" }}>
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="skeleton" style={{ height: 90, borderRadius: 16 }} />
             ))}
@@ -72,15 +77,22 @@ export default function DresseursPage() {
             {trainers.length === 0 ? "Aucun dresseur inscrit pour le moment." : "Aucun dresseur ne correspond à cette recherche."}
           </p>
         ) : (
-          <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))" }}>
+          <div className="grid trainer-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))" }}>
             {visibleTrainers.map((t) => (
               <a
                 key={t.id}
                 href={`/dresseurs/${t.id}`}
-                className="glass-card p-4"
+                title={t.name}
+                className="glass-card p-4 trainer-card"
                 style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 12 }}
               >
                 <div
+                  /* MASQUE SUR TELEPHONE (voir .trainer-avatar dans globals.css).
+                     Ce cercle n'affiche que la PREMIERE LETTRE du nom ecrit juste a cote :
+                     44px de large plus 12px de gouttiere, soit un tiers de la carte en deux
+                     colonnes, pour une information qui est deja la. Il reste sur bureau, ou
+                     la place ne manque pas et ou il structure la ligne. */
+                  className="trainer-avatar"
                   style={{
                     width: 44,
                     height: 44,
@@ -100,7 +112,13 @@ export default function DresseursPage() {
                   {t.name.charAt(0).toUpperCase()}
                 </div>
                 <div style={{ minWidth: 0 }}>
-                  <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "#e8edf5", marginBottom: 4 }}>
+                  <div
+                    className="trainer-name"
+                    /* Tronque plutot que de pousser la carte : un nom long faisait deborder le
+                       document de 23px en deux colonnes, mesure le 2026-09-04. Le nom
+                       complet reste dans l'attribut title et sur la page du dresseur. */
+                    style={{ fontWeight: 700, fontSize: "0.95rem", color: "#e8edf5", marginBottom: 4 }}
+                  >
                     {t.name}
                   </div>
                   <div className="flex flex-wrap items-center gap-1">
@@ -110,12 +128,12 @@ export default function DresseursPage() {
                           ? {
                               background: "rgba(255,107,107,0.1)", border: "1px solid rgba(255,107,107,0.3)",
                               color: "#ff6b6b", borderRadius: 999, padding: "2px 10px",
-                              fontSize: "0.72rem", fontWeight: 700,
+                              fontSize: "0.75rem", fontWeight: 700,
                             }
                           : {
                               background: "rgba(255,215,0,0.12)", border: "1px solid rgba(255,215,0,0.3)",
                               color: "#ffd700", borderRadius: 999, padding: "2px 10px",
-                              fontSize: "0.72rem", fontWeight: 700,
+                              fontSize: "0.75rem", fontWeight: 700,
                             }
                       }
                     >
@@ -126,7 +144,7 @@ export default function DresseursPage() {
                         style={{
                           background: "rgba(255,215,0,0.08)", border: "1px solid rgba(255,215,0,0.2)",
                           color: "rgba(255,215,0,0.85)", borderRadius: 999, padding: "2px 10px",
-                          fontSize: "0.72rem", fontWeight: 700,
+                          fontSize: "0.75rem", fontWeight: 700,
                         }}
                       >
                         {t._count.shinyEntries} ✨

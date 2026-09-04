@@ -15,7 +15,8 @@
     "gen:pogo": "node scripts/generate-pogo-availability.mjs",
     "gen:events": "node scripts/generate-upcoming-events.mjs",
     "db:migrate": "prisma migrate dev",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "check:mobile": "node scripts/check-mobile.mjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",
@@ -40,6 +41,7 @@
     "dotenv": "^17.3.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "playwright-core": "^1.62.1",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"

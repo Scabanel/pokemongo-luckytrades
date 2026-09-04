@@ -244,7 +244,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
                 fontWeight: 900,
                 color: "#ffd700",
                 textTransform: "uppercase",
-                textShadow: "0 0 20px rgba(255,215,0,0.4)",
+                textShadow: "0 0 8px rgba(255,215,0,0.3)",
               }}
             >
               {loading ? "…" : trainer?.name}
@@ -273,7 +273,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
               <button
                 onClick={handleCopyFriendCode}
                 className="btn-secondary"
-                style={{ fontSize: "0.7rem", padding: "4px 10px" }}
+                style={{ fontSize: "0.75rem", padding: "4px 10px" }}
               >
                 Copier
               </button>
@@ -320,7 +320,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
                   border: `1px solid ${activeTab === key ? `${CATEGORIES[key].color}38` : "rgba(255,255,255,0.08)"}`,
                   borderRadius: 4,
                   padding: "1px 7px",
-                  fontSize: "0.72rem",
+                  fontSize: "0.75rem",
                   fontWeight: 800,
                   color: activeTab === key ? CATEGORIES[key].color : "rgba(232,237,245,0.3)",
                 }}

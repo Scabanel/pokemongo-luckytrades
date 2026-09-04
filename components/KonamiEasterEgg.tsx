@@ -181,7 +181,7 @@ export default function KonamiEasterEgg() {
                   color: "#ffd700",
                   textTransform: "uppercase",
                   letterSpacing: "0.02em",
-                  textShadow: "0 0 12px rgba(255,215,0,0.5)",
+                  textShadow: "0 0 6px rgba(255,215,0,0.35)",
                 }}
               >
                 Saphire
@@ -190,7 +190,7 @@ export default function KonamiEasterEgg() {
                 style={{
                   fontFamily: "Exo 2, sans-serif",
                   fontWeight: 700,
-                  fontSize: "0.7rem",
+                  fontSize: "0.75rem",
                   color: "#b464ff",
                   textTransform: "uppercase",
                   letterSpacing: "0.05em",
@@ -236,7 +236,7 @@ export default function KonamiEasterEgg() {
                 style={{
                   margin: 0,
                   fontFamily: "Exo 2, sans-serif",
-                  fontSize: "0.72rem",
+                  fontSize: "0.75rem",
                   color: "rgba(232,237,245,0.7)",
                 }}
               >

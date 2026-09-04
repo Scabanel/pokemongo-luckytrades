@@ -53,7 +53,7 @@ export default function EvenementsPage() {
               fontWeight: 900,
               color: EVENT_COLOR,
               textTransform: "uppercase",
-              textShadow: "0 0 20px rgba(255,217,61,0.35)",
+              textShadow: "0 0 8px rgba(255,217,61,0.28)",
             }}
           >
             Événements Pokémon GO
@@ -91,7 +91,7 @@ function EventSection({ title, events, emptyText }: { title: string; events: Eve
       {events.length === 0 ? (
         <p style={{ color: "rgba(232,237,245,0.3)", padding: 16 }}>{emptyText}</p>
       ) : (
-        <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
+        <div className="grid event-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(165px, 1fr))" }}>
           {events.map((e) => (
             <a
               key={e.id}
@@ -103,7 +103,8 @@ function EventSection({ title, events, emptyText }: { title: string; events: Eve
             >
               {e.image && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={e.image} alt="" style={{ width: "100%", height: 120, objectFit: "cover" }} />
+                <img src={e.image} alt="" className="event-image"
+                style={{ width: "100%", height: 120, objectFit: "cover" }} />
               )}
               <div style={{ padding: 14 }}>
                 {e.category && (
@@ -114,7 +115,7 @@ function EventSection({ title, events, emptyText }: { title: string; events: Eve
                       border: `1px solid ${EVENT_COLOR}40`,
                       borderRadius: 999,
                       padding: "2px 9px",
-                      fontSize: "0.65rem",
+                      fontSize: "0.75rem",
                       fontWeight: 700,
                       color: EVENT_COLOR,
                       textTransform: "uppercase",

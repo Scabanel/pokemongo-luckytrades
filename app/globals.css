@@ -13,6 +13,8 @@
   /* Hauteur du footer fixe (components/SiteFooter.tsx) : réservée en bas de
      chaque page pour que le contenu ne passe jamais derrière. */
   --footer-height: 48px;
+  /* Hauteur reservee en bas sur mobile pour la barre d'onglets (SiteNav.tsx). */
+  --tabs-height: 60px;
 }
 
 * {
@@ -248,7 +250,7 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid rgba(255, 215, 0, 0.22);
   border-radius: 4px;
   padding: 2px 10px;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--teal);
   letter-spacing: 0.05em;
@@ -373,12 +375,12 @@ h1, h2, h3, h4, h5, h6 {
   .btn-secondary,
   .btn-danger,
   .btn-primary {
-    min-height: 40px;
+    min-height: 44px;
     padding-top: 6px;
     padding-bottom: 6px;
     padding-left: 12px;
     padding-right: 12px;
-    font-size: 0.74rem;
+    font-size: 0.75rem;
     gap: 4px;
   }
 }
@@ -390,6 +392,17 @@ h1, h2, h3, h4, h5, h6 {
 .site-nav-brand-icon {
   width: 22px;
   height: 22px;
+}
+
+/* Plancher tactile des liens du header, a TOUTES les largeurs.
+   Ils mesuraient 32,7px de haut sur bureau. Un plancher tactile ne depend pas de la
+   largeur de l'ecran mais de la taille d'un doigt : beaucoup de portables sont tactiles,
+   et une cible de 32px se rate aussi a la souris quand on va vite. */
+.site-nav-link,
+.site-nav-brand {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
 .site-nav-brand-text {
   font-size: 1.05rem;
@@ -408,45 +421,151 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 0.78rem;
 }
 
-/* En dessous de 640px, tout doit tenir sur une seule ligne (header ET footer) :
-   on réduit fortement tailles/paddings/gaps plutôt que de laisser le flex-wrap
-   passer sur 2-3 lignes, ce qui doublait/triplait la hauteur de ces barres
-   fixes et mangeait l'espace utile de la page. */
+/* Plancher tactile du pied, a TOUTES les largeurs.
+   Il n'existait qu'en dessous de 640px. Or un lien de 18,7px de haut se rate aussi a la
+   souris, et surtout au doigt sur une tablette a 768px - largeur ou le site basculait
+   justement sur le header de bureau. Un plancher tactile ne depend pas de la largeur de
+   l'ecran mais de la taille d'un doigt. */
+.site-footer-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ═══ MOBILE : LES ONGLETS PASSENT EN BAS, LE PIED REDESCEND DANS LE FLUX ═══
+
+   Le bloc précédent disait : « tout doit tenir sur une seule ligne (header ET footer) :
+   on réduit fortement tailles/paddings/gaps plutôt que de laisser le flex-wrap passer
+   sur 2-3 lignes ». L'intention était juste - une barre sur trois lignes mange l'écran.
+
+   Le moyen ne l'était pas. Mesure du 2026-09-04 : les liens finissaient à 8,32px de
+   texte dans des cibles de 22px, soit la moitié du plancher tactile de 44px, sur les
+   six pages puisque cette barre est partagée. La place était gagnée, la barre était
+   perdue.
+
+   Trois changements qui vont ensemble, et qui ne marchent qu'ensemble :
+
+   1. Le header mobile ne garde QUE la marque. Ses liens partent dans la barre du bas.
+   2. La barre du bas prend le créneau fixe : cinq onglets de 44px minimum, libellés à
+      12px, dans la zone que le pouce atteint sans changer de prise.
+   3. Le pied de page CESSE d'être fixe et redescend en fin de page. Sinon on
+      empilerait 48px de pied et 56px d'onglets, soit 104px de mobilier fixe sur un
+      écran de 667px - un sixième de l'écran pour ne rien afficher d'utile. Un pied à
+      quatre liens discrets est exactement le contenu qui peut attendre le bas de page.
+*/
 @media (max-width: 640px) {
   .site-nav {
-    padding: 8px 10px;
-    gap: 6px;
+    padding: 10px 14px;
+    gap: 8px;
     flex-wrap: nowrap;
-    overflow-x: auto;
+    /* Plus d'overflow-x : il n'y a plus rien à faire défiler ici. */
   }
   .site-nav-brand-icon {
-    width: 16px;
-    height: 16px;
+    /* 22px et non 16 : c'est aussi la seule cible cliquable du header mobile. */
+    width: 22px;
+    height: 22px;
     flex-shrink: 0;
   }
   .site-nav-brand-text {
-    display: none;
+    /* Le titre complet ne tient pas, mais le masquer entièrement laissait un header
+       anonyme avec une pokéball seule. Une version courte identifie le site. */
+    display: inline;
+    font-size: 0.8125rem;   /* 13px */
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .site-nav-brand {
+    /* Cible tactile : le lien de la marque doit faire 44px de haut comme le reste. */
+    min-height: 44px;
+    min-width: 44px;
   }
   .site-nav-links {
-    gap: 2px;
-    flex-wrap: nowrap;
+    /* Les liens vivent maintenant dans .mobile-tabs. */
+    display: none;
   }
-  .site-nav-link {
-    padding: 4px 5px;
-    border-radius: 5px;
-    font-size: 0.52rem;
-    letter-spacing: 0;
-    white-space: nowrap;
-  }
+
   .site-footer {
-    padding: 6px 8px;
-    gap: 6px;
-    font-size: 0.56rem;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    /* Dans le flux, en fin de page. */
+    position: static;
+    padding: 14px 16px;
+    gap: 10px 14px;
+    font-size: 0.8125rem;   /* 13px, au-dessus du plancher */
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow-x: visible;
   }
   .site-footer-link {
     white-space: nowrap;
+    /* Un lien de pied reste un lien : il doit s'atteindre au pouce. */
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  body {
+    /* La place réservée en bas n'est plus celle du pied mais celle des onglets. */
+    padding-bottom: var(--tabs-height);
+  }
+}
+
+/* ── La barre d'onglets mobile (SiteNav.tsx) ── */
+
+.mobile-tabs {
+  /* Masquée au-dessus de 640px : le header y porte déjà les liens. Toujours RENDUE,
+     jamais conditionnée en JavaScript - le serveur ne connaît pas la largeur de
+     l'écran, et un rendu conditionnel ferait clignoter la barre à l'hydratation. */
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .mobile-tabs {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(11, 7, 0, 0.96);
+    backdrop-filter: blur(10px);
+    /* La zone sûre des iPhone à encoche : sans elle, le dernier tiers des onglets
+       tombe sous la barre de gestes du système et devient intouchable. */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .mobile-tab {
+    /* 56px, donc au-dessus du plancher de 44 : la marge sert au libellé sur deux
+       lignes quand il ne tient pas sur une, sans jamais descendre la cible. */
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6px 4px;
+    font-family: "Exo 2", sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;     /* 12px pile : le plancher, jamais en dessous */
+    line-height: 1.15;
+    letter-spacing: 0;
+    text-decoration: none;
+    color: rgba(232, 237, 245, 0.62);
+    /* Une bordure entre les onglets plutôt qu'autour : cinq cadres côte à côte font
+       une grille de boutons, alors qu'il s'agit d'un seul objet à cinq zones. */
+    border-left: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .mobile-tab:first-child {
+    border-left: none;
+  }
+
+  .mobile-tab-active {
+    color: #ffd700;
+    background: rgba(255, 215, 0, 0.1);
+    /* Un liseré haut marque l'onglet courant sans halo : sur cinq onglets serrés, un
+       glow déborderait sur les voisins et brouillerait lequel est actif. */
+    box-shadow: inset 0 2px 0 0 #ffd700;
   }
 }
 
@@ -468,7 +587,7 @@ h1, h2, h3, h4, h5, h6 {
   .mobile-fit-row > button,
   .mobile-fit-row > a {
     white-space: nowrap !important;
-    font-size: 0.56rem !important;
+    font-size: 0.75rem !important;
     padding: 3px 6px !important;
     letter-spacing: 0 !important;
   }
@@ -479,7 +598,7 @@ h1, h2, h3, h4, h5, h6 {
   .mobile-fit-row > input {
     width: 84px;
     flex-shrink: 1;
-    font-size: 0.72rem;
+    font-size: 0.75rem;
   }
 }
 
@@ -523,7 +642,7 @@ h1, h2, h3, h4, h5, h6 {
 /* ── Field label ── */
 .field-label {
   display: block;
-  font-size: 0.68rem;
+  font-size: 0.75rem;
   font-weight: 800;
   color: rgba(255, 215, 0, 0.65);
   letter-spacing: 0.1em;
@@ -546,3 +665,72 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(255, 215, 0, 0.4);
 }
 
+
+/* ── La grille de dresseurs (app/dresseurs/page.tsx) ──
+
+   Mesure du 2026-09-04 : 64 dresseurs sur une seule colonne faisaient 6 937px de haut a
+   375px, soit huit ecrans de telephone pour une liste qu'on parcourt en cherchant un nom.
+   La grille etait deja en `auto-fill`, mais son `minmax(200px)` ne laissait tenir qu'une
+   colonne dans les 343px utiles d'un iPhone SE.
+
+   A 150px de minimum, deux colonnes tiennent. La carte perd de la largeur, pas de
+   l'information : elle porte une initiale, un nom et un ou deux badges.
+
+   La gouttiere descend a 12px sur telephone : 16px entre deux colonnes de 150px, c'est
+   5 % de l'ecran donne a du vide. */
+.trainer-grid {
+  gap: 16px;
+}
+@media (max-width: 640px) {
+  .trainer-grid {
+    gap: 12px;
+  }
+  /* Le padding de 16px de la carte represente presque un dixieme de sa largeur en deux
+     colonnes. 12px suffisent a la faire respirer. */
+  .trainer-grid > .glass-card {
+    padding: 12px !important;
+  }
+}
+
+.trainer-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  /* Voir le commentaire dans app/dresseurs/page.tsx : le cercle ne porte que l'initiale
+     du nom affiche a cote, donc zero information pour un tiers de la carte. */
+  .trainer-avatar {
+    display: none !important;
+  }
+}
+
+/* ── La grille d'evenements (app/evenements/page.tsx) ──
+
+   Mesure du 2026-09-04 : 13 943px de haut a 375px, soit quinze ecrans. Meme cause que la
+   grille de dresseurs - un `minmax(260px)` qui ne laisse tenir qu'une colonne dans les
+   343px utiles d'un iPhone SE - aggravee par une image de 120px sur chaque carte. */
+.event-grid {
+  gap: 16px;
+}
+@media (max-width: 640px) {
+  .event-grid {
+    gap: 12px;
+  }
+  /* 80px et non 120 : sur une carte de 165px de large, une image de 120px de haut occupait
+     la moitie de la carte pour une vignette qu'on ne detaille pas a cette taille. */
+  .event-image {
+    height: 80px !important;
+  }
+}
+
+/* Plancher tactile des boutons, a TOUTES les largeurs.
+   Il n'existait qu'en dessous de 640px : « Se connecter » mesurait 39,7px de haut des
+   768px, largeur ou beaucoup d'ecrans sont encore tactiles. Un plancher tactile ne depend
+   pas de la largeur de l'ecran mais de la taille d'un doigt. */
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-danger {
+  min-height: 44px;
+}

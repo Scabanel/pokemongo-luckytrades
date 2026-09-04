@@ -370,7 +370,7 @@ function VariantBadges({ variant }: { variant: SpriteVariant }) {
             width: 16, height: 16, borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
             background: variant.gender === "male" ? "#3b82f6" : "#ff2d78",
-            color: "#fff", fontWeight: 800, fontSize: "0.6rem",
+            color: "#fff", fontWeight: 800, fontSize: "0.75rem",
             boxShadow: "0 1px 3px rgba(0,0,0,0.5)",
           }}
         >
@@ -427,10 +427,10 @@ function SpeciesBlock({
   return (
     <div>
       <div className="flex items-center gap-2" style={{ marginBottom: 6 }}>
-        <span style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)" }}>#{species.id}</span>
+        <span style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)" }}>#{species.id}</span>
         <span style={{ color: "#e8edf5", fontSize: "0.85rem", fontWeight: 600 }}>{species.frenchName}</span>
         {stagedCountForSpecies > 0 && (
-          <span style={{ fontSize: "0.7rem", color: "#ffd700", fontWeight: 700 }}>
+          <span style={{ fontSize: "0.75rem", color: "#ffd700", fontWeight: 700 }}>
             {stagedCountForSpecies} sélectionné{stagedCountForSpecies > 1 ? "s" : ""}
           </span>
         )}

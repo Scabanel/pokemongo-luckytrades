@@ -382,7 +382,7 @@ export default function PokemonCard({
               background: priorityStyle!.bg,
               border: `2px solid ${priorityStyle!.border}`,
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: "0.7rem", fontWeight: 800,
+              fontSize: "0.75rem", fontWeight: 800,
               color: priorityStyle!.color,
               fontFamily: "Exo 2, sans-serif",
               boxShadow: priorityStyle!.shadow,
@@ -398,7 +398,7 @@ export default function PokemonCard({
             background: `${categoryColor}18`,
             border: `1px solid ${categoryColor}40`,
             borderRadius: 999, padding: "3px 12px",
-            fontSize: "0.72rem", fontWeight: 700,
+            fontSize: "0.75rem", fontWeight: 700,
             color: categoryColor,
             fontFamily: "Exo 2, sans-serif",
           }}>
@@ -408,7 +408,7 @@ export default function PokemonCard({
             <span style={{
               background: "rgba(100,180,255,0.15)", border: "1px solid rgba(100,180,255,0.5)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.72rem", fontWeight: 800, color: "#64b4ff",
+              fontSize: "0.75rem", fontWeight: 800, color: "#64b4ff",
               fontFamily: "Exo 2, sans-serif",
             }}>×{entry.quantity} disponibles</span>
           )}
@@ -416,7 +416,7 @@ export default function PokemonCard({
             <span style={{
               background: "rgba(255,40,140,0.18)", border: "1px solid rgba(255,40,140,0.5)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.72rem", fontWeight: 800, color: "#ff288c",
+              fontSize: "0.75rem", fontWeight: 800, color: "#ff288c",
               fontFamily: "Exo 2, sans-serif",
             }}>Gigamax</span>
           )}
@@ -424,7 +424,7 @@ export default function PokemonCard({
             <span style={{
               background: "rgba(210,40,40,0.18)", border: "1px solid rgba(210,40,40,0.5)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.72rem", fontWeight: 800, color: "#e03030",
+              fontSize: "0.75rem", fontWeight: 800, color: "#e03030",
               fontFamily: "Exo 2, sans-serif",
             }}>Dynamax</span>
           )}
@@ -432,7 +432,7 @@ export default function PokemonCard({
             <span style={{
               background: "rgba(255,215,0,0.15)", border: "1px solid rgba(255,215,0,0.5)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.72rem", fontWeight: 700, color: "#ffd700",
+              fontSize: "0.75rem", fontWeight: 700, color: "#ffd700",
               fontFamily: "Exo 2, sans-serif",
             }}>✨ Shiny</span>
           )}
@@ -440,7 +440,7 @@ export default function PokemonCard({
             <span style={{
               background: "rgba(255,153,0,0.15)", border: "1px solid rgba(255,153,0,0.5)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.72rem", fontWeight: 700, color: "#ff9900",
+              fontSize: "0.75rem", fontWeight: 700, color: "#ff9900",
               fontFamily: "Exo 2, sans-serif",
             }}>Attaque exclusive</span>
           )}
@@ -448,7 +448,7 @@ export default function PokemonCard({
             <span style={{
               background: "rgba(100,220,180,0.15)", border: "1px solid rgba(100,220,180,0.5)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.72rem", fontWeight: 700, color: "#64dcb4",
+              fontSize: "0.75rem", fontWeight: 700, color: "#64dcb4",
               fontFamily: "Exo 2, sans-serif",
             }}>{entry.size}</span>
           )}
@@ -465,7 +465,7 @@ export default function PokemonCard({
                 <span key={tag} style={{
                   background: c.bg, border: `1px solid ${c.border}`,
                   borderRadius: 999, padding: "2px 10px",
-                  fontSize: "0.7rem", fontWeight: 700, color: c.text,
+                  fontSize: "0.75rem", fontWeight: 700, color: c.text,
                   fontFamily: "Exo 2, sans-serif",
                 }}>{tag}</span>
               );
@@ -481,7 +481,7 @@ export default function PokemonCard({
                 width: 24, height: 24, borderRadius: "50%",
                 background: trainerColor, color: "#0b0f1a",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "0.65rem", fontWeight: 700,
+                fontSize: "0.75rem", fontWeight: 700,
               }}
             >
               {entry.trainer.name.charAt(0).toUpperCase()}
@@ -687,7 +687,7 @@ export default function PokemonCard({
               background: priorityStyle!.bg,
               border: `2px solid ${priorityStyle!.border}`,
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: "0.65rem", fontWeight: 800,
+              fontSize: "0.75rem", fontWeight: 800,
               color: priorityStyle!.color,
               fontFamily: "Exo 2, sans-serif",
               boxShadow: priorityStyle!.shadow,
@@ -724,7 +724,7 @@ export default function PokemonCard({
           {(entry.quantity ?? 1) > 1 && (
             <div style={{
               background: "rgba(100,180,255,0.2)", border: "1px solid rgba(100,180,255,0.55)",
-              borderRadius: 8, padding: "1px 6px", fontSize: "0.6rem", fontWeight: 800,
+              borderRadius: 8, padding: "1px 6px", fontSize: "0.75rem", fontWeight: 800,
               color: "#64b4ff", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
             }}>×{entry.quantity}</div>
           )}
@@ -735,7 +735,7 @@ export default function PokemonCard({
                 border: "1px solid rgba(180,100,255,0.4)",
                 borderRadius: 8,
                 padding: "1px 6px",
-                fontSize: "0.6rem",
+                fontSize: "0.75rem",
                 fontWeight: 700,
                 color: "#b464ff",
                 fontFamily: "Exo 2, sans-serif",
@@ -752,7 +752,7 @@ export default function PokemonCard({
                 border: "1px solid rgba(255,215,0,0.5)",
                 borderRadius: 8,
                 padding: "1px 6px",
-                fontSize: "0.6rem",
+                fontSize: "0.75rem",
                 fontWeight: 700,
                 color: "#ffd700",
                 fontFamily: "Exo 2, sans-serif",
@@ -783,7 +783,7 @@ export default function PokemonCard({
                 width: 18, height: 18, borderRadius: "50%", flexShrink: 0,
                 background: "#00dc64", color: "#0b0f1a",
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "0.55rem", fontWeight: 700,
+                fontSize: "0.75rem", fontWeight: 700,
               }}
             >
               {entry.trainer.name.charAt(0).toUpperCase()}
@@ -791,7 +791,7 @@ export default function PokemonCard({
             <span
               style={{
                 background: "rgba(0,220,100,0.12)", border: "1px solid rgba(0,220,100,0.4)",
-                borderRadius: 999, padding: "2px 8px", fontSize: "0.62rem",
+                borderRadius: 999, padding: "2px 8px", fontSize: "0.75rem",
                 fontWeight: 600, color: "#00dc64", letterSpacing: "0.03em",
                 fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
                 overflow: "hidden", textOverflow: "ellipsis", maxWidth: 80,
@@ -846,7 +846,7 @@ export default function PokemonCard({
         {entry.tradePartnerName && (
           <p
             className="text-center"
-            style={{ fontSize: "0.62rem", color: "#ffd700", fontWeight: 700, marginBottom: 2, lineHeight: 1.2 }}
+            style={{ fontSize: "0.75rem", color: "#ffd700", fontWeight: 700, marginBottom: 2, lineHeight: 1.2 }}
           >
             Réservé par {entry.tradePartnerName}
           </p>
@@ -857,7 +857,7 @@ export default function PokemonCard({
           <span style={{
             background: "rgba(100,220,180,0.18)", border: "1px solid rgba(100,220,180,0.5)",
             borderRadius: 999, padding: "1px 6px", marginBottom: 4,
-            fontSize: "0.55rem", fontWeight: 700, color: "#64dcb4",
+            fontSize: "0.75rem", fontWeight: 700, color: "#64dcb4",
             fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
           }}>
             {entry.size}
@@ -869,7 +869,7 @@ export default function PokemonCard({
           <span style={{
             background: "rgba(255,153,0,0.18)", border: "1px solid rgba(255,153,0,0.5)",
             borderRadius: 999, padding: "1px 6px", marginBottom: 4,
-            fontSize: "0.55rem", fontWeight: 700, color: "#ff9900",
+            fontSize: "0.75rem", fontWeight: 700, color: "#ff9900",
             fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
           }}>
             Attaque exclusive
@@ -885,7 +885,7 @@ export default function PokemonCard({
                 <span key={tag} style={{
                   background: c.bg, border: `1px solid ${c.border}`,
                   borderRadius: 999, padding: "1px 6px",
-                  fontSize: "0.55rem", fontWeight: 700, color: c.text,
+                  fontSize: "0.75rem", fontWeight: 700, color: c.text,
                   fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
                 }}>{tag}</span>
               );
@@ -894,7 +894,7 @@ export default function PokemonCard({
               <span style={{
                 background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)",
                 borderRadius: 999, padding: "1px 5px",
-                fontSize: "0.55rem", fontWeight: 700, color: "rgba(232,237,245,0.4)",
+                fontSize: "0.75rem", fontWeight: 700, color: "rgba(232,237,245,0.4)",
                 fontFamily: "Exo 2, sans-serif",
               }}>+{displayTags.length - 2}</span>
             )}
@@ -905,7 +905,7 @@ export default function PokemonCard({
         {entry.notes && (
           <p
             className="text-center leading-snug"
-            style={{ fontSize: "0.65rem", opacity: 0.65, marginBottom: 4, maxWidth: 150 }}
+            style={{ fontSize: "0.75rem", opacity: 0.65, marginBottom: 4, maxWidth: 150 }}
           >
             {entry.notes}
           </p>
@@ -914,7 +914,7 @@ export default function PokemonCard({
         {/* Exchange badge */}
         {entry.tradeForPokemonName && entry.tradeForPokemonId && (
           <div className="exchange-badge mt-auto" style={{ marginTop: "auto", paddingTop: 4, ...(hasTrainerBadge && { background: "rgba(0,200,80,0.12)", borderColor: "rgba(0,220,100,0.4)" }) }}>
-            <span style={{ fontSize: "0.6rem", color: "#ffd93d", fontWeight: 600, whiteSpace: "nowrap" }}>
+            <span style={{ fontSize: "0.75rem", color: "#ffd93d", fontWeight: 600, whiteSpace: "nowrap" }}>
               {entry.category === "want" ? "Je donne" : entry.category === "mirror" ? "Échange" : "Je reçois"}
             </span>
             <PokemonSprite
@@ -925,7 +925,7 @@ export default function PokemonCard({
               customSpriteUrl={entry.tradeForCustomSpriteUrl}
               preferStatic={preferStatic}
             />
-            <span style={{ fontSize: "0.62rem", color: "#e8edf5", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 70 }}>
+            <span style={{ fontSize: "0.75rem", color: "#e8edf5", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 70 }}>
               {entry.tradeForPokemonName}
             </span>
           </div>
@@ -940,7 +940,7 @@ export default function PokemonCard({
             style={{
               marginTop: 6, padding: "4px 12px", borderRadius: 999, cursor: "pointer",
               background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.3)",
-              color: "#ffd700", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.65rem",
+              color: "#ffd700", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
               whiteSpace: "nowrap",
             }}
           >
@@ -964,7 +964,7 @@ export default function PokemonCard({
             style={{
               marginTop: 6, padding: "4px 12px", borderRadius: 999, cursor: "pointer",
               background: "rgba(6,182,212,0.1)", border: "1px solid rgba(6,182,212,0.3)",
-              color: "#06b6d4", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.65rem",
+              color: "#06b6d4", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
               whiteSpace: "nowrap",
             }}
           >
@@ -982,7 +982,7 @@ export default function PokemonCard({
             style={{
               marginTop: 6, padding: "4px 12px", borderRadius: 999,
               background: "rgba(255,45,120,0.12)", border: "1px solid rgba(255,45,120,0.35)",
-              color: "#ff2d78", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.65rem",
+              color: "#ff2d78", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
               whiteSpace: "nowrap",
             }}
           >
@@ -998,7 +998,7 @@ export default function PokemonCard({
             style={{
               marginTop: 6, padding: "4px 12px", borderRadius: 999,
               background: "rgba(6,182,212,0.12)", border: "1px solid rgba(6,182,212,0.35)",
-              color: "#06b6d4", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.65rem",
+              color: "#06b6d4", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
               whiteSpace: "nowrap",
             }}
           >

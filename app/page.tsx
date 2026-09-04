@@ -36,10 +36,10 @@ export default function LandingPage() {
       <div className="fixed pointer-events-none" style={{ bottom: -120, left: "8%", width: 700, height: 420, background: "radial-gradient(ellipse at center bottom, rgba(255,200,50,0.13) 0%, rgba(255,160,20,0.06) 45%, transparent 70%)", zIndex: 0 }} />
       <div className="fixed pointer-events-none" style={{ bottom: -100, right: "12%", width: 600, height: 380, background: "radial-gradient(ellipse at center bottom, rgba(255,180,30,0.1) 0%, rgba(255,140,0,0.04) 45%, transparent 70%)", zIndex: 0 }} />
 
-      <div className="relative z-10 flex-1 flex flex-col items-center justify-center max-w-6xl mx-auto px-4 py-16 text-center">
+      <div className="relative z-10 flex-1 flex flex-col items-center justify-center max-w-6xl mx-auto px-4 py-8 sm:py-16 text-center">
         <div style={{
           fontFamily: "Bebas Neue, Exo 2, sans-serif",
-          fontSize: "clamp(0.7rem, 1.5vw, 0.9rem)",
+          fontSize: "clamp(0.75rem, 1.5vw, 0.9rem)"   /* min releve au plancher de 12px */,
           letterSpacing: "0.35em",
           color: "rgba(255,180,30,0.6)",
           marginBottom: 10,
@@ -59,7 +59,7 @@ export default function LandingPage() {
               color: "#ffd700",
               letterSpacing: "-0.03em",
               textTransform: "uppercase",
-              textShadow: "0 0 20px rgba(255,215,0,0.5), 0 0 50px rgba(255,180,0,0.2)",
+              textShadow: "0 0 10px rgba(255,215,0,0.35)",
               animation: "title-float 4s ease-in-out infinite",
             }}
           >

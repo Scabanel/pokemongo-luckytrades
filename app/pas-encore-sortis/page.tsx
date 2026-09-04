@@ -58,6 +58,21 @@ const MISSING_SECTIONS: { key: MissingCategory; title: string; hint: string }[] 
 
 export default function PasEncoreSortisPage() {
   const [search, setSearch] = useState("");
+  /** Les sections DEPLIEES. Vide au depart : tout est replie.
+   *
+   *  ═══ POURQUOI TOUT EST REPLIE PAR DEFAUT ═══
+   *
+   *  Mesure du 2026-09-04 : cette page faisait 44 571px de haut a 375px, soit CINQUANTE
+   *  ecrans de telephone. Toutes les sections etaient rendues depliees, pour environ mille
+   *  Pokemon en trois colonnes.
+   *
+   *  Steven a tranche pour « reduire avant d'afficher » plutot que pour de la pagination,
+   *  qui decoupe le probleme sans le traiter. Une section repliee affiche son titre et son
+   *  COMPTE : on sait donc ce qu'elle contient sans la parcourir, et on ouvre celle qui
+   *  interesse. C'est le seul remede qui rende la page plus courte ET plus utile.
+   *
+   *  Le titre reste un bouton de 44px : replier n'a de sens que si deplier s'atteint. */
+  const [sectionsOuvertes, setSectionsOuvertes] = useState<Set<string>>(new Set());
   const [isAdmin, setIsAdmin] = useState(false);
   const [exclusions, setExclusions] = useState<Exclusion[]>([]);
   const [inclusions, setInclusions] = useState<Inclusion[]>([]);
@@ -165,7 +180,7 @@ export default function PasEncoreSortisPage() {
               fontWeight: 900,
               color: MISSING_COLOR,
               textTransform: "uppercase",
-              textShadow: "0 0 20px rgba(255,107,107,0.35)",
+              textShadow: "0 0 8px rgba(255,107,107,0.3)",
             }}
           >
             Pokémon pas encore disponibles
@@ -259,28 +274,55 @@ export default function PasEncoreSortisPage() {
           <div className="space-y-8">
             {MISSING_SECTIONS.map(({ key, title, hint }) => {
               const list = buildList(key);
+              // Une recherche en cours ouvre TOUTES les sections : sinon on chercherait
+              // dans du contenu replie, et une recherche qui ne montre rien passe pour une
+              // recherche sans resultat.
+              const estOuverte = sectionsOuvertes.has(key) || q.length > 0;
               return (
                 <div key={key}>
-                  <h3
+                  <button
+                    type="button"
+                    onClick={() => setSectionsOuvertes((prev) => {
+                      const suivant = new Set(prev);
+                      if (suivant.has(key)) suivant.delete(key); else suivant.add(key);
+                      return suivant;
+                    })}
+                    aria-expanded={estOuverte}
                     style={{
                       fontFamily: "Exo 2, sans-serif",
                       fontWeight: 700,
                       color: MISSING_COLOR,
                       fontSize: "1rem",
                       marginBottom: 4,
+                      background: "none",
+                      border: "none",
+                      padding: "0 0 0 0",
+                      minHeight: 44,
+                      width: "100%",
+                      textAlign: "left",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
                     }}
                   >
-                    {title} ({list.length})
-                  </h3>
-                  <p style={{ fontSize: "0.72rem", color: "rgba(232,237,245,0.4)", marginBottom: 12 }}>
+                    {/* Pas de chevron ni de fleche : la regle du projet interdit les
+                        symboles decoratifs. Le mot dit l'action, ce qui est de toute facon
+                        plus clair qu'un triangle. */}
+                    <span>{title} ({list.length})</span>
+                    <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "rgba(232,237,245,0.55)", marginLeft: "auto" }}>
+                      {estOuverte ? "Masquer" : "Afficher"}
+                    </span>
+                  </button>
+                  <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.55)", marginBottom: 12 }}>
                     {hint}
                   </p>
-                  {list.length === 0 ? (
+                  {!estOuverte ? null : list.length === 0 ? (
                     <p style={{ fontSize: "0.8rem", color: "rgba(232,237,245,0.3)", padding: "8px 0" }}>
                       Aucun résultat.
                     </p>
                   ) : (
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+                    <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3">
                       {list.map((p) => (
                         <div
                           key={p.id}
@@ -305,7 +347,7 @@ export default function PasEncoreSortisPage() {
                                 background: "rgba(255,107,107,0.15)",
                                 border: "1px solid rgba(255,107,107,0.5)",
                                 color: "#ff6b6b",
-                                fontSize: "0.65rem",
+                                fontSize: "0.75rem",
                                 fontWeight: 700,
                                 lineHeight: 1,
                                 cursor: "pointer",
@@ -333,7 +375,7 @@ export default function PasEncoreSortisPage() {
                           />
                           <span
                             style={{
-                              fontSize: "0.65rem",
+                              fontSize: "0.75rem",
                               color: "rgba(232,237,245,0.6)",
                               textAlign: "center",
                               textTransform: "capitalize",

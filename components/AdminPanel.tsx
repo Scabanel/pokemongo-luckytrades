@@ -398,7 +398,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   fontWeight: 900,
                   color: "#ffd700",
                   textTransform: "uppercase",
-                  textShadow: "0 0 20px rgba(255,215,0,0.4)",
+                  textShadow: "0 0 8px rgba(255,215,0,0.3)",
                 }}
               >
                 {me.trainer?.name ?? "Mon espace"}
@@ -435,7 +435,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                     toast.success("Code ami copié !");
                   }}
                   className="btn-secondary"
-                  style={{ fontSize: "0.7rem", padding: "4px 10px" }}
+                  style={{ fontSize: "0.75rem", padding: "4px 10px" }}
                 >
                   Copier
                 </button>
@@ -482,7 +482,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                     border: `1px solid ${activeCategory === key ? `${CATEGORIES[key].color}38` : "rgba(255,255,255,0.08)"}`,
                     borderRadius: 4,
                     padding: "1px 7px",
-                    fontSize: "0.72rem",
+                    fontSize: "0.75rem",
                     fontWeight: 800,
                     color: activeCategory === key ? CATEGORIES[key].color : "rgba(232,237,245,0.3)",
                   }}
@@ -892,7 +892,7 @@ function MyAccountPanel({
             placeholder="Ton nom de dresseur"
             required
           />
-          <p style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", marginTop: 4 }}>
+          <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)", marginTop: 4 }}>
             Visible par tout le monde sur ton catalogue public. Le lien de partage ne change pas si tu le modifies.
           </p>
         </div>
@@ -946,7 +946,7 @@ function MyAccountPanel({
             <option value="static">Statique (icône officielle Pokémon GO)</option>
             <option value="animated">Animé (Gen V / Showdown)</option>
           </select>
-          <p style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", marginTop: 4 }}>
+          <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)", marginTop: 4 }}>
             S&apos;applique instantanément à tous tes Pokémon (sauf ceux avec un sprite personnalisé).
           </p>
         </div>
@@ -1759,14 +1759,14 @@ export function EntryForm(props: EntryFormProps) {
                   />
                   <span style={{ color: "#e8edf5", fontSize: "0.85rem" }}>{linkedEntry.pokemonName}</span>
                   {linkedEntry.shiny && (
-                    <span style={{ fontSize: "0.7rem", color: "#ffd700" }}>✨ Shiny</span>
+                    <span style={{ fontSize: "0.75rem", color: "#ffd700" }}>✨ Shiny</span>
                   )}
                   {parseTags(linkedEntry.tags).map((tag) => (
-                    <span key={tag} style={{ fontSize: "0.65rem", color: "rgba(232,237,245,0.5)", textTransform: "capitalize" }}>
+                    <span key={tag} style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.5)", textTransform: "capitalize" }}>
                       {tag}
                     </span>
                   ))}
-                  <span style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)" }}>
+                  <span style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)" }}>
                     (lié à ton entrée « {oppositeCategory === "give" ? "Je peux donner" : "Je recherche"} »)
                   </span>
                   <button
@@ -1776,7 +1776,7 @@ export function EntryForm(props: EntryFormProps) {
                       setTradeSearch("");
                     }}
                     className="btn-secondary"
-                    style={{ fontSize: "0.7rem", padding: "4px 10px" }}
+                    style={{ fontSize: "0.75rem", padding: "4px 10px" }}
                   >
                     Délier
                   </button>
@@ -1849,10 +1849,10 @@ export function EntryForm(props: EntryFormProps) {
                                     {(le.shiny || leTags.length > 0) && (
                                       <span style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                                         {le.shiny && (
-                                          <span style={{ fontSize: "0.65rem", color: "#ffd700" }}>✨ Shiny</span>
+                                          <span style={{ fontSize: "0.75rem", color: "#ffd700" }}>✨ Shiny</span>
                                         )}
                                         {leTags.map((tag) => (
-                                          <span key={tag} style={{ fontSize: "0.65rem", color: "rgba(232,237,245,0.5)", textTransform: "capitalize" }}>
+                                          <span key={tag} style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.5)", textTransform: "capitalize" }}>
                                             {tag}
                                           </span>
                                         ))}
@@ -2317,7 +2317,7 @@ function SpritePicker({
                         }}
                       />
                     </span>
-                    <span style={{ fontSize: "0.6rem", color: "rgba(232,237,245,0.55)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+                    <span style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.55)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
                       {label}
                     </span>
                   </button>
@@ -2445,7 +2445,7 @@ function CostumeGrid({
                   width: 18, height: 18, borderRadius: "50%",
                   display: "flex", alignItems: "center", justifyContent: "center",
                   background: gender === "male" ? "#3b82f6" : "#ff2d78",
-                  color: "#fff", fontWeight: 800, fontSize: "0.65rem",
+                  color: "#fff", fontWeight: 800, fontSize: "0.75rem",
                   boxShadow: "0 1px 3px rgba(0,0,0,0.5)",
                 }}
               >
@@ -2464,7 +2464,7 @@ function CostumeGrid({
                 }}
               />
             </span>
-            <span style={{ fontSize: "0.58rem", color: "rgba(255,153,0,0.8)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+            <span style={{ fontSize: "0.75rem", color: "rgba(255,153,0,0.8)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
               {label}
             </span>
           </button>
@@ -2583,7 +2583,7 @@ function BackgroundPicker({
             </div>
 
             {validated.length > 0 && (
-              <p style={{ fontSize: "0.7rem", color: "rgba(232,237,245,0.4)", marginBottom: 10 }}>
+              <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)", marginBottom: 10 }}>
                 {showAll
                   ? "Liste complète : rien ne garantit que ce Pokémon a réellement eu ce fond."
                   : "Confirmés événement par événement (source : margxt.fr)."}
@@ -2591,7 +2591,7 @@ function BackgroundPicker({
                 <button
                   type="button"
                   onClick={() => setShowAll((v) => !v)}
-                  style={{ background: "none", border: "none", color: "#b464ff", cursor: "pointer", textDecoration: "underline", fontSize: "0.7rem", padding: 0 }}
+                  style={{ background: "none", border: "none", color: "#b464ff", cursor: "pointer", textDecoration: "underline", fontSize: "0.75rem", padding: 0 }}
                 >
                   {showAll ? "Revenir aux fonds confirmés" : "Voir tous les fonds à la place"}
                 </button>
@@ -2630,7 +2630,7 @@ function BackgroundPicker({
                       if (btn) btn.style.display = "none";
                     }}
                   />
-                  <span style={{ fontSize: "0.6rem", color: "rgba(232,237,245,0.6)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+                  <span style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.6)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
                     {label}
                   </span>
                 </button>
