@@ -17,7 +17,8 @@
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "check:mobile": "node scripts/check-mobile.mjs",
-    "check:evenements": "node --experimental-strip-types --no-warnings scripts/check-evenements.mjs"
+    "check:evenements": "node --experimental-strip-types --no-warnings scripts/check-evenements.mjs",
+    "check:da": "node scripts/check-da.mjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",

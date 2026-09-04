@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* La source unique des couleurs. Voir le bandeau de ce fichier. */
+@import "./tokens.css";
 
 :root {
   --teal: #ffd700;
