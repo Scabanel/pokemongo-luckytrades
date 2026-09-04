@@ -307,10 +307,18 @@ changeant deux constantes.
   du zoom.
 - **12px pile** sur le texte, le plancher, qui compte double depuis qu'on a retiré le zoom.
 
-### Deux décisions à connaître
+### Collant, et sur la landing seulement
 
-**Il n'est pas collant.** Une annonce qui défile en permanence à l'écran fatigue, alors
-qu'on la lit une fois en arrivant. Il reste en haut de page et part au défilement.
+Steven, après avoir vu la première version : « En continu sur la landing uniquement sinon ?
+Et pas présent ailleurs ? » L'annonce appartient à la page d'arrivée : c'est là qu'un
+visiteur du Discord tombe, et c'est la seule page dont le travail est de l'informer. Les
+autres sont des pages de travail, où une bannière qui défile en permanence prend de la place
+et de l'attention sans rien apporter à qui cherche un Pokémon précis.
+
+Le `sticky` est porté par un conteneur qui englobe le header ET l'annonce, pas par le
+bandeau seul. L'alternative était un `top` égal à la hauteur du header : un chiffre à
+maintenir à la main, faux dès que le header change de taille, ce qu'il fait déjà entre
+mobile et bureau. Ici la géométrie se déduit toute seule.
 
 **Il est à l'encre, pas en couleur d'accent.** Les trois couleurs de lignes disent la
 catégorie d'un échange; une annonce n'en est pas une. Le bandeau de lignes juste au-dessus
@@ -329,3 +337,17 @@ met en garde contre un résultat instable d'un rendu à l'autre; ici la valeur n
 qu'une fois, à l'échéance, et basculer à ce moment-là est ce qu'on demande. Les alternatives
 sont pires : un état posé dans un effet fait clignoter l'annonce à chaque arrivée sur chaque
 page, et une date figée à la construction retiendrait le bandeau après l'événement.
+
+### La DA du header était écrite et morte
+
+Constaté en mesurant les styles calculés, pas en regardant une capture : le header portait
+`borderBottom: "1px solid var(--trait-leger)"` et un fond translucide **en style en ligne**,
+la recette du verre dépoli de l'ancienne DA. Un style en ligne bat une feuille quelle que
+soit sa spécificité, donc les règles écrites pour `.site-nav` dans `tram.css` (3px d'encre,
+fond opaque) ne s'appliquaient pas du tout.
+
+Vérifié après correction : fond `rgb(255,255,255)`, bordure `3px rgb(20,22,26)`.
+
+**C'est un angle mort de `check:da`**, et il faut le dire : la sonde vérifie que les couleurs
+viennent des tokens, elle ne voit pas qu'un style en ligne neutralise une règle de la
+feuille. Une couleur peut être parfaitement tokenisée et jamais appliquée.

@@ -70,7 +70,9 @@ export default function LandingPage() {
     <div className="relative min-h-screen flex flex-col" style={{ background: "var(--papier)" }}>
       <ParticleBackground />
 
-      <SiteNav active="/" />
+      {/*  : le bandeau d evenement n existe que sur la landing, a la demande de
+          Steven. Voir la prop dans components/SiteNav.tsx. */}
+      <SiteNav active="/" annonce />
 
       <div className="relative z-10 flex-1 w-full max-w-5xl mx-auto px-4 py-10">
 

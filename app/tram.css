@@ -383,3 +383,16 @@ body {
     display: none;
   }
 }
+
+/* ── Le bloc collant du haut ────────────────────────────────────────────────────────────
+   Contient le header et, sur la landing seulement, le bandeau d'annonce. Le `sticky` est
+   porte ici et non par le header pour que les deux restent a l'ecran ensemble, sans avoir
+   a maintenir a la main un `top` egal a la hauteur du header - chiffre qui serait faux des
+   que le header change de taille, ce qu'il fait deja entre mobile et bureau.
+
+   Le fond est opaque : le contenu de la page defile DERRIERE ce bloc, et un fond
+   translucide laisserait lire deux textes superposes. L'ancienne DA reglait ca avec un
+   verre depoli, qui n'a plus cours ici. */
+.site-nav-bloc {
+  background: var(--papier);
+}
