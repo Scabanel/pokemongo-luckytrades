@@ -1,9 +1,6 @@
 @import "tailwindcss";
 /* La source unique des couleurs. Voir le bandeau de ce fichier. */
 @import "./tokens.css";
-/* Le langage du plan de reseau. Importe en DERNIER : il redefinit des selecteurs de ce
-   fichier, et l ordre des imports decide a specificite egale. */
-@import "./tram.css";
 
 :root {
   /* Hauteur du footer fixe (components/SiteFooter.tsx) : réservée en bas de

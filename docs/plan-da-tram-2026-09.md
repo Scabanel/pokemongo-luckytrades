@@ -87,3 +87,81 @@ tokens en JavaScript. C'est la seule exception, et `check:da` la nomme explicite
 ## Résultats
 
 À remplir au fur et à mesure, avec les mesures avant et après.
+
+---
+
+## Résultats
+
+Tout est sur `v2-refonte-da`. **Rien n'est en production.**
+
+### Ce qui a été fait
+
+| Lot | État | Mesure |
+|---|---|---|
+| 0 - Tokens et `check:da` | fait | 41 tokens, 31 paires de contraste vérifiées |
+| 1 - Balayage des couleurs | fait | 781 couleurs en dur -> 0 |
+| 2 - Langage du plan de tram | fait | halos, verre dépoli et ombres portées : 0 |
+| 3 - Landing produit | fait | 5 sections, chiffres réels, 2 421px sur mobile |
+| 4 - QR code et filtre GO | fait | testé de bout en bout sur un vrai dresseur |
+| 5 - Mesure | fait | `check:mobile` vert aux 4 profils, `tsc` 0, lint 14 (contre 16 avant) |
+
+### Les chiffres
+
+- **781** couleurs en dur ramenées aux tokens, dont **229** accents dorés devenus de l'encre
+- L'or passe de **190 usages** à moins de 24, plafond vérifié par `check:da`
+- Le header mobile passe de **65px à 31px**
+- La landing passe de 4 encarts à 5 sections avec **64 dresseurs, 1 988 Pokémon, 1 296 shiny** réels
+- Lint : **16 erreurs préexistantes -> 14** (la réécriture de la landing en a supprimé deux)
+
+### Ce que les sondes ont attrapé, et que la relecture n'aurait pas vu
+
+1. **Deux de mes propres couleurs** échouaient au contraste dès le premier passage de
+   `check:da` : le gris des mentions à 3,97:1 et l'ambre de la ligne « donne » à 4,47:1.
+   Corrigées à la valeur la plus proche qui passe, trouvée par recherche.
+2. **`check:da` échouait sur sa propre documentation.** `tram.css` explique en prose que
+   `#ffd700` comptait 190 usages, et cette phrase était comptée comme une couleur en dur.
+   Un contrôle qui reproche à un commentaire d'expliquer le contrôle finit désactivé.
+3. **Mon découpage des ombres a coupé à l'intérieur d'un `color-mix`**, qui contient
+   lui-même des virgules : deux déclarations CSS corrompues, build cassé.
+4. **Trois halos avaient survécu** parce qu'ils passaient par un champ nommé `shadow` et
+   non `boxShadow`. La règle cherche désormais la FORME d'un halo (deux décalages nuls, un
+   flou, puis une couleur) et non le nom de la propriété. Sa première version signalait
+   `margin: "0 0 4px"` : deux faux positifs sur trois, le début d'une sonde qu'on ignore.
+5. **Trois pertes de sens dans la migration.** `#ffd93d` et `#ffd700` portaient parfois du
+   sens et ont été pris pour de l'or décoratif : la catégorie « Je peux donner » a perdu sa
+   ligne, le podium a perdu sa première place à côté d'un argent et d'un bronze intacts, et
+   les étiquettes « fête » et « anniversaire » ont perdu leur couleur.
+6. **Le panneau de partage s'ouvrait sur une liste vide.** Il ne proposait le filtre que de
+   la catégorie affichée; l'onglet par défaut est « Échanges miroir », le dresseur testé en
+   avait 0, et sa liste « peut donner » en comptait 213.
+7. **`tram.css` était importé au mauvais endroit.** En tête de `globals.css`, donc les
+   règles de `globals` passaient après et gagnaient : le bouton principal restait teal au
+   lieu de l'encre pleine. Le CSS impose les `@import` en tête de feuille, il est donc
+   chargé depuis le layout, après.
+8. **J'avais écrit les étapes sans accents** alors que c'est du texte affiché.
+
+### Le plafond de hauteur de l'accueil a été relevé
+
+1 700 -> 2 500px, et c'est le geste que `check-mobile.mjs` interdit ailleurs. La raison est
+écrite dans le fichier : ce plafond avait été gelé sur un placeholder, pas sur un acquis; la
+page fait 2 421px, moins de trois écrans, là où une landing produit en fait couramment six;
+et l'intention du contrôle, attraper le défilement sans fin, n'est pas touchée. À partir
+d'ici il ne peut de nouveau que descendre.
+
+### Ce qui n'est pas fait, et doit être dit
+
+- **Aucun vrai téléphone.** Chrome piloté à 375px avec une encoche simulée n'est ni iOS
+  Safari ni Chrome Android. C'est le test qui manque, et c'est celui de Steven.
+- **La beauté n'est pas mesurable** et ne l'a pas été. Les sondes disent que les couleurs
+  sont lisibles, que l'or ne parle que de chance, que rien ne déborde et que tout
+  s'atteint au pouce. Elles ne disent pas si le plan de tram était la bonne idée.
+- **Le fond clair reste mon réserve**, exprimée une fois avant de commencer : pour un jeu
+  qu'on ouvre dehors le soir, c'est le point que je trouve risqué. Steven a tranché après
+  avoir vu les trois pistes, et il n'y a pas de thème sombre.
+- **Les pages d'administration n'ont pas été relues à l'oeil** après la migration des
+  couleurs. `AdminPanel.tsx` portait 205 couleurs en dur, converties par script et
+  vérifiées par `check:da`, mais un écran d'administration a des états (erreurs, formulaires
+  ouverts, sélections) qu'aucune capture n'a montrés.
+- **Vulnérabilités npm préexistantes** (babel, hono, humanfs) signalées par `npm audit`.
+  Elles ne viennent pas de `qrcode` et n'ont pas été touchées : `--force` au milieu d'une
+  refonte n'est pas une bonne idée.

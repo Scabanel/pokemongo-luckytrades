@@ -105,7 +105,22 @@ const HAUTEUR_MAX = {
   //   /fonctionnalites     3 926  ->  4 090   (+164 : idem, le pied)
   //   /mon-espace            948  ->    960
   //   /pas-encore-sortis  43 166  ->  1 115   (-97 %)
-  "/": 1700,
+  /* ═══ LE SEUL PLAFOND RELEVE, ET POURQUOI ═══
+     1 700 -> 2 500 le 2026-09-04.
+
+     Ce plafond avait ete gele sur une page d'accueil qui n'etait pas une landing : un
+     titre, une citation de quinze lignes et quatre encarts. Steven a demande « une reelle
+     landing produit », qui doit dire ce que c'est, le prouver avec des chiffres, montrer
+     le geste concret, expliquer les trois listes et renvoyer vers l'action. Cinq sections
+     ne tiennent pas dans la hauteur d'un survol.
+
+     Relever un plafond est le geste que ce fichier interdit ailleurs, donc la raison est
+     ecrite ici et pas ailleurs. Ce qui la rend acceptable : le plafond avait mesure un
+     PLACEHOLDER, pas un acquis; la page mesure 2 421px, soit moins de trois ecrans, la ou
+     une landing produit en fait couramment six; et l'intention du controle - attraper le
+     defilement sans fin, comme les 43 166px de « Pas encore disponibles » - n'est pas
+     touchee. A partir d'ici il ne peut de nouveau que descendre. */
+  "/": 2500,
   "/fonctionnalites": 4200,
   "/mon-espace": 1000,
   "/pas-encore-sortis": 1200,

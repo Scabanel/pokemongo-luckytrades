@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+// APRES globals.css, et c est le point important : tram.css redefinit des selecteurs de
+// globals, et a specificite egale c est l ordre de chargement qui tranche. Il etait
+// d abord importe EN HAUT de globals.css - le CSS impose les @import en tete de feuille -
+// donc les regles de globals passaient apres et gagnaient : le bouton principal restait
+// teal au lieu de l encre pleine.
+import "./tram.css";
 import { Toaster } from "react-hot-toast";
 import KonamiEasterEgg from "@/components/KonamiEasterEgg";
 
