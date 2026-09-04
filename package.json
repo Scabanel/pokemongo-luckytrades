@@ -18,7 +18,8 @@
     "db:generate": "prisma generate",
     "check:mobile": "node scripts/check-mobile.mjs",
     "check:evenements": "node --experimental-strip-types --no-warnings scripts/check-evenements.mjs",
-    "check:da": "node scripts/check-da.mjs"
+    "check:da": "node scripts/check-da.mjs",
+    "check:matching": "node --import ./scripts/resolveur-alias.mjs --experimental-strip-types --no-warnings scripts/check-matching.mjs"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.5.0",

@@ -1,5 +1,6 @@
 import PokemonSprite from "@/components/PokemonSprite";
 import { POKEMON_SIZES } from "@/lib/entryMatching";
+import genderDifferences from "@/data/gender-differences.json";
 
 /* ═══════════════════════════════════════════════════════════════════════════════════════
    UN POKEMON N'EST PAS QU'UNE ESPECE
@@ -171,7 +172,7 @@ export default function PrecisionsExemples() {
 
         <Tuile
           titre="Le genre"
-          detail="Pikachu n'a pas la même queue selon le genre, et il n'est pas le seul. Les correspondances en tiennent compte."
+          detail={`Pikachu n'a pas la même queue selon le genre. Sur les ${genderDifferences.ids.length} espèces concernées, les correspondances en tiennent compte.`}
         >
           <Cadre>
             <Genre male />

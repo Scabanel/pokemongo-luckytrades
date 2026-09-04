@@ -229,3 +229,47 @@ Même raisonnement que pour `/evenements`, passée du plafond absolu au budget p
    que 59px de large au texte dans une colonne de 233px. J'ai d'abord ajouté `minWidth: 0`
    en devinant, sans effet, avant de mesurer et de trouver le vrai coupable. Les cadres sont
    maintenant empilés, ce qui garde la même largeur quel qu'en soit le nombre.
+
+### Restriction aux espèces à apparence différente
+
+Steven, après avoir vu le lot 8 : « Restreint aux espèces à apparence différentes selon le
+genre. »
+
+Sur une espèce dont le mâle et la femelle sont identiques à l'écran, le genre n'est qu'une
+étiquette : filtrer dessus ferait disparaître des correspondances valables parce que
+quelqu'un a rempli un champ sans y attacher d'intention. Sur un Pikachu, c'est bien un autre
+Pokémon à l'oeil.
+
+**Cette liste n'a pas été écrite de mémoire.** Une liste fausse dans un sens fait disparaître
+des correspondances légitimes, dans l'autre elle en laisse passer de mauvaises, et dans les
+deux cas en silence. Rien dans le dépôt ne répondait à la question : vérifié,
+`data/go-icons.json` ne contient aucun fichier marqué `.g2.`, parce que les icônes de
+Pokémon GO ne distinguent pas le genre sur le sprite de base, et le `(2)` de
+`data/costumes.json` ne concerne que les costumes.
+
+PokeAPI porte un booléen fait exactement pour ça, `has_gender_differences`, et son point
+d'accès GraphQL le rend en une requête. D'où `scripts/generate-gender-differences.mjs` et
+`data/gender-differences.json` : **102 espèces**, généré et versionné, jamais appelé à
+l'exécution.
+
+Limite assumée et écrite dans le script : ce booléen décrit les jeux principaux, pas
+Pokémon GO. C'est un sur-ensemble, donc quelques espèces y figurent alors que GO ne montre
+pas la différence. La conséquence est bornée : la règle ne se déclenche que si un dresseur a
+délibérément renseigné un genre. Dans l'autre sens, aucune espèce que GO différencie n'est
+absente, ce qui est le sens qui compte.
+
+### `npm run check:matching`
+
+Une promesse affichée dans une interface et tenue par du code ailleurs se désynchronise dès
+la première refonte. Celle de la landing est donc vérifiée : 13 cas sur le fond, la taille et
+le genre, et trois contrôles de santé sur le fichier de données (liste tronquée, Pikachu
+absent, Dracaufeu présent à tort).
+
+Vérifié comme mordant dans les deux sens : restriction retirée -> 2 échecs; genre retiré du
+matching -> 2 échecs.
+
+La sonde importe le **vrai** module, pas une copie. Ça a demandé
+`scripts/resolveur-alias.mjs`, un crochet de résolution qui apprend à Node l'alias `@/`, les
+imports sans extension et l'attribut `type: "json"` que Next ne demande pas. L'alternative
+était de recopier la logique dans le test, et c'est la pire des options : un test qui vérifie
+une copie passe au vert pendant que l'original dérive, en donnant l'illusion d'être couvert.
