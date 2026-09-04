@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 // APRES globals.css, et c est le point important : tram.css redefinit des selecteurs de
 // globals, et a specificite egale c est l ordre de chargement qui tranche. Il etait
@@ -8,6 +8,7 @@ import "./globals.css";
 import "./tram.css";
 import { Toaster } from "react-hot-toast";
 import KonamiEasterEgg from "@/components/KonamiEasterEgg";
+import SansZoom from "@/components/SansZoom";
 
 export const metadata: Metadata = {
   title: "Échanges Pokémon Go Strasbourg",
@@ -15,6 +16,16 @@ export const metadata: Metadata = {
   icons: {
     icon: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // Respectes par Android Chrome, IGNORES par iOS Safari depuis iOS 10. Ils sont
+  // declares quand meme, et components/SansZoom.tsx fait le travail sur iOS en annulant
+  // les evenements gesture de WebKit. Voir le bandeau de ce fichier-la.
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -35,6 +46,7 @@ export default function RootLayout({
       <body className="antialiased" suppressHydrationWarning>
         {children}
         <KonamiEasterEgg />
+        <SansZoom />
         <Toaster
           position="bottom-right"
           /* 64px en dur passait derriere la barre d'onglets sur un iPhone a encoche, ou

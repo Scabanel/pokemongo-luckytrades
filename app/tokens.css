@@ -31,7 +31,10 @@
      en exterieur, le blanc pur eblouit et fait vibrer les traits noirs. Le gris de fond
      est tire vers le bleu du reseau, pas neutre - un gris parfaitement neutre a l'air
      non choisi. */
-  --papier: #F4F4F1;          /* fond de page */
+  /* Rechauffe le 2026-09-04 : Steven trouvait le site « beau mais un peu triste ». Un
+     gris froid a 244,244,241 lit comme un ecran eteint; un papier legerement creme lit
+     comme un plan imprime, ce qui est exactement le referent de cette DA. */
+  --papier: #F6F4EE;          /* fond de page */
   --surface: #FFFFFF;         /* cartes, barres */
   --surface-creuse: #E9E9E4;  /* champs, zones inertes */
   --encre: #14161A;           /* texte principal, traits structurels */

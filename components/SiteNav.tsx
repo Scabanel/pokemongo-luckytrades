@@ -88,7 +88,7 @@ export default function SiteNav({ active }: { active: string }) {
             style={{ imageRendering: "pixelated" }}
           />
           <span className="site-nav-brand-text" style={STYLE_MARQUE}>
-            Échanges Pokémon Strasbourg GO Events!
+            Échanges Strasbourg Go Events
           </span>
         </a>
 
@@ -103,7 +103,7 @@ export default function SiteNav({ active }: { active: string }) {
             style={{ imageRendering: "pixelated" }}
           />
           <span className="site-nav-brand-text" style={STYLE_MARQUE}>
-            Échanges Pokémon Strasbourg
+            Échanges Strasbourg Go Events
           </span>
         </span>
         <nav className="site-nav-links flex" style={{ marginLeft: "auto" }}>

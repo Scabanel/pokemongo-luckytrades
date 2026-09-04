@@ -165,6 +165,17 @@ body::after { content: none; }
 
 /* ── La barre d'onglets : cinq stations sur une ligne ──────────────────────────────── */
 
+/* ── Le pied disparait sur telephone ────────────────────────────────────────────────────
+   Steven : « enlever le footer sur mobile, avec le menu en bas ca suffit je pense. »
+
+   Ses quatre liens ne sont pas perdus pour autant : le Discord, la page d'informations et
+   le credit sont repris en bas de la landing, a un seul appui de l'onglet Accueil. Les
+   retirer sans les remettre quelque part aurait coupe la communaute de son Discord depuis
+   un telephone, ce qui est exactement l'usage principal du site. */
+@media (max-width: 640px) {
+  .site-footer { display: none; }
+}
+
 @media (max-width: 640px) {
   .mobile-tabs {
     background: var(--surface);
@@ -210,4 +221,96 @@ body::after { content: none; }
   background: var(--surface);
   border: var(--trait-fort) solid currentColor;
   flex: 0 0 auto;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════════════
+   RENDRE LE PLAN LISIBLE, ET LE SITE MOINS TRISTE
+
+   Steven, apres avoir vu la premiere version : « C'est beau mais un peu triste. Et on
+   comprend pas trop le cote plan de metro (c'est un tram a Strasbourg en plus) d'ou un peu
+   plus de decoration dans la DA peut-etre ? »
+
+   Deux constats justes, et une meme cause : le reseau ne vivait qu'en fond a 7 %
+   d'opacite. Personne ne peut lire un plan qu'on ne voit pas, et une page dont la couleur
+   n'apparait que dans de petites pastilles est effectivement terne.
+
+   ═══ CE QU'ON N'A PAS FAIT, ET POURQUOI ═══
+
+   Donner une couleur a chacune des cinq sections. C'etait la reponse evidente pour
+   « ajouter de la couleur », et elle aurait installe DEUX systemes de couleur cote a cote :
+   les lignes qui disent la categorie d'echange, et des teintes qui disent la page. Deux
+   systemes, et plus aucun ne veut dire quelque chose.
+
+   Le plan devient donc lisible par la FORME - stations, connecteurs, bandeau de lignes -
+   et la couleur reste ce qu'elle etait : les trois categories, et l'or de la chance.
+   ═══════════════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Le bandeau de lignes, sous le header ───────────────────────────────────────────────
+   Trois bandes franches aux couleurs des trois categories, sur toute la largeur. C'est le
+   geste le moins cher qui dit « plan de reseau » avant meme qu'on ait lu un mot, et il
+   n'introduit aucune couleur nouvelle. Pose sur le header par un pseudo-element, donc sans
+   toucher au JSX de SiteNav. */
+.site-nav {
+  position: relative;
+}
+.site-nav::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-1 * var(--trait-fort) - 6px);
+  height: 6px;
+  background: linear-gradient(
+    to right,
+    var(--ligne-miroir) 0 33.333%,
+    var(--ligne-cherche) 33.333% 66.666%,
+    var(--ligne-donne) 66.666% 100%
+  );
+}
+/* Le bandeau descend de 6px sous le header : le contenu doit donc commencer plus bas,
+   sinon la premiere ligne de texte passe dessous. */
+.site-nav { margin-bottom: 6px; }
+
+/* ── La trame du papier ─────────────────────────────────────────────────────────────────
+   Un plan est imprime. Une trame de points tres pale donne cette matiere sans faire de
+   bruit : a 2 % d'encre elle ne se voit pas, elle se sent. Elle remplace le grain d'ecran
+   cathodique de l'ancienne DA, qui etait une texture de tube et pas de papier. */
+body {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--encre) 7%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+  background-attachment: fixed;
+}
+
+/* ── Le connecteur de route ─────────────────────────────────────────────────────────────
+   Une suite de stations reliees par un trait vertical : c'est litteralement une ligne du
+   plan, et ca transforme une liste d'etapes en itineraire. Applique aux etapes de la
+   landing. Le trait est tire derriere les pastilles, pas entre elles, pour ne pas dependre
+   de leur hauteur exacte. */
+.itineraire {
+  position: relative;
+}
+.itineraire::before {
+  content: "";
+  position: absolute;
+  left: 16px;             /* le centre d'une pastille de 34px */
+  top: 22px;
+  bottom: 22px;
+  width: var(--trait-fort);
+  background: var(--encre);
+  z-index: 0;
+}
+.itineraire > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── La pastille de station, en plus grand ──────────────────────────────────────────────
+   Elle existait deja (`.station`), a 11px. A cette taille elle passait pour une puce de
+   liste. A 14px avec un trait de 3px, on reconnait le disque blanc cercle d'un plan. */
+.station::before {
+  width: 14px;
+  height: 14px;
 }

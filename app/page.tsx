@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import ParticleBackground from "@/components/ParticleBackground";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
-import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
+import PlanEchange from "@/components/PlanEchange";
+import DerniersShiny from "@/components/DerniersShiny";
 
 /* ═══════════════════════════════════════════════════════════════════════════════════════
    LA LANDING
@@ -40,29 +41,7 @@ import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 
 type Dresseur = { id: string; _count: { entries: number; shinyEntries: number } };
 
-/** Les trois etapes. Numerotees parce que c'est une VRAIE sequence : on ne consulte pas
- *  utilement les listes des autres avant d'avoir renseigne la sienne. */
-const ETAPES = [
-  {
-    titre: "Renseigne tes listes",
-    texte: "Ce que tu cherches, ce que tu peux donner, et ce que tu proposes en miroir. Les fonds, les costumes et les différentes formes sont tous là.",
-  },
-  {
-    titre: "Regarde celles des autres",
-    texte: "Les listes de tous les dresseurs inscrits sont consultables librement. Tu vois d'un coup d'oeil qui possède ce que tu cherches.",
-  },
-  {
-    titre: "Réserve, puis marque l'échange",
-    texte: "Tu notes sur ton Pokémon avec qui tu l'échanges et contre quoi. Une fois l'échange fait, tu le marques comme échangé et il sort de ta liste active.",
-  },
-];
 
-/** Ce que chaque liste veut dire, avec la couleur de sa ligne. */
-const EXPLICATIONS: Record<string, string> = {
-  mirror: "Un Pokémon que vous avez tous les deux et que vous échangez quand même, pour la chance d'un échange chanceux.",
-  want: "Ce qu'il te manque. Les autres y voient tout de suite s'ils peuvent te le donner.",
-  give: "Ce que tu as en double et dont tu peux te séparer.",
-};
 
 export default function LandingPage() {
   const [dresseurs, setDresseurs] = useState<Dresseur[] | null>(null);
@@ -104,7 +83,7 @@ export default function LandingPage() {
             color: "var(--encre-douce)",
             margin: "0 0 12px",
           }}>
-            Pokémon GO · Lucky Trades · Strasbourg
+            Pokémon GO · Lucky Trades
           </p>
 
           <h1 style={{
@@ -118,7 +97,7 @@ export default function LandingPage() {
             margin: "0 0 16px",
             textWrap: "balance",
           }}>
-            Les échanges de la communauté, sur un seul plan
+            Organise tes échanges avec les membres de la communauté de Strasbourg !
           </h1>
 
           <p style={{
@@ -220,82 +199,27 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ═══ 4. LES TROIS LISTES ═══ */}
+        {/* ═══ 4. LE TRAJET D UN ECHANGE ═══
+            Remplace deux sections : « Les trois listes » et « Comment ca marche » disaient
+            la meme chose deux fois, une fois en concepts et une fois en etapes.
+            L itineraire porte les deux, et il rend le plan de reseau lisible - ce que
+            Steven ne comprenait pas dans la premiere version. */}
         <section style={{ marginBottom: 44 }}>
           <h2 className="station" style={{
             fontFamily: "Exo 2, sans-serif", fontSize: "1.25rem", fontWeight: 800,
             color: "var(--encre)", margin: "0 0 6px", textTransform: "uppercase",
             letterSpacing: "0.02em",
           }}>
-            Trois listes, trois lignes
-          </h2>
-          <p style={{ color: "var(--encre-douce)", fontSize: "0.9rem", margin: "0 0 16px", maxWidth: "56ch" }}>
-            C&apos;est le seul concept à comprendre. Chaque Pokémon que tu inscris va dans
-            l&apos;une des trois.
-          </p>
-          <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))" }}>
-            {CATEGORY_DISPLAY_ORDER.map((cle) => (
-              <div
-                key={cle}
-                className="glass-card"
-                style={{
-                  padding: "14px 16px",
-                  // Le filet de la ligne, a gauche, comme sur un plan de reseau.
-                  borderLeft: `var(--trait-fort) solid ${CATEGORIES[cle].color}`,
-                }}
-              >
-                <h3
-                  className="station"
-                  style={{
-                    fontFamily: "Exo 2, sans-serif", fontWeight: 800, fontSize: "0.95rem",
-                    color: CATEGORIES[cle].color, margin: "0 0 6px",
-                  }}
-                >
-                  {CATEGORIES[cle].label}
-                </h3>
-                <p style={{ color: "var(--encre-douce)", fontSize: "0.85rem", lineHeight: 1.5, margin: 0 }}>
-                  {EXPLICATIONS[cle]}
-                </p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ═══ 5. COMMENT CA MARCHE ═══ */}
-        <section style={{ marginBottom: 44 }}>
-          <h2 className="station" style={{
-            fontFamily: "Exo 2, sans-serif", fontSize: "1.25rem", fontWeight: 800,
-            color: "var(--encre)", margin: "0 0 16px", textTransform: "uppercase",
-            letterSpacing: "0.02em",
-          }}>
             Comment ça marche
           </h2>
-          <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 12 }}>
-            {ETAPES.map(({ titre, texte }, i) => (
-              <li key={titre} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                <span style={{
-                  flex: "0 0 auto",
-                  width: 34, height: 34, borderRadius: "50%",
-                  border: "var(--trait-moyen) solid var(--encre)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontFamily: "Exo 2, sans-serif", fontWeight: 900, fontSize: "0.95rem",
-                  color: "var(--encre)", background: "var(--surface)",
-                  fontVariantNumeric: "tabular-nums",
-                }}>
-                  {i + 1}
-                </span>
-                <div>
-                  <h3 style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.95rem", color: "var(--encre)", margin: "6px 0 4px" }}>
-                    {titre}
-                  </h3>
-                  <p style={{ color: "var(--encre-douce)", fontSize: "0.85rem", lineHeight: 1.5, margin: 0, maxWidth: "60ch" }}>
-                    {texte}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
+          <p style={{ color: "var(--encre-douce)", fontSize: "0.9rem", margin: "0 0 20px", maxWidth: "56ch" }}>
+            Tu remplis tes trois listes, tu consultes celles des autres dresseurs, et
+            vous convenez de l&apos;échange.
+          </p>
+          <PlanEchange />
         </section>
+
+        <DerniersShiny />
 
         {/* ═══ 6. L'ACTION ═══ */}
         <section
@@ -318,6 +242,43 @@ export default function LandingPage() {
             <a href="/fonctionnalites" className="btn-secondary" style={{ textDecoration: "none", padding: "0 24px" }}>
               Tout ce que le site sait faire
             </a>
+          </div>
+
+          {/* ═══ LES LIENS DU PIED, REPRIS ICI ═══
+
+              Le pied fixe disparait sur telephone a la demande de Steven (« avec le menu en
+              bas ca suffit »). Ses liens, eux, ne devaient pas disparaitre avec lui : le
+              Discord est le point de ralliement de la communaute, et c'est precisement
+              depuis un telephone qu'on veut l'ouvrir. Ils vivent donc ici, a un appui de
+              l'onglet Accueil. Affiches a toutes les largeurs : une landing qui rappelle
+              son lien communautaire en bas de page, c'est normal, pas un doublon subi. */}
+          <div
+            style={{
+              marginTop: 18,
+              paddingTop: 14,
+              borderTop: "var(--trait-fin) solid var(--trait-leger)",
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 10,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <a
+              href="https://discord.gg/yR9BwR9aRg"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: "var(--encre)", fontWeight: 700, fontSize: "0.8125rem",
+                textDecoration: "underline", minHeight: 44,
+                display: "inline-flex", alignItems: "center", padding: "0 6px",
+              }}
+            >
+              Discord Pokémon GO Strasbourg
+            </a>
+            <span style={{ color: "var(--encre-tres-douce)", fontSize: "0.8125rem" }}>
+              Fait par Vorthil
+            </span>
           </div>
         </section>
       </div>
