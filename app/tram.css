@@ -258,7 +258,10 @@ body::after { content: none; }
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(-1 * var(--trait-fort) - 6px);
+  /* -6px et non -9 : la bande fait 6px de haut, donc son bord SUPERIEUR se pose
+     exactement sous la bordure du header. A -9px elle descendait 3px plus bas que la place
+     reservee par margin-bottom, et le bandeau d annonce lui passait dessus. */
+  bottom: -6px;
   height: 6px;
   background: linear-gradient(
     to right,
@@ -313,4 +316,70 @@ body {
 .station::before {
   width: 14px;
   height: 14px;
+}
+
+/* ── Le bandeau d'annonce (components/BandeauEvenement.tsx) ─────────────────────────────
+   Un bandeau fin sous le header, dont le texte defile. Demande par Steven le 2026-09-04
+   pour la Mega-Finale du Go Fest, et il porte sa date de fin dans le composant.
+
+   L'ANNONCE EST DE L'ENCRE SUR LE PAPIER, pas une couleur d'accent : les trois couleurs de
+   lignes disent la categorie d'un echange, et une annonce n'en est pas une. Le liseré
+   au-dessus suffit a la detacher du header. */
+
+.bandeau-evenement {
+  /* `overflow: hidden` n'est pas cosmetique ici : sans lui, la piste qui depasse a droite
+     s'ajoute au scrollWidth du document et la page se met a defiler horizontalement.
+     Exactement le « c'est le bordel » que Steven decrivait a propos du zoom. */
+  overflow: hidden;
+  background: var(--surface-creuse);
+  border-bottom: var(--trait-fin) solid var(--trait-leger);
+  /* Pas de hauteur fixe : le texte se met sur deux lignes quand l'animation est coupee,
+     et une hauteur figee le couperait. */
+  padding: 5px 0;
+}
+
+.bandeau-piste {
+  display: flex;
+  /* `max-content` pour que les deux copies restent sur une seule ligne et que la largeur
+     de la piste soit celle du texte, pas celle de l'ecran. */
+  width: max-content;
+  animation: bandeau-defile 34s linear infinite;
+}
+
+.bandeau-texte {
+  /* 12px pile : le plancher de lisibilite, et il compte double depuis qu'on a retire le
+     zoom sur telephone. */
+  font-size: 0.75rem;
+  font-family: "Exo 2", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--encre);
+  white-space: nowrap;
+  /* La respiration entre la fin d'une copie et le debut de la suivante. */
+  padding-right: 3rem;
+}
+
+@keyframes bandeau-defile {
+  /* -50 % et non -100 % : la piste contient DEUX copies, donc la moitie de sa largeur est
+     exactement une longueur de texte. A -100 % le bandeau se viderait avant de reboucler. */
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Qui a demande moins d'animations a son systeme n'a pas demande un texte tronque : le
+   defilement s'arrete, la copie disparait, et l'annonce passe sur autant de lignes qu'il
+   faut pour se lire en entier. */
+@media (prefers-reduced-motion: reduce) {
+  .bandeau-piste {
+    animation: none;
+    width: auto;
+    padding: 0 14px;
+  }
+  .bandeau-texte {
+    white-space: normal;
+    padding-right: 0;
+  }
+  .bandeau-texte[aria-hidden="true"] {
+    display: none;
+  }
 }

@@ -273,3 +273,59 @@ La sonde importe le **vrai** module, pas une copie. Ça a demandé
 imports sans extension et l'attribut `type: "json"` que Next ne demande pas. L'alternative
 était de recopier la logique dans le test, et c'est la pire des options : un test qui vérifie
 une copie passe au vert pendant que l'original dérive, en donnant l'illusion d'être couvert.
+
+---
+
+## Lot 9 - Le bandeau d'annonce
+
+Steven : « Je veux que tu rajoutes un bandeau fin sous le header qui défile [...] À l'avenir
+on verra comment optimiser les annonces events mais pour le moment ça fera le taf. Après
+l'event tu enlèveras le bandeau. »
+
+### Il s'enlève tout seul
+
+« Après l'event tu enlèveras le bandeau » suppose que quelqu'un s'en souvienne le dimanche
+soir. Un bandeau qui annonce un événement terminé est pire que pas de bandeau : il dit au
+visiteur que le site n'est pas tenu.
+
+Il porte donc sa date de fin, `2026-09-06T18:15:00+02:00`. Le décalage est écrit
+explicitement parce que Vercel construit en UTC, où « 18h15 » sans fuseau serait deux heures
+trop tôt. Passé l'échéance, le composant ne rend plus rien, et il n'y a rien à penser à
+faire. Le texte et la date vivent côte à côte pour que la prochaine annonce se fasse en
+changeant deux constantes.
+
+### Ce qui a été vérifié, pas supposé
+
+- **L'auto-expiration** : horloge avancée de 30 jours avec `addInitScript`, le bandeau
+  disparaît.
+- **`prefers-reduced-motion`** : le défilement s'arrête, la copie masquée disparaît, et le
+  texte passe sur trois lignes au lieu d'être tronqué. Un bandeau qu'on ne peut pas lire en
+  entier n'annonce rien. Vérifié : 0 troncature, 0 débordement.
+- **Aucun débordement horizontal.** `overflow: hidden` sur le bandeau n'est pas cosmétique :
+  sans lui, la piste qui dépasse à droite s'ajoute au `scrollWidth` du document et la page
+  se met à défiler de côté. Exactement le « c'est le bordel » que Steven décrivait à propos
+  du zoom.
+- **12px pile** sur le texte, le plancher, qui compte double depuis qu'on a retiré le zoom.
+
+### Deux décisions à connaître
+
+**Il n'est pas collant.** Une annonce qui défile en permanence à l'écran fatigue, alors
+qu'on la lit une fois en arrivant. Il reste en haut de page et part au défilement.
+
+**Il est à l'encre, pas en couleur d'accent.** Les trois couleurs de lignes disent la
+catégorie d'un échange; une annonce n'en est pas une. Le bandeau de lignes juste au-dessus
+suffit à la détacher du header.
+
+### Un défaut de calage attrapé à la capture
+
+Le bandeau de lignes descendait 3px plus bas que la place réservée par son `margin-bottom`
+(`bottom: -9px` pour 6px de hauteur), donc l'annonce lui passait dessus. Corrigé à `-6px`,
+où le bord supérieur de la bande se pose exactement sous la bordure du header.
+
+### La seule règle de lint levée du dépôt
+
+`react-hooks/purity` sur le `Date.now()` au rendu, avec la raison écrite à la ligne. La règle
+met en garde contre un résultat instable d'un rendu à l'autre; ici la valeur ne bascule
+qu'une fois, à l'échéance, et basculer à ce moment-là est ce qu'on demande. Les alternatives
+sont pires : un état posé dans un effet fait clignoter l'annonce à chaque arrivée sur chaque
+page, et une date figée à la construction retiendrait le bandeau après l'événement.

@@ -23,6 +23,8 @@
 //
 // Décision de Steven, 2026-09-04.
 
+import BandeauEvenement from "@/components/BandeauEvenement";
+
 const LINKS = [
   // `short` sert UNIQUEMENT à la barre d'onglets, où chaque onglet dispose de 375/5 = 75px.
   // « Pas encore disponibles » y est illisible; le libellé complet reste sur le header de
@@ -137,6 +139,11 @@ export default function SiteNav({ active }: { active: string }) {
           ))}
         </nav>
       </header>
+
+      {/* Sous le header et son bandeau de lignes. Volontairement PAS collant : une
+          annonce qui defile en permanence a l ecran fatigue, alors qu on la lit une fois
+          en arrivant. Il porte sa date de fin, voir le composant. */}
+      <BandeauEvenement />
 
       {/* La barre d'onglets. Rendue toujours, masquée par CSS au-dessus de 640px : un rendu
           conditionnel en JavaScript ferait clignoter la barre à l'hydratation, et le serveur
