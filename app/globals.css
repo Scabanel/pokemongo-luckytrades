@@ -68,12 +68,23 @@ body {
   background: var(--navy);
   color: var(--encre);
   font-family: "Inter", sans-serif;
-  /* dvh (pas vh) : sur mobile, vh vaut la hauteur "barre d'adresse cachée",
-     plus grande que ce qui est réellement visible tant qu'elle s'affiche.
-     Ce décalage est ce qui faisait apparaître le contenu de la page sous le
-     footer fixe pendant le scroll (la barre d'adresse d'Android/iOS qui
-     se réduit/redéploie change la hauteur visible sans que ce vh recalcule). */
-  min-height: 100dvh;
+  /* ═══ svh, ET PLUS dvh ═══
+
+     `dvh` etait un choix delibere, et il avait sa raison : le pied de page etait fixe, et
+     `vh` le laissait recouvrir le contenu quand la barre d'adresse se repliait. Ce pied
+     n'est plus fixe sur mobile depuis le 2026-09-04, donc cette raison a disparu.
+
+     Ce qui reste, en revanche, c'est le defaut de `dvh` : sa valeur CHANGE pendant que la
+     barre du navigateur se replie. La hauteur du body bouge donc en continu pendant le
+     defilement, et avec elle le bloc de reference de la barre d'onglets fixe. C'est le
+     tremblement que Steven a decrit sur Chrome iOS : « il gigotte quand on bouge, il
+     tremble de bas en haut ne sachant pas ou s'afficher ».
+
+     `svh` est la hauteur avec la barre du navigateur VISIBLE. Elle ne change pas quand la
+     barre se replie, donc la mise en page cesse de bouger. Le prix est un fond legerement
+     plus court que l'ecran quand la barre est repliee, ce qui ne se voit pas puisque le
+     body porte une couleur pleine. */
+  min-height: 100svh;
   overflow-x: hidden;
   overscroll-behavior-y: contain;
   padding-bottom: var(--footer-height);

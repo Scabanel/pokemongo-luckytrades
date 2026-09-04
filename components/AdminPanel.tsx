@@ -1012,7 +1012,7 @@ function EntrySection({
       )}
 
       {loading ? (
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
+        <div className="grid grille-tuiles gap-3">
           {Array.from({ length: 6 }).map((_, i) => <CardSkeleton key={i} />)}
         </div>
       ) : entries.length === 0 ? (
@@ -1029,7 +1029,7 @@ function EntrySection({
           Aucune entrée
         </div>
       ) : (
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
+        <div className="grid grille-tuiles gap-3">
           {entries.map((entry) => {
             const editable = canEditEntry(entry);
             return (

@@ -631,7 +631,7 @@ export default function PokemonCard({
   return (
     <>
       <div
-        className="glass-card animate-scale-in p-2 sm:p-3 md:p-4 flex flex-col items-center relative cursor-pointer select-none"
+        className="glass-card animate-scale-in tuile-pokemon p-2 sm:p-3 md:p-4 flex flex-col items-center relative cursor-pointer select-none"
         style={{
           ...style,
           ...(entry.backgroundUrl && {
@@ -684,7 +684,7 @@ export default function PokemonCard({
         {hasPriority && (
           <div
             style={{
-              position: "absolute", top: -8, left: -8,
+              position: "absolute", top: 3, left: 3,
               width: 26, height: 26, borderRadius: "50%",
               background: priorityStyle!.bg,
               border: `2px solid ${priorityStyle!.border}`,
@@ -706,7 +706,7 @@ export default function PokemonCard({
             onClick={(e) => { e.stopPropagation(); onToggleSelect?.(); }}
             aria-label={selected ? `Désélectionner ${entry.pokemonName}` : `Sélectionner ${entry.pokemonName}`}
             style={{
-              position: "absolute", top: -8, right: -8, zIndex: 10,
+              position: "absolute", top: 3, right: 3, zIndex: 10,
               width: 26, height: 26, borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
               cursor: "pointer",
@@ -725,8 +725,14 @@ export default function PokemonCard({
           />
         )}
 
-        {/* Top-right badges */}
-        <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
+        {/* Top-right badges.
+            Decales vers le bas quand la selection multiple est active : le cercle de
+            selection occupe desormais ce coin, apres etre rentre dans la carte pour
+            survivre au decoupage de la tuile carree. */}
+        <div
+          className="absolute right-3 flex flex-col items-end gap-1"
+          style={{ top: selectable ? 34 : 12 }}
+        >
           {(entry.quantity ?? 1) > 1 && (
             <div style={{
               background: "color-mix(in srgb, var(--tag-neutre) 20%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-neutre) 55%, transparent)",
@@ -770,16 +776,9 @@ export default function PokemonCard({
           )}
         </div>
 
-        {/* Logo Dynamax/Gigamax officiel, en bas à droite de la tuile */}
-        {(isGigamax || isDynamax) && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={isGigamax ? "/gigamax.png" : "/dynamax.png"}
-            alt={isGigamax ? "Gigamax" : "Dynamax"}
-            className="absolute"
-            style={{ bottom: 6, right: 6, width: 26, height: 26, zIndex: 1 }}
-          />
-        )}
+        {/* Le logo Dynamax/Gigamax a quitte le bas de la tuile : voir le bloc du sprite,
+            ou il est desormais pose. Il etait ancre en bas a droite, la ou s'empilent les
+            etiquettes, et passait dessus - signale par Steven, capture a l'appui. */}
 
         {/* Trainer pill */}
         {hasTrainerBadge && entry.trainer && (
@@ -834,6 +833,19 @@ export default function PokemonCard({
             gigantamaxSlug={gigantamaxSlug}
             gigantamaxIconUrl={gigantamaxIconUrl}
           />
+          {/* Le logo Dynamax/Gigamax, pose sur le SPRITE et non en bas de la tuile.
+              C'est une propriete de la forme du Pokemon, donc sa place est sur son image;
+              et surtout, plus rien ne s'empile sous lui, donc il ne peut plus recouvrir
+              une etiquette. */}
+          {(isGigamax || isDynamax) && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={isGigamax ? "/gigamax.png" : "/dynamax.png"}
+              alt={isGigamax ? "Gigamax" : "Dynamax"}
+              className="absolute"
+              style={{ bottom: 0, right: 0, width: 26, height: 26, zIndex: 2 }}
+            />
+          )}
         </div>
 
         {/* Name */}
@@ -858,60 +870,87 @@ export default function PokemonCard({
           </p>
         )}
 
-        {/* Taille (record XXS/XS/XL/XXL) */}
-        {entry.size && (
-          <span style={{
-            background: "color-mix(in srgb, var(--tag-fond) 18%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-fond) 50%, transparent)",
-            borderRadius: 999, padding: "1px 6px", marginBottom: 4,
-            fontSize: "0.75rem", fontWeight: 700, color: "var(--tag-fond)",
-            fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
-          }}>
-            {entry.size}
-          </span>
-        )}
+        {/* ═══ UNE SEULE LIGNE D'ETIQUETTES, ET NON UNE PILE ═══
 
-        {/* Attaque exclusive */}
-        {entry.exclusiveMove && (
-          <span style={{
-            background: "color-mix(in srgb, var(--encre) 18%, transparent)", border: "1px solid color-mix(in srgb, var(--encre) 50%, transparent)",
-            borderRadius: 999, padding: "1px 6px", marginBottom: 4,
-            fontSize: "0.75rem", fontWeight: 700, color: "var(--encre)",
-            fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
-          }}>
-            Attaque exclusive
-          </span>
-        )}
+            Steven, le 2026-09-04, capture a l'appui : « Il y a un probleme de tuiles la. Il
+            faut revoir les tags et les infos de facon qu'il n'y en ait pas d'inutiles et
+            que tout soit toujours lisible. »
 
-        {/* Tags */}
-        {displayTags.length > 0 && (
-          <div className="flex flex-wrap gap-1 justify-center mb-1" style={{ maxWidth: 160 }}>
-            {displayTags.slice(0, 2).map((tag) => {
-              const c = getTagColor(tag);
-              return (
-                <span key={tag} style={{
-                  background: c.bg, border: `1px solid ${c.border}`,
+            La taille, l'attaque exclusive et les tags occupaient TROIS blocs empiles, chacun
+            conditionnel. Une tuile pouvait donc mesurer trois lignes de plus qu'une autre,
+            et c'est ce qui cassait l'alignement de la grille : chaque rangee prenait la
+            hauteur de sa carte la plus bavarde et laissait les autres a moitie vides.
+
+            Toutes ces informations sont de meme nature - un qualificatif court sur un
+            Pokemon - donc elles tiennent sur une seule ligne qui passe a la ligne si besoin,
+            avec un plafond a trois et un « +N » pour le reste. Le detail complet reste dans
+            la fiche, qui s'ouvre au clic. */}
+        {(() => {
+          const qualificatifs: { cle: string; texte: string; couleurs: { bg: string; text: string; border: string } }[] = [];
+          if (entry.size) {
+            qualificatifs.push({
+              cle: `taille-${entry.size}`, texte: entry.size,
+              couleurs: getTagColor("fond"),
+            });
+          }
+          if (entry.exclusiveMove) {
+            qualificatifs.push({
+              cle: "attaque", texte: "Attaque excl.",
+              couleurs: { bg: "var(--surface-creuse)", text: "var(--encre)", border: "var(--encre)" },
+            });
+          }
+          for (const tag of displayTags) {
+            qualificatifs.push({ cle: `tag-${tag}`, texte: tag, couleurs: getTagColor(tag) });
+          }
+          if (qualificatifs.length === 0) return null;
+
+          const MAX = 3;
+          const visibles = qualificatifs.slice(0, MAX);
+          const reste = qualificatifs.length - visibles.length;
+          return (
+            <div
+              className="flex flex-wrap gap-1 justify-center"
+              style={{ maxWidth: "100%", marginBottom: 4 }}
+            >
+              {visibles.map((q) => (
+                <span key={q.cle} style={{
+                  background: q.couleurs.bg, border: `1px solid ${q.couleurs.border}`,
                   borderRadius: 999, padding: "1px 6px",
-                  fontSize: "0.75rem", fontWeight: 700, color: c.text,
-                  fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
-                }}>{tag}</span>
-              );
-            })}
-            {displayTags.length > 2 && (
-              <span style={{
-                background: "var(--trait-leger)", border: "1px solid var(--trait-leger)",
-                borderRadius: 999, padding: "1px 5px",
-                fontSize: "0.75rem", fontWeight: 700, color: "var(--encre-tres-douce)",
-                fontFamily: "Exo 2, sans-serif",
-              }}>+{displayTags.length - 2}</span>
-            )}
-          </div>
-        )}
+                  fontSize: "0.75rem", fontWeight: 700, color: q.couleurs.text,
+                  fontFamily: "Exo 2, sans-serif",
+                  // Pas de `nowrap` : un tag long doit se couper plutot que de pousser la
+                  // tuile au-dela de sa colonne.
+                  overflowWrap: "anywhere", maxWidth: "100%",
+                }}>{q.texte}</span>
+              ))}
+              {reste > 0 && (
+                <span
+                  title={qualificatifs.slice(MAX).map((q) => q.texte).join(", ")}
+                  style={{
+                    background: "var(--trait-leger)", border: "1px solid var(--trait-leger)",
+                    borderRadius: 999, padding: "1px 5px",
+                    fontSize: "0.75rem", fontWeight: 700, color: "var(--encre-tres-douce)",
+                    fontFamily: "Exo 2, sans-serif",
+                  }}
+                >+{reste}</span>
+              )}
+            </div>
+          );
+        })()}
 
-        {/* Notes */}
+        {/* Les notes, sur UNE ligne au plus.
+            C'etait le principal responsable des hauteurs inegales : un champ libre, donc
+            une hauteur libre - « Cape Terres Sauvages » sur une carte, rien sur la voisine.
+            Le texte entier reste dans la fiche. */}
         {entry.notes && (
           <p
-            className="text-center leading-snug"
-            style={{ fontSize: "0.75rem", opacity: 0.65, marginBottom: 4, maxWidth: 150 }}
+            className="text-center"
+            style={{
+              fontSize: "0.75rem", color: "var(--encre-douce)", marginBottom: 4,
+              maxWidth: "100%", whiteSpace: "nowrap", overflow: "hidden",
+              textOverflow: "ellipsis", lineHeight: 1.3,
+            }}
+            title={entry.notes}
           >
             {entry.notes}
           </p>
@@ -919,19 +958,44 @@ export default function PokemonCard({
 
         {/* Exchange badge */}
         {entry.tradeForPokemonName && entry.tradeForPokemonId && (
-          <div className="exchange-badge mt-auto" style={{ marginTop: "auto", paddingTop: 4, ...(hasTrainerBadge && { background: "color-mix(in srgb, var(--bon) 12%, transparent)", borderColor: "color-mix(in srgb, var(--bon) 40%, transparent)" }) }}>
-            <span style={{ fontSize: "0.75rem", color: "var(--encre)", fontWeight: 600, whiteSpace: "nowrap" }}>
-              {entry.category === "want" ? "Je donne" : entry.category === "mirror" ? "Échange" : "Je reçois"}
-            </span>
+          /* ═══ LA PASTILLE QUI SORTAIT DE SA CARTE ═══
+
+             Sur la capture de Steven, « Je donne [sprite] Kyogr... » s'etalait par-dessus
+             les deux tuiles voisines. La cause : trois elements en `white-space: nowrap`
+             cote a cote, dont le libelle de categorie, sans aucune largeur maximale ni
+             decoupe sur le conteneur. La pastille faisait donc la largeur de son contenu,
+             quelle que soit celle de la tuile.
+
+             Deux corrections, et la premiere est une SUPPRESSION : le libelle de categorie
+             degage. « Je donne » s'affichait sur chaque carte d'un onglet qui s'appelle
+             deja « peut donner », donc il repetait le titre de l'ecran en volant la moitie
+             de la largeur. C'est exactement l'information inutile que Steven demande de
+             retirer. Le sprite echange et son nom suffisent, et la fiche donne le detail.
+
+             Ensuite le conteneur est borne a la largeur de la tuile et decoupe ce qui
+             depasse, pour qu'aucune valeur de donnee ne puisse plus le faire grandir. */
+          <div
+            className="exchange-badge mt-auto"
+            style={{
+              marginTop: "auto", paddingTop: 4,
+              maxWidth: "100%", overflow: "hidden",
+              ...(hasTrainerBadge && { background: "color-mix(in srgb, var(--bon) 12%, transparent)", borderColor: "color-mix(in srgb, var(--bon) 40%, transparent)" }),
+            }}
+            title={`${entry.category === "want" ? "Je donne" : entry.category === "mirror" ? "Échange" : "Je reçois"} : ${entry.tradeForPokemonName}`}
+          >
             <PokemonSprite
               pokemonId={entry.tradeForPokemonId}
               alt={entry.tradeForPokemonName}
-              size={29}
+              size={26}
               shiny={entry.tradeForShiny === true}
               customSpriteUrl={entry.tradeForCustomSpriteUrl}
               preferStatic={preferStatic}
             />
-            <span style={{ fontSize: "0.75rem", color: "var(--encre)", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 70 }}>
+            <span style={{
+              fontSize: "0.75rem", color: "var(--encre)", fontWeight: 600,
+              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+              minWidth: 0,
+            }}>
               {entry.tradeForPokemonName}
             </span>
           </div>

@@ -46,6 +46,63 @@ const BASE = process.env.CHECK_URL ?? "http://localhost:3002";
  *  un defaut sur elle se compte six fois - et c'est exactement ce qui le rend prioritaire. */
 const PAGES = ["/", "/dresseurs", "/evenements", "/fonctionnalites", "/mon-espace", "/pas-encore-sortis"];
 
+/* ═══ LA PAGE QUI MANQUAIT, ET C'ETAIT LA PLUS IMPORTANTE ═══
+
+   Steven, le 2026-09-04, capture a l'appui : des tuiles de hauteurs inegales, une pastille
+   « Je donne » qui sort de sa carte et se pose sur les voisines, et l'icone Dynamax par
+   dessus les etiquettes.
+
+   Ce banc n'a jamais rien vu de tout ca, pour une raison simple : la liste ci-dessus ne
+   contient pas `/dresseurs/[id]`. Or c'est LA page du produit - celle qui affiche les
+   cartes Pokemon, avec leurs etiquettes, leurs fonds, leurs reservations. Les six autres
+   sont des listes et du texte.
+
+   Mesurer les pages faciles et laisser la seule page complexe hors du banc, c'est se
+   rassurer, pas se verifier.
+
+   L'identifiant n'est pas ecrit en dur : un identifiant fige serait faux le jour ou ce
+   dresseur disparait, et la sonde echouerait sur son propre exemple au lieu de mesurer
+   le site. Il vient de l'API et non du HTML de /dresseurs, qui charge ses dresseurs cote
+   client et ne contient donc aucun lien /dresseurs/<id> : premiere tentative faite
+   dessus, elle n'a rien trouve et le banc est reste vert en ne mesurant simplement pas
+   la page - exactement le silence que ce fichier combat ailleurs. */
+const dresseurs = await fetch(`${BASE}/api/trainers`)
+  .then((r) => (r.ok ? r.json() : []))
+  .catch(() => []);
+
+/* ═══ ON MESURE LES LISTES DE STEVEN, ET LES TROIS ═══
+
+   Premiere version : « le dresseur qui a le plus d'entrees ». Elle a choisi un catalogue de
+   213 Pokemon sans une seule note, taille, etiquette ni echange reserve - donc une page qui
+   n'exerce AUCUN des cas que Steven avait photographies. Le banc mesurait beaucoup de
+   cartes et aucun des defauts.
+
+   Steven, le 2026-09-04 : « choisis moi et regarde toutes mes listes (Vorthil) je suis le
+   meilleur a tester sur le site. » C'est la bonne source : ses listes portent les fonds, les
+   costumes, les reservations, les tailles. Le volume n'est pas la variete.
+
+   Et les TROIS categories, pas seulement la plus fournie : chacune affiche des elements
+   differents (« Dispo chez », « Recherche par », les pastilles d'echange), donc chacune a
+   ses propres facons de casser. Le fragment #0/#1/#2 dit quel onglet ouvrir. */
+const DRESSEUR_TEMOIN = "Vorthil";
+const temoin = Array.isArray(dresseurs)
+  ? dresseurs.find((d) => d?.name === DRESSEUR_TEMOIN)
+    // Repli sur le plus fourni si ce compte disparait : la sonde doit continuer a mesurer
+    // le coeur du produit plutot que d'echouer sur son propre exemple.
+    ?? (dresseurs.length > 0
+      ? dresseurs.reduce((a, b) => ((b?._count?.entries ?? 0) > (a?._count?.entries ?? 0) ? b : a))
+      : null)
+  : null;
+
+if (temoin?.id) {
+  if (temoin.name !== DRESSEUR_TEMOIN) {
+    console.log(`[!] ${DRESSEUR_TEMOIN} introuvable, repli sur ${temoin.name}.\n`);
+  }
+  for (const onglet of [0, 1, 2]) PAGES.push(`/dresseurs/${temoin.id}#${onglet}`);
+} else {
+  console.log("[!] Aucun dresseur trouve via /api/trainers : la page des cartes n'est PAS mesuree.\n");
+}
+
 /** 375px est l'iPhone SE, le plus petit ecran encore courant : ce qui passe la y passe
  *  partout. 768px attrape la tablette, ou beaucoup de sites cassent entre deux regles.
  *  1440px est le laptop de reference. */
@@ -172,6 +229,10 @@ page.on("pageerror", (e) => erreursJs.push(String(e).slice(0, 100)));
 for (const profil of PROFILS) {
   const { largeur, encoche, nom: nomProfil } = profil;
   for (const chemin of PAGES) {
+    /** Renseigne pour la page d un dresseur : quel onglet a ete ouvert et combien de
+     *  cartes il contient. Sert au libelle du releve, pour qu une ligne a zero carte se
+     *  voie au lieu de passer pour une page saine. */
+    let nomOnglet = "";
     await page.setViewportSize({ width: largeur, height: 900 });
     try {
       await page.goto(BASE + chemin, { waitUntil: "load", timeout: 45_000 });
@@ -215,6 +276,41 @@ for (const profil of PROFILS) {
 
     // Les particules et les listes montent apres le premier rendu.
     await page.waitForTimeout(1800);
+
+    /* ═══ SUR LA PAGE D'UN DRESSEUR, OUVRIR L'ONGLET LE PLUS FOURNI ═══
+
+       Premiere version : le banc mesurait 960px et zero defaut sur cette page. L'onglet
+       ouvert par defaut est « Echanges miroir », et le dresseur mesure en avait zero : la
+       sonde jugeait donc un ecran vide en annoncant que tout allait bien.
+
+       C'est le meme piege que partout ailleurs dans ce fichier - un controle qui ne mesure
+       rien reste vert. On ouvre donc l'onglet qui contient le plus d'entrees, parce que
+       c'est le pire cas de mise en page et le seul qui puisse reveler un defaut de tuiles. */
+    if (chemin.startsWith("/dresseurs/")) {
+      const indexOnglet = Number(chemin.split("#")[1] ?? 0);
+      const ouvert = await page.evaluate((i) => {
+        // Les trois onglets de categorie sont les seuls boutons dont le libelle finit par
+        // un compteur. On les prend dans l'ordre du DOM, qui est celui de
+        // CATEGORY_DISPLAY_ORDER : miroir, recherche, donne.
+        const onglets = [...document.querySelectorAll("button")]
+          .map((b) => ({ b, n: Number((b.textContent || "").match(/(\d+)\s*$/)?.[1] ?? -1) }))
+          .filter((x) => x.n >= 0);
+        if (!onglets[i]) return { trouve: false, n: 0 };
+        onglets[i].b.click();
+        return { trouve: true, n: onglets[i].n };
+      }, indexOnglet);
+
+      if (!ouvert.trouve) {
+        echecs.push(
+          `${chemin}@${nomProfil} : l'onglet de categorie ${indexOnglet} n'existe pas.\n`
+          + `        La page des cartes est mesuree a vide, donc elle n'est pas mesuree.`,
+        );
+      }
+      // Une categorie vide n'est PAS un echec : c'est un etat legitime du site. On le note
+      // dans le releve pour qu'on sache que cette ligne ne mesure pas de cartes.
+      nomOnglet = ouvert.n > 0 ? `#${indexOnglet} (${ouvert.n})` : `#${indexOnglet} vide`;
+      await page.waitForTimeout(1600);
+    }
 
     const m = await page.evaluate(({ cibleMin, texteMin, selecteurGrille }) => {
       const vw = window.innerWidth;
@@ -406,7 +502,10 @@ for (const profil of PROFILS) {
       selecteurGrille: COUT_PAR_ELEMENT[chemin]?.grille || null,
     });
 
-    tableau.push({ largeur, nomProfil, chemin, ...m });
+    // Libelle court : l identifiant d un dresseur fait 45 caracteres et decale toutes
+    // les colonnes du tableau, ce qui rend le releve illisible.
+    const libelle = chemin.startsWith("/dresseurs/") ? `/dresseurs ${nomOnglet}` : chemin;
+    tableau.push({ largeur, nomProfil, chemin: libelle, ...m });
 
     const ou = `${chemin}@${nomProfil}`;
     if (m.debordDocument > 0) {

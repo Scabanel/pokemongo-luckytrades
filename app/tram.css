@@ -284,7 +284,11 @@ body {
     transparent 1px
   );
   background-size: 22px 22px;
-  background-attachment: fixed;
+  /* PAS de background-attachment: fixed. Il y etait, et c'etait une erreur de ma part :
+     sur iOS un fond attache au viewport se repeint a chaque changement de hauteur, et la
+     hauteur change en continu pendant que la barre du navigateur se replie. C'est l'un des
+     deux amplificateurs du tremblement decrit par Steven. Le fond defile donc avec la page,
+     ce qui ne se voit pas sur une trame de points reguliere. */
 }
 
 /* ── Le connecteur de route ─────────────────────────────────────────────────────────────
@@ -395,4 +399,147 @@ body {
    verre depoli, qui n'a plus cours ici. */
 .site-nav-bloc {
   background: var(--papier);
+}
+
+/* ── La barre d'onglets ne doit pas trembler ────────────────────────────────────────────
+   Steven, sur Chrome iOS : « quand tu scrolles vers le bas et que le menu du navigateur
+   disparait, il y a du vide en dessous du menu et il gigotte quand on bouge. Il tremble de
+   bas en haut ne sachant pas ou s'afficher. »
+
+   Trois causes, traitees ensemble :
+
+     1. `min-height: 100dvh` sur le body, dont la valeur change pendant que la barre du
+        navigateur se replie. Passe a `svh` dans globals.css.
+     2. `background-attachment: fixed` sur le body, qui force le repeint d'un fond de la
+        taille du viewport a chaque changement de hauteur. Retire ci-dessus.
+     3. La barre elle-meme, recalculee par le moteur a chaque image parce qu'elle vit dans
+        la meme couche que le document. `translateZ(0)` la promeut sur sa propre couche de
+        composition : iOS la deplace alors sans repasser par la mise en page.
+
+   CE QUE JE NE PEUX PAS AFFIRMER : que ce soit resolu. Ce comportement appartient a la
+   facon dont iOS anime le repli de sa barre d'adresse, et je n'ai pas d'iPhone pour le
+   verifier - Chrome pilote ne reproduit pas ce repli du tout. Les trois causes ci-dessus
+   sont reelles et documentees, deux d'entre elles venaient de moi, mais c'est Steven qui
+   dira si le tremblement a disparu.
+
+   La solution structurelle, si celle-ci ne suffit pas : un chassis a hauteur fixe
+   (`height: 100svh` avec un conteneur interne qui defile, barre en position statique
+   dedans). Elle supprime le probleme par construction, parce que plus rien n'est fixe. Elle
+   demande en revanche de revoir le defilement des six pages et casse le header collant, qui
+   repose sur le defilement du document. C'est un chantier, pas un correctif. */
+@media (max-width: 640px) {
+  .mobile-tabs {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════════════
+   LA TUILE POKEMON EST UN CARRE
+
+   Steven, le 2026-09-04 : « Y'a pas un monde ou on peut pas avoir des tuiles en forme de
+   carre partout ? C'est pas possible avec tous les tags et tout j'imagine ? »
+
+   Si, c'est possible, et ce n'etait pas les etiquettes le probleme. Le probleme etait que
+   la tuile laissait son CONTENU decider de sa hauteur : onze blocs conditionnels empiles,
+   dont un champ de notes libre. Une rangee de grille prend la hauteur de sa carte la plus
+   bavarde, donc une seule note de deux lignes creusait du vide dans toutes ses voisines.
+   C'est exactement ce qu'on voyait sur sa capture.
+
+   En imposant le carre, le rapport s'inverse : la tuile fixe sa taille et le contenu s'y
+   plie. La grille devient alors parfaitement reguliere quelle que soit la donnee, et aucune
+   entree ne peut plus deformer ses voisines.
+
+   ═══ CE QUE CA COUTE, ET POURQUOI C'EST ACCEPTABLE ═══
+
+   Ce qui ne rentre pas est coupe. Ce serait inacceptable si l'information disparaissait,
+   mais elle ne disparait pas : la tuile s'ouvre au clic sur une fiche qui affiche tout, les
+   etiquettes au-dela de trois portent un « +N » avec la liste en infobulle, et les notes
+   tronquees gardent leur texte complet en `title`.
+
+   Une tuile est un APERCU. Elle doit permettre de reconnaitre un Pokemon et de decider si
+   on l'ouvre; elle n'a jamais eu a tout dire.
+   ═══════════════════════════════════════════════════════════════════════════════════════ */
+
+.tuile-pokemon {
+  aspect-ratio: 1;
+  /* Le decoupage est ce qui rend la promesse du carre vraie : sans lui, un contenu trop
+     grand deborderait de la tuile au lieu de s'y plier, et on aurait un carre qui bave.
+     Les deux badges qui pendaient hors de la carte (priorite, selection) sont rentres
+     dedans pour cette raison, voir components/PokemonCard.tsx. */
+  overflow: hidden;
+  justify-content: flex-start;
+}
+
+/* Le sprite ne prend qu'une part fixe de la tuile, au lieu de sa taille naturelle : c'est
+   ce qui laisse une place previsible au nom et aux etiquettes. */
+.tuile-pokemon > div:has(> img),
+.tuile-pokemon .pokemon-sprite {
+  flex: 0 0 auto;
+}
+
+/* Le nom : deux lignes au plus, coupees proprement. Un nom long comme
+   « Sablaireau d'Alola » en prend deja deux. */
+.tuile-pokemon h3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+/* ── Le contenu se plie a la tuile ──────────────────────────────────────────────────────
+   Premiere version du carre : geometriquement parfaite (toutes les tuiles carrees), et
+   inutilisable - 1 323 enfants depassaient de leur tuile, parce qu'un sprite dimensionne a
+   134px ne rentre pas dans un carre de 93px. Le decoupage cachait le probleme au lieu de
+   le resoudre : on obtenait des sprites coupes en deux.
+
+   Le sprite prend donc une PART de la tuile et non une taille absolue, et les elements du
+   bas s'effacent quand il n'y a plus de place. */
+
+/* Le bloc du sprite : la moitie de la tuile, pas 134px. */
+.tuile-pokemon > .mt-7 {
+  margin-top: 0 !important;
+  margin-bottom: 2px !important;
+  width: 56% !important;
+  max-width: 56% !important;
+  flex: 0 0 auto;
+}
+
+.tuile-pokemon h3 {
+  font-size: 0.75rem;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+/* Les etiquettes et le bas de tuile : une seule ligne, et on masque le surplus plutot que
+   de le laisser pousser. `flex-wrap: nowrap` avec decoupe garde l'alignement. */
+.tuile-pokemon > div.flex-wrap {
+  flex-wrap: nowrap !important;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* La pastille d'echange et les boutons de bas de tuile restent colles en bas, et le
+   `min-height: 0` autorise le conteneur flex a les comprimer au lieu de deborder. */
+.tuile-pokemon > * {
+  min-height: 0;
+  flex-shrink: 1;
+}
+
+/* ── La grille des tuiles s'adapte, elle ne compte pas les colonnes ─────────────────────
+   Le nombre de colonnes etait ecrit par palier : 3 sur mobile, 4, 5, 6, 7 ensuite. Avec des
+   tuiles carrees, ce choix decide de leur TAILLE, et 3 colonnes sur un ecran de 375px
+   donnaient des carres de 93px - un sprite illisible et des etiquettes coupees.
+
+   Passe a 2 colonnes en dur, les carres faisaient 146px et tout devenait lisible, mais la
+   liste de 253 Pokemon de Steven passait a 20 730px, soit 23 ecrans de telephone.
+
+   `auto-fill` avec un minimum de 132px resout les deux : la largeur disponible decide, et
+   la tuile ne descend jamais sous la taille ou elle devient illisible. Un iPhone SE (375px)
+   obtient 2 colonnes, un iPhone recent (393 a 430px) en obtient 3, une tablette 5, un
+   laptop 8. Il n'y a plus de paliers a maintenir, et surtout plus de largeur d'ecran ou la
+   tuile soit trop petite pour son contenu. */
+.grille-tuiles {
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
 }
