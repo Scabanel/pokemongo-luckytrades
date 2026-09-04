@@ -720,26 +720,65 @@ export default function PokemonCard({
           (e.currentTarget as HTMLDivElement).style.transform = "scale(1)";
         }}
       >
-        {/* Priority badge */}
-        {hasPriority && (
-          <div
-            style={{
-              // Descend sous l icone shiny quand elle occupe le coin haut gauche.
-              position: "absolute", top: isShiny ? 30 : 3, left: 3,
-              width: 26, height: 26, borderRadius: "50%",
-              background: priorityStyle!.bg,
-              border: `2px solid ${priorityStyle!.border}`,
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: "0.75rem", fontWeight: 800,
-              color: priorityStyle!.color,
-              fontFamily: "Exo 2, sans-serif",
-              boxShadow: priorityStyle!.shadow,
-              zIndex: 10,
-            }}
-          >
-            {entry.priority}
-          </div>
-        )}
+        {/* ═══ LA COLONNE DU COIN HAUT GAUCHE ═══
+
+            Steven : « Place mieux l'icone Dynamax et Gigamax. Il faut qu'ils soient
+            affiches juste en dessous de l'icone shiny, comme il est bien aligne la c'est
+            le bon endroit. »
+
+            Ces trois marqueurs - shiny, forme Dynamax/Gigamax, rang de priorite - se
+            posaient jusqu'ici chacun de son cote, avec des decalages calcules a la main du
+            genre `top: isShiny ? 30 : 3`. Cette arithmetique a deja produit un bug : le
+            sparkle avait herite de la condition du badge de priorite et se poussait
+            lui-meme a 30px alors qu'il ne s'affiche que quand isShiny est vrai.
+
+            Une colonne flex supprime le calcul. Chaque marqueur se place tout seul sous le
+            precedent, dans l'ordre du JSX, et en ajouter un quatrieme ne demandera de
+            toucher a aucun decalage. */}
+        <div
+          className="flex flex-col items-center"
+          style={{ position: "absolute", top: 3, left: 4, zIndex: 10, gap: 2 }}
+        >
+          {isShiny && (
+            <span
+              aria-label="Shiny"
+              title="Shiny"
+              style={{ fontSize: 16, lineHeight: 1 }}
+            >
+              ✨
+            </span>
+          )}
+
+          {/* Le logo officiel de la forme. Il etait pose en bas a droite du sprite, ou il
+              se melangeait au dessin; ici il rejoint les autres marqueurs d'etat, qui sont
+              tous des informations SUR la carte et non des elements du Pokemon. */}
+          {(isGigamax || isDynamax) && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={isGigamax ? "/gigamax.png" : "/dynamax.png"}
+              alt={isGigamax ? "Gigamax" : "Dynamax"}
+              title={isGigamax ? "Gigamax" : "Dynamax"}
+              style={{ width: 18, height: 18, display: "block" }}
+            />
+          )}
+
+          {hasPriority && (
+            <div
+              style={{
+                width: 22, height: 22, borderRadius: "50%",
+                background: priorityStyle!.bg,
+                border: `2px solid ${priorityStyle!.border}`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: "0.75rem", fontWeight: 800,
+                color: priorityStyle!.color,
+                fontFamily: "Exo 2, sans-serif",
+                boxShadow: priorityStyle!.shadow,
+              }}
+            >
+              {entry.priority}
+            </div>
+          )}
+        </div>
 
         {/* Sélection multiple (Mon espace uniquement) */}
         {selectable && (
@@ -766,44 +805,6 @@ export default function PokemonCard({
           />
         )}
 
-        {/* ═══ LE SHINY EST UNE ICONE, PAS UN MOT ═══
-
-            Steven, le 2026-09-04 : « Pareil shiny, en plus d'afficher le sprite shiny, ne
-            devrait afficher que l'icone shiny plutot que le texte qui va avec. En haut a
-            gauche c'est tres bien. »
-
-            « ✨ SHINY » occupait la moitie de la largeur d'une tuile pour dire ce que le
-            sprite shiny montre deja. L'icone seule garde le repere - on la cherche du coin
-            de l'oeil sur une grille - sans payer le mot. C'est la meme regle que pour les
-            etiquettes : ce qui est deja visible n'a pas a etre redit en texte.
-
-            Le sparkle est la seule exception a la regle « pas de symbole decoratif » du
-            projet, a la demande explicite de Steven, et c'est exactement son usage ici. */}
-        {isShiny && (
-          <span
-            aria-label="Shiny"
-            title="Shiny"
-            style={{
-              /* Steven : « l'icone shiny est illisible sur les tuiles. Mets juste la
-                 sparkle en haut a gauche de la tuile, dans le coin. Et pas un rond orange
-                 avec du jaune dessus ca ne va pas du tout. »
-
-                 Il a raison : le sparkle est deja jaune, donc l'enfermer dans une pastille
-                 doree revenait a poser du jaune sur du jaune. Le contraste tombait, et la
-                 pastille attirait l'oeil plus que le signe qu'elle contenait. Le sparkle
-                 seul, plus grand, se lit d'un coup et coute deux fois moins de place.
-
-                 Il etait en plus mal place : un remplacement global de ma part lui avait
-                 donne la condition du badge de priorite, `top: isShiny ? 30 : 3`, donc il
-                 se poussait lui-meme a 30px alors qu'il ne s'affiche que quand isShiny est
-                 vrai. Il n'a jamais ete dans le coin. */
-              position: "absolute", top: 2, left: 4, zIndex: 6,
-              fontSize: 16, lineHeight: 1,
-            }}
-          >
-            ✨
-          </span>
-        )}
 
         {/* Top-right badges.
             Decales vers le bas quand la selection multiple est active : le cercle de
@@ -929,19 +930,6 @@ export default function PokemonCard({
             gigantamaxSlug={gigantamaxSlug}
             gigantamaxIconUrl={gigantamaxIconUrl}
           />
-          {/* Le logo Dynamax/Gigamax, pose sur le SPRITE et non en bas de la tuile.
-              C'est une propriete de la forme du Pokemon, donc sa place est sur son image;
-              et surtout, plus rien ne s'empile sous lui, donc il ne peut plus recouvrir
-              une etiquette. */}
-          {(isGigamax || isDynamax) && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={isGigamax ? "/gigamax.png" : "/dynamax.png"}
-              alt={isGigamax ? "Gigamax" : "Dynamax"}
-              className="absolute"
-              style={{ bottom: 0, right: 0, width: 26, height: 26, zIndex: 2 }}
-            />
-          )}
         </div>
 
         {/* Name */}
