@@ -140,7 +140,24 @@ export default function PartageListe({
 
      Une bascule et une seule chaine : ce qui est affiche est exactement ce qui sera copie.
      C'est la seule facon de rendre un bouton de copie verifiable. */
-  const [shinyUniquement, setShinyUniquement] = useState(false);
+  /* ═══ LE DEFAUT SE DEDUIT DE LA LISTE, IL NE SE DEMANDE PAS ═══
+
+     Steven, le 2026-09-05 : « Pourquoi si je clique sur la liste miroir, ca me met juste
+     les numeros ? Alors qu'ils sont shiny ? »
+
+     La bascule etait a « non » par defaut, donc une liste entierement shiny produisait un
+     filtre qui ne parlait pas de shiny. C'etait lui demander de cocher une case pour
+     declarer une information que la donnee porte deja.
+
+     Quand TOUS les Pokemon de la liste sont shiny, le filtre part donc en mode shiny. La
+     bascule reste la pour elargir volontairement, et un choix explicite l'emporte toujours
+     sur le defaut - mais il est remis a zero au changement de categorie, pour que chaque
+     liste retrouve le defaut qui lui convient plutot que d'heriter du reglage de la
+     precedente. */
+  const [choixShiny, setChoixShiny] = useState<boolean | null>(null);
+  const tousShiny = entries.length > 0 && entries.every((e) => e.shiny === true);
+  const shinyUniquement = choixShiny ?? tousShiny;
+
   const filtreShiny = construireFiltre(entries, { seulementShiny: true });
   const filtre = construireFiltre(entries, { seulementShiny: shinyUniquement });
 
@@ -220,7 +237,7 @@ export default function PartageListe({
                     <button
                       key={k}
                       type="button"
-                      onClick={() => setChoisie(k)}
+                      onClick={() => { setChoisie(k); setChoixShiny(null); }}
                       aria-pressed={actif}
                       style={{
                         minHeight: 44, padding: "0 12px", borderRadius: 999,
@@ -253,7 +270,7 @@ export default function PartageListe({
                 {filtreShiny && (
                   <button
                     type="button"
-                    onClick={() => setShinyUniquement((v) => !v)}
+                    onClick={() => setChoixShiny(!shinyUniquement)}
                     aria-pressed={shinyUniquement}
                     style={{
                       minHeight: 44, padding: "0 14px", marginBottom: 10,
