@@ -463,12 +463,17 @@ body {
 
 .tuile-pokemon {
   aspect-ratio: 1;
+  /* Le contenu est centre VERTICALEMENT dans la tuile.
+     Il etait cale en haut, ce qui laissait un vide sous le nom des cartes courtes et
+     donnait une grille visuellement irreguliere alors que les tuiles, elles, sont
+     identiques. Steven : « Fait un effort pour centrer les elements et sprites quand
+     meme. » */
+  justify-content: center;
   /* Le decoupage est ce qui rend la promesse du carre vraie : sans lui, un contenu trop
      grand deborderait de la tuile au lieu de s'y plier, et on aurait un carre qui bave.
      Les deux badges qui pendaient hors de la carte (priorite, selection) sont rentres
      dedans pour cette raison, voir components/PokemonCard.tsx. */
   overflow: hidden;
-  justify-content: flex-start;
 }
 
 /* Le sprite ne prend qu'une part fixe de la tuile, au lieu de sa taille naturelle : c'est
@@ -498,11 +503,23 @@ body {
    bas s'effacent quand il n'y a plus de place. */
 
 /* Le bloc du sprite : la moitie de la tuile, pas 134px. */
+/* ═══ LA TAILLE DU SPRITE, ET POURQUOI LES GIGAMAX PARAISSAIENT PETITS ═══
+
+   56 % au depart, quand la tuile portait encore un nom, des etiquettes et une ligne d'etat.
+   Les etiquettes ayant disparu, la place est libre : 66 %.
+
+   Mais la vraie cause de « Dracaufeu gigamax c'est pas dingue » est ailleurs, et la mesure
+   l'a montree : les sprites normaux font 256x256, les GIGAMAX non - 163x150, 165x104,
+   247x126. Dans une boite carree, object-fit: contain ajuste une image large sur sa
+   LARGEUR et laisse jusqu'a un tiers de la hauteur vide. Le sujet paraissait donc petit et
+   flottant, alors que le centrage etait exact (decalage mesure : 0px sur toutes les cartes).
+
+   Agrandir la boite agrandit donc directement ces sprites-la, qui etaient les plus penalises. */
 .tuile-pokemon > .mt-7 {
   margin-top: 0 !important;
   margin-bottom: 2px !important;
-  width: 56% !important;
-  max-width: 56% !important;
+  width: 74% !important;
+  max-width: 74% !important;
   flex: 0 0 auto;
 }
 
