@@ -235,3 +235,86 @@ donc gelés à ce qui est mesuré, avec 2 % de marge, et ils ne peuvent que desc
 - **Aucun vrai téléphone n'a été testé.** Chrome piloté à 375px n'est ni iOS Safari ni
   Chrome Android : polices, défilement inertiel et unités de viewport avec la barre du
   navigateur ne sont pas éprouvés.
+
+---
+
+## Lot 7 - Les événements ne montrent plus que ce qui est jouable ici
+
+Demandé par Steven le 2026-09-04, après la refonte : « il faut que les évènements
+n'affichent que les événements majeurs qui concernent strasbourg en vrai. Y'en a trop. Ceux
+qui sont en cours. Et ceux à venir uniquement. »
+
+### Ce qui était déjà en place
+
+La page séparait déjà « En cours » et « À venir » et n'affichait aucun événement terminé.
+Cette moitié de la demande ne nécessitait aucun changement, et le dire est plus utile que
+de faire semblant de la corriger.
+
+### Le vrai problème : la moitié des cartes étaient injouables
+
+Sur 60 cartes affichées, 26 étaient géolocalisées ailleurs : chasses aux tampons au Japon,
+musée des fossiles à Chicago, PokéPark à Tokyo, City Safari à Brisbane, Lisbonne, Munich,
+Rio, Boston. Les faire défiler coûte au lecteur exactement le même effort que les vraies,
+pour zéro information utile.
+
+La règle est dans `lib/evenements-pertinents.ts` :
+
+- pas de parenthèse dans le titre  ->  événement mondial, jouable ici, gardé;
+- une parenthèse  ->  c'est une géographie, gardée seulement si elle cite la France;
+- sauf les familles d'une seule ville (City Safari, PokéPark, Safari Zone, musées,
+  observatoires), écartées même en France : depuis Strasbourg, Marseille n'est pas plus
+  accessible que Lisbonne.
+
+Quatre entrées de plus sont écartées sur un autre critère : `category` est nulle, et ces
+quatre entrées sont exactement les « Pleine Lune ». Une phase lunaire n'est pas un événement
+du jeu, et la source n'a pas su la classer parce qu'il n'y avait rien à classer.
+
+**Résultat : 60 cartes -> 30. La page passe de 8 898px à 4 524px sur mobile.**
+
+Trois Community Day à venir arrivaient titrés « ? » parce que Niantic n'a pas encore révélé
+le Pokémon vedette. Ils affichent désormais leur catégorie comme nom, et disent pourquoi il
+manque un nom, au lieu d'une carte anonyme.
+
+### Ce que la sonde a attrapé, et que la relecture n'avait pas vu
+
+`npm run check:evenements` a trouvé deux bugs réels dès son premier passage :
+
+1. **Le LEGO Store, seul événement France de tout le flux, était écarté.** Le découpage de
+   « (France, Allemagne, ..., en Pologne et au Royaume-Uni) » laisse une espace devant
+   chaque morceau, donc « en pologne » ne matchait pas l'ancre `^(en|au|aux)\s+` et passait
+   pour un nom de ville. Il fallait couper les espaces AVANT de retirer l'article.
+2. **Une de ses propres règles était fausse.** Elle cherchait un pays lointain dans les
+   titres gardés, ce qui condamne tout événement multi-pays - un événement disponible dans
+   six pays en cite forcément cinq de lointains. Le critère n'était pas la présence d'un
+   ailleurs, mais l'absence de la France.
+
+La sonde échoue dans les deux sens, vérifié en cassant la règle exprès : filtre désactivé
+-> 35 échecs; filtre trop serré -> 29 échecs.
+
+## Une correction de méthode : un plafond en pixels absolus était le mauvais outil
+
+Découvert en poussant en production. Le rebase sur `origin/main` a ramené 22 commits du cron
+(backup quotidien, refresh des événements), `/evenements` est passée de 8 040 à 8 898px, et
+`check:mobile` est passée au rouge. Aucune régression : le flux avait simplement gagné des
+événements.
+
+Un plafond en pixels absolus sur une page nourrie par un cron quotidien vire au rouge tous
+les quelques jours pour une raison qui n'est pas un défaut. **Et une sonde qui crie au loup
+finit ignorée : c'est la même panne que la sonde muette, prise par l'autre bout.** Dans les
+deux cas elle cesse de dire quoi que ce soit.
+
+Ce qu'on veut tenir n'est pas la longueur de la page, c'est le coût d'UNE carte. `/evenements`
+et `/dresseurs` sont donc jugées sur un budget par carte - 140px et 58px, mesurés à 131 et
+53 - et non plus sur `HAUTEUR_MAX`. Le budget se mesure sur la GRILLE et pas sur le
+document : diviser la hauteur de la page par le nombre de cartes ferait entrer l'en-tête et
+le pied dans le coût d'une carte, invisible à 60 cartes mais faux à 10.
+
+Vérifié que les trois cas se comportent bien : budget serré -> vert; budget abaissé à 100 ->
+rouge avec le chiffre; classe de grille renommée -> rouge en disant qu'il ne mesure plus
+rien, au lieu de passer au vert sur zéro carte.
+
+### Ce que la sonde des événements ne couvre pas
+
+L'INTÉRÊT d'un événement. Elle garantit que ce qui reste est jouable depuis Strasbourg, pas
+que ça vaut le détour. Classer les 30 restants par importance serait un jugement éditorial,
+et un script ne le rendrait pas plus vrai.

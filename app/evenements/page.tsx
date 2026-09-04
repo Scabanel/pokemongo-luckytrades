@@ -4,18 +4,13 @@ import ParticleBackground from "@/components/ParticleBackground";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import events from "@/data/upcoming-events.json";
+import {
+  concerneStrasbourg, motifExclusion, nomAffiche, MOTIF_NON_CLASSE, type EvenementBrut,
+} from "@/lib/evenements-pertinents";
 
 const EVENT_COLOR = "#ffd93d";
 
-type EventEntry = {
-  id: string;
-  title: string;
-  category: string | null;
-  start: number;
-  end: number;
-  url: string | null;
-  image: string | null;
-};
+type EventEntry = EvenementBrut;
 
 function formatRange(start: number, end: number) {
   const startDate = new Date(start);
@@ -34,8 +29,23 @@ function formatRange(start: number, end: number) {
 export default function EvenementsPage() {
   const now = Date.now();
   const typed = events as EventEntry[];
-  const ongoing = typed.filter((e) => e.start <= now && e.end >= now);
-  const upcoming = typed.filter((e) => e.start > now);
+
+  // Le flux mélange les régions du monde : chasses aux tampons au Japon, musée des fossiles
+  // à Chicago, City Safari à Brisbane. La règle est dans lib/evenements-pertinents.ts et
+  // vérifiée par `npm run check:evenements`.
+  const actifs = typed.filter((e) => e.end >= now);
+  const pertinents = actifs.filter(concerneStrasbourg);
+
+  // On ne compte que les exclusions GEOGRAPHIQUES : ce sont les seules dont le lecteur perd
+  // quelque chose. Les entrees sans categorie sont des phases lunaires, annoncer « 4 de plus
+  // sont caches » ne lui apprendrait rien qu'il puisse vouloir.
+  const ecartesAilleurs = actifs.filter((e) => {
+    const motif = motifExclusion(e);
+    return motif !== null && motif !== MOTIF_NON_CLASSE;
+  }).length;
+
+  const ongoing = pertinents.filter((e) => e.start <= now);
+  const upcoming = pertinents.filter((e) => e.start > now);
 
   return (
     <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
@@ -59,8 +69,15 @@ export default function EvenementsPage() {
             Événements Pokémon GO
           </h1>
           <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 6 }}>
-            Community Day, raids spéciaux, saisons et événements locaux, en cours ou à venir.
+            Community Day, raids spéciaux, saisons et ligues, en cours ou à venir.
           </p>
+          {/* Dire ce qui est retiré, et sur quel critère. Un filtre muet donne l'impression
+              que la page est incomplète; celui-ci se justifie en une ligne. */}
+          {ecartesAilleurs > 0 && (
+            <p style={{ color: "rgba(232,237,245,0.3)", fontSize: "0.75rem", marginTop: 4 }}>
+              {ecartesAilleurs} événements réservés à d&apos;autres régions ne sont pas affichés.
+            </p>
+          )}
         </header>
 
         <EventSection title="En cours" events={ongoing} emptyText="Aucun événement en cours." />
@@ -92,7 +109,11 @@ function EventSection({ title, events, emptyText }: { title: string; events: Eve
         <p style={{ color: "rgba(232,237,245,0.3)", padding: 16 }}>{emptyText}</p>
       ) : (
         <div className="grid event-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(165px, 1fr))" }}>
-          {events.map((e) => (
+          {events.map((e) => {
+            // Un seul appel : quand le titre manque, nomAffiche renvoie la CATEGORIE comme
+            // nom, et l'afficher aussi en pastille l'ecrirait deux fois sur la meme carte.
+            const { nom, note } = nomAffiche(e);
+            return (
             <a
               key={e.id}
               href={e.url ?? undefined}
@@ -107,7 +128,7 @@ function EventSection({ title, events, emptyText }: { title: string; events: Eve
                 style={{ width: "100%", height: 120, objectFit: "cover" }} />
               )}
               <div style={{ padding: 14 }}>
-                {e.category && (
+                {e.category && !note && (
                   <span
                     style={{
                       display: "inline-block",
@@ -126,14 +147,20 @@ function EventSection({ title, events, emptyText }: { title: string; events: Eve
                   </span>
                 )}
                 <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#e8edf5", marginBottom: 4 }}>
-                  {e.title}
+                  {nom}
                 </div>
+                {note && (
+                  <div style={{ color: "rgba(232,237,245,0.35)", fontSize: "0.75rem", marginBottom: 4, fontStyle: "italic" }}>
+                    {note}
+                  </div>
+                )}
                 <div style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.75rem" }}>
                   {formatRange(e.start, e.end)}
                 </div>
               </div>
             </a>
-          ))}
+            );
+          })}
         </div>
       )}
     </section>
