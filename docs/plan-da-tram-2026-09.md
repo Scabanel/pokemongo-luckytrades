@@ -86,12 +86,6 @@ tokens en JavaScript. C'est la seule exception, et `check:da` la nomme explicite
 
 ## Résultats
 
-À remplir au fur et à mesure, avec les mesures avant et après.
-
----
-
-## Résultats
-
 Tout est sur `v2-refonte-da`. **Rien n'est en production.**
 
 ### Ce qui a été fait
