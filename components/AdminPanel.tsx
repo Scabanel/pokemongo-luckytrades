@@ -18,6 +18,7 @@ import BulkAddPicker from "./BulkAddPicker";
 import CopyPogoShinyFilterButton from "./CopyPogoShinyFilterButton";
 import { detectCostumeGender, isCostumeShinyReleased, AVAILABLE_SPECIES, DYNAMAX_AVAILABLE_SPECIES, GIGANTAMAX_AVAILABLE_SPECIES } from "@/lib/spriteVariants";
 import { POKEMON_SIZES } from "@/lib/entryMatching";
+import GrilleParRegion from "@/components/GrilleParRegion";
 
 // La liste des dresseurs en admin inclut toujours le compte d'entrées
 // (contrairement à PokemonEntry.trainer ailleurs, qui n'en a pas besoin).
@@ -1029,8 +1030,11 @@ function EntrySection({
           Aucune entrée
         </div>
       ) : (
-        <div className="grid grille-tuiles gap-3">
-          {entries.map((entry) => {
+        /* Meme mise en page que la page publique d'un dresseur, par le meme composant :
+           voir components/GrilleParRegion.tsx pour la raison. */
+        <GrilleParRegion
+          entries={entries}
+          carte={(entry) => {
             const editable = canEditEntry(entry);
             return (
               <PokemonCard
@@ -1050,8 +1054,8 @@ function EntrySection({
                 onQuantityChange={(delta) => onQuantityChange(entry, delta)}
               />
             );
-          })}
-        </div>
+          }}
+        />
       )}
     </div>
   );

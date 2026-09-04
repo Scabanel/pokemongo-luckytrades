@@ -15,7 +15,7 @@ import type { PokemonEntry, EntryCategory, Trainer } from "@/lib/types";
 import { CATEGORIES, CATEGORY_DISPLAY_ORDER } from "@/lib/categories";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
 import { entriesMatch } from "@/lib/entryMatching";
-import { ancreDe, decouperParRegion } from "@/lib/generations";
+import GrilleParRegion from "@/components/GrilleParRegion";
 
 // Chargé à la demande seulement (voir plus bas) : cette page publique est
 // visitée par n'importe qui, y compris sans être connecté, et EntryForm
@@ -208,10 +208,6 @@ export default function DresseurPageClient({ id }: { id: string }) {
     .filter((e) => matchesEntryFilters(e, search, filters))
     .filter((e) => !onlyOwned || !showOnlyOwnedToggle || viewerOwnEntries.some((mine) => entriesMatch(e, mine)))
     .filter((e) => !onlyWanted || !showOnlyWantedToggle || viewerActiveWants.some((mine) => entriesMatch(mine, e)));
-  // Les sections de region, calculees sur ce qui est REELLEMENT affiche : filtrer par
-  // shiny doit reduire les sections, pas laisser des titres de region vides derriere.
-  const sections = decouperParRegion(visibleEntries);
-
   const anyFilterActive =
     search.trim() !== "" ||
     Object.values(filters).some(Boolean) ||
@@ -490,101 +486,25 @@ export default function DresseurPageClient({ id }: { id: string }) {
               {anyFilterActive ? "Aucun résultat pour ces filtres." : "Rien ici pour le moment."}
             </p>
           ) : (
-            /* ═══ DECOUPE PAR REGION, ET BARRE DE SAUT ═══
-
-               Steven : « comment faire pour visualiser au mieux l'ensemble ? Car tout
-               scroller c'est un enfer. Aussi il faudrait afficher des separateurs selon
-               les regions / generations. »
-
-               Les deux demandes se repondent. Une liste de 253 Pokemon est penible parce
-               qu'elle n'a aucun point de repere : on ne sait ni ou on est, ni combien il
-               reste. Decoupee en regions elle en gagne neuf, et ces neuf reperes servent
-               aussi de DESTINATIONS - on saute a Sinnoh au lieu de defiler jusqu'a Sinnoh.
-
-               La barre de saut n'apparait qu'a partir de deux regions : sur une liste qui
-               tient dans une seule, elle proposerait de sauter la ou on est deja. */
-            <>
-              {sections.length > 1 && (
-                <nav
-                  aria-label="Aller à une région"
-                  className="flex flex-wrap gap-2 justify-center"
-                  style={{
-                    marginBottom: 16, paddingBottom: 14,
-                    borderBottom: "var(--trait-fin) solid var(--trait-leger)",
-                  }}
-                >
-                  {sections.map(({ borne, entries: lot }) => (
-                    <a
-                      key={ancreDe(borne)}
-                      href={`#${ancreDe(borne)}`}
-                      style={{
-                        minHeight: 44, minWidth: 44, padding: "0 12px",
-                        display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
-                        borderRadius: 999, textDecoration: "none",
-                        border: "var(--trait-moyen) solid var(--encre)",
-                        background: "var(--surface)", color: "var(--encre)",
-                        fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.8125rem",
-                      }}
-                    >
-                      {borne.region}
-                      <span style={{
-                        background: "var(--surface-creuse)", borderRadius: 999,
-                        padding: "0 6px", fontSize: "0.75rem", fontWeight: 800,
-                        fontVariantNumeric: "tabular-nums",
-                      }}>{lot.length}</span>
-                    </a>
-                  ))}
-                </nav>
+            /* Meme mise en page que « Mon espace », par le meme composant : voir
+               components/GrilleParRegion.tsx pour la raison. */
+            <GrilleParRegion
+              entries={visibleEntries}
+              carte={(entry) => (
+                <PokemonCard
+                  key={entry.id}
+                  entry={entry}
+                  allEntries={allEntries}
+                  viewerTrainerId={viewerTrainerId}
+                  showTrainerBadge={false}
+                  canEdit={isAdmin}
+                  onEdit={isAdmin ? () => setEditingEntry(entry) : undefined}
+                  onDelete={isAdmin ? () => handleDeleteEntry(entry.id) : undefined}
+                  onComplete={isAdmin ? () => handleCompleteEntry(entry) : undefined}
+                  onQuantityChange={isAdmin ? (delta) => handleQuantityChange(entry, delta) : undefined}
+                />
               )}
-
-              {sections.map(({ borne, entries: lot }) => (
-                <section key={ancreDe(borne)} style={{ marginBottom: 24 }}>
-                  {/* Le titre de region est COLLANT : sur une liste longue, un separateur
-                      qu'on a depasse ne sert plus a rien. Colle sous le header et son
-                      bandeau, il dit en permanence ou on se trouve. */}
-                  <h2
-                    id={ancreDe(borne)}
-                    className="station"
-                    style={{
-                      position: "sticky", top: 44, zIndex: 5,
-                      background: "var(--papier)",
-                      padding: "8px 0",
-                      marginBottom: 10,
-                      fontFamily: "Exo 2, sans-serif", fontWeight: 800, fontSize: "1rem",
-                      color: "var(--encre)", textTransform: "uppercase", letterSpacing: "0.04em",
-                      // Compense la barre collante du haut, sinon l'ancre place le titre
-                      // dessous et on croit avoir rate son saut.
-                      scrollMarginTop: 56,
-                    }}
-                  >
-                    {borne.region}
-                    <span style={{
-                      marginLeft: 8, color: "var(--encre-tres-douce)", fontWeight: 700,
-                      fontSize: "0.8125rem", fontVariantNumeric: "tabular-nums",
-                    }}>
-                      {lot.length}
-                    </span>
-                  </h2>
-                  <div className="grid grille-tuiles gap-3">
-                    {lot.map((entry, i) => (
-                      <PokemonCard
-                        key={entry.id}
-                        entry={entry}
-                        allEntries={allEntries}
-                        viewerTrainerId={viewerTrainerId}
-                        showTrainerBadge={false}
-                        style={{ animationDelay: `${Math.min(i, 12) * 0.04}s` }}
-                        canEdit={isAdmin}
-                        onEdit={isAdmin ? () => setEditingEntry(entry) : undefined}
-                        onDelete={isAdmin ? () => handleDeleteEntry(entry.id) : undefined}
-                        onComplete={isAdmin ? () => handleCompleteEntry(entry) : undefined}
-                        onQuantityChange={isAdmin ? (delta) => handleQuantityChange(entry, delta) : undefined}
-                      />
-                    ))}
-                  </div>
-                </section>
-              ))}
-            </>
+            />
           )}
         </div>
       </div>

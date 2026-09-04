@@ -520,11 +520,23 @@ body {
   max-width: 100%;
 }
 
-/* La pastille d'echange et les boutons de bas de tuile restent colles en bas, et le
-   `min-height: 0` autorise le conteneur flex a les comprimer au lieu de deborder. */
+/* ═══ RIEN NE SE COMPRIME DANS UNE TUILE ═══
+
+   Ce bloc autorisait la compression : `flex-shrink: 1` sur tous les enfants, pour qu ils
+   se tassent au lieu de deborder. Vu sur telephone, le resultat etait pire que le
+   debordement : les pastilles ecrasees a \« gi \», \« f \», \« o \», et les textes qui se
+   chevauchaient parce qu un bloc comprime sous la hauteur de sa ligne passe sur son voisin.
+
+   Une pastille illisible n informe pas, elle occupe. Donc plus aucune compression : ce qui
+   tient s affiche, ce qui ne tient pas est coupe net par l `overflow: hidden` de la
+   tuile, et la fiche porte le detail complet. */
 .tuile-pokemon > * {
-  min-height: 0;
-  flex-shrink: 1;
+  flex-shrink: 0;
+}
+
+/* Les pastilles ne rapetissent jamais : elles tiennent ou elles sortent du cadre. */
+.tuile-pokemon > div.flex-wrap > * {
+  flex: 0 0 auto;
 }
 
 /* ── La grille des tuiles s'adapte, elle ne compte pas les colonnes ─────────────────────

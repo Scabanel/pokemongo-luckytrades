@@ -1,5 +1,4 @@
 import donnees from "@/data/generations.json";
-import type { PokemonEntry } from "@/lib/types";
 
 /* ═══════════════════════════════════════════════════════════════════════════════════════
    DECOUPER UNE LISTE PAR REGION
@@ -26,7 +25,13 @@ export function regionDe(pokemonId: number): Borne | null {
   return BORNES.find((b) => pokemonId >= b.du && pokemonId <= b.au) ?? null;
 }
 
-export type Section = { borne: Borne; entries: PokemonEntry[] };
+/** Le strict minimum pour ranger une entree : son numero, son identite, et son rang.
+ *  Generique parce que « Mon espace » et la page publique d'un dresseur portent deux types
+ *  d'entree legerement differents (l'un exige shiny/completed, l'autre les rend optionnels),
+ *  et qu'une fonction de rangement n'a aucune raison de connaitre le reste. */
+export type Rangeable = { id: string; pokemonId: number; priority?: number | null };
+
+export type Section<T extends Rangeable = Rangeable> = { borne: Borne; entries: T[] };
 
 /** La section de tete, pour les Pokemon que le dresseur a classes 1, 2 ou 3. */
 const PRIORITES: Borne = { generation: 0, region: "Priorités", du: 0, au: 0, especes: 0 };
@@ -57,12 +62,12 @@ const HORS_BORNES: Borne = { generation: 999, region: "Nouvelle génération", d
  * Les regions vides ne produisent pas de section : un separateur « Kalos 0 » sur une liste
  * sans Pokemon de Kalos est du bruit, pas un repere.
  */
-export function decouperParRegion(entries: PokemonEntry[]): Section[] {
+export function decouperParRegion<T extends Rangeable>(entries: T[]): Section<T>[] {
   const prioritaires = entries.filter((e) => e.priority === 1 || e.priority === 2 || e.priority === 3);
   const prioritaireIds = new Set(prioritaires.map((e) => e.id));
   const reste = entries.filter((e) => !prioritaireIds.has(e.id));
 
-  const parGeneration = new Map<number, Section>();
+  const parGeneration = new Map<number, Section<T>>();
   for (const entry of reste) {
     const borne = regionDe(entry.pokemonId) ?? HORS_BORNES;
     const section = parGeneration.get(borne.generation);
@@ -70,7 +75,7 @@ export function decouperParRegion(entries: PokemonEntry[]): Section[] {
     else parGeneration.set(borne.generation, { borne, entries: [entry] });
   }
 
-  const sections = [...parGeneration.values()].sort((a, b) => a.borne.generation - b.borne.generation);
+  const sections: Section<T>[] = [...parGeneration.values()].sort((a, b) => a.borne.generation - b.borne.generation);
   if (prioritaires.length > 0) sections.unshift({ borne: PRIORITES, entries: prioritaires });
   return sections;
 }

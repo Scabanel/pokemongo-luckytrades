@@ -80,11 +80,23 @@ body {
      tremblement que Steven a decrit sur Chrome iOS : « il gigotte quand on bouge, il
      tremble de bas en haut ne sachant pas ou s'afficher ».
 
-     `svh` est la hauteur avec la barre du navigateur VISIBLE. Elle ne change pas quand la
-     barre se replie, donc la mise en page cesse de bouger. Le prix est un fond legerement
-     plus court que l'ecran quand la barre est repliee, ce qui ne se voit pas puisque le
-     body porte une couleur pleine. */
-  min-height: 100svh;
+     Premier essai : `svh`, la hauteur avec la barre du navigateur VISIBLE. Constante, donc
+     plus de tremblement - mais Steven a immediatement signale l'effet de bord : « en bas de
+     liste quand c'est terminé je peux partir vers l'infini et l'au delà ». Le body etant
+     dimensionne sur la PLUS PETITE hauteur, il devient plus court que la zone visible des
+     que la barre se replie, et on voit le fond nu sous la barre d'onglets restee en place.
+
+     `lvh` est la hauteur avec la barre du navigateur REPLIEE, donc la plus grande. Elle est
+     constante comme `svh` - pas de tremblement - et toujours superieure ou egale a la zone
+     visible, donc plus de vide. C'est aussi ce que vaut `vh` sur iOS, donc la meme valeur
+     que le `min-h-screen` porte par la racine de chaque page : les deux cessent d'etre en
+     desaccord.
+
+     Le prix : quand la barre du navigateur est visible, le body depasse legerement la zone
+     visible, donc une page courte devient defilable de la hauteur de cette barre. Un
+     defilement de quelques dizaines de pixels sur une page vide est un bien moindre defaut
+     qu'un trou de plusieurs centaines. */
+  min-height: 100lvh;
   overflow-x: hidden;
   overscroll-behavior-y: contain;
   padding-bottom: var(--footer-height);

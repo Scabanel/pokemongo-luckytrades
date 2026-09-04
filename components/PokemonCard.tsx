@@ -49,6 +49,7 @@ const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> =
   fond:         { bg: "color-mix(in srgb, var(--tag-fond) 20%, transparent)",  text: "var(--tag-fond)", border: "color-mix(in srgb, var(--tag-fond) 50%, transparent)" },
   legendaire:   { bg: "color-mix(in srgb, var(--or) 20%, transparent)",    text: "var(--or)", border: "color-mix(in srgb, var(--or) 50%, transparent)" },
 };
+
 const DEFAULT_TAG_COLOR = { bg: "color-mix(in srgb, var(--tag-neutre) 15%, transparent)", text: "var(--tag-neutre)", border: "color-mix(in srgb, var(--tag-neutre) 40%, transparent)" };
 function getTagColor(tag: string) { return TAG_COLORS[tag.toLowerCase()] ?? DEFAULT_TAG_COLOR; }
 
@@ -201,6 +202,7 @@ export default function PokemonCard({
   const isShiny = entry.shiny === true || (entry.notes?.toLowerCase().includes("shiny") ?? false);
   const hasPriority = entry.priority != null && entry.priority >= 1 && entry.priority <= 10;
   const priorityStyle = hasPriority ? getPriorityStyle(entry.priority!) : null;
+
   const tags = parseTags(entry.tags);
   // Badge "légendaire" calculé au rendu (voir LEGENDARY_SPECIES plus haut),
   // jamais stocké en base : ajouté uniquement à la liste affichée, pas à
@@ -318,6 +320,44 @@ export default function PokemonCard({
       entriesMatch(entry, other)
     );
   }, [allEntries, viewerTrainerId, isOwnEntry, entry]);
+
+  /* ═══════════════════════════════════════════════════════════════════════════════════
+     UNE SEULE LIGNE SOUS LE NOM
+
+     Steven, capture a l'appui : « C'est illisible. Corrige le probleme ! »
+
+     La tuile pouvait empiler SIX lignes secondaires - reserve par, etiquettes, notes,
+     pastille d'echange, « N dispo », « N recherche », « Recherche ! ». Sur un carre de
+     146px il y a la place pour le sprite, le nom, et une ligne. J'avais essaye de faire
+     tenir les six en autorisant la compression : le resultat etait des pastilles ecrasees
+     a « gi », « f », « o » et des textes qui se chevauchaient. Comprimer six choses dans
+     la place d'une ne donne pas six choses plus petites, ca donne six choses illisibles.
+
+     Une seule ligne s'affiche donc, choisie par ordre d'importance pour quelqu'un qui
+     PARCOURT une grille :
+
+       1. reserve   l'entree est prise. C'est l'etat qui change tout, avant l'identite.
+       2. echange   contre quoi elle part, si ce n'est pas encore attribue a quelqu'un.
+       3. signal    « Recherche ! », « Toi aussi en miroir ! » : la correspondance avec le
+                    visiteur, plus utile qu'un costume.
+       4. qualificatifs  costume, taille, legendaire : l'identite fine du Pokemon.
+       5. action    « N dispo », « N recherche » : utile mais consultable en ouvrant.
+
+     Les notes ne sont plus sur la tuile du tout : un champ libre n'a pas de longueur
+     previsible, donc pas de place previsible. Tout le reste est dans la fiche, qui s'ouvre
+     au clic et ne manque pas de place.
+     ═══════════════════════════════════════════════════════════════════════════════════ */
+  // Les etiquettes ne comptent plus : elles ne sont plus affichees sur la tuile. Les
+  // laisser dans cette condition ferait choisir la ligne « qualificatifs » pour une entree
+  // dont le seul qualificatif est une etiquette, et la ligne s'afficherait vide.
+  const aQualificatifsVisibles = !!entry.size || !!entry.exclusiveMove;
+  const ligneTuile: "reserve" | "echange" | "signal" | "qualificatifs" | "action" | null =
+    entry.tradePartnerName ? "reserve"
+    : (entry.tradeForPokemonName && entry.tradeForPokemonId) ? "echange"
+    : (viewerWantsThis || viewerHasThis) ? "signal"
+    : aQualificatifsVisibles ? "qualificatifs"
+    : (availableFrom.length > 0 || wantedBy.length > 0) ? "action"
+    : null;
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -684,7 +724,8 @@ export default function PokemonCard({
         {hasPriority && (
           <div
             style={{
-              position: "absolute", top: 3, left: 3,
+              // Descend sous l icone shiny quand elle occupe le coin haut gauche.
+              position: "absolute", top: isShiny ? 30 : 3, left: 3,
               width: 26, height: 26, borderRadius: "50%",
               background: priorityStyle!.bg,
               border: `2px solid ${priorityStyle!.border}`,
@@ -725,6 +766,36 @@ export default function PokemonCard({
           />
         )}
 
+        {/* ═══ LE SHINY EST UNE ICONE, PAS UN MOT ═══
+
+            Steven, le 2026-09-04 : « Pareil shiny, en plus d'afficher le sprite shiny, ne
+            devrait afficher que l'icone shiny plutot que le texte qui va avec. En haut a
+            gauche c'est tres bien. »
+
+            « ✨ SHINY » occupait la moitie de la largeur d'une tuile pour dire ce que le
+            sprite shiny montre deja. L'icone seule garde le repere - on la cherche du coin
+            de l'oeil sur une grille - sans payer le mot. C'est la meme regle que pour les
+            etiquettes : ce qui est deja visible n'a pas a etre redit en texte.
+
+            Le sparkle est la seule exception a la regle « pas de symbole decoratif » du
+            projet, a la demande explicite de Steven, et c'est exactement son usage ici. */}
+        {isShiny && (
+          <span
+            aria-label="Shiny"
+            title="Shiny"
+            style={{
+              // Descend sous l icone shiny quand elle occupe le coin haut gauche.
+              position: "absolute", top: isShiny ? 30 : 3, left: 3, zIndex: 6,
+              width: 22, height: 22, borderRadius: "50%",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              background: "var(--or)", color: "var(--or-encre)",
+              fontSize: 12, lineHeight: 1,
+            }}
+          >
+            ✨
+          </span>
+        )}
+
         {/* Top-right badges.
             Decales vers le bas quand la selection multiple est active : le cercle de
             selection occupe desormais ce coin, apres etre rentre dans la carte pour
@@ -757,28 +828,44 @@ export default function PokemonCard({
               MIROIR
             </div>
           )}
-          {isShiny && (
-            <div
-              style={{
-                background: "color-mix(in srgb, var(--encre) 18%, transparent)",
-                border: "1px solid color-mix(in srgb, var(--encre) 50%, transparent)",
-                borderRadius: 8,
-                padding: "1px 6px",
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                color: "var(--encre)",
-                fontFamily: "Exo 2, sans-serif",
-                letterSpacing: "0.04em",
-              }}
-            >
-              ✨ SHINY
-            </div>
-          )}
+          {/* Le badge shiny a quitte cette colonne : il est devenu une icone seule, en
+              haut a gauche. Voir plus haut. */}
+
         </div>
 
         {/* Le logo Dynamax/Gigamax a quitte le bas de la tuile : voir le bloc du sprite,
             ou il est desormais pose. Il etait ancre en bas a droite, la ou s'empilent les
             etiquettes, et passait dessus - signale par Steven, capture a l'appui. */}
+
+        {/* ═══ LA LOUPE, POUR DIRE QUE LA TUILE S'OUVRE ═══
+
+            Steven, le 2026-09-04 : « il faut pas afficher les notes des dresseurs sur les
+            tuiles aussi. C'est trop risque. Un icone de loupe sera mieux. Les gens
+            cliqueront sur les tuiles. »
+
+            Les notes sont un champ libre : leur longueur est imprevisible, donc la hauteur
+            de la tuile l'etait aussi. Elles ont quitte la tuile. Mais retirer une
+            information sans dire ou elle est passee, c'est la perdre : la loupe est le
+            signal qu'il y a plus a voir, et que c'est ici qu'on appuie.
+
+            Dessinee en SVG et non en emoji : la regle du projet interdit les symboles
+            decoratifs dans l'interface, avec le sparkle du shiny pour seule exception. Un
+            trace vectoriel n'est pas un caractere, il suit la couleur du texte, et il reste
+            net a toutes les tailles. */}
+        <span
+          aria-hidden="true"
+          style={{
+            position: "absolute", bottom: 4, right: 4, zIndex: 4,
+            width: 16, height: 16, color: "var(--encre-tres-douce)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            pointerEvents: "none",
+          }}
+        >
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="6.8" cy="6.8" r="4.4" />
+            <line x1="10.2" y1="10.2" x2="14" y2="14" strokeLinecap="round" />
+          </svg>
+        </span>
 
         {/* Trainer pill */}
         {hasTrainerBadge && entry.trainer && (
@@ -861,7 +948,7 @@ export default function PokemonCard({
         </h3>
 
         {/* Réservé par : qui a accepté l'échange (voir tradePartnerName) */}
-        {entry.tradePartnerName && (
+        {ligneTuile === "reserve" && entry.tradePartnerName && (
           <p
             className="text-center"
             style={{ fontSize: "0.75rem", color: "var(--encre)", fontWeight: 700, marginBottom: 2, lineHeight: 1.2 }}
@@ -885,7 +972,7 @@ export default function PokemonCard({
             Pokemon - donc elles tiennent sur une seule ligne qui passe a la ligne si besoin,
             avec un plafond a trois et un « +N » pour le reste. Le detail complet reste dans
             la fiche, qui s'ouvre au clic. */}
-        {(() => {
+        {ligneTuile === "qualificatifs" && (() => {
           const qualificatifs: { cle: string; texte: string; couleurs: { bg: string; text: string; border: string } }[] = [];
           if (entry.size) {
             qualificatifs.push({
@@ -899,12 +986,47 @@ export default function PokemonCard({
               couleurs: { bg: "var(--surface-creuse)", text: "var(--encre)", border: "var(--encre)" },
             });
           }
-          for (const tag of displayTags) {
-            qualificatifs.push({ cle: `tag-${tag}`, texte: tag, couleurs: getTagColor(tag) });
-          }
+          /* ═══ LES ETIQUETTES QUI NE DISENT RIEN NE S'AFFICHENT PAS ═══
+
+             Steven, le 2026-09-04, capture a l'appui : « C'est illisible. Deja pas besoin
+             d'afficher les tags fonds ou dynamax ou gigamax si ca se voit avec les fonds ou
+             icones ! »
+
+             Il a raison, et c'est le coeur du probleme de place :
+
+               « fond »              le fond d'evenement EST l'image de fond de la tuile;
+               « dynamax »/« gigamax »  le logo officiel est pose sur le sprite.
+
+             Ces trois etiquettes repetaient donc en mots ce que la tuile montrait deja en
+             image, et elles mangeaient toute la largeur - au point que les pastilles
+             restantes se retrouvaient ecrasees a « gi », « f », « o ». Une etiquette n'a de
+             valeur que si elle ajoute une information invisible autrement.
+
+             Elles restent dans la fiche, ou la place ne manque pas et ou elles servent de
+             rappel explicite. */
+          /* ═══ AUCUNE ETIQUETTE SUR LA TUILE ═══
+
+             Steven, le 2026-09-04 : « Justement retire les etiquettes creees c'est plus
+             utile ! Legendaire pas besoin de l'afficher sur la tuile le filtre fera le
+             travail. »
+
+             Sa regle est simple et elle se tient : ce que le FILTRE sait trouver, ou que
+             l'IMAGE montre deja, n'a rien a faire sur la tuile. Shiny, fond, costume,
+             gigamax, dynamax, legendaire ont tous leur pastille de filtre en haut de page,
+             et le costume comme le fond se voient sur la carte. Les afficher en mots
+             revenait a payer de la place pour redire ce qui est deja accessible autrement.
+
+             Il reste ce que ni le filtre ni l'image ne donnent : le record de TAILLE et
+             l'ATTAQUE EXCLUSIVE. Aucun des deux n'a de pastille de filtre (voir
+             ENTRY_FILTER_CHIPS), aucun des deux ne se lit sur le sprite, et les deux
+             changent la valeur d'un echange.
+
+             Toutes les etiquettes restent dans la fiche, qui s'ouvre au clic. */
           if (qualificatifs.length === 0) return null;
 
-          const MAX = 3;
+          // Deux au plus, et non trois : sur un carre de 146px, une troisieme pastille
+          // pousse la ligne a deux hauteurs et fait deborder le budget de la tuile.
+          const MAX = 2;
           const visibles = qualificatifs.slice(0, MAX);
           const reste = qualificatifs.length - visibles.length;
           return (
@@ -918,10 +1040,12 @@ export default function PokemonCard({
                   borderRadius: 999, padding: "1px 6px",
                   fontSize: "0.75rem", fontWeight: 700, color: q.couleurs.text,
                   fontFamily: "Exo 2, sans-serif",
-                  // Pas de `nowrap` : un tag long doit se couper plutot que de pousser la
-                  // tuile au-dela de sa colonne.
-                  overflowWrap: "anywhere", maxWidth: "100%",
-                }}>{q.texte}</span>
+                  // Une pastille ne rapetisse pas et ne se casse pas sur deux lignes :
+                  // elle se TRONQUE. « legendaire » debordait de 6px a droite faute de
+                  // pouvoir faire l'un ou l'autre. Le libelle complet reste en infobulle.
+                  maxWidth: "100%", whiteSpace: "nowrap",
+                  overflow: "hidden", textOverflow: "ellipsis",
+                }} title={q.texte}>{q.texte}</span>
               ))}
               {reste > 0 && (
                 <span
@@ -938,26 +1062,14 @@ export default function PokemonCard({
           );
         })()}
 
-        {/* Les notes, sur UNE ligne au plus.
-            C'etait le principal responsable des hauteurs inegales : un champ libre, donc
-            une hauteur libre - « Cape Terres Sauvages » sur une carte, rien sur la voisine.
-            Le texte entier reste dans la fiche. */}
-        {entry.notes && (
-          <p
-            className="text-center"
-            style={{
-              fontSize: "0.75rem", color: "var(--encre-douce)", marginBottom: 4,
-              maxWidth: "100%", whiteSpace: "nowrap", overflow: "hidden",
-              textOverflow: "ellipsis", lineHeight: 1.3,
-            }}
-            title={entry.notes}
-          >
-            {entry.notes}
-          </p>
-        )}
+        {/* Les notes ne sont PLUS sur la tuile. Un champ libre n'a pas de longueur
+            previsible, donc pas de place previsible : c'etait le principal responsable des
+            hauteurs inegales, et sur un carre il n'y a de place que pour UNE ligne
+            secondaire, qui sert a dire un etat (reserve, echange) plutot qu'un commentaire.
+            Le texte entier est dans la fiche, qui s'ouvre au clic. */}
 
         {/* Exchange badge */}
-        {entry.tradeForPokemonName && entry.tradeForPokemonId && (
+        {ligneTuile === "echange" && entry.tradeForPokemonName && entry.tradeForPokemonId && (
           /* ═══ LA PASTILLE QUI SORTAIT DE SA CARTE ═══
 
              Sur la capture de Steven, « Je donne [sprite] Kyogr... » s'etalait par-dessus
@@ -1002,7 +1114,7 @@ export default function PokemonCard({
         )}
 
         {/* Dispo chez d'autres dresseurs (want uniquement, pas déjà associé) */}
-        {availableFrom.length > 0 && (
+        {ligneTuile === "action" && availableFrom.length > 0 && (
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); setShowAvailableFrom(true); }}
@@ -1026,7 +1138,7 @@ export default function PokemonCard({
 
         {/* Symétrique de "Dispo chez" mais côté "Je peux donner" : qui
             recherche ce Pokémon précis (voir wantedBy plus haut). */}
-        {wantedBy.length > 0 && (
+        {ligneTuile === "action" && wantedBy.length > 0 && (
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); setShowWantedBy(true); }}
@@ -1046,7 +1158,7 @@ export default function PokemonCard({
             précis le recherche lui-même dans sa propre liste. Sur sa liste
             "miroir" : ce visiteur l'a AUSSI en miroir (voir viewerWantsThis
             plus haut, deux bassins de matching séparés). */}
-        {viewerWantsThis && (
+        {ligneTuile === "signal" && viewerWantsThis && (
           <div
             className="mt-auto"
             style={{
@@ -1062,7 +1174,7 @@ export default function PokemonCard({
 
         {/* Symétrique : sur la liste "recherche" d'un AUTRE dresseur, ce
             visiteur peut lui-même donner ce Pokémon. */}
-        {viewerHasThis && (
+        {ligneTuile === "signal" && viewerHasThis && (
           <div
             className="mt-auto"
             style={{
