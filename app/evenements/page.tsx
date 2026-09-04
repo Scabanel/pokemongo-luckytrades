@@ -8,7 +8,7 @@ import {
   concerneStrasbourg, motifExclusion, nomAffiche, MOTIF_NON_CLASSE, type EvenementBrut,
 } from "@/lib/evenements-pertinents";
 
-const EVENT_COLOR = "#ffd93d";
+const EVENT_COLOR = "var(--encre)";
 
 type EventEntry = EvenementBrut;
 
@@ -48,7 +48,7 @@ export default function EvenementsPage() {
   const upcoming = pertinents.filter((e) => e.start > now);
 
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "var(--papier)" }}>
       <ParticleBackground />
       <div className="scanlines" />
 
@@ -63,18 +63,18 @@ export default function EvenementsPage() {
               fontWeight: 900,
               color: EVENT_COLOR,
               textTransform: "uppercase",
-              textShadow: "0 0 8px rgba(255,217,61,0.28)",
+              textShadow: "none",
             }}
           >
             Événements Pokémon GO
           </h1>
-          <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 6 }}>
+          <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", marginTop: 6 }}>
             Community Day, raids spéciaux, saisons et ligues, en cours ou à venir.
           </p>
           {/* Dire ce qui est retiré, et sur quel critère. Un filtre muet donne l'impression
               que la page est incomplète; celui-ci se justifie en une ligne. */}
           {ecartesAilleurs > 0 && (
-            <p style={{ color: "rgba(232,237,245,0.3)", fontSize: "0.75rem", marginTop: 4 }}>
+            <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.75rem", marginTop: 4 }}>
               {ecartesAilleurs} événements réservés à d&apos;autres régions ne sont pas affichés.
             </p>
           )}
@@ -106,7 +106,7 @@ function EventSection({ title, events, emptyText }: { title: string; events: Eve
         {title} ({events.length})
       </h2>
       {events.length === 0 ? (
-        <p style={{ color: "rgba(232,237,245,0.3)", padding: 16 }}>{emptyText}</p>
+        <p style={{ color: "var(--encre-tres-douce)", padding: 16 }}>{emptyText}</p>
       ) : (
         <div className="grid event-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(165px, 1fr))" }}>
           {events.map((e) => {
@@ -146,15 +146,15 @@ function EventSection({ title, events, emptyText }: { title: string; events: Eve
                     {e.category}
                   </span>
                 )}
-                <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#e8edf5", marginBottom: 4 }}>
+                <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--encre)", marginBottom: 4 }}>
                   {nom}
                 </div>
                 {note && (
-                  <div style={{ color: "rgba(232,237,245,0.35)", fontSize: "0.75rem", marginBottom: 4, fontStyle: "italic" }}>
+                  <div style={{ color: "var(--encre-tres-douce)", fontSize: "0.75rem", marginBottom: 4, fontStyle: "italic" }}>
                     {note}
                   </div>
                 )}
-                <div style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.75rem" }}>
+                <div style={{ color: "var(--encre-tres-douce)", fontSize: "0.75rem" }}>
                   {formatRange(e.start, e.end)}
                 </div>
               </div>

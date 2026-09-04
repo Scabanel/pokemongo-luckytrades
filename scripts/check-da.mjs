@@ -134,6 +134,22 @@ for (const [avant, arriere, seuil, quoi] of PAIRES) {
 const CANVAS = ["components/ParticleBackground.tsx"];
 const IGNORES = ["node_modules", ".next", ".git", "public", "backups", "data", "docs", "scripts"];
 
+/**
+ * Le code, sans les commentaires.
+ *
+ * Sans ca, la sonde echouait sur sa propre documentation : `tram.css` explique en prose
+ * que « #ffd700 comptait 190 usages », et cette phrase etait comptee comme une couleur en
+ * dur. Un controle qui reproche a un commentaire d'expliquer le controle finit desactive,
+ * et c'est la panne que tout ce depot cherche a eviter.
+ *
+ * Les `//` ne sont retires qu'en debut de ligne : `https://` vit au milieu des chaines.
+ */
+function sansCommentaires(texte) {
+  return texte
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/^\s*\/\/.*$/gm, "");
+}
+
 const fichiers = [];
 (function marcher(dossier) {
   for (const nom of readdirSync(dossier)) {
@@ -153,7 +169,7 @@ const enDur = [];
 for (const f of fichiers) {
   const rel = relative(RACINE, f).split("\\").join("/");
   if (rel === TOKENS || CANVAS.includes(rel)) continue;
-  const s = readFileSync(f, "utf8");
+  const s = sansCommentaires(readFileSync(f, "utf8"));
   let n = 0;
   for (const [ligne] of s.split("\n").entries()) void ligne;
   s.split("\n").forEach((texte, i) => {
@@ -211,7 +227,7 @@ const INTERDITS = [
 for (const f of fichiers) {
   const rel = relative(RACINE, f).split("\\").join("/");
   if (rel === TOKENS) continue;
-  const s = readFileSync(f, "utf8");
+  const s = sansCommentaires(readFileSync(f, "utf8"));
   for (const [motif, nom, pourquoi] of INTERDITS) {
     const n = (s.match(motif) || []).length;
     if (n > 0) echecs.push(`${rel} : ${n} ${nom}. ${pourquoi}.`);

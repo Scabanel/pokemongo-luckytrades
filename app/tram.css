@@ -1,0 +1,213 @@
+/* ═══════════════════════════════════════════════════════════════════════════════════════
+   LE LANGAGE DU PLAN DE RESEAU
+
+   Importe APRES globals.css, dont il reprend les selecteurs pour les redefinir. Les noms
+   de classe restent ceux du JSX existant (`.glass-card`, `.btn-primary`...) : renommer
+   trois cents attributs `className` n'aurait rien apporte visuellement et aurait multiplie
+   les occasions de casser du JSX.
+
+   ═══ LE PRINCIPE, EN UNE PHRASE ═══
+
+   Le mobilier est noir et blanc, la couleur n'appartient qu'aux lignes.
+
+   C'est ce qui distingue un plan de reseau d'une interface coloree : le cadre, les
+   libelles, les traits sont a l'encre; le violet, le teal et l'ambre ne servent qu'a dire
+   de quelle categorie d'echange on parle. #ffd700 comptait 190 usages dans l'ancienne
+   version - la couleur de tout, donc la couleur de rien.
+
+   ═══ CE QUI A DISPARU, ET POURQUOI ═══
+
+   Verre depoli, halos, ombres portees, degrades, scanlines, filigrane lumineux. Ils
+   hierarchisaient par la lueur, ce qui exige un fond sombre. Sur du papier, un halo
+   devient une salissure. Ici c'est l'EPAISSEUR DU TRAIT qui hierarchise : 1px pour une
+   separation, 2px pour une carte, 3px pour ce qui est actif.
+   ═══════════════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Le fond de page : plus de texture ──────────────────────────────────────────────── */
+
+body {
+  background: var(--papier);
+  color: var(--encre);
+}
+
+/* Le grain et les scanlines etaient de la texture d'ecran cathodique. Neutralises par
+   `content: none` plutot que supprimes du JSX : le composant `.scanlines` est rendu par
+   six pages, et le retirer de chacune aurait touche six fichiers pour zero pixel. */
+body::after { content: none; }
+.scanlines { display: none; }
+.watermark-text { display: none; }
+
+/* Les animations de lueur n'ont plus d'objet. On garde les classes pour ne pas toucher au
+   JSX, mais elles ne font plus rien. */
+.animate-glow-pulse,
+.glitch-title,
+.neon-text,
+.neon-yellow { animation: none; text-shadow: none; }
+
+/* ── La carte : blanche, cernee, sans ombre ─────────────────────────────────────────── */
+
+.glass-card {
+  background: var(--surface);
+  border: var(--trait-moyen) solid var(--encre);
+  border-radius: var(--rayon);
+  box-shadow: none;
+  transition: border-color 0.12s ease, transform 0.12s ease;
+}
+
+/* Au survol, le trait s'epaissit visuellement par assombrissement plutot que par un
+   deplacement : sur une grille de soixante cartes, un `translateY` fait sauter la mise en
+   page ligne par ligne au passage de la souris. */
+.glass-card:hover {
+  border-color: var(--encre);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Les boutons : aplats francs, cernes ────────────────────────────────────────────── */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-success {
+  font-family: "Exo 2", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: var(--rayon-pastille);
+  border: var(--trait-moyen) solid var(--encre);
+  box-shadow: none;
+  text-shadow: none;
+  transition: background 0.12s ease, color 0.12s ease;
+  /* Plancher tactile tenu a toutes les largeurs, verifie par check:mobile. */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 16px;
+}
+
+/* L'action principale est la seule a inverser encre et papier : sur un plan, ce qui est
+   plein attire l'oeil avant ce qui est cerne. */
+.btn-primary { background: var(--encre); color: var(--surface); }
+.btn-primary:hover { background: var(--encre-douce); color: var(--surface); }
+.btn-primary:disabled { background: var(--surface-creuse); color: var(--encre-tres-douce); border-color: var(--trait-leger); }
+
+.btn-secondary { background: var(--surface); color: var(--encre); }
+.btn-secondary:hover { background: var(--surface-creuse); }
+
+/* Le rouge ne sert qu'a la destruction et au manquant. Il n'est jamais decoratif, sinon
+   il cesse d'alerter. */
+.btn-danger { background: var(--surface); color: var(--alerte); border-color: var(--alerte); }
+.btn-danger:hover { background: var(--alerte-pale); }
+
+.btn-success { background: var(--surface); color: var(--bon); border-color: var(--bon); }
+.btn-success:hover { background: var(--bon-pale); }
+
+/* ── Les champs ─────────────────────────────────────────────────────────────────────── */
+
+.glass-input {
+  background: var(--surface);
+  color: var(--encre);
+  border: var(--trait-moyen) solid var(--trait-leger);
+  border-radius: 8px;
+  box-shadow: none;
+  min-height: 44px;
+}
+.glass-input:focus {
+  border-color: var(--encre);
+  outline: var(--trait-moyen) solid var(--encre);
+  outline-offset: 1px;
+  box-shadow: none;
+}
+.glass-input::placeholder { color: var(--encre-tres-douce); }
+.glass-input option { background: var(--surface); color: var(--encre); }
+.toast-glass { background: var(--surface); border: var(--trait-moyen) solid var(--encre); box-shadow: none; }
+
+/* ── Les pastilles : une station porte un nom, un aplat pale porte une ligne ────────── */
+
+.trainer-pill,
+.exchange-badge {
+  border-radius: var(--rayon-pastille);
+  box-shadow: none;
+  text-shadow: none;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+/* Les trois lignes du reseau. `.section-want` et `.section-give` existaient deja et
+   portaient un degrade; elles portent maintenant le filet de leur ligne. */
+.section-want,
+.section-give,
+.section-mirror {
+  background: none;
+  border-left: var(--trait-fort) solid var(--ligne-cherche);
+  padding-left: 12px;
+  border-radius: 0;
+}
+.section-give { border-left-color: var(--ligne-donne); }
+.section-mirror { border-left-color: var(--ligne-miroir); }
+
+/* ── Le header : une barre de plan, pas une vitre ──────────────────────────────────── */
+
+.site-nav {
+  background: var(--surface);
+  border-bottom: var(--trait-fort) solid var(--encre);
+}
+.site-nav-link {
+  border-radius: var(--rayon-pastille);
+  border-width: var(--trait-moyen) !important;
+}
+
+.site-footer {
+  background: var(--surface);
+  border-top: var(--trait-fin) solid var(--trait-leger);
+}
+
+/* ── La barre d'onglets : cinq stations sur une ligne ──────────────────────────────── */
+
+@media (max-width: 640px) {
+  .mobile-tabs {
+    background: var(--surface);
+    border-top: var(--trait-fort) solid var(--encre);
+  }
+  .mobile-tab {
+    color: var(--encre-douce);
+    /* Un trait vertical entre les stations, a l'encre et non en blanc translucide. */
+    border-left: var(--trait-fin) solid var(--trait-leger);
+  }
+  .mobile-tab:first-child { border-left: none; }
+  /* L'onglet courant : aplat pale et lisere plein. Le lisere est un `inset`, donc il
+     survit a la regle qui interdit les ombres portees, et c'en est bien un trait. */
+  .mobile-tab-active {
+    color: var(--encre);
+    background: var(--surface-creuse);
+    box-shadow: inset 0 var(--trait-fort) 0 0 var(--encre);
+  }
+}
+
+/* ── Les squelettes de chargement ──────────────────────────────────────────────────── */
+
+.skeleton {
+  background: var(--surface-creuse);
+  animation: none;
+}
+
+/* ── La pastille de station ─────────────────────────────────────────────────────────────
+   Le seul motif VRAIMENT nouveau de cette DA, et le seul qui merite de l'etre : un titre
+   de section porte le point d'une station, comme sur un plan. Applique aux titres de
+   categorie et aux noms de dresseur. */
+
+.station {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+.station::before {
+  content: "";
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: var(--trait-fort) solid currentColor;
+  flex: 0 0 auto;
+}

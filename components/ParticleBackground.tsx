@@ -2,227 +2,107 @@
 
 import { useEffect, useRef } from "react";
 
-function drawStar(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
-  const inner = r * 0.28;
-  ctx.beginPath();
-  for (let i = 0; i < 8; i++) {
-    const angle = (i * Math.PI) / 4;
-    const radius = i % 2 === 0 ? r : inner;
-    const px = x + Math.cos(angle - Math.PI / 2) * radius;
-    const py = y + Math.sin(angle - Math.PI / 2) * radius;
-    if (i === 0) ctx.moveTo(px, py);
-    else ctx.lineTo(px, py);
-  }
-  ctx.closePath();
-}
+/* ═══════════════════════════════════════════════════════════════════════════════════════
+   LE RESEAU EN FILIGRANE
 
-const COLORS = [
-  { r: 255, g: 215, b: 0 },   // or
-  { r: 255, g: 193, b: 7 },   // ambre
-  { r: 255, g: 236, b: 100 }, // or pâle
-  { r: 255, g: 167, b: 38 },  // ambre foncé
-  { r: 255, g: 248, b: 190 }, // blanc doré
-];
+   Ce composant peignait des particules dorees flottantes : la signature de l'ancienne DA,
+   ou tout etait pose sur un fond quasi noir. Sur du papier clair, les memes particules
+   ressemblent a de la salissure, et l'or n'a plus le droit de servir de decor - il ne dit
+   plus que le shiny et la chance.
 
-type ParticleType = "bokeh" | "orb" | "star";
+   A la place, un plan de reseau tres pale : quelques lignes diagonales aux couleurs des
+   trois categories du site, avec leurs stations. C'est le seul endroit ou la DA se montre
+   pour elle-meme, et elle y reste sous les 8 % d'opacite : un fond qu'on remarque est un
+   fond rate.
 
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  radius: number;
-  color: { r: number; g: number; b: number };
-  alpha: number;
-  alphaDir: number;
-  rotation: number;
-  rotationSpeed: number;
-  type: ParticleType;
-}
+   ═══ POURQUOI C'EST STATIQUE ═══
 
-function spawnParticle(w: number, h: number, fromBottom = false): Particle {
-  const roll = Math.random();
-  const type: ParticleType = roll < 0.22 ? "bokeh" : roll < 0.52 ? "star" : "orb";
-  const radius =
-    type === "bokeh" ? Math.random() * 55 + 20 :
-    type === "orb"   ? Math.random() * 6 + 2.5 :
-                       Math.random() * 4.5 + 2;
+   Un plan de reseau ne bouge pas. Et le site sert surtout sur telephone : une animation
+   permanente sur six pages, c'est une boucle d'animation qui tourne en continu pour un
+   decor a 7 % d'opacite. On dessine une fois, puis au redimensionnement.
 
-  const y = fromBottom
-    ? h + radius
-    : type === "bokeh"
-      ? h * (0.4 + Math.random() * 0.6)
-      : Math.random() * h;
+   ═══ POURQUOI DU CANVAS ET DES COULEURS LUES EN JS ═══
 
-  return {
-    x: Math.random() * w,
-    y,
-    vx: (Math.random() - 0.5) * 0.28,
-    vy: -(Math.random() * (type === "bokeh" ? 0.22 : 0.5) + 0.08),
-    radius,
-    color: COLORS[Math.floor(Math.random() * COLORS.length)],
-    alpha: type === "bokeh"
-      ? Math.random() * 0.13 + 0.04
-      : Math.random() * 0.5 + 0.15,
-    alphaDir: (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 0.005 + 0.002),
-    rotation: Math.random() * Math.PI * 2,
-    rotationSpeed: (Math.random() - 0.5) * 0.025,
-    type,
-  };
-}
+   `var(--ligne-miroir)` n'existe pas dans un contexte canvas. Les valeurs sont donc lues
+   sur l'element racine au moment du rendu, ce qui garde app/tokens.css comme source
+   unique malgre tout. C'est la seule exception a la regle « aucune couleur en dur », et
+   scripts/check-da.mjs nomme ce fichier explicitement pour qu'elle reste une exception.
+   ═══════════════════════════════════════════════════════════════════════════════════════ */
+
+/** Les trois lignes du reseau, dans l'ordre ou elles se croisent a l'ecran. */
+const LIGNES = ["--ligne-miroir", "--ligne-cherche", "--ligne-donne"];
+
+/** Assez pale pour ne jamais concurrencer le contenu, assez present pour se voir. */
+const OPACITE = 0.07;
 
 export default function ParticleBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animRef = useRef<number>(0);
-  const particlesRef = useRef<Particle[]>([]);
+  const toile = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const c = toile.current;
+    if (!c) return;
+    const ctx = c.getContext("2d");
     if (!ctx) return;
 
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
+    const styles = getComputedStyle(document.documentElement);
+    const couleurs = LIGNES.map((n) => styles.getPropertyValue(n).trim() || "#888");
 
-    const count = Math.min(85, Math.floor((window.innerWidth * window.innerHeight) / 10000));
-    particlesRef.current = Array.from({ length: count }, () =>
-      spawnParticle(window.innerWidth, window.innerHeight, false)
-    );
+    function dessiner() {
+      if (!c || !ctx) return;
+      // Le rapport de pixels : sans lui, un trait de 3px est flou sur un ecran de
+      // telephone, et un plan flou n'est plus un plan.
+      const dpr = window.devicePixelRatio || 1;
+      const l = window.innerWidth;
+      const h = window.innerHeight;
+      c.width = l * dpr;
+      c.height = h * dpr;
+      c.style.width = `${l}px`;
+      c.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, l, h);
+      ctx.globalAlpha = OPACITE;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
 
-    const drawBottomAura = (cx: number, strength: number) => {
-      const h = canvas.height;
-      const r = h * 0.62;
-      const grad = ctx.createRadialGradient(cx, h, 0, cx, h, r);
-      grad.addColorStop(0,   `rgba(255, 200, 0, ${0.22 * strength})`);
-      grad.addColorStop(0.25, `rgba(255, 170, 0, ${0.12 * strength})`);
-      grad.addColorStop(0.55, `rgba(255, 140, 0, ${0.05 * strength})`);
-      grad.addColorStop(1,   `rgba(255, 100, 0, 0)`);
-      ctx.beginPath();
-      ctx.ellipse(cx, h, r * 0.95, r, 0, 0, Math.PI * 2);
-      ctx.fillStyle = grad;
-      ctx.fill();
-    };
+      // Chaque ligne descend en diagonale avec un coude, comme sur un plan de reseau ou
+      // les traces ne suivent jamais la geographie exacte mais des angles francs.
+      couleurs.forEach((couleur, i) => {
+        const depart = h * (0.12 + i * 0.24);
+        const coude = l * (0.34 + i * 0.16);
+        const arrivee = depart + h * 0.3;
 
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = couleur;
+        ctx.lineWidth = 10;
+        ctx.beginPath();
+        ctx.moveTo(-40, depart);
+        ctx.lineTo(coude, depart);
+        ctx.lineTo(coude + (arrivee - depart), arrivee);
+        ctx.lineTo(l + 40, arrivee);
+        ctx.stroke();
 
-      // Grandes auras dorées au bas de l'écran
-      drawBottomAura(canvas.width * 0.5,  1.0);
-      drawBottomAura(canvas.width * 0.22, 0.55);
-      drawBottomAura(canvas.width * 0.78, 0.55);
-
-      for (let i = 0; i < particlesRef.current.length; i++) {
-        const p = particlesRef.current[i];
-
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha += p.alphaDir;
-        p.rotation += p.rotationSpeed;
-
-        const maxAlpha = p.type === "bokeh" ? 0.18 : 0.72;
-        if (p.alpha <= 0.02 || p.alpha >= maxAlpha) p.alphaDir *= -1;
-
-        // Sortie par les côtés → réapparition côté opposé
-        if (p.x < -p.radius * 2) p.x = canvas.width + p.radius;
-        if (p.x > canvas.width + p.radius * 2) p.x = -p.radius;
-
-        // Sortie par le haut → respawn au bas
-        if (p.y < -p.radius * 2) {
-          particlesRef.current[i] = spawnParticle(canvas.width, canvas.height, true);
-          continue;
+        // Les stations : un disque plein cercle de blanc, exactement comme sur un plan.
+        for (const [x, y] of [[coude, depart], [coude + (arrivee - depart), arrivee]] as const) {
+          ctx.beginPath();
+          ctx.arc(x, y, 9, 0, Math.PI * 2);
+          ctx.fillStyle = styles.getPropertyValue("--surface").trim() || "#fff";
+          ctx.fill();
+          ctx.lineWidth = 5;
+          ctx.stroke();
         }
+      });
+      ctx.globalAlpha = 1;
+    }
 
-        const { r, g, b } = p.color;
-
-        if (p.type === "bokeh") {
-          // Grand bokeh doux
-          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
-          grad.addColorStop(0,   `rgba(${r},${g},${b},${p.alpha})`);
-          grad.addColorStop(0.45, `rgba(${r},${g},${b},${p.alpha * 0.45})`);
-          grad.addColorStop(1,   `rgba(${r},${g},${b},0)`);
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.fillStyle = grad;
-          ctx.fill();
-
-        } else if (p.type === "orb") {
-          // Orbe avec halo
-          const glowR = p.radius * 5;
-          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
-          grad.addColorStop(0,  `rgba(${r},${g},${b},${p.alpha * 0.85})`);
-          grad.addColorStop(0.3, `rgba(${r},${g},${b},${p.alpha * 0.35})`);
-          grad.addColorStop(1,  `rgba(${r},${g},${b},0)`);
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
-          ctx.fillStyle = grad;
-          ctx.fill();
-          // Noyau dur
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${r},${g},${b},${Math.min(p.alpha * 2.2, 0.92)})`;
-          ctx.fill();
-
-        } else {
-          // Étoile scintillante avec croix de lumière
-          const glowR = p.radius * 7;
-          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
-          grad.addColorStop(0,  `rgba(${r},${g},${b},${p.alpha * 0.7})`);
-          grad.addColorStop(0.5, `rgba(${r},${g},${b},${p.alpha * 0.15})`);
-          grad.addColorStop(1,  `rgba(${r},${g},${b},0)`);
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
-          ctx.fillStyle = grad;
-          ctx.fill();
-
-          // Croix de lumière (lens flare subtil)
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.globalAlpha = p.alpha * 0.35;
-          for (let arm = 0; arm < 2; arm++) {
-            const lg = ctx.createLinearGradient(-p.radius * 5, 0, p.radius * 5, 0);
-            lg.addColorStop(0, `rgba(${r},${g},${b},0)`);
-            lg.addColorStop(0.5, `rgba(${r},${g},${b},0.9)`);
-            lg.addColorStop(1, `rgba(${r},${g},${b},0)`);
-            ctx.fillStyle = lg;
-            ctx.fillRect(-p.radius * 5, -0.5, p.radius * 10, 1);
-            ctx.rotate(Math.PI / 2);
-          }
-          ctx.globalAlpha = 1;
-          ctx.restore();
-
-          // Forme étoile
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.rotation);
-          ctx.fillStyle = `rgba(${r},${g},${b},${Math.min(p.alpha * 2.8, 0.97)})`;
-          ctx.translate(-p.x, -p.y);
-          drawStar(ctx, p.x, p.y, p.radius);
-          ctx.fill();
-          ctx.restore();
-        }
-      }
-
-      animRef.current = requestAnimationFrame(draw);
-    };
-
-    draw();
-
-    return () => {
-      cancelAnimationFrame(animRef.current);
-      window.removeEventListener("resize", resize);
-    };
+    dessiner();
+    window.addEventListener("resize", dessiner);
+    return () => window.removeEventListener("resize", dessiner);
   }, []);
 
   return (
     <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.85 }}
+      ref={toile}
+      aria-hidden="true"
+      style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }}
     />
   );
 }

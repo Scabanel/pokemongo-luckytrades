@@ -9,7 +9,7 @@ const labelStyle: React.CSSProperties = {
   display: "block",
   fontSize: "0.75rem",
   fontWeight: 600,
-  color: "#ffd700",
+  color: "var(--encre)",
   marginBottom: 6,
   letterSpacing: "0.06em",
   fontFamily: "Exo 2, sans-serif",
@@ -45,18 +45,18 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex items-center justify-center p-4" style={{ background: "var(--papier)" }}>
       <ParticleBackground />
 
       <div className="glass-card animate-scale-in relative z-10 w-full max-w-sm p-8">
         <div className="text-center mb-8">
-          <h1 className="neon-text" style={{ fontFamily: "Exo 2, sans-serif", fontSize: "1.5rem", fontWeight: 800, color: "#ffd700" }}>
+          <h1 className="neon-text" style={{ fontFamily: "Exo 2, sans-serif", fontSize: "1.5rem", fontWeight: 800, color: "var(--encre)" }}>
             Nouveau mot de passe
           </h1>
         </div>
 
         {done ? (
-          <p style={{ color: "#ffd700", fontSize: "0.85rem", textAlign: "center" }}>
+          <p style={{ color: "var(--encre)", fontSize: "0.85rem", textAlign: "center" }}>
             Mot de passe mis à jour ! Redirection vers ton espace…
           </p>
         ) : (
@@ -78,13 +78,13 @@ export default function ResetPasswordPage() {
             {error && (
               <p
                 style={{
-                  color: "#ff6b6b",
+                  color: "var(--alerte)",
                   fontSize: "0.8rem",
                   textAlign: "center",
-                  background: "rgba(255,107,107,0.1)",
+                  background: "color-mix(in srgb, var(--alerte) 10%, transparent)",
                   padding: "8px 12px",
                   borderRadius: 8,
-                  border: "1px solid rgba(255,107,107,0.2)",
+                  border: "1px solid color-mix(in srgb, var(--alerte) 20%, transparent)",
                 }}
               >
                 {error}

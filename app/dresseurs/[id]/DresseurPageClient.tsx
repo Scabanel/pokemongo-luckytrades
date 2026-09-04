@@ -216,16 +216,16 @@ export default function DresseurPageClient({ id }: { id: string }) {
 
   if (!loading && notFound) {
     return (
-      <div className="relative min-h-screen flex flex-col items-center justify-center" style={{ background: "#0b0700" }}>
+      <div className="relative min-h-screen flex flex-col items-center justify-center" style={{ background: "var(--papier)" }}>
         <ParticleBackground />
-        <p style={{ color: "rgba(232,237,245,0.5)", marginBottom: 16 }}>Ce dresseur n&apos;existe pas.</p>
+        <p style={{ color: "var(--encre-tres-douce)", marginBottom: 16 }}>Ce dresseur n&apos;existe pas.</p>
         <a href="/dresseurs" className="btn-secondary" style={{ textDecoration: "none" }}>Dresseurs</a>
       </div>
     );
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "var(--papier)" }}>
       <ParticleBackground />
       <div className="scanlines" />
 
@@ -233,7 +233,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
         <header className="text-center mb-8">
-          <a href="/dresseurs" style={{ color: "rgba(232,237,245,0.35)", fontSize: "0.75rem", textDecoration: "none" }}>
+          <a href="/dresseurs" style={{ color: "var(--encre-tres-douce)", fontSize: "0.75rem", textDecoration: "none" }}>
             Tous les dresseurs
           </a>
           <div className="flex items-center justify-center gap-3 flex-wrap" style={{ marginTop: 6 }}>
@@ -242,9 +242,9 @@ export default function DresseurPageClient({ id }: { id: string }) {
                 fontFamily: "Exo 2, sans-serif",
                 fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
                 fontWeight: 900,
-                color: "#ffd700",
+                color: "var(--encre)",
                 textTransform: "uppercase",
-                textShadow: "0 0 8px rgba(255,215,0,0.3)",
+                textShadow: "none",
               }}
             >
               {loading ? "…" : trainer?.name}
@@ -261,13 +261,13 @@ export default function DresseurPageClient({ id }: { id: string }) {
             )}
           </div>
           {trainer?.team && (
-            <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 4 }}>
+            <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", marginTop: 4 }}>
               {trainer.team.charAt(0).toUpperCase() + trainer.team.slice(1)} · Niveau {trainer.level ?? "?"}
             </p>
           )}
           {trainer?.friendCode && (
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 8 }}>
-              <span style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem" }}>
+              <span style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem" }}>
                 Code ami : {trainer.friendCode}
               </span>
               <button
@@ -307,22 +307,22 @@ export default function DresseurPageClient({ id }: { id: string }) {
                       color: CATEGORIES[key].color,
                     }
                   : {
-                      background: "rgba(255,255,255,0.03)",
-                      borderColor: "rgba(255,255,255,0.07)",
-                      color: "rgba(232,237,245,0.38)",
+                      background: "var(--surface-creuse)",
+                      borderColor: "var(--trait-leger)",
+                      color: "var(--encre-tres-douce)",
                     }),
               }}
             >
               <span>{tabLabel(key, trainer?.name ?? "…")}</span>
               <span
                 style={{
-                  background: activeTab === key ? `${CATEGORIES[key].color}18` : "rgba(255,255,255,0.05)",
-                  border: `1px solid ${activeTab === key ? `${CATEGORIES[key].color}38` : "rgba(255,255,255,0.08)"}`,
+                  background: activeTab === key ? `${CATEGORIES[key].color}18` : "var(--surface-creuse)",
+                  border: `1px solid ${activeTab === key ? `${CATEGORIES[key].color}38` : "var(--trait-leger)"}`,
                   borderRadius: 4,
                   padding: "1px 7px",
                   fontSize: "0.75rem",
                   fontWeight: 800,
-                  color: activeTab === key ? CATEGORIES[key].color : "rgba(232,237,245,0.3)",
+                  color: activeTab === key ? CATEGORIES[key].color : "var(--encre-tres-douce)",
                 }}
               >
                 {loading ? "…" : countByTab[key]}
@@ -355,8 +355,8 @@ export default function DresseurPageClient({ id }: { id: string }) {
                   border: "1px solid",
                   transition: "all 0.12s",
                   ...(filters[key]
-                    ? { background: "rgba(255, 215, 0,0.15)", borderColor: "rgba(255, 215, 0,0.4)", color: "#ffd700" }
-                    : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "rgba(232,237,245,0.5)" }),
+                    ? { background: "color-mix(in srgb, var(--encre) 15%, transparent)", borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)", color: "var(--encre)" }
+                    : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-tres-douce)" }),
                 }}
               >
                 {label}
@@ -375,8 +375,8 @@ export default function DresseurPageClient({ id }: { id: string }) {
                   border: "1px solid",
                   transition: "all 0.12s",
                   ...(onlyOwned
-                    ? { background: "rgba(6,182,212,0.15)", borderColor: "rgba(6,182,212,0.4)", color: "#06b6d4" }
-                    : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "rgba(232,237,245,0.5)" }),
+                    ? { background: "color-mix(in srgb, var(--tag-saison) 15%, transparent)", borderColor: "color-mix(in srgb, var(--tag-saison) 40%, transparent)", color: "var(--tag-saison)" }
+                    : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-tres-douce)" }),
                 }}
               >
                 Que je possède
@@ -395,8 +395,8 @@ export default function DresseurPageClient({ id }: { id: string }) {
                   border: "1px solid",
                   transition: "all 0.12s",
                   ...(onlyWanted
-                    ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.4)", color: "#ffd700" }
-                    : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "rgba(232,237,245,0.5)" }),
+                    ? { background: "color-mix(in srgb, var(--encre) 15%, transparent)", borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)", color: "var(--encre)" }
+                    : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-tres-douce)" }),
                 }}
               >
                 Que je recherche
@@ -416,8 +416,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
 
         <div
           style={{
-            background: "rgba(8,11,20,0.5)",
-            backdropFilter: "blur(10px)",
+            background: "color-mix(in srgb, var(--papier) 50%, transparent)",
             border: `1px solid ${activeColor}18`,
             borderTop: `2px solid ${activeColor}`,
             borderRadius: 10,
@@ -431,7 +430,7 @@ export default function DresseurPageClient({ id }: { id: string }) {
               {Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}
             </div>
           ) : visibleEntries.length === 0 ? (
-            <p style={{ textAlign: "center", color: "rgba(232,237,245,0.3)", padding: 32 }}>
+            <p style={{ textAlign: "center", color: "var(--encre-tres-douce)", padding: 32 }}>
               {anyFilterActive ? "Aucun résultat pour ces filtres." : "Rien ici pour le moment."}
             </p>
           ) : (

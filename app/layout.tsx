@@ -37,17 +37,17 @@ export default function RootLayout({
           containerStyle={{ bottom: "calc(var(--bas-occupe) + 16px)" }}
           toastOptions={{
             style: {
-              background: "#141926",
-              border: "1px solid rgba(255, 215, 0, 0.18)",
-              color: "#e8edf5",
+              background: "var(--papier)",
+              border: "1px solid color-mix(in srgb, var(--encre) 18%, transparent)",
+              color: "var(--encre)",
               borderRadius: "14px",
               fontFamily: "Inter, sans-serif",
             },
             success: {
-              iconTheme: { primary: "#ffd700", secondary: "#0b0f1a" },
+              iconTheme: { primary: "var(--encre)", secondary: "var(--papier)" },
             },
             error: {
-              iconTheme: { primary: "#ff6b6b", secondary: "#0b0f1a" },
+              iconTheme: { primary: "var(--alerte)", secondary: "var(--papier)" },
             },
           }}
         />

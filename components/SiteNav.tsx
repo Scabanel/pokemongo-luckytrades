@@ -40,11 +40,11 @@ const STYLE_MARQUE: React.CSSProperties = {
   fontWeight: 900,
   letterSpacing: "0.04em",
   textTransform: "uppercase",
-  color: "#ffd700",
+  color: "var(--encre)",
   // Halo réduit de 12px à 6px et d'opacité 0.35 à 0.25 : sur du jaune posé sur du noir,
   // un halo large fait baver les contours et REDUIT le contraste perçu au lieu de
   // l'augmenter. Voir le lot 3 du plan de refonte.
-  textShadow: "0 0 6px rgba(255,215,0,0.25)",
+  textShadow: "none",
 };
 
 export default function SiteNav({ active }: { active: string }) {
@@ -53,9 +53,8 @@ export default function SiteNav({ active }: { active: string }) {
       <header
         className="site-nav sticky top-0 z-20 flex items-center gap-4"
         style={{
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
-          background: "rgba(11,7,0,0.92)",
-          backdropFilter: "blur(10px)",
+          borderBottom: "1px solid var(--trait-leger)",
+          background: "color-mix(in srgb, var(--papier) 92%, transparent)",
         }}
       >
         {/* ═══ SUR MOBILE, LA MARQUE EST UN TITRE, PAS UN LIEN ═══
@@ -122,14 +121,14 @@ export default function SiteNav({ active }: { active: string }) {
                 transition: "border-color 0.15s, color 0.15s, background 0.15s",
                 ...(active === href
                   ? {
-                      background: "rgba(255, 215, 0,0.12)",
-                      borderColor: "rgba(255, 215, 0,0.4)",
-                      color: "#ffd700",
+                      background: "color-mix(in srgb, var(--encre) 12%, transparent)",
+                      borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)",
+                      color: "var(--encre)",
                     }
                   : {
                       background: "transparent",
-                      borderColor: "rgba(255,255,255,0.08)",
-                      color: "rgba(232,237,245,0.5)",
+                      borderColor: "var(--trait-leger)",
+                      color: "var(--encre-tres-douce)",
                     }),
               }}
             >

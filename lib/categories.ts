@@ -16,18 +16,18 @@ export const CATEGORIES: Record<
 > = {
   mirror: {
     label: "Échanges miroir",
-    color: "#b464ff",
-    glow: "radial-gradient(circle, #b464ff 0%, transparent 70%)",
+    color: "var(--ligne-miroir)",
+    glow: "radial-gradient(circle, var(--ligne-miroir) 0%, transparent 70%)",
   },
   want: {
     label: "Je recherche",
-    color: "#4ea8ff",
-    glow: "radial-gradient(circle, #4ea8ff 0%, transparent 70%)",
+    color: "var(--ligne-cherche)",
+    glow: "radial-gradient(circle, var(--ligne-cherche) 0%, transparent 70%)",
   },
   give: {
     label: "Je peux donner",
-    color: "#ffd93d",
-    glow: "radial-gradient(circle, #ffd93d 0%, transparent 70%)",
+    color: "var(--encre)",
+    glow: "radial-gradient(circle, var(--encre) 0%, transparent 70%)",
   },
 };
 

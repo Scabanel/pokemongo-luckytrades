@@ -27,14 +27,14 @@ export default function MonEspacePage() {
     return (
       <div
         className="fixed inset-0 flex items-center justify-center"
-        style={{ background: "#0b0700" }}
+        style={{ background: "var(--papier)" }}
       >
         <div
           className="animate-glow-pulse"
           style={{
             width: 48,
             height: 48,
-            border: "3px solid #ffd700",
+            border: "3px solid var(--encre)",
             borderTop: "3px solid transparent",
             borderRadius: "50%",
             animation: "spin-slow 0.8s linear infinite",
@@ -49,7 +49,7 @@ export default function MonEspacePage() {
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "var(--papier)" }}>
       <ParticleBackground />
       <SiteNav active="/mon-espace" />
       <div className="flex-1">

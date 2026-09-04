@@ -25,23 +25,19 @@ const FEATURES = [
 
 export default function LandingPage() {
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "var(--papier)" }}>
       <ParticleBackground />
       <div className="scanlines" />
 
       <SiteNav active="/" />
 
-      <div className="fixed pointer-events-none" style={{ top: "8%", left: "4%", width: 320, height: 320, borderRadius: "50%", background: "radial-gradient(circle, rgba(255,160,20,0.04) 0%, transparent 70%)", animation: "float-orb 8s ease-in-out infinite", zIndex: 0 }} />
-      <div className="fixed pointer-events-none" style={{ bottom: "12%", right: "6%", width: 260, height: 260, borderRadius: "50%", background: "radial-gradient(circle, rgba(255,120,10,0.04) 0%, transparent 70%)", animation: "float-orb 10s ease-in-out infinite 2s", zIndex: 0 }} />
-      <div className="fixed pointer-events-none" style={{ bottom: -120, left: "8%", width: 700, height: 420, background: "radial-gradient(ellipse at center bottom, rgba(255,200,50,0.13) 0%, rgba(255,160,20,0.06) 45%, transparent 70%)", zIndex: 0 }} />
-      <div className="fixed pointer-events-none" style={{ bottom: -100, right: "12%", width: 600, height: 380, background: "radial-gradient(ellipse at center bottom, rgba(255,180,30,0.1) 0%, rgba(255,140,0,0.04) 45%, transparent 70%)", zIndex: 0 }} />
 
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center max-w-6xl mx-auto px-4 py-8 sm:py-16 text-center">
         <div style={{
           fontFamily: "Bebas Neue, Exo 2, sans-serif",
           fontSize: "clamp(0.75rem, 1.5vw, 0.9rem)"   /* min releve au plancher de 12px */,
           letterSpacing: "0.35em",
-          color: "rgba(255,180,30,0.6)",
+          color: "color-mix(in srgb, var(--encre) 60%, transparent)",
           marginBottom: 10,
           textTransform: "uppercase",
         }}>
@@ -56,10 +52,10 @@ export default function LandingPage() {
               fontFamily: "Exo 2, sans-serif",
               fontSize: "clamp(1.8rem, 6vw, 3.2rem)",
               fontWeight: 900,
-              color: "#ffd700",
+              color: "var(--encre)",
               letterSpacing: "-0.03em",
               textTransform: "uppercase",
-              textShadow: "0 0 10px rgba(255,215,0,0.35)",
+              textShadow: "none",
               animation: "title-float 4s ease-in-out infinite",
             }}
           >
@@ -68,7 +64,7 @@ export default function LandingPage() {
         </div>
 
         <p style={{
-          color: "rgba(232,237,245,0.55)",
+          color: "var(--encre-douce)",
           fontSize: "1rem",
           maxWidth: 640,
           lineHeight: 1.6,
@@ -94,13 +90,13 @@ export default function LandingPage() {
               <h2 style={{
                 fontFamily: "Exo 2, sans-serif",
                 fontWeight: 700,
-                color: "#ffd700",
+                color: "var(--encre)",
                 fontSize: "1rem",
                 marginBottom: 6,
               }}>
                 {title}
               </h2>
-              <p style={{ color: "rgba(232,237,245,0.5)", fontSize: "0.85rem", lineHeight: 1.5 }}>
+              <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", lineHeight: 1.5 }}>
                 {text}
               </p>
             </div>

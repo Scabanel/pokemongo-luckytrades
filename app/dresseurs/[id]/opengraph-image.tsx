@@ -44,7 +44,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #0b0700 0%, #1a0f05 100%)",
+          background: "linear-gradient(135deg, var(--papier) 0%, var(--papier) 100%)",
           fontFamily: "sans-serif",
           padding: "40px 60px",
         }}
@@ -54,7 +54,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
             display: "flex",
             fontSize: 20,
             letterSpacing: 6,
-            color: "rgba(255,180,30,0.65)",
+            color: "color-mix(in srgb, var(--encre) 65%, transparent)",
             marginBottom: 14,
             textTransform: "uppercase",
           }}
@@ -67,7 +67,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
             display: "flex",
             fontSize: 64,
             fontWeight: 800,
-            color: "#ffd700",
+            color: "var(--encre)",
             textTransform: "uppercase",
             marginBottom: 28,
           }}
@@ -96,8 +96,8 @@ export default async function Image({ params }: { params: Promise<{ id: string }
                   width: 168,
                   padding: "10px 8px",
                   borderRadius: 14,
-                  background: "rgba(78,168,255,0.1)",
-                  border: "1px solid rgba(78,168,255,0.35)",
+                  background: "color-mix(in srgb, var(--ligne-cherche) 10%, transparent)",
+                  border: "1px solid color-mix(in srgb, var(--ligne-cherche) 35%, transparent)",
                 }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -112,7 +112,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
                     display: "flex",
                     fontSize: 18,
                     fontWeight: 700,
-                    color: "#e8edf5",
+                    color: "var(--encre)",
                     marginTop: 4,
                     textAlign: "center",
                   }}
@@ -128,7 +128,7 @@ export default async function Image({ params }: { params: Promise<{ id: string }
           style={{
             display: "flex",
             fontSize: 26,
-            color: "rgba(232,237,245,0.75)",
+            color: "var(--encre-douce)",
             textAlign: "center",
             maxWidth: 980,
           }}

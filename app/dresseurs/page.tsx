@@ -31,7 +31,7 @@ export default function DresseursPage() {
       || a.name.localeCompare(b.name, "fr", { sensitivity: "base" }));
 
   return (
-    <div className="relative min-h-screen flex flex-col" style={{ background: "#0b0700" }}>
+    <div className="relative min-h-screen flex flex-col" style={{ background: "var(--papier)" }}>
       <ParticleBackground />
       <div className="scanlines" />
 
@@ -44,15 +44,15 @@ export default function DresseursPage() {
               fontFamily: "Exo 2, sans-serif",
               fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
               fontWeight: 900,
-              color: "#ffd700",
+              color: "var(--encre)",
               letterSpacing: "-0.02em",
               textTransform: "uppercase",
-              textShadow: "0 0 8px rgba(255,215,0,0.3)",
+              textShadow: "none",
             }}
           >
             Les dresseurs inscrits
           </h1>
-          <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 8 }}>
+          <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", marginTop: 8 }}>
             Choisis un dresseur pour voir ce qu&apos;il recherche, peut donner, ou propose en miroir.
           </p>
         </header>
@@ -73,7 +73,7 @@ export default function DresseursPage() {
             ))}
           </div>
         ) : visibleTrainers.length === 0 ? (
-          <p style={{ textAlign: "center", color: "rgba(232,237,245,0.3)", padding: 32 }}>
+          <p style={{ textAlign: "center", color: "var(--encre-tres-douce)", padding: 32 }}>
             {trainers.length === 0 ? "Aucun dresseur inscrit pour le moment." : "Aucun dresseur ne correspond à cette recherche."}
           </p>
         ) : (
@@ -97,14 +97,14 @@ export default function DresseursPage() {
                     width: 44,
                     height: 44,
                     borderRadius: "50%",
-                    background: "#ffd70020",
-                    border: "1px solid #ffd70040",
+                    background: "var(--encre)",
+                    border: "var(--trait-moyen) solid var(--encre)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: "1.1rem",
                     fontWeight: 700,
-                    color: "#ffd700",
+                    color: "var(--surface)",   // le rond est plein d encre : la lettre est le papier
                     fontFamily: "Exo 2, sans-serif",
                     flexShrink: 0,
                   }}
@@ -117,7 +117,7 @@ export default function DresseursPage() {
                     /* Tronque plutot que de pousser la carte : un nom long faisait deborder le
                        document de 23px en deux colonnes, mesure le 2026-09-04. Le nom
                        complet reste dans l'attribut title et sur la page du dresseur. */
-                    style={{ fontWeight: 700, fontSize: "0.95rem", color: "#e8edf5", marginBottom: 4 }}
+                    style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--encre)", marginBottom: 4 }}
                   >
                     {t.name}
                   </div>
@@ -126,13 +126,13 @@ export default function DresseursPage() {
                       style={
                         t._count.entries === 0
                           ? {
-                              background: "rgba(255,107,107,0.1)", border: "1px solid rgba(255,107,107,0.3)",
-                              color: "#ff6b6b", borderRadius: 999, padding: "2px 10px",
+                              background: "color-mix(in srgb, var(--alerte) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--alerte) 30%, transparent)",
+                              color: "var(--alerte)", borderRadius: 999, padding: "2px 10px",
                               fontSize: "0.75rem", fontWeight: 700,
                             }
                           : {
-                              background: "rgba(255,215,0,0.12)", border: "1px solid rgba(255,215,0,0.3)",
-                              color: "#ffd700", borderRadius: 999, padding: "2px 10px",
+                              background: "var(--donne-pale)", border: "1px solid var(--ligne-donne)",
+                              color: "var(--ligne-donne)", borderRadius: 999, padding: "2px 10px",
                               fontSize: "0.75rem", fontWeight: 700,
                             }
                       }
@@ -142,8 +142,8 @@ export default function DresseursPage() {
                     {t._count.shinyEntries > 0 && (
                       <span
                         style={{
-                          background: "rgba(255,215,0,0.08)", border: "1px solid rgba(255,215,0,0.2)",
-                          color: "rgba(255,215,0,0.85)", borderRadius: 999, padding: "2px 10px",
+                          background: "var(--or-pale)", border: "1px solid var(--or)",
+                          color: "var(--encre)", borderRadius: 999, padding: "2px 10px",
                           fontSize: "0.75rem", fontWeight: 700,
                         }}
                       >

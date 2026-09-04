@@ -20,10 +20,9 @@ export default function SiteFooter() {
     <footer
       className="site-footer fixed bottom-0 left-0 right-0 z-20 flex items-center justify-between"
       style={{
-        borderTop: "1px solid rgba(255,255,255,0.08)",
-        background: "rgba(11,7,0,0.92)",
-        backdropFilter: "blur(10px)",
-        color: "rgba(232,237,245,0.4)",
+        borderTop: "1px solid var(--trait-leger)",
+        background: "color-mix(in srgb, var(--papier) 92%, transparent)",
+        color: "var(--encre-tres-douce)",
       }}
     >
       <a
@@ -31,14 +30,14 @@ export default function SiteFooter() {
         target="_blank"
         rel="noopener noreferrer"
         className="site-footer-link"
-        style={{ color: "#ffd700", textDecoration: "none" }}
+        style={{ color: "var(--encre)", textDecoration: "none" }}
       >
         Discord Pokémon GO Strasbourg
       </a>
       <a
         href="/fonctionnalites"
         className="site-footer-link"
-        style={{ color: "#b464ff", textDecoration: "none", fontWeight: 600 }}
+        style={{ color: "var(--ligne-miroir)", textDecoration: "none", fontWeight: 600 }}
       >
         Infos et Majs
       </a>
@@ -47,7 +46,7 @@ export default function SiteFooter() {
           {trainerCount} dresseur{trainerCount > 1 ? "s" : ""} inscrit{trainerCount > 1 ? "s" : ""}
         </span>
       )}
-      <span className="site-footer-link" style={{ color: "#ffd700", textDecoration: "none" }}>Fait par Vorthil</span>
+      <span className="site-footer-link" style={{ color: "var(--encre)", textDecoration: "none" }}>Fait par Vorthil</span>
     </footer>
   );
 }

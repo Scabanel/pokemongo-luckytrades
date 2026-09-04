@@ -34,22 +34,22 @@ function getGigantamaxSpriteUrl(pokemonId: number, shiny: boolean): string | nul
 }
 
 const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  halloween:    { bg: "rgba(255,107,0,0.2)",   text: "#ff6b00", border: "rgba(255,107,0,0.5)" },
-  noel:         { bg: "rgba(80,200,255,0.2)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
-  "noël":       { bg: "rgba(80,200,255,0.2)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
-  holiday:      { bg: "rgba(80,200,255,0.2)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
-  anniversaire: { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
-  fete:         { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
-  "fête":       { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
-  gigamax:      { bg: "rgba(255,40,140,0.2)",   text: "#ff288c", border: "rgba(255,40,140,0.5)" },
-  dynamax:      { bg: "rgba(210,40,40,0.2)",    text: "#e03030", border: "rgba(210,40,40,0.5)" },
-  costume:      { bg: "rgba(200,100,255,0.2)",  text: "#c864ff", border: "rgba(200,100,255,0.5)" },
-  evenement:    { bg: "rgba(180,100,255,0.2)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
-  "événement":  { bg: "rgba(180,100,255,0.2)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
-  fond:         { bg: "rgba(100,220,180,0.2)",  text: "#64dcb4", border: "rgba(100,220,180,0.5)" },
-  legendaire:   { bg: "rgba(255,215,0,0.2)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
+  halloween:    { bg: "color-mix(in srgb, var(--tag-fete) 20%, transparent)",   text: "var(--tag-fete)", border: "color-mix(in srgb, var(--tag-fete) 50%, transparent)" },
+  noel:         { bg: "color-mix(in srgb, var(--tag-saison) 20%, transparent)",   text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
+  "noël":       { bg: "color-mix(in srgb, var(--tag-saison) 20%, transparent)",   text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
+  holiday:      { bg: "color-mix(in srgb, var(--tag-saison) 20%, transparent)",   text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
+  anniversaire: { bg: "color-mix(in srgb, var(--encre) 20%, transparent)",    text: "var(--encre)", border: "color-mix(in srgb, var(--encre) 50%, transparent)" },
+  fete:         { bg: "color-mix(in srgb, var(--encre) 20%, transparent)",    text: "var(--encre)", border: "color-mix(in srgb, var(--encre) 50%, transparent)" },
+  "fête":       { bg: "color-mix(in srgb, var(--encre) 20%, transparent)",    text: "var(--encre)", border: "color-mix(in srgb, var(--encre) 50%, transparent)" },
+  gigamax:      { bg: "color-mix(in srgb, var(--tag-max) 20%, transparent)",   text: "var(--tag-max)", border: "color-mix(in srgb, var(--tag-max) 50%, transparent)" },
+  dynamax:      { bg: "color-mix(in srgb, var(--tag-max) 20%, transparent)",    text: "var(--tag-max)", border: "color-mix(in srgb, var(--tag-max) 50%, transparent)" },
+  costume:      { bg: "color-mix(in srgb, var(--tag-costume) 20%, transparent)",  text: "var(--tag-costume)", border: "color-mix(in srgb, var(--tag-costume) 50%, transparent)" },
+  evenement:    { bg: "color-mix(in srgb, var(--ligne-miroir) 20%, transparent)",  text: "var(--ligne-miroir)", border: "color-mix(in srgb, var(--ligne-miroir) 50%, transparent)" },
+  "événement":  { bg: "color-mix(in srgb, var(--ligne-miroir) 20%, transparent)",  text: "var(--ligne-miroir)", border: "color-mix(in srgb, var(--ligne-miroir) 50%, transparent)" },
+  fond:         { bg: "color-mix(in srgb, var(--tag-fond) 20%, transparent)",  text: "var(--tag-fond)", border: "color-mix(in srgb, var(--tag-fond) 50%, transparent)" },
+  legendaire:   { bg: "color-mix(in srgb, var(--or) 20%, transparent)",    text: "var(--or)", border: "color-mix(in srgb, var(--or) 50%, transparent)" },
 };
-const DEFAULT_TAG_COLOR = { bg: "rgba(100,180,255,0.15)", text: "#64b4ff", border: "rgba(100,180,255,0.4)" };
+const DEFAULT_TAG_COLOR = { bg: "color-mix(in srgb, var(--tag-neutre) 15%, transparent)", text: "var(--tag-neutre)", border: "color-mix(in srgb, var(--tag-neutre) 40%, transparent)" };
 function getTagColor(tag: string) { return TAG_COLORS[tag.toLowerCase()] ?? DEFAULT_TAG_COLOR; }
 
 // Badge ♂/♀ en haut à gauche du sprite : bleu/rouge classique des jeux
@@ -65,9 +65,9 @@ function GenderBadge({ gender, size = 20 }: { gender: string | null | undefined;
         top: 2, left: 2, zIndex: 1,
         width: size, height: size, borderRadius: "50%",
         display: "flex", alignItems: "center", justifyContent: "center",
-        background: isMale ? "#3b82f6" : "#ff2d78",
-        color: "#fff", fontWeight: 800, fontSize: size * 0.65,
-        boxShadow: "0 2px 6px rgba(0,0,0,0.4)",
+        background: isMale ? "var(--ligne-cherche)" : "var(--tag-max)",
+        color: "var(--surface)", fontWeight: 800, fontSize: size * 0.65,
+        boxShadow: "none",
       }}
     >
       {isMale ? "♂" : "♀"}
@@ -80,34 +80,34 @@ function getEventTheme(name: string, tags: string[]): {
 } | null {
   const combined = (name + " " + tags.join(" ")).toLowerCase();
   if (combined.includes("gigamax")) return {
-    borderColor: "rgba(255,40,140,0.4)",
-    boxShadow: "0 8px 32px rgba(255,0,120,0.22), 0 0 0 1px rgba(255,40,140,0.15)",
-    glow: "radial-gradient(circle, rgba(255,40,140,0.35) 0%, transparent 70%)",
+    borderColor: "color-mix(in srgb, var(--tag-max) 40%, transparent)",
+    boxShadow: "none",
+    glow: "radial-gradient(circle, color-mix(in srgb, var(--tag-max) 35%, transparent) 0%, transparent 70%)",
   };
   if (combined.includes("dynamax")) return {
-    borderColor: "rgba(210,40,40,0.4)",
-    boxShadow: "0 8px 32px rgba(200,0,0,0.22), 0 0 0 1px rgba(210,40,40,0.15)",
-    glow: "radial-gradient(circle, rgba(210,40,40,0.35) 0%, transparent 70%)",
+    borderColor: "color-mix(in srgb, var(--tag-max) 40%, transparent)",
+    boxShadow: "none",
+    glow: "radial-gradient(circle, color-mix(in srgb, var(--tag-max) 35%, transparent) 0%, transparent 70%)",
   };
   if (combined.includes("halloween")) return {
-    borderColor: "rgba(255,107,20,0.4)",
-    boxShadow: "0 8px 32px rgba(255,80,0,0.18)",
-    glow: "radial-gradient(circle, rgba(255,120,0,0.3) 0%, transparent 70%)",
+    borderColor: "color-mix(in srgb, var(--tag-fete) 40%, transparent)",
+    boxShadow: "none",
+    glow: "radial-gradient(circle, color-mix(in srgb, var(--tag-fete) 30%, transparent) 0%, transparent 70%)",
   };
   if (combined.includes("noël") || combined.includes("noel") || combined.includes("holiday")) return {
-    borderColor: "rgba(80,200,255,0.4)",
-    boxShadow: "0 8px 32px rgba(60,160,255,0.18)",
-    glow: "radial-gradient(circle, rgba(80,200,255,0.3) 0%, transparent 70%)",
+    borderColor: "color-mix(in srgb, var(--tag-saison) 40%, transparent)",
+    boxShadow: "none",
+    glow: "radial-gradient(circle, color-mix(in srgb, var(--tag-saison) 30%, transparent) 0%, transparent 70%)",
   };
   if (combined.includes("anniversaire") || combined.includes("fête") || combined.includes("fete") || combined.includes("chapeau")) return {
-    borderColor: "rgba(255,200,50,0.4)",
-    boxShadow: "0 8px 32px rgba(255,200,0,0.18)",
-    glow: "radial-gradient(circle, rgba(255,210,50,0.3) 0%, transparent 70%)",
+    borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)",
+    boxShadow: "none",
+    glow: "radial-gradient(circle, color-mix(in srgb, var(--encre) 30%, transparent) 0%, transparent 70%)",
   };
   if (!REGIONAL_FORM_NAME.test(name) && name.trim().includes(" ")) return {
-    borderColor: "rgba(200,100,255,0.3)",
-    boxShadow: "0 8px 32px rgba(180,80,255,0.12)",
-    glow: "radial-gradient(circle, rgba(200,100,255,0.25) 0%, transparent 70%)",
+    borderColor: "color-mix(in srgb, var(--tag-costume) 30%, transparent)",
+    boxShadow: "none",
+    glow: "radial-gradient(circle, color-mix(in srgb, var(--tag-costume) 25%, transparent) 0%, transparent 70%)",
   };
   return null;
 }
@@ -160,10 +160,10 @@ const CATEGORY_LABEL: Record<string, string> = {
 };
 
 function getPriorityStyle(priority: number): { bg: string; border: string; color: string; shadow: string } {
-  if (priority === 1) return { bg: "rgba(255,215,0,0.25)", border: "#ffd700", color: "#ffd700", shadow: "0 0 12px rgba(255,215,0,0.5)" };
-  if (priority === 2) return { bg: "rgba(192,192,192,0.2)", border: "#c0c0c0", color: "#d4d4d4", shadow: "0 0 8px rgba(192,192,192,0.3)" };
-  if (priority === 3) return { bg: "rgba(205,127,50,0.2)", border: "#cd7f32", color: "#e09850", shadow: "0 0 8px rgba(205,127,50,0.3)" };
-  return { bg: "rgba(100,180,255,0.15)", border: "#64b4ff", color: "#64b4ff", shadow: "none" };
+  if (priority === 1) return { bg: "color-mix(in srgb, var(--encre) 25%, transparent)", border: "var(--encre)", color: "var(--encre)", shadow: "0 0 12px color-mix(in srgb, var(--encre) 50%, transparent)" };
+  if (priority === 2) return { bg: "color-mix(in srgb, var(--medaille-argent) 20%, transparent)", border: "var(--medaille-argent)", color: "var(--medaille-argent)", shadow: "0 0 8px color-mix(in srgb, var(--medaille-argent) 30%, transparent)" };
+  if (priority === 3) return { bg: "color-mix(in srgb, var(--medaille-bronze) 20%, transparent)", border: "var(--medaille-bronze)", color: "var(--medaille-bronze)", shadow: "0 0 8px color-mix(in srgb, var(--medaille-bronze) 30%, transparent)" };
+  return { bg: "color-mix(in srgb, var(--tag-neutre) 15%, transparent)", border: "var(--tag-neutre)", color: "var(--tag-neutre)", shadow: "none" };
 }
 
 export default function PokemonCard({
@@ -193,7 +193,7 @@ export default function PokemonCard({
     setShowDetail(false);
     setConfirmDelete(false);
   };
-  const trainerColor = entry.trainer ? "#00dc64" : "#ffd700";
+  const trainerColor = entry.trainer ? "var(--bon)" : "var(--encre)";
   const isMirror = entry.category === "mirror";
   const isShiny = entry.shiny === true || (entry.notes?.toLowerCase().includes("shiny") ?? false);
   const hasPriority = entry.priority != null && entry.priority >= 1 && entry.priority <= 10;
@@ -322,8 +322,7 @@ export default function PokemonCard({
     <div
       className="fixed inset-0 flex items-center justify-center p-4"
       style={{
-        background: "rgba(10,6,0,0.88)",
-        backdropFilter: "blur(12px)",
+        background: "color-mix(in srgb, var(--papier) 88%, transparent)",
         zIndex: 300,
       }}
       onClick={closeDetail}
@@ -337,25 +336,25 @@ export default function PokemonCard({
           overscrollBehavior: "contain",
           padding: 32,
           ...(entry.backgroundUrl && {
-            backgroundImage: `linear-gradient(rgba(8,11,20,0.55), rgba(8,11,20,0.8)), url(${entry.backgroundUrl})`,
+            backgroundImage: `linear-gradient(color-mix(in srgb, var(--papier) 55%, transparent), color-mix(in srgb, var(--papier) 80%, transparent)), url(${entry.backgroundUrl})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }),
           ...(isMirror && {
-            borderColor: "rgba(180,100,255,0.3)",
-            boxShadow: "0 16px 64px rgba(180,100,255,0.15)",
+            borderColor: "color-mix(in srgb, var(--ligne-miroir) 30%, transparent)",
+            boxShadow: "none",
           }),
           ...(hasTrainerBadge && {
-            borderColor: "rgba(0,220,100,0.5)",
-            boxShadow: "0 16px 64px rgba(0,200,80,0.25), 0 0 0 1px rgba(0,220,100,0.2)",
+            borderColor: "color-mix(in srgb, var(--bon) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(viewerWantsThis && {
-            borderColor: "rgba(255,45,120,0.5)",
-            boxShadow: "0 16px 64px rgba(255,45,120,0.25), 0 0 0 1px rgba(255,45,120,0.2)",
+            borderColor: "color-mix(in srgb, var(--tag-max) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(viewerHasThis && {
-            borderColor: "rgba(6,182,212,0.5)",
-            boxShadow: "0 16px 64px rgba(6,182,212,0.25), 0 0 0 1px rgba(6,182,212,0.2)",
+            borderColor: "color-mix(in srgb, var(--tag-saison) 50%, transparent)",
+            boxShadow: "none",
           }),
         }}
         onClick={(e) => e.stopPropagation()}
@@ -365,8 +364,8 @@ export default function PokemonCard({
           onClick={closeDetail}
           style={{
             position: "absolute", top: 12, right: 12,
-            background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
-            borderRadius: 8, color: "#e8edf5", cursor: "pointer",
+            background: "var(--trait-leger)", border: "1px solid var(--trait-leger)",
+            borderRadius: 8, color: "var(--encre)", cursor: "pointer",
             fontSize: "0.75rem", padding: "4px 10px",
           }}
         >
@@ -406,49 +405,49 @@ export default function PokemonCard({
           </span>
           {(entry.quantity ?? 1) > 1 && (
             <span style={{
-              background: "rgba(100,180,255,0.15)", border: "1px solid rgba(100,180,255,0.5)",
+              background: "color-mix(in srgb, var(--tag-neutre) 15%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-neutre) 50%, transparent)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.75rem", fontWeight: 800, color: "#64b4ff",
+              fontSize: "0.75rem", fontWeight: 800, color: "var(--tag-neutre)",
               fontFamily: "Exo 2, sans-serif",
             }}>×{entry.quantity} disponibles</span>
           )}
           {isGigamax && (
             <span style={{
-              background: "rgba(255,40,140,0.18)", border: "1px solid rgba(255,40,140,0.5)",
+              background: "color-mix(in srgb, var(--tag-max) 18%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-max) 50%, transparent)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.75rem", fontWeight: 800, color: "#ff288c",
+              fontSize: "0.75rem", fontWeight: 800, color: "var(--tag-max)",
               fontFamily: "Exo 2, sans-serif",
             }}>Gigamax</span>
           )}
           {isDynamax && (
             <span style={{
-              background: "rgba(210,40,40,0.18)", border: "1px solid rgba(210,40,40,0.5)",
+              background: "color-mix(in srgb, var(--tag-max) 18%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-max) 50%, transparent)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.75rem", fontWeight: 800, color: "#e03030",
+              fontSize: "0.75rem", fontWeight: 800, color: "var(--tag-max)",
               fontFamily: "Exo 2, sans-serif",
             }}>Dynamax</span>
           )}
           {isShiny && (
             <span style={{
-              background: "rgba(255,215,0,0.15)", border: "1px solid rgba(255,215,0,0.5)",
+              background: "color-mix(in srgb, var(--encre) 15%, transparent)", border: "1px solid color-mix(in srgb, var(--encre) 50%, transparent)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.75rem", fontWeight: 700, color: "#ffd700",
+              fontSize: "0.75rem", fontWeight: 700, color: "var(--encre)",
               fontFamily: "Exo 2, sans-serif",
             }}>✨ Shiny</span>
           )}
           {entry.exclusiveMove && (
             <span style={{
-              background: "rgba(255,153,0,0.15)", border: "1px solid rgba(255,153,0,0.5)",
+              background: "color-mix(in srgb, var(--encre) 15%, transparent)", border: "1px solid color-mix(in srgb, var(--encre) 50%, transparent)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.75rem", fontWeight: 700, color: "#ff9900",
+              fontSize: "0.75rem", fontWeight: 700, color: "var(--encre)",
               fontFamily: "Exo 2, sans-serif",
             }}>Attaque exclusive</span>
           )}
           {entry.size && (
             <span style={{
-              background: "rgba(100,220,180,0.15)", border: "1px solid rgba(100,220,180,0.5)",
+              background: "color-mix(in srgb, var(--tag-fond) 15%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-fond) 50%, transparent)",
               borderRadius: 999, padding: "3px 12px",
-              fontSize: "0.75rem", fontWeight: 700, color: "#64dcb4",
+              fontSize: "0.75rem", fontWeight: 700, color: "var(--tag-fond)",
               fontFamily: "Exo 2, sans-serif",
             }}>{entry.size}</span>
           )}
@@ -479,7 +478,7 @@ export default function PokemonCard({
             <div
               style={{
                 width: 24, height: 24, borderRadius: "50%",
-                background: trainerColor, color: "#0b0f1a",
+                background: trainerColor, color: "var(--papier)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: "0.75rem", fontWeight: 700,
               }}
@@ -521,7 +520,7 @@ export default function PokemonCard({
           className="text-center font-bold mb-2"
           style={{
             fontFamily: "Exo 2, sans-serif", fontSize: "1.2rem",
-            color: "#e8edf5", wordBreak: "break-word",
+            color: "var(--encre)", wordBreak: "break-word",
           }}
         >
           {entry.pokemonName}
@@ -531,7 +530,7 @@ export default function PokemonCard({
         {entry.tradePartnerName && (
           <p
             className="text-center mb-2"
-            style={{ fontSize: "0.78rem", color: "#ffd700", fontWeight: 600 }}
+            style={{ fontSize: "0.78rem", color: "var(--encre)", fontWeight: 600 }}
           >
             Réservé par {entry.tradePartnerName}
           </p>
@@ -541,7 +540,7 @@ export default function PokemonCard({
         {entry.notes && (
           <p
             className="text-center mb-3"
-            style={{ fontSize: "0.8rem", color: "rgba(232,237,245,0.6)", maxWidth: 260 }}
+            style={{ fontSize: "0.8rem", color: "var(--encre-douce)", maxWidth: 260 }}
           >
             {entry.notes}
           </p>
@@ -552,14 +551,14 @@ export default function PokemonCard({
           <div
             className="flex items-center gap-3 mt-2 p-3"
             style={{
-              background: hasTrainerBadge ? "rgba(0,200,80,0.1)" : "rgba(255,217,61,0.07)",
-              border: hasTrainerBadge ? "1px solid rgba(0,220,100,0.35)" : "1px solid rgba(255,217,61,0.2)",
+              background: hasTrainerBadge ? "color-mix(in srgb, var(--bon) 10%, transparent)" : "color-mix(in srgb, var(--encre) 7%, transparent)",
+              border: hasTrainerBadge ? "1px solid color-mix(in srgb, var(--bon) 35%, transparent)" : "1px solid color-mix(in srgb, var(--encre) 20%, transparent)",
               borderRadius: 12,
               width: "100%",
               justifyContent: "center",
             }}
           >
-            <span style={{ fontSize: "0.75rem", color: "#ffd93d", fontWeight: 600 }}>
+            <span style={{ fontSize: "0.75rem", color: "var(--encre)", fontWeight: 600 }}>
               {entry.category === "want" ? "Je donne" : entry.category === "mirror" ? "Échange" : "Je reçois"}
             </span>
             <PokemonSprite
@@ -570,7 +569,7 @@ export default function PokemonCard({
               customSpriteUrl={entry.tradeForCustomSpriteUrl}
               preferStatic={preferStatic}
             />
-            <span style={{ fontSize: "0.85rem", color: "#e8edf5", fontWeight: 500 }}>
+            <span style={{ fontSize: "0.85rem", color: "var(--encre)", fontWeight: 500 }}>
               {entry.tradeForPokemonName}
             </span>
           </div>
@@ -580,11 +579,11 @@ export default function PokemonCard({
         {canEdit && (
           <div
             className="w-full flex flex-col items-center gap-2 mt-4 pt-4"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}
+            style={{ borderTop: "1px solid var(--trait-leger)" }}
           >
             {confirmDelete ? (
               <div className="flex items-center gap-2 flex-wrap justify-center">
-                <span style={{ fontSize: "0.8rem", color: "#ff6b6b" }}>Supprimer cette entrée ?</span>
+                <span style={{ fontSize: "0.8rem", color: "var(--alerte)" }}>Supprimer cette entrée ?</span>
                 <button onClick={() => onDelete?.()} className="btn-danger">Oui</button>
                 <button onClick={() => setConfirmDelete(false)} className="btn-secondary" style={{ padding: "6px 12px" }}>
                   Non
@@ -633,37 +632,37 @@ export default function PokemonCard({
         style={{
           ...style,
           ...(entry.backgroundUrl && {
-            backgroundImage: `linear-gradient(rgba(8,11,20,0.55), rgba(8,11,20,0.75)), url(${entry.backgroundUrl})`,
+            backgroundImage: `linear-gradient(color-mix(in srgb, var(--papier) 55%, transparent), color-mix(in srgb, var(--papier) 75%, transparent)), url(${entry.backgroundUrl})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }),
           ...(hasPriority && entry.priority === 1 && {
-            borderColor: "rgba(255,215,0,0.5)",
-            boxShadow: "0 8px 32px rgba(255,215,0,0.22), 0 0 0 1px rgba(255,215,0,0.2)",
+            borderColor: "color-mix(in srgb, var(--encre) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(hasPriority && entry.priority === 2 && {
-            borderColor: "rgba(192,192,192,0.5)",
-            boxShadow: "0 8px 32px rgba(192,192,192,0.18), 0 0 0 1px rgba(192,192,192,0.18)",
+            borderColor: "color-mix(in srgb, var(--medaille-argent) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(hasPriority && entry.priority === 3 && {
-            borderColor: "rgba(205,127,50,0.5)",
-            boxShadow: "0 8px 32px rgba(205,127,50,0.2), 0 0 0 1px rgba(205,127,50,0.18)",
+            borderColor: "color-mix(in srgb, var(--medaille-bronze) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(hasTrainerBadge && {
-            borderColor: "rgba(0, 220, 100, 0.5)",
-            boxShadow: "0 8px 32px rgba(0, 200, 80, 0.28), 0 0 0 1px rgba(0, 220, 100, 0.2), inset 0 1px 0 rgba(0, 220, 100, 0.06)",
+            borderColor: "color-mix(in srgb, var(--bon) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(viewerWantsThis && {
-            borderColor: "rgba(255, 45, 120, 0.5)",
-            boxShadow: "0 8px 32px rgba(255, 45, 120, 0.28), 0 0 0 1px rgba(255, 45, 120, 0.2)",
+            borderColor: "color-mix(in srgb, var(--tag-max) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(viewerHasThis && {
-            borderColor: "rgba(6, 182, 212, 0.5)",
-            boxShadow: "0 8px 32px rgba(6, 182, 212, 0.28), 0 0 0 1px rgba(6, 182, 212, 0.2)",
+            borderColor: "color-mix(in srgb, var(--tag-saison) 50%, transparent)",
+            boxShadow: "none",
           }),
           ...(selected && {
-            borderColor: "rgba(255, 215, 0,0.6)",
-            boxShadow: "0 8px 32px rgba(255, 215, 0,0.25), 0 0 0 2px rgba(255, 215, 0,0.35)",
+            borderColor: "color-mix(in srgb, var(--encre) 60%, transparent)",
+            boxShadow: "none",
           }),
           transition: "transform 0.15s, box-shadow 0.15s",
         }}
@@ -708,12 +707,12 @@ export default function PokemonCard({
               width: 26, height: 26, borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
               cursor: "pointer",
-              background: selected ? "#ffd700" : "rgba(8,11,20,0.7)",
-              border: `2px solid ${selected ? "#ffd700" : "rgba(255,255,255,0.3)"}`,
-              color: selected ? "#0b0f1a" : "rgba(232,237,245,0.4)",
+              background: selected ? "var(--encre)" : "color-mix(in srgb, var(--papier) 70%, transparent)",
+              border: `2px solid ${selected ? "var(--encre)" : "var(--trait-leger)"}`,
+              color: selected ? "var(--papier)" : "var(--encre-tres-douce)",
               fontSize: "0.75rem",
               fontWeight: 900,
-              boxShadow: selected ? "0 0 12px rgba(255, 215, 0,0.5)" : "none",
+              boxShadow: selected ? "0 0 12px color-mix(in srgb, var(--encre) 50%, transparent)" : "none",
               transition: "all 0.12s",
             }}
           />
@@ -723,21 +722,21 @@ export default function PokemonCard({
         <div className="absolute top-3 right-3 flex flex-col items-end gap-1">
           {(entry.quantity ?? 1) > 1 && (
             <div style={{
-              background: "rgba(100,180,255,0.2)", border: "1px solid rgba(100,180,255,0.55)",
+              background: "color-mix(in srgb, var(--tag-neutre) 20%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-neutre) 55%, transparent)",
               borderRadius: 8, padding: "1px 6px", fontSize: "0.75rem", fontWeight: 800,
-              color: "#64b4ff", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
+              color: "var(--tag-neutre)", fontFamily: "Exo 2, sans-serif", letterSpacing: "0.05em",
             }}>×{entry.quantity}</div>
           )}
           {isMirror && (
             <div
               style={{
-                background: "rgba(180,100,255,0.18)",
-                border: "1px solid rgba(180,100,255,0.4)",
+                background: "color-mix(in srgb, var(--ligne-miroir) 18%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--ligne-miroir) 40%, transparent)",
                 borderRadius: 8,
                 padding: "1px 6px",
                 fontSize: "0.75rem",
                 fontWeight: 700,
-                color: "#b464ff",
+                color: "var(--ligne-miroir)",
                 fontFamily: "Exo 2, sans-serif",
                 letterSpacing: "0.04em",
               }}
@@ -748,13 +747,13 @@ export default function PokemonCard({
           {isShiny && (
             <div
               style={{
-                background: "rgba(255,215,0,0.18)",
-                border: "1px solid rgba(255,215,0,0.5)",
+                background: "color-mix(in srgb, var(--encre) 18%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--encre) 50%, transparent)",
                 borderRadius: 8,
                 padding: "1px 6px",
                 fontSize: "0.75rem",
                 fontWeight: 700,
-                color: "#ffd700",
+                color: "var(--encre)",
                 fontFamily: "Exo 2, sans-serif",
                 letterSpacing: "0.04em",
               }}
@@ -781,7 +780,7 @@ export default function PokemonCard({
             <div
               style={{
                 width: 18, height: 18, borderRadius: "50%", flexShrink: 0,
-                background: "#00dc64", color: "#0b0f1a",
+                background: "var(--bon)", color: "var(--papier)",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: "0.75rem", fontWeight: 700,
               }}
@@ -790,9 +789,9 @@ export default function PokemonCard({
             </div>
             <span
               style={{
-                background: "rgba(0,220,100,0.12)", border: "1px solid rgba(0,220,100,0.4)",
+                background: "color-mix(in srgb, var(--bon) 12%, transparent)", border: "1px solid color-mix(in srgb, var(--bon) 40%, transparent)",
                 borderRadius: 999, padding: "2px 8px", fontSize: "0.75rem",
-                fontWeight: 600, color: "#00dc64", letterSpacing: "0.03em",
+                fontWeight: 600, color: "var(--bon)", letterSpacing: "0.03em",
                 fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
                 overflow: "hidden", textOverflow: "ellipsis", maxWidth: 80,
               }}
@@ -809,10 +808,10 @@ export default function PokemonCard({
           <div
             className="absolute inset-0 rounded-full blur-xl opacity-25"
             style={{ background:
-              hasTrainerBadge ? "radial-gradient(circle, #00dc64 0%, transparent 70%)" :
-              entry.priority === 1 ? "radial-gradient(circle, #ffd700 0%, transparent 70%)" :
-              entry.priority === 2 ? "radial-gradient(circle, #c0c0c0 0%, transparent 70%)" :
-              entry.priority === 3 ? "radial-gradient(circle, #cd7f32 0%, transparent 70%)" :
+              hasTrainerBadge ? "radial-gradient(circle, var(--bon) 0%, transparent 70%)" :
+              entry.priority === 1 ? "radial-gradient(circle, var(--encre) 0%, transparent 70%)" :
+              entry.priority === 2 ? "radial-gradient(circle, var(--medaille-argent) 0%, transparent 70%)" :
+              entry.priority === 3 ? "radial-gradient(circle, var(--medaille-bronze) 0%, transparent 70%)" :
               undefined
             }}
           />
@@ -835,7 +834,7 @@ export default function PokemonCard({
           className="text-center font-bold"
           style={{
             fontFamily: "Exo 2, sans-serif", fontSize: "0.82rem",
-            color: "#e8edf5", lineHeight: 1.3, marginBottom: 4,
+            color: "var(--encre)", lineHeight: 1.3, marginBottom: 4,
             maxWidth: "100%", wordBreak: "break-word",
           }}
         >
@@ -846,7 +845,7 @@ export default function PokemonCard({
         {entry.tradePartnerName && (
           <p
             className="text-center"
-            style={{ fontSize: "0.75rem", color: "#ffd700", fontWeight: 700, marginBottom: 2, lineHeight: 1.2 }}
+            style={{ fontSize: "0.75rem", color: "var(--encre)", fontWeight: 700, marginBottom: 2, lineHeight: 1.2 }}
           >
             Réservé par {entry.tradePartnerName}
           </p>
@@ -855,9 +854,9 @@ export default function PokemonCard({
         {/* Taille (record XXS/XS/XL/XXL) */}
         {entry.size && (
           <span style={{
-            background: "rgba(100,220,180,0.18)", border: "1px solid rgba(100,220,180,0.5)",
+            background: "color-mix(in srgb, var(--tag-fond) 18%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-fond) 50%, transparent)",
             borderRadius: 999, padding: "1px 6px", marginBottom: 4,
-            fontSize: "0.75rem", fontWeight: 700, color: "#64dcb4",
+            fontSize: "0.75rem", fontWeight: 700, color: "var(--tag-fond)",
             fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
           }}>
             {entry.size}
@@ -867,9 +866,9 @@ export default function PokemonCard({
         {/* Attaque exclusive */}
         {entry.exclusiveMove && (
           <span style={{
-            background: "rgba(255,153,0,0.18)", border: "1px solid rgba(255,153,0,0.5)",
+            background: "color-mix(in srgb, var(--encre) 18%, transparent)", border: "1px solid color-mix(in srgb, var(--encre) 50%, transparent)",
             borderRadius: 999, padding: "1px 6px", marginBottom: 4,
-            fontSize: "0.75rem", fontWeight: 700, color: "#ff9900",
+            fontSize: "0.75rem", fontWeight: 700, color: "var(--encre)",
             fontFamily: "Exo 2, sans-serif", whiteSpace: "nowrap",
           }}>
             Attaque exclusive
@@ -892,9 +891,9 @@ export default function PokemonCard({
             })}
             {displayTags.length > 2 && (
               <span style={{
-                background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.12)",
+                background: "var(--trait-leger)", border: "1px solid var(--trait-leger)",
                 borderRadius: 999, padding: "1px 5px",
-                fontSize: "0.75rem", fontWeight: 700, color: "rgba(232,237,245,0.4)",
+                fontSize: "0.75rem", fontWeight: 700, color: "var(--encre-tres-douce)",
                 fontFamily: "Exo 2, sans-serif",
               }}>+{displayTags.length - 2}</span>
             )}
@@ -913,8 +912,8 @@ export default function PokemonCard({
 
         {/* Exchange badge */}
         {entry.tradeForPokemonName && entry.tradeForPokemonId && (
-          <div className="exchange-badge mt-auto" style={{ marginTop: "auto", paddingTop: 4, ...(hasTrainerBadge && { background: "rgba(0,200,80,0.12)", borderColor: "rgba(0,220,100,0.4)" }) }}>
-            <span style={{ fontSize: "0.75rem", color: "#ffd93d", fontWeight: 600, whiteSpace: "nowrap" }}>
+          <div className="exchange-badge mt-auto" style={{ marginTop: "auto", paddingTop: 4, ...(hasTrainerBadge && { background: "color-mix(in srgb, var(--bon) 12%, transparent)", borderColor: "color-mix(in srgb, var(--bon) 40%, transparent)" }) }}>
+            <span style={{ fontSize: "0.75rem", color: "var(--encre)", fontWeight: 600, whiteSpace: "nowrap" }}>
               {entry.category === "want" ? "Je donne" : entry.category === "mirror" ? "Échange" : "Je reçois"}
             </span>
             <PokemonSprite
@@ -925,7 +924,7 @@ export default function PokemonCard({
               customSpriteUrl={entry.tradeForCustomSpriteUrl}
               preferStatic={preferStatic}
             />
-            <span style={{ fontSize: "0.75rem", color: "#e8edf5", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 70 }}>
+            <span style={{ fontSize: "0.75rem", color: "var(--encre)", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 70 }}>
               {entry.tradeForPokemonName}
             </span>
           </div>
@@ -939,8 +938,8 @@ export default function PokemonCard({
             className="mt-auto"
             style={{
               marginTop: 6, padding: "4px 12px", borderRadius: 999, cursor: "pointer",
-              background: "rgba(255,215,0,0.1)", border: "1px solid rgba(255,215,0,0.3)",
-              color: "#ffd700", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
+              background: "color-mix(in srgb, var(--encre) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--encre) 30%, transparent)",
+              color: "var(--encre)", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
               whiteSpace: "nowrap",
             }}
           >
@@ -963,8 +962,8 @@ export default function PokemonCard({
             className="mt-auto"
             style={{
               marginTop: 6, padding: "4px 12px", borderRadius: 999, cursor: "pointer",
-              background: "rgba(6,182,212,0.1)", border: "1px solid rgba(6,182,212,0.3)",
-              color: "#06b6d4", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
+              background: "color-mix(in srgb, var(--tag-saison) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-saison) 30%, transparent)",
+              color: "var(--tag-saison)", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
               whiteSpace: "nowrap",
             }}
           >
@@ -981,8 +980,8 @@ export default function PokemonCard({
             className="mt-auto"
             style={{
               marginTop: 6, padding: "4px 12px", borderRadius: 999,
-              background: "rgba(255,45,120,0.12)", border: "1px solid rgba(255,45,120,0.35)",
-              color: "#ff2d78", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
+              background: "color-mix(in srgb, var(--tag-max) 12%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-max) 35%, transparent)",
+              color: "var(--tag-max)", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
               whiteSpace: "nowrap",
             }}
           >
@@ -997,8 +996,8 @@ export default function PokemonCard({
             className="mt-auto"
             style={{
               marginTop: 6, padding: "4px 12px", borderRadius: 999,
-              background: "rgba(6,182,212,0.12)", border: "1px solid rgba(6,182,212,0.35)",
-              color: "#06b6d4", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
+              background: "color-mix(in srgb, var(--tag-saison) 12%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-saison) 35%, transparent)",
+              color: "var(--tag-saison)", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.75rem",
               whiteSpace: "nowrap",
             }}
           >
@@ -1042,7 +1041,7 @@ function TrainerListModal({
   return createPortal(
     <div
       className="fixed inset-0 flex items-center justify-center p-4"
-      style={{ background: "rgba(10,6,0,0.88)", backdropFilter: "blur(12px)", zIndex: 350 }}
+      style={{ background: "color-mix(in srgb, var(--papier) 88%, transparent)", backdropFilter: "blur(12px)", zIndex: 350 }}
       onClick={(e) => { e.stopPropagation(); onClose(); }}
     >
       <div
@@ -1051,10 +1050,10 @@ function TrainerListModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
-          <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 700, fontSize: "1rem" }}>
+          <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "var(--encre)", fontWeight: 700, fontSize: "1rem" }}>
             {title}
           </h3>
-          <button onClick={onClose} style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#e8edf5", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>
+          <button onClick={onClose} style={{ background: "none", border: "1px solid var(--trait-leger)", borderRadius: 8, color: "var(--encre)", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>
             Fermer
           </button>
         </div>
@@ -1064,7 +1063,7 @@ function TrainerListModal({
               key={t.id}
               href={`/dresseurs/${t.id}`}
               className="glass-card"
-              style={{ textDecoration: "none", padding: "10px 14px", color: "#e8edf5", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem" }}
+              style={{ textDecoration: "none", padding: "10px 14px", color: "var(--encre)", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem" }}
             >
               {t.name}
             </Link>

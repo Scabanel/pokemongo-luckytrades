@@ -46,9 +46,9 @@ interface AdminPanelProps {
 // La couleur vient de lib/categories.ts ; le libellé compact ("Miroir") et
 // la teinte "active" restent spécifiques à ce composant.
 const CATEGORY_PICKER_OPTIONS = [
-  { val: "want" as const, label: "Je recherche", active: "rgba(78,168,255,0.15)", c: CATEGORIES.want.color },
-  { val: "give" as const, label: "Je peux donner", active: "rgba(255,217,61,0.15)", c: CATEGORIES.give.color },
-  { val: "mirror" as const, label: "Miroir", active: "rgba(180,100,255,0.15)", c: CATEGORIES.mirror.color },
+  { val: "want" as const, label: "Je recherche", active: "color-mix(in srgb, var(--ligne-cherche) 15%, transparent)", c: CATEGORIES.want.color },
+  { val: "give" as const, label: "Je peux donner", active: "color-mix(in srgb, var(--encre) 15%, transparent)", c: CATEGORIES.give.color },
+  { val: "mirror" as const, label: "Miroir", active: "color-mix(in srgb, var(--ligne-miroir) 15%, transparent)", c: CATEGORIES.mirror.color },
 ];
 
 export default function AdminPanel({ onLogout }: AdminPanelProps) {
@@ -344,14 +344,14 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 transition: "all 0.2s",
                 ...(activeTab === tab
                   ? {
-                      background: "rgba(255, 215, 0,0.15)",
-                      borderColor: "rgba(255, 215, 0,0.4)",
-                      color: "#ffd700",
+                      background: "color-mix(in srgb, var(--encre) 15%, transparent)",
+                      borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)",
+                      color: "var(--encre)",
                     }
                   : {
-                      background: "rgba(255,255,255,0.04)",
-                      borderColor: "rgba(255,255,255,0.1)",
-                      color: "#b0bac8",
+                      background: "var(--surface-creuse)",
+                      borderColor: "var(--trait-leger)",
+                      color: "var(--encre-douce)",
                     }),
               }}
             >
@@ -396,9 +396,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   fontFamily: "Exo 2, sans-serif",
                   fontSize: "clamp(1.4rem, 4vw, 2.2rem)",
                   fontWeight: 900,
-                  color: "#ffd700",
+                  color: "var(--encre)",
                   textTransform: "uppercase",
-                  textShadow: "0 0 8px rgba(255,215,0,0.3)",
+                  textShadow: "none",
                 }}
               >
                 {me.trainer?.name ?? "Mon espace"}
@@ -418,14 +418,14 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 </button>
               )}
             </div>
-            <p style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem", marginTop: 4 }}>
+            <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", marginTop: 4 }}>
               {me.trainer?.team
                 ? `${me.trainer.team.charAt(0).toUpperCase() + me.trainer.team.slice(1)} · Niveau ${me.trainer.level ?? "?"}`
                 : "Gère ta liste d'échanges"}
             </p>
             {me.trainer?.friendCode && (
               <div className="flex items-center justify-center gap-2" style={{ marginTop: 8 }}>
-                <span style={{ color: "rgba(232,237,245,0.45)", fontSize: "0.85rem" }}>
+                <span style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem" }}>
                   Code ami : {me.trainer.friendCode}
                 </span>
                 <button
@@ -469,22 +469,22 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                         color: CATEGORIES[key].color,
                       }
                     : {
-                        background: "rgba(255,255,255,0.03)",
-                        borderColor: "rgba(255,255,255,0.07)",
-                        color: "rgba(232,237,245,0.38)",
+                        background: "var(--surface-creuse)",
+                        borderColor: "var(--trait-leger)",
+                        color: "var(--encre-tres-douce)",
                       }),
                 }}
               >
                 <span>{CATEGORIES[key].label}</span>
                 <span
                   style={{
-                    background: activeCategory === key ? `${CATEGORIES[key].color}18` : "rgba(255,255,255,0.05)",
-                    border: `1px solid ${activeCategory === key ? `${CATEGORIES[key].color}38` : "rgba(255,255,255,0.08)"}`,
+                    background: activeCategory === key ? `${CATEGORIES[key].color}18` : "var(--surface-creuse)",
+                    border: `1px solid ${activeCategory === key ? `${CATEGORIES[key].color}38` : "var(--trait-leger)"}`,
                     borderRadius: 4,
                     padding: "1px 7px",
                     fontSize: "0.75rem",
                     fontWeight: 800,
-                    color: activeCategory === key ? CATEGORIES[key].color : "rgba(232,237,245,0.3)",
+                    color: activeCategory === key ? CATEGORIES[key].color : "var(--encre-tres-douce)",
                   }}
                 >
                   {loadingEntries ? "…" : countByCategory[key]}
@@ -517,8 +517,8 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                     border: "1px solid",
                     transition: "all 0.12s",
                     ...(filters[key]
-                      ? { background: "rgba(255, 215, 0,0.15)", borderColor: "rgba(255, 215, 0,0.4)", color: "#ffd700" }
-                      : { background: "rgba(255,255,255,0.03)", borderColor: "rgba(255,255,255,0.08)", color: "rgba(232,237,245,0.5)" }),
+                      ? { background: "color-mix(in srgb, var(--encre) 15%, transparent)", borderColor: "color-mix(in srgb, var(--encre) 40%, transparent)", color: "var(--encre)" }
+                      : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-tres-douce)" }),
                   }}
                 >
                   {label}
@@ -540,12 +540,12 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             <div
               className="flex items-center gap-3 flex-wrap p-3 mb-5"
               style={{
-                background: "rgba(255, 215, 0,0.06)",
-                border: "1px solid rgba(255, 215, 0,0.25)",
+                background: "color-mix(in srgb, var(--encre) 6%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--encre) 25%, transparent)",
                 borderRadius: 12,
               }}
             >
-              <span style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#ffd700", fontSize: "0.85rem" }}>
+              <span style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "var(--encre)", fontSize: "0.85rem" }}>
                 {selectedIds.size} sélectionné{selectedIds.size > 1 ? "s" : ""}
               </span>
               <button onClick={handleBulkComplete} className="btn-success">
@@ -553,7 +553,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               </button>
               {bulkDeleteConfirm ? (
                 <>
-                  <span style={{ fontSize: "0.8rem", color: "#ff6b6b" }}>
+                  <span style={{ fontSize: "0.8rem", color: "var(--alerte)" }}>
                     Supprimer {selectedIds.size} entrée{selectedIds.size > 1 ? "s" : ""} ?
                   </span>
                   <button onClick={handleBulkDelete} className="btn-danger">
@@ -576,8 +576,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
           <div
             style={{
-              background: "rgba(8,11,20,0.5)",
-              backdropFilter: "blur(10px)",
+              background: "color-mix(in srgb, var(--papier) 50%, transparent)",
               border: `1px solid ${activeCategoryColor}18`,
               borderTop: `2px solid ${activeCategoryColor}`,
               borderRadius: 10,
@@ -619,7 +618,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             style={{
               fontFamily: "Exo 2, sans-serif",
               fontWeight: 700,
-              color: "#ffd700",
+              color: "var(--encre)",
               marginBottom: 16,
             }}
           >
@@ -646,9 +645,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 key={t.id}
                 className="flex items-center justify-between p-3"
                 style={{
-                  background: "rgba(255,255,255,0.04)",
+                  background: "var(--surface-creuse)",
                   borderRadius: 12,
-                  border: "1px solid rgba(255,255,255,0.08)",
+                  border: "1px solid var(--trait-leger)",
                 }}
               >
                 <div className="flex items-center gap-3">
@@ -657,14 +656,14 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                       width: 32,
                       height: 32,
                       borderRadius: "50%",
-                      background: "#ffd70020",
-                      border: "1px solid #ffd70040",
+                      background: "var(--encre)",
+                      border: "1px solid var(--encre)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       fontSize: "0.8rem",
                       fontWeight: 700,
-                      color: "#ffd700",
+                      color: "var(--encre)",
                       fontFamily: "Exo 2, sans-serif",
                     }}
                   >
@@ -672,7 +671,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                   </div>
                   <div>
                     <div style={{ fontWeight: 600, fontSize: "0.9rem" }}>{t.name}</div>
-                    <div style={{ color: "rgba(232,237,245,0.4)", fontSize: "0.75rem" }}>
+                    <div style={{ color: "var(--encre-tres-douce)", fontSize: "0.75rem" }}>
                       {t._count.entries} Pokémon à échanger
                     </div>
                   </div>
@@ -687,7 +686,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               </div>
             ))}
             {trainers.length === 0 && (
-              <p style={{ color: "rgba(232,237,245,0.3)", textAlign: "center", padding: 16 }}>
+              <p style={{ color: "var(--encre-tres-douce)", textAlign: "center", padding: 16 }}>
                 Aucun dresseur enregistré
               </p>
             )}
@@ -719,7 +718,7 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
             zIndex: 150,
             borderRadius: 999,
             padding: "14px 22px",
-            boxShadow: "0 10px 30px rgba(0,0,0,0.45)",
+            boxShadow: "none",
           }}
         >
           +Ajouter un Pokémon
@@ -823,7 +822,7 @@ function MyAccountPanel({
   if (!trainer) {
     return (
       <div className="glass-card p-6" style={{ maxWidth: 500 }}>
-        <p style={{ color: "rgba(232,237,245,0.4)" }}>
+        <p style={{ color: "var(--encre-tres-douce)" }}>
           Ton compte n&apos;est rattaché à aucun dresseur pour le moment. Contacte l&apos;admin.
         </p>
       </div>
@@ -872,7 +871,7 @@ function MyAccountPanel({
 
   return (
     <div className="glass-card p-6" style={{ maxWidth: 500 }}>
-      <h2 style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "#ffd700", marginBottom: 16 }}>
+      <h2 style={{ fontFamily: "Exo 2, sans-serif", fontWeight: 700, color: "var(--encre)", marginBottom: 16 }}>
         Mon compte ({trainer.name})
       </h2>
       <div className="flex items-center gap-2 flex-wrap" style={{ marginBottom: 16 }}>
@@ -896,7 +895,7 @@ function MyAccountPanel({
             placeholder="Ton nom de dresseur"
             required
           />
-          <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)", marginTop: 4 }}>
+          <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", marginTop: 4 }}>
             Visible par tout le monde sur ton catalogue public. Le lien de partage ne change pas si tu le modifies.
           </p>
         </div>
@@ -950,7 +949,7 @@ function MyAccountPanel({
             <option value="static">Statique (icône officielle Pokémon GO)</option>
             <option value="animated">Animé (Gen V / Showdown)</option>
           </select>
-          <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)", marginTop: 4 }}>
+          <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", marginTop: 4 }}>
             S&apos;applique instantanément à tous tes Pokémon (sauf ceux avec un sprite personnalisé).
           </p>
         </div>
@@ -1006,7 +1005,7 @@ function EntrySection({
             indeterminate={someSelected}
             onChange={() => onToggleSelectAll(ids)}
           />
-          <span style={{ fontFamily: "Exo 2, sans-serif", fontSize: "0.78rem", color: "rgba(232,237,245,0.4)" }}>
+          <span style={{ fontFamily: "Exo 2, sans-serif", fontSize: "0.78rem", color: "var(--encre-tres-douce)" }}>
             Tout sélectionner
           </span>
         </div>
@@ -1021,10 +1020,10 @@ function EntrySection({
           style={{
             textAlign: "center",
             padding: 24,
-            color: "rgba(232,237,245,0.3)",
-            background: "rgba(255,255,255,0.02)",
+            color: "var(--encre-tres-douce)",
+            background: "var(--surface-creuse)",
             borderRadius: 16,
-            border: "1px dashed rgba(255,255,255,0.08)",
+            border: "1px dashed var(--trait-leger)",
           }}
         >
           Aucune entrée
@@ -1078,7 +1077,7 @@ function SelectAllCheckbox({
       type="checkbox"
       checked={checked}
       onChange={onChange}
-      style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#ffd700" }}
+      style={{ width: 16, height: 16, cursor: "pointer", accentColor: "var(--encre)" }}
       aria-label="Tout sélectionner"
     />
   );
@@ -1354,7 +1353,7 @@ export function EntryForm(props: EntryFormProps) {
             style={{
               fontFamily: "Exo 2, sans-serif",
               fontWeight: 800,
-              color: "#ffd700",
+              color: "var(--encre)",
               fontSize: "1.3rem",
             }}
           >
@@ -1364,13 +1363,13 @@ export function EntryForm(props: EntryFormProps) {
             <span
               className="animate-fade-in-up"
               style={{
-                background: "rgba(255, 215, 0,0.12)",
-                border: "1px solid rgba(255, 215, 0,0.35)",
+                background: "color-mix(in srgb, var(--encre) 12%, transparent)",
+                border: "1px solid color-mix(in srgb, var(--encre) 35%, transparent)",
                 borderRadius: 999,
                 padding: "3px 12px",
                 fontSize: "0.75rem",
                 fontWeight: 800,
-                color: "#ffd700",
+                color: "var(--encre)",
                 fontFamily: "Exo 2, sans-serif",
               }}
             >
@@ -1386,7 +1385,7 @@ export function EntryForm(props: EntryFormProps) {
               style={{
                 fontFamily: "Exo 2, sans-serif",
                 fontWeight: 800,
-                color: "#ffd700",
+                color: "var(--encre)",
                 fontSize: "1.2rem",
                 textTransform: "capitalize",
               }}
@@ -1396,7 +1395,7 @@ export function EntryForm(props: EntryFormProps) {
             <span
               style={{
                 fontSize: "0.75rem",
-                color: form.category === "want" ? "#4ea8ff" : form.category === "mirror" ? "#b464ff" : "#ffd93d",
+                color: form.category === "want" ? "var(--ligne-cherche)" : form.category === "mirror" ? "var(--ligne-miroir)" : "var(--encre)",
                 fontWeight: 600,
                 fontFamily: "Exo 2, sans-serif",
               }}
@@ -1423,7 +1422,7 @@ export function EntryForm(props: EntryFormProps) {
                   fontWeight: 600, fontSize: "0.8rem", transition: "all 0.2s",
                   ...(form.category === val
                     ? { background: active, borderColor: c, color: c }
-                    : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                    : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-douce)" }),
                 }}
               >
                 {label}
@@ -1522,7 +1521,7 @@ export function EntryForm(props: EntryFormProps) {
               <div
                 style={{
                   position: "absolute", top: "100%", left: 0, right: 0, zIndex: 20,
-                  background: "#141824", border: "1px solid rgba(255,255,255,0.12)",
+                  background: "var(--papier)", border: "1px solid var(--trait-leger)",
                   borderRadius: 10, marginTop: 4, maxHeight: 220, overflowY: "auto",
                 }}
               >
@@ -1537,7 +1536,7 @@ export function EntryForm(props: EntryFormProps) {
                     className="flex items-center gap-2"
                     style={{
                       width: "100%", padding: "8px 12px", background: "none", border: "none",
-                      cursor: "pointer", textAlign: "left", color: "#e8edf5",
+                      cursor: "pointer", textAlign: "left", color: "var(--encre)",
                       fontFamily: "Exo 2, sans-serif", fontSize: "0.85rem",
                     }}
                   >
@@ -1569,8 +1568,8 @@ export function EntryForm(props: EntryFormProps) {
               fontSize: "0.85rem",
               transition: "all 0.2s",
               ...(form.shiny
-                ? { background: "rgba(255,215,0,0.15)", borderColor: "rgba(255,215,0,0.5)", color: "#ffd700" }
-                : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                ? { background: "color-mix(in srgb, var(--encre) 15%, transparent)", borderColor: "color-mix(in srgb, var(--encre) 50%, transparent)", color: "var(--encre)" }
+                : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-douce)" }),
             }}
           >
             ✨ {form.shiny ? "Shiny activé" : "Pas shiny"}
@@ -1584,8 +1583,8 @@ export function EntryForm(props: EntryFormProps) {
           <label className="field-label">GENRE (optionnel)</label>
           <div className="flex gap-2 mt-1">
             {([
-              { key: "male", label: "♂ Mâle", color: "#4ea8ff" },
-              { key: "female", label: "♀ Femelle", color: "#ff5d9e" },
+              { key: "male", label: "♂ Mâle", color: "var(--ligne-cherche)" },
+              { key: "female", label: "♀ Femelle", color: "var(--tag-max)" },
             ] as const).map(({ key, label, color }) => {
               const active = form.gender === key;
               return (
@@ -1599,7 +1598,7 @@ export function EntryForm(props: EntryFormProps) {
                     transition: "all 0.2s",
                     ...(active
                       ? { background: `${color}26`, borderColor: `${color}80`, color }
-                      : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                      : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-douce)" }),
                   }}
                 >
                   {label}
@@ -1628,8 +1627,8 @@ export function EntryForm(props: EntryFormProps) {
                     border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem",
                     transition: "all 0.2s",
                     ...(active
-                      ? { background: "rgba(100,220,180,0.15)", borderColor: "rgba(100,220,180,0.5)", color: "#64dcb4" }
-                      : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                      ? { background: "color-mix(in srgb, var(--tag-fond) 15%, transparent)", borderColor: "color-mix(in srgb, var(--tag-fond) 50%, transparent)", color: "var(--tag-fond)" }
+                      : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-douce)" }),
                   }}
                 >
                   {key}
@@ -1652,8 +1651,8 @@ export function EntryForm(props: EntryFormProps) {
               border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.85rem",
               transition: "all 0.2s",
               ...(form.exclusiveMove
-                ? { background: "rgba(255,153,0,0.15)", borderColor: "rgba(255,153,0,0.5)", color: "#ff9900" }
-                : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                ? { background: "color-mix(in srgb, var(--encre) 15%, transparent)", borderColor: "color-mix(in srgb, var(--encre) 50%, transparent)", color: "var(--encre)" }
+                : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-douce)" }),
             }}
           >
             {form.exclusiveMove ? "Attaque exclusive" : "Attaque normale"}
@@ -1708,7 +1707,7 @@ export function EntryForm(props: EntryFormProps) {
                     transition: "all 0.2s",
                     ...(active
                       ? { background: c.bg, borderColor: c.border, color: c.text }
-                      : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                      : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-douce)" }),
                   }}
                 >
                   {label}
@@ -1733,7 +1732,7 @@ export function EntryForm(props: EntryFormProps) {
             background: "none",
             border: "none",
             cursor: "pointer",
-            color: "#ffd700",
+            color: "var(--encre)",
             fontFamily: "Exo 2, sans-serif",
             fontWeight: 700,
             fontSize: "0.8rem",
@@ -1761,16 +1760,16 @@ export function EntryForm(props: EntryFormProps) {
                     shiny={linkedEntry.shiny === true}
                     customSpriteUrl={linkedEntry.customSpriteUrl}
                   />
-                  <span style={{ color: "#e8edf5", fontSize: "0.85rem" }}>{linkedEntry.pokemonName}</span>
+                  <span style={{ color: "var(--encre)", fontSize: "0.85rem" }}>{linkedEntry.pokemonName}</span>
                   {linkedEntry.shiny && (
-                    <span style={{ fontSize: "0.75rem", color: "#ffd700" }}>✨ Shiny</span>
+                    <span style={{ fontSize: "0.75rem", color: "var(--or)" }}>✨ Shiny</span>
                   )}
                   {parseTags(linkedEntry.tags).map((tag) => (
-                    <span key={tag} style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.5)", textTransform: "capitalize" }}>
+                    <span key={tag} style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", textTransform: "capitalize" }}>
                       {tag}
                     </span>
                   ))}
-                  <span style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)" }}>
+                  <span style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)" }}>
                     (lié à ton entrée « {oppositeCategory === "give" ? "Je peux donner" : "Je recherche"} »)
                   </span>
                   <button
@@ -1819,8 +1818,8 @@ export function EntryForm(props: EntryFormProps) {
                           <div
                             style={{
                               position: "absolute", top: "calc(100% + 4px)", left: 0, right: 0, zIndex: 20,
-                              background: "#141926", border: "1px solid rgba(255,215,0,0.2)",
-                              borderRadius: 12, overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+                              background: "var(--papier)", border: "1px solid color-mix(in srgb, var(--encre) 20%, transparent)",
+                              borderRadius: 12, overflow: "hidden", boxShadow: "none",
                             }}
                           >
                             {linkSuggestions.map((le) => {
@@ -1837,7 +1836,7 @@ export function EntryForm(props: EntryFormProps) {
                                   className="flex items-center gap-2"
                                   style={{
                                     width: "100%", padding: "8px 12px", background: "none", border: "none",
-                                    cursor: "pointer", textAlign: "left", color: "#e8edf5",
+                                    cursor: "pointer", textAlign: "left", color: "var(--encre)",
                                     fontFamily: "Exo 2, sans-serif", fontSize: "0.85rem",
                                   }}
                                 >
@@ -1853,10 +1852,10 @@ export function EntryForm(props: EntryFormProps) {
                                     {(le.shiny || leTags.length > 0) && (
                                       <span style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                                         {le.shiny && (
-                                          <span style={{ fontSize: "0.75rem", color: "#ffd700" }}>✨ Shiny</span>
+                                          <span style={{ fontSize: "0.75rem", color: "var(--or)" }}>✨ Shiny</span>
                                         )}
                                         {leTags.map((tag) => (
-                                          <span key={tag} style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.5)", textTransform: "capitalize" }}>
+                                          <span key={tag} style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", textTransform: "capitalize" }}>
                                             {tag}
                                           </span>
                                         ))}
@@ -1983,7 +1982,7 @@ export function EntryForm(props: EntryFormProps) {
           </button>
         </div>
         {mode === "add" && addedCount > 0 && (
-          <p style={{ textAlign: "center", fontSize: "0.75rem", color: "rgba(232,237,245,0.35)", margin: 0 }}>
+          <p style={{ textAlign: "center", fontSize: "0.75rem", color: "var(--encre-tres-douce)", margin: 0 }}>
             Continue à chercher pour enchaîner les ajouts, ou clique sur « Terminé ».
           </p>
         )}
@@ -2006,12 +2005,12 @@ function SuggestionDropdown({
         top: "calc(100% + 4px)",
         left: 0,
         right: 0,
-        background: "#141926",
-        border: "1px solid rgba(255, 215, 0,0.2)",
+        background: "var(--papier)",
+        border: "1px solid color-mix(in srgb, var(--encre) 20%, transparent)",
         borderRadius: 12,
         zIndex: 100,
         overflow: "hidden",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+        boxShadow: "none",
       }}
     >
       {options.map((p) => (
@@ -2029,13 +2028,13 @@ function SuggestionDropdown({
             border: "none",
             cursor: "pointer",
             textAlign: "left",
-            color: "#e8edf5",
+            color: "var(--encre)",
             fontSize: "0.85rem",
             transition: "background 0.15s",
             textTransform: "capitalize",
           }}
           onMouseEnter={(e) =>
-            ((e.currentTarget as HTMLButtonElement).style.background = "rgba(255, 215, 0,0.08)")
+            ((e.currentTarget as HTMLButtonElement).style.background = "color-mix(in srgb, var(--encre) 8%, transparent)")
           }
           onMouseLeave={(e) =>
             ((e.currentTarget as HTMLButtonElement).style.background = "transparent")
@@ -2050,7 +2049,7 @@ function SuggestionDropdown({
             style={{ imageRendering: "pixelated" }}
           />
           <span>{p.frenchName}</span>
-          <span style={{ marginLeft: "auto", color: "rgba(232,237,245,0.3)", fontSize: "0.75rem" }}>
+          <span style={{ marginLeft: "auto", color: "var(--encre-tres-douce)", fontSize: "0.75rem" }}>
             #{p.id}
           </span>
         </button>
@@ -2239,7 +2238,7 @@ function SpritePicker({
     <>
       <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: 4 }}>
         {currentUrl && (
-          <span style={{ display: "inline-block", width: 48, height: 48, overflow: "hidden", background: "rgba(255,255,255,0.05)", borderRadius: 8 }}>
+          <span style={{ display: "inline-block", width: 48, height: 48, overflow: "hidden", background: "var(--trait-leger)", borderRadius: 8 }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={currentUrl}
@@ -2253,8 +2252,8 @@ function SpritePicker({
           onClick={handleOpen}
           style={{
             padding: "clamp(4px, 1.5vw, 6px) clamp(9px, 3vw, 14px)", borderRadius: 10, cursor: "pointer",
-            background: "rgba(255, 215, 0,0.08)", border: "1px solid rgba(255, 215, 0,0.25)",
-            color: "#ffd700", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "clamp(0.68rem, 3vw, 0.8rem)",
+            background: "color-mix(in srgb, var(--encre) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--encre) 25%, transparent)",
+            color: "var(--encre)", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "clamp(0.68rem, 3vw, 0.8rem)",
           }}
         >
           Sélectionner sprite
@@ -2265,8 +2264,8 @@ function SpritePicker({
             onClick={() => onSelect(null)}
             style={{
               padding: "clamp(4px, 1.5vw, 6px) clamp(7px, 2.5vw, 10px)", borderRadius: 10, cursor: "pointer",
-              background: "rgba(255,107,107,0.08)", border: "1px solid rgba(255,107,107,0.25)",
-              color: "#ff6b6b", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "clamp(0.68rem, 3vw, 0.8rem)",
+              background: "color-mix(in srgb, var(--alerte) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--alerte) 25%, transparent)",
+              color: "var(--alerte)", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "clamp(0.68rem, 3vw, 0.8rem)",
             }}
           >
             Retirer
@@ -2277,7 +2276,7 @@ function SpritePicker({
       {mounted && open && createPortal(
         <div
           className="fixed inset-0 flex items-center justify-center p-4"
-          style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 400 }}
+          style={{ background: "color-mix(in srgb, var(--papier) 92%, transparent)", backdropFilter: "blur(10px)", zIndex: 400 }}
           onClick={(e) => e.target === e.currentTarget && setOpen(false)}
         >
           <div
@@ -2286,14 +2285,14 @@ function SpritePicker({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#ffd700", fontWeight: 700, fontSize: "1.1rem" }}>
+              <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "var(--encre)", fontWeight: 700, fontSize: "1.1rem" }}>
                 Sprites : <span style={{ textTransform: "capitalize" }}>{pokemonName}</span>
               </h3>
-              <button onClick={() => setOpen(false)} style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#e8edf5", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>Fermer</button>
+              <button onClick={() => setOpen(false)} style={{ background: "none", border: "1px solid var(--trait-leger)", borderRadius: 8, color: "var(--encre)", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>Fermer</button>
             </div>
 
             {fetching ? (
-              <div style={{ textAlign: "center", padding: 32, color: "rgba(232,237,245,0.4)" }}>Chargement…</div>
+              <div style={{ textAlign: "center", padding: 32, color: "var(--encre-tres-douce)" }}>Chargement…</div>
             ) : visibleSprites.length > 0 ? (
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(96px, 26vw, 160px), 1fr))", gap: 8, marginBottom: 20 }}>
                 {visibleSprites.map(({ url, label }) => (
@@ -2302,8 +2301,8 @@ function SpritePicker({
                     type="button"
                     onClick={() => { onSelect(url); setOpen(false); }}
                     style={{
-                      background: currentUrl === url ? "rgba(255, 215, 0,0.15)" : "rgba(255,255,255,0.04)",
-                      border: `1px solid ${currentUrl === url ? "rgba(255, 215, 0,0.4)" : "rgba(255,255,255,0.08)"}`,
+                      background: currentUrl === url ? "color-mix(in srgb, var(--encre) 15%, transparent)" : "var(--surface-creuse)",
+                      border: `1px solid ${currentUrl === url ? "color-mix(in srgb, var(--encre) 40%, transparent)" : "var(--trait-leger)"}`,
                       borderRadius: 10, padding: 10, cursor: "pointer",
                       display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
                     }}
@@ -2321,14 +2320,14 @@ function SpritePicker({
                         }}
                       />
                     </span>
-                    <span style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.55)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+                    <span style={{ fontSize: "0.75rem", color: "var(--encre-douce)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
                       {label}
                     </span>
                   </button>
                 ))}
               </div>
             ) : fetched ? (
-              <p style={{ color: "rgba(232,237,245,0.4)", marginBottom: 16 }}>
+              <p style={{ color: "var(--encre-tres-douce)", marginBottom: 16 }}>
                 {sprites.length > 0
                   ? `Aucun sprite ${shiny ? "shiny" : "normal"} trouvé via PokéAPI pour ce Pokémon.`
                   : "Aucun sprite trouvé via PokéAPI pour ce Pokémon."}
@@ -2336,15 +2335,15 @@ function SpritePicker({
             ) : null}
 
             {/* Costumes officiels Pokémon GO */}
-            <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 16, marginBottom: 16 }}>
+            <div style={{ borderTop: "1px solid var(--trait-leger)", paddingTop: 16, marginBottom: 16 }}>
               <button
                 type="button"
                 onClick={() => setShowCostumes((v) => !v)}
                 style={{
                   display: "flex", alignItems: "center", gap: 8,
-                  background: "rgba(255,153,0,0.08)", border: "1px solid rgba(255,153,0,0.3)",
+                  background: "color-mix(in srgb, var(--encre) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--encre) 30%, transparent)",
                   borderRadius: 10, padding: "7px 14px", cursor: "pointer",
-                  color: "#ff9900", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.8rem",
+                  color: "var(--encre)", fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.8rem",
                   width: "100%", justifyContent: "space-between",
                 }}
               >
@@ -2360,7 +2359,7 @@ function SpritePicker({
               )}
             </div>
 
-            <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 16 }}>
+            <div style={{ borderTop: "1px solid var(--trait-leger)", paddingTop: 16 }}>
               <label className="field-label">URL MANUELLE</label>
               <div className="flex gap-2 mt-1">
                 <input
@@ -2407,7 +2406,7 @@ function CostumeGrid({
 
   if (costumes.length === 0) {
     return (
-      <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)", marginTop: 10 }}>
+      <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", marginTop: 10 }}>
         Aucun costume officiel connu pour ce Pokémon (pas encore sorti dans Pokémon GO, ou pas de costume).
       </p>
     );
@@ -2435,8 +2434,8 @@ function CostumeGrid({
             onClick={() => onSelect(url, label)}
             style={{
               position: "relative",
-              background: currentUrl === url ? "rgba(255,153,0,0.2)" : "rgba(255,255,255,0.03)",
-              border: `1px solid ${currentUrl === url ? "rgba(255,153,0,0.5)" : "rgba(255,255,255,0.07)"}`,
+              background: currentUrl === url ? "color-mix(in srgb, var(--encre) 20%, transparent)" : "var(--surface-creuse)",
+              border: `1px solid ${currentUrl === url ? "color-mix(in srgb, var(--encre) 50%, transparent)" : "var(--trait-leger)"}`,
               borderRadius: 10, padding: 8, cursor: "pointer",
               display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
             }}
@@ -2448,9 +2447,9 @@ function CostumeGrid({
                   position: "absolute", top: 4, left: 4, zIndex: 1,
                   width: 18, height: 18, borderRadius: "50%",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  background: gender === "male" ? "#3b82f6" : "#ff2d78",
-                  color: "#fff", fontWeight: 800, fontSize: "0.75rem",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.5)",
+                  background: gender === "male" ? "var(--ligne-cherche)" : "var(--tag-max)",
+                  color: "var(--surface)", fontWeight: 800, fontSize: "0.75rem",
+                  boxShadow: "none",
                 }}
               >
                 {gender === "male" ? "♂" : "♀"}
@@ -2468,14 +2467,14 @@ function CostumeGrid({
                 }}
               />
             </span>
-            <span style={{ fontSize: "0.75rem", color: "rgba(255,153,0,0.8)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+            <span style={{ fontSize: "0.75rem", color: "color-mix(in srgb, var(--encre) 80%, transparent)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
               {label}
             </span>
           </button>
           );
         })}
         {filtered.length === 0 && (
-          <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.35)", gridColumn: "1 / -1" }}>
+          <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", gridColumn: "1 / -1" }}>
             Aucun costume ne correspond à « {search} ».
           </p>
         )}
@@ -2538,15 +2537,15 @@ function BackgroundPicker({
       <div className="flex items-center gap-2 flex-wrap" style={{ marginTop: 4 }}>
         {currentUrl && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={currentUrl} alt="fond" style={{ width: 48, height: 48, objectFit: "cover", background: "rgba(255,255,255,0.05)", borderRadius: 8 }} />
+          <img src={currentUrl} alt="fond" style={{ width: 48, height: 48, objectFit: "cover", background: "var(--trait-leger)", borderRadius: 8 }} />
         )}
         <button
           type="button"
           onClick={() => setOpen(true)}
           style={{
             padding: "clamp(4px, 1.5vw, 6px) clamp(9px, 3vw, 14px)", borderRadius: 10, cursor: "pointer",
-            background: "rgba(180,100,255,0.08)", border: "1px solid rgba(180,100,255,0.25)",
-            color: "#b464ff", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "clamp(0.68rem, 3vw, 0.8rem)",
+            background: "color-mix(in srgb, var(--ligne-miroir) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--ligne-miroir) 25%, transparent)",
+            color: "var(--ligne-miroir)", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "clamp(0.68rem, 3vw, 0.8rem)",
           }}
         >
           Sélectionner un fond{validated.length > 0 ? ` (${validated.length} confirmés)` : ""}
@@ -2557,8 +2556,8 @@ function BackgroundPicker({
             onClick={() => onSelect(null)}
             style={{
               padding: "clamp(4px, 1.5vw, 6px) clamp(7px, 2.5vw, 10px)", borderRadius: 10, cursor: "pointer",
-              background: "rgba(255,107,107,0.08)", border: "1px solid rgba(255,107,107,0.25)",
-              color: "#ff6b6b", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "clamp(0.68rem, 3vw, 0.8rem)",
+              background: "color-mix(in srgb, var(--alerte) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--alerte) 25%, transparent)",
+              color: "var(--alerte)", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "clamp(0.68rem, 3vw, 0.8rem)",
             }}
           >
             Retirer
@@ -2569,7 +2568,7 @@ function BackgroundPicker({
       {mounted && open && createPortal(
         <div
           className="fixed inset-0 flex items-center justify-center p-4"
-          style={{ background: "rgba(11,15,26,0.92)", backdropFilter: "blur(10px)", zIndex: 400 }}
+          style={{ background: "color-mix(in srgb, var(--papier) 92%, transparent)", backdropFilter: "blur(10px)", zIndex: 400 }}
           onClick={(e) => e.target === e.currentTarget && setOpen(false)}
         >
           <div
@@ -2578,16 +2577,16 @@ function BackgroundPicker({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "#b464ff", fontWeight: 700, fontSize: "1.1rem" }}>
+              <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "var(--ligne-miroir)", fontWeight: 700, fontSize: "1.1rem" }}>
                 {showAll || validated.length === 0
                   ? `Tous les fonds (${BACKGROUND_CATALOG.length})`
                   : `Fonds confirmés pour ce Pokémon (${validated.length})`}
               </h3>
-              <button onClick={() => setOpen(false)} style={{ background: "none", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, color: "#e8edf5", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>Fermer</button>
+              <button onClick={() => setOpen(false)} style={{ background: "none", border: "1px solid var(--trait-leger)", borderRadius: 8, color: "var(--encre)", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>Fermer</button>
             </div>
 
             {validated.length > 0 && (
-              <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.4)", marginBottom: 10 }}>
+              <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", marginBottom: 10 }}>
                 {showAll
                   ? "Liste complète : rien ne garantit que ce Pokémon a réellement eu ce fond."
                   : "Confirmés événement par événement (source : margxt.fr)."}
@@ -2595,7 +2594,7 @@ function BackgroundPicker({
                 <button
                   type="button"
                   onClick={() => setShowAll((v) => !v)}
-                  style={{ background: "none", border: "none", color: "#b464ff", cursor: "pointer", textDecoration: "underline", fontSize: "0.75rem", padding: 0 }}
+                  style={{ background: "none", border: "none", color: "var(--ligne-miroir)", cursor: "pointer", textDecoration: "underline", fontSize: "0.75rem", padding: 0 }}
                 >
                   {showAll ? "Revenir aux fonds confirmés" : "Voir tous les fonds à la place"}
                 </button>
@@ -2618,8 +2617,8 @@ function BackgroundPicker({
                   type="button"
                   onClick={() => { onSelect(url); setOpen(false); }}
                   style={{
-                    background: currentUrl === url ? "rgba(180,100,255,0.15)" : "rgba(255,255,255,0.04)",
-                    border: `1px solid ${currentUrl === url ? "rgba(180,100,255,0.4)" : "rgba(255,255,255,0.08)"}`,
+                    background: currentUrl === url ? "color-mix(in srgb, var(--ligne-miroir) 15%, transparent)" : "var(--surface-creuse)",
+                    border: `1px solid ${currentUrl === url ? "color-mix(in srgb, var(--ligne-miroir) 40%, transparent)" : "var(--trait-leger)"}`,
                     borderRadius: 10, padding: 6, cursor: "pointer",
                     display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
                   }}
@@ -2634,13 +2633,13 @@ function BackgroundPicker({
                       if (btn) btn.style.display = "none";
                     }}
                   />
-                  <span style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.6)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+                  <span style={{ fontSize: "0.75rem", color: "var(--encre-douce)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
                     {label}
                   </span>
                 </button>
               ))}
               {filtered.length === 0 && (
-                <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.35)", gridColumn: "1 / -1" }}>
+                <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", gridColumn: "1 / -1" }}>
                   Aucun fond ne correspond à « {search} ».
                 </p>
               )}
@@ -2656,22 +2655,22 @@ function BackgroundPicker({
 // ─── Tags ─────────────────────────────────────────────────────────────────────
 
 const TAG_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  halloween:    { bg: "rgba(255,107,0,0.18)",   text: "#ff6b00", border: "rgba(255,107,0,0.5)" },
-  noel:         { bg: "rgba(80,200,255,0.18)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
-  "noël":       { bg: "rgba(80,200,255,0.18)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
-  holiday:      { bg: "rgba(80,200,255,0.18)",   text: "#50c8ff", border: "rgba(80,200,255,0.5)" },
-  anniversaire: { bg: "rgba(255,215,0,0.18)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
-  fete:         { bg: "rgba(255,215,0,0.18)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
-  "fête":       { bg: "rgba(255,215,0,0.18)",    text: "#ffd700", border: "rgba(255,215,0,0.5)" },
-  gigamax:      { bg: "rgba(255,40,140,0.18)",   text: "#ff288c", border: "rgba(255,40,140,0.5)" },
-  dynamax:      { bg: "rgba(210,40,40,0.18)",    text: "#e03030", border: "rgba(210,40,40,0.5)" },
-  costume:      { bg: "rgba(200,100,255,0.18)",  text: "#c864ff", border: "rgba(200,100,255,0.5)" },
-  evenement:    { bg: "rgba(180,100,255,0.18)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
-  "événement":  { bg: "rgba(180,100,255,0.18)",  text: "#b464ff", border: "rgba(180,100,255,0.5)" },
-  fond:         { bg: "rgba(100,220,180,0.18)",  text: "#64dcb4", border: "rgba(100,220,180,0.5)" },
-  "forme-regionale": { bg: "rgba(0,180,220,0.18)", text: "#00b4dc", border: "rgba(0,180,220,0.5)" },
+  halloween:    { bg: "color-mix(in srgb, var(--tag-fete) 18%, transparent)",   text: "var(--tag-fete)", border: "color-mix(in srgb, var(--tag-fete) 50%, transparent)" },
+  noel:         { bg: "color-mix(in srgb, var(--tag-saison) 18%, transparent)",   text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
+  "noël":       { bg: "color-mix(in srgb, var(--tag-saison) 18%, transparent)",   text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
+  holiday:      { bg: "color-mix(in srgb, var(--tag-saison) 18%, transparent)",   text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
+  anniversaire: { bg: "color-mix(in srgb, var(--encre) 18%, transparent)",    text: "var(--encre)", border: "color-mix(in srgb, var(--encre) 50%, transparent)" },
+  fete:         { bg: "color-mix(in srgb, var(--encre) 18%, transparent)",    text: "var(--encre)", border: "color-mix(in srgb, var(--encre) 50%, transparent)" },
+  "fête":       { bg: "color-mix(in srgb, var(--encre) 18%, transparent)",    text: "var(--encre)", border: "color-mix(in srgb, var(--encre) 50%, transparent)" },
+  gigamax:      { bg: "color-mix(in srgb, var(--tag-max) 18%, transparent)",   text: "var(--tag-max)", border: "color-mix(in srgb, var(--tag-max) 50%, transparent)" },
+  dynamax:      { bg: "color-mix(in srgb, var(--tag-max) 18%, transparent)",    text: "var(--tag-max)", border: "color-mix(in srgb, var(--tag-max) 50%, transparent)" },
+  costume:      { bg: "color-mix(in srgb, var(--tag-costume) 18%, transparent)",  text: "var(--tag-costume)", border: "color-mix(in srgb, var(--tag-costume) 50%, transparent)" },
+  evenement:    { bg: "color-mix(in srgb, var(--ligne-miroir) 18%, transparent)",  text: "var(--ligne-miroir)", border: "color-mix(in srgb, var(--ligne-miroir) 50%, transparent)" },
+  "événement":  { bg: "color-mix(in srgb, var(--ligne-miroir) 18%, transparent)",  text: "var(--ligne-miroir)", border: "color-mix(in srgb, var(--ligne-miroir) 50%, transparent)" },
+  fond:         { bg: "color-mix(in srgb, var(--tag-fond) 18%, transparent)",  text: "var(--tag-fond)", border: "color-mix(in srgb, var(--tag-fond) 50%, transparent)" },
+  "forme-regionale": { bg: "color-mix(in srgb, var(--tag-saison) 18%, transparent)", text: "var(--tag-saison)", border: "color-mix(in srgb, var(--tag-saison) 50%, transparent)" },
 };
-const DEFAULT_TAG_COLOR = { bg: "rgba(100,180,255,0.15)", text: "#64b4ff", border: "rgba(100,180,255,0.4)" };
+const DEFAULT_TAG_COLOR = { bg: "color-mix(in srgb, var(--tag-neutre) 15%, transparent)", text: "var(--tag-neutre)", border: "color-mix(in srgb, var(--tag-neutre) 40%, transparent)" };
 
 // Seuls tags proposés à la création/modification (voir le bloc TAGS à côté de
 // SHINY) : liste fermée plutôt que du texte libre, pour que gigamax/dynamax/
@@ -2707,8 +2706,7 @@ function ModalOverlay({ children }: { children: React.ReactNode }) {
     <div
       className="fixed inset-0 flex items-center justify-center p-4"
       style={{
-        background: "rgba(11,15,26,0.85)",
-        backdropFilter: "blur(8px)",
+        background: "color-mix(in srgb, var(--papier) 85%, transparent)",
         zIndex: 200,
       }}
     >

@@ -172,7 +172,7 @@ export default function BackgroundManager() {
       <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={handleFileChosen} />
 
       <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
-        <h2 style={{ fontFamily: "Exo 2, sans-serif", color: "#b464ff", fontWeight: 700, fontSize: "1.15rem" }}>
+        <h2 style={{ fontFamily: "Exo 2, sans-serif", color: "var(--ligne-miroir)", fontWeight: 700, fontSize: "1.15rem" }}>
           Fonds d&apos;événement
         </h2>
         <button
@@ -196,8 +196,8 @@ export default function BackgroundManager() {
               padding: "6px 14px", borderRadius: 999, cursor: "pointer",
               border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.78rem",
               ...(view === v
-                ? { background: "rgba(180,100,255,0.15)", borderColor: "rgba(180,100,255,0.4)", color: "#b464ff" }
-                : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                ? { background: "color-mix(in srgb, var(--ligne-miroir) 15%, transparent)", borderColor: "color-mix(in srgb, var(--ligne-miroir) 40%, transparent)", color: "var(--ligne-miroir)" }
+                : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-douce)" }),
             }}
           >
             {v === "species" ? "Fonds validés par Pokémon" : "Fonds génériques"}
@@ -225,8 +225,8 @@ export default function BackgroundManager() {
                   padding: "5px 12px", borderRadius: 999, cursor: "pointer",
                   border: "1px solid", fontFamily: "Exo 2, sans-serif", fontWeight: 600, fontSize: "0.75rem",
                   ...(selectedDexId === p.id
-                    ? { background: "rgba(180,100,255,0.15)", borderColor: "rgba(180,100,255,0.4)", color: "#b464ff" }
-                    : { background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)", color: "#b0bac8" }),
+                    ? { background: "color-mix(in srgb, var(--ligne-miroir) 15%, transparent)", borderColor: "color-mix(in srgb, var(--ligne-miroir) 40%, transparent)", color: "var(--ligne-miroir)" }
+                    : { background: "var(--trait-leger)", borderColor: "var(--trait-leger)", color: "var(--encre-douce)" }),
                 }}
               >
                 #{p.id} {p.frenchName}
@@ -234,7 +234,7 @@ export default function BackgroundManager() {
             ))}
           </div>
           {selectedDexId == null && (
-            <p style={{ fontSize: "0.75rem", color: "rgba(232,237,245,0.35)", marginTop: 10 }}>
+            <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", marginTop: 10 }}>
               Choisis un Pokémon pour voir/modifier ses fonds validés.
             </p>
           )}
@@ -262,7 +262,7 @@ export default function BackgroundManager() {
                 <div
                   key={`${b.url}-${index}`}
                   style={{
-                    background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
+                    background: "var(--trait-leger)", border: "1px solid var(--trait-leger)",
                     borderRadius: 10, padding: 8, display: "flex", flexDirection: "column", gap: 6,
                   }}
                 >
@@ -270,7 +270,7 @@ export default function BackgroundManager() {
                   <img
                     src={b.url}
                     alt={b.label}
-                    style={{ width: "100%", height: 70, objectFit: "cover", borderRadius: 6, background: "rgba(0,0,0,0.3)" }}
+                    style={{ width: "100%", height: 70, objectFit: "cover", borderRadius: 6, background: "color-mix(in srgb, var(--encre) 30%, transparent)" }}
                   />
                   <input
                     type="text"
@@ -286,7 +286,7 @@ export default function BackgroundManager() {
                       disabled={uploadingKey === key}
                       style={{
                         flex: 1, padding: "4px 6px", borderRadius: 6, cursor: "pointer", fontSize: "0.75rem",
-                        background: "rgba(100,220,180,0.1)", border: "1px solid rgba(100,220,180,0.3)", color: "#64dcb4",
+                        background: "color-mix(in srgb, var(--tag-fond) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--tag-fond) 30%, transparent)", color: "var(--tag-fond)",
                       }}
                     >
                       {uploadingKey === key ? "…" : "Remplacer l'image"}
@@ -296,7 +296,7 @@ export default function BackgroundManager() {
                       onClick={() => handleDelete(index)}
                       style={{
                         padding: "4px 8px", borderRadius: 6, cursor: "pointer", fontSize: "0.75rem",
-                        background: "rgba(255,107,107,0.1)", border: "1px solid rgba(255,107,107,0.3)", color: "#ff6b6b",
+                        background: "color-mix(in srgb, var(--alerte) 10%, transparent)", border: "1px solid color-mix(in srgb, var(--alerte) 30%, transparent)", color: "var(--alerte)",
                       }}
                     >
                       Supprimer
