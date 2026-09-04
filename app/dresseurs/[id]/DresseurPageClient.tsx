@@ -286,7 +286,6 @@ export default function DresseurPageClient({ id }: { id: string }) {
             <PartageListe
               nomDresseur={trainer.name}
               entriesParCategorie={entriesByTab}
-              categorieActive={activeTab}
             />
           </div>
         )}

@@ -443,7 +443,6 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
                 nomDresseur={me.trainer.name}
                 cheminPublic={`/dresseurs/${me.trainer.id}`}
                 entriesParCategorie={{ mirror: myMirrors, want: myWants, give: myGives }}
-                categorieActive={activeCategory}
               />
             </div>
           )}

@@ -43,7 +43,6 @@ export default function PartageListe({
   nomDresseur,
   cheminPublic,
   entriesParCategorie,
-  categorieActive,
 }: {
   nomDresseur: string;
   /**
@@ -57,7 +56,9 @@ export default function PartageListe({
    */
   cheminPublic?: string;
   entriesParCategorie: Record<EntryCategory, PokemonEntry[]>;
-  categorieActive: EntryCategory;
+  /* Plus de prop `categorieActive` : le panneau propose desormais TOUTES les listes d un
+     coup, donc savoir laquelle est ouverte a l ecran n a plus d objet. Elle servait a
+     preselectionner une categorie, une etape que Steven a fait supprimer. */
 }) {
   const [ouvert, setOuvert] = useState(false);
   const [adresse, setAdresse] = useState("");
@@ -105,66 +106,50 @@ export default function PartageListe({
     }).catch(() => toast.error("Le QR code n'a pas pu être généré"));
   }, [ouvert, adresse]);
 
-  /* ═══ LE FILTRE NE SUIT PAS L'ONGLET AFFICHE ═══
+  /* ═══ UN BOUTON PAR LISTE, ET C'EST TOUT ═══
 
-     Premiere version : le panneau ne proposait le filtre que de la categorie ouverte.
-     Teste sur un vrai dresseur, l'onglet par defaut est « Echanges miroir » et il
-     contenait 0 entree, alors que la liste « peut donner » en comptait 213 : le panneau
-     s'ouvrait donc en annoncant qu'il n'y avait rien a filtrer, sur la liste la plus
-     fournie du site.
+     Steven, le 2026-09-05 : « Je peux pas juste avoir des boutons pour les shiny des
+     listes pour les filtres justes ? »
 
-     Le partage est un geste a part : on montre SES listes, pas l'ecran ou on se trouve.
-     Le panneau propose donc chaque categorie non vide, et s'ouvre sur celle qui est
-     affichee seulement si elle contient quelque chose. */
+     Il a raison, et c'est le meme reproche que depuis le debut. Ma version demandait TROIS
+     gestes pour une seule intention : choisir une liste avec une pastille, verifier l'etat
+     d'une bascule shiny, puis appuyer sur Copier. Trois commandes a comprendre avant de
+     pouvoir agir, la ou l'utilisateur sait deja ce qu'il veut : le filtre shiny de telle
+     liste.
+
+     Un bouton par liste, et le clic copie. Rien a selectionner, rien a verifier.
+
+     Les listes entierement shiny n'ont qu'un bouton, puisque « tous » et « shiny » y
+     donneraient la meme chose - un second bouton identique serait une question posee pour
+     rien. Les listes mixtes en ont deux, parce que la distinction y est reelle.
+
+     La chaine copiee s'affiche APRES le clic. Un bouton qui copie quelque chose
+     d'invisible demande une confiance que rien ne justifie; l'afficher avant, pour trois
+     listes a la fois, remplirait l'ecran de chaines que personne ne lit. */
+  const [derniereCopie, setDerniereCopie] = useState<{ libelle: string; chaine: string } | null>(null);
+
+  /* Les listes vides ne produisent pas de bouton : proposer de copier le filtre d une
+     categorie sans Pokemon serait une commande qui ne fait rien. */
   const categoriesNonVides = CATEGORY_DISPLAY_ORDER.filter(
     (k) => (entriesParCategorie[k] ?? []).length > 0,
   );
-  const [choisie, setChoisie] = useState<EntryCategory | null>(null);
-  const categorie =
-    choisie
-    ?? (categoriesNonVides.includes(categorieActive) ? categorieActive : categoriesNonVides[0])
-    ?? null;
 
-  const entries = categorie ? entriesParCategorie[categorie] ?? [] : [];
+  /** Pour chaque liste non vide : son filtre complet, et son filtre shiny. */
+  const propositions = categoriesNonVides.map((cle) => {
+    const lot = entriesParCategorie[cle] ?? [];
+    return {
+      cle,
+      tout: construireFiltre(lot),
+      shiny: construireFiltre(lot, { seulementShiny: true }),
+      entierementShiny: lot.length > 0 && lot.every((e) => e.shiny === true),
+    };
+  });
 
-  /* ═══ UNE BASCULE, PAS DEUX BOUTONS ═══
-
-     Steven, le 2026-09-05, capture a l'appui : « y'a pas les shiny qui sont affiches
-     lorsqu'ils sont shiny ! »
-
-     Il y avait bien deux boutons, « Copier le filtre » et « Filtre shiny », mais le bloc de
-     texte en dessous affichait TOUJOURS la chaine non-shiny. Impossible de voir ce que le
-     bouton shiny allait copier, donc impossible de croire qu'il faisait quelque chose.
-     Pire : quand la liste est entierement shiny, les deux boutons affichent le meme
-     compte, ce qui achevait de donner l'impression qu'ils faisaient la meme chose.
-
-     Une bascule et une seule chaine : ce qui est affiche est exactement ce qui sera copie.
-     C'est la seule facon de rendre un bouton de copie verifiable. */
-  /* ═══ LE DEFAUT SE DEDUIT DE LA LISTE, IL NE SE DEMANDE PAS ═══
-
-     Steven, le 2026-09-05 : « Pourquoi si je clique sur la liste miroir, ca me met juste
-     les numeros ? Alors qu'ils sont shiny ? »
-
-     La bascule etait a « non » par defaut, donc une liste entierement shiny produisait un
-     filtre qui ne parlait pas de shiny. C'etait lui demander de cocher une case pour
-     declarer une information que la donnee porte deja.
-
-     Quand TOUS les Pokemon de la liste sont shiny, le filtre part donc en mode shiny. La
-     bascule reste la pour elargir volontairement, et un choix explicite l'emporte toujours
-     sur le defaut - mais il est remis a zero au changement de categorie, pour que chaque
-     liste retrouve le defaut qui lui convient plutot que d'heriter du reglage de la
-     precedente. */
-  const [choixShiny, setChoixShiny] = useState<boolean | null>(null);
-  const tousShiny = entries.length > 0 && entries.every((e) => e.shiny === true);
-  const shinyUniquement = choixShiny ?? tousShiny;
-
-  const filtreShiny = construireFiltre(entries, { seulementShiny: true });
-  const filtre = construireFiltre(entries, { seulementShiny: shinyUniquement });
-
-  async function copier(texte: string, message: string) {
+  async function copier(texte: string, message: string, libelle?: string) {
     try {
       await navigator.clipboard.writeText(texte);
       toast.success(message);
+      if (libelle) setDerniereCopie({ libelle, chaine: texte });
     } catch {
       toast.error("La copie a echoue. Le presse-papier est bloque par le navigateur.");
     }
@@ -213,112 +198,85 @@ export default function PartageListe({
 
           {/* ── Le filtre in-game ── */}
           <div style={{ borderTop: "var(--trait-fin) solid var(--trait-leger)", paddingTop: 14 }}>
-            <p
-              className="station"
-              style={{
-                margin: "0 0 4px", fontWeight: 700, fontSize: "0.9rem",
-                color: categorie ? CATEGORIES[categorie].color : "var(--encre)",
-              }}
-            >
+            <p className="station" style={{ margin: "0 0 4px", fontWeight: 700, fontSize: "0.9rem", color: "var(--encre)" }}>
               Filtre Pokémon GO
             </p>
-            <p style={{ margin: "0 0 10px", fontSize: "0.75rem", color: "var(--encre-douce)" }}>
+            <p style={{ margin: "0 0 12px", fontSize: "0.75rem", color: "var(--encre-douce)" }}>
               À coller dans la recherche du jeu. Son propre jeu affichera ce qu&apos;il
               possède de la liste.
             </p>
 
-            {/* Une pastille par ligne du reseau, la choisie remplie. C'est le seul endroit
-                du panneau ou la couleur parle, et elle dit de quelle liste il s'agit. */}
-            {categoriesNonVides.length > 1 && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
-                {categoriesNonVides.map((k) => {
-                  const actif = k === categorie;
-                  return (
-                    <button
-                      key={k}
-                      type="button"
-                      onClick={() => { setChoisie(k); setChoixShiny(null); }}
-                      aria-pressed={actif}
-                      style={{
-                        minHeight: 44, padding: "0 12px", borderRadius: 999,
-                        border: `var(--trait-moyen) solid ${CATEGORIES[k].color}`,
-                        background: actif ? CATEGORIES[k].color : "var(--surface)",
-                        color: actif ? "var(--surface)" : CATEGORIES[k].color,
-                        fontWeight: 700, fontSize: "0.75rem", fontFamily: "Exo 2, sans-serif",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {CATEGORIES[k].label} ({(entriesParCategorie[k] ?? []).length})
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-
-            {filtre ? (
-              <>
-                {/* La bascule apparait des qu'il y a AU MOINS UN shiny dans la liste.
-
-                    Premiere version : elle ne s'affichait que si les shiny etaient MOINS
-                    nombreux que le total, au motif qu'isoler une partie egale au tout ne
-                    sert a rien. Faux : la liste de Steven est entierement shiny, donc la
-                    bascule ne s'affichait jamais et le mot « chromatique » n'entrait jamais
-                    dans le filtre. C'est precisement ce qu'il signalait.
-
-                    Meme quand tout est shiny, le prefixe compte : c'est lui qui dit au jeu
-                    de l'autre joueur de ne remonter que ses formes chromatiques. */}
-                {filtreShiny && (
-                  <button
-                    type="button"
-                    onClick={() => setChoixShiny(!shinyUniquement)}
-                    aria-pressed={shinyUniquement}
-                    style={{
-                      minHeight: 44, padding: "0 14px", marginBottom: 10,
-                      display: "inline-flex", alignItems: "center", gap: 6,
-                      borderRadius: 999,
-                      border: `var(--trait-moyen) solid var(--or)`,
-                      background: shinyUniquement ? "var(--or)" : "var(--surface)",
-                      color: "var(--encre)",
-                      fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.8125rem",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Shiny uniquement ✨
-                  </button>
-                )}
-
-                {/* La chaine reellement copiee, visible, et c'est celle du bouton juste en
-                    dessous. Un bouton qui copie quelque chose d'invisible demande une
-                    confiance que rien ne justifie. */}
-                <p
-                  style={{
-                    margin: "0 0 10px", padding: "8px 10px", background: "var(--surface-creuse)",
-                    borderRadius: 6, fontFamily: "ui-monospace, monospace", fontSize: "0.7rem",
-                    color: "var(--encre-douce)", wordBreak: "break-all",
-                  }}
-                >
-                  {filtre.chaine}
-                </p>
-
-                <button
-                  type="button"
-                  className="btn-primary"
-                  onClick={() => copier(filtre.chaine, `Filtre copié, ${filtre.pokemon} Pokémon`)}
-                >
-                  Copier le filtre ({filtre.pokemon})
-                </button>
-
-                {/* La longueur est affichee parce que la barre de recherche du jeu a une
-                    limite, et qu'une chaine tronquee a la copie donnerait un resultat faux
-                    sans prevenir. Mieux vaut la voir que la subir. */}
-                <p style={{ margin: "6px 0 0", fontSize: "0.75rem", color: "var(--encre-tres-douce)" }}>
-                  {filtre.taille} caractères
-                </p>
-              </>
-            ) : (
+            {propositions.length === 0 ? (
               <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--encre-tres-douce)" }}>
                 Ce dresseur n&apos;a encore aucun Pokémon dans ses listes.
               </p>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {propositions.map(({ cle, tout, shiny, entierementShiny }) => (
+                  <div key={cle}>
+                    <p style={{
+                      margin: "0 0 5px", fontSize: "0.75rem", fontWeight: 700,
+                      color: CATEGORIES[cle].color, fontFamily: "Exo 2, sans-serif",
+                    }}>
+                      {CATEGORIES[cle].label}
+                    </p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                      {shiny && (
+                        <button
+                          type="button"
+                          onClick={() => copier(
+                            shiny.chaine,
+                            `Filtre shiny copié, ${shiny.pokemon} Pokémon`,
+                            `${CATEGORIES[cle].label} · shiny`,
+                          )}
+                          style={{
+                            minHeight: 44, padding: "0 14px", borderRadius: 999,
+                            display: "inline-flex", alignItems: "center", gap: 6,
+                            border: "var(--trait-moyen) solid var(--or)",
+                            background: "var(--or-pale)", color: "var(--encre)",
+                            fontFamily: "Exo 2, sans-serif", fontWeight: 700,
+                            fontSize: "0.8125rem", cursor: "pointer",
+                          }}
+                        >
+                          Shiny ✨ ({shiny.pokemon})
+                        </button>
+                      )}
+                      {/* « Tous » n'apparait que si la liste contient autre chose que des
+                          shiny : sinon les deux boutons copieraient la meme selection. */}
+                      {tout && !entierementShiny && (
+                        <button
+                          type="button"
+                          className="btn-secondary"
+                          onClick={() => copier(
+                            tout.chaine,
+                            `Filtre copié, ${tout.pokemon} Pokémon`,
+                            `${CATEGORIES[cle].label} · tous`,
+                          )}
+                        >
+                          Tous ({tout.pokemon})
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Ce qui vient d'etre copie, pour qu'on puisse le verifier avant de le coller
+                dans le jeu, et la longueur parce que la barre de recherche a une limite. */}
+            {derniereCopie && (
+              <div style={{ marginTop: 12 }}>
+                <p style={{ margin: "0 0 4px", fontSize: "0.75rem", color: "var(--encre-tres-douce)" }}>
+                  Copié : {derniereCopie.libelle} · {derniereCopie.chaine.length} caractères
+                </p>
+                <p style={{
+                  margin: 0, padding: "8px 10px", background: "var(--surface-creuse)",
+                  borderRadius: 6, fontFamily: "ui-monospace, monospace", fontSize: "0.7rem",
+                  color: "var(--encre-douce)", wordBreak: "break-all",
+                }}>
+                  {derniereCopie.chaine}
+                </p>
+              </div>
             )}
           </div>
         </div>
