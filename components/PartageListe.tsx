@@ -41,10 +41,21 @@ const COTE_QR = 220;
 
 export default function PartageListe({
   nomDresseur,
+  cheminPublic,
   entriesParCategorie,
   categorieActive,
 }: {
   nomDresseur: string;
+  /**
+   * La page PUBLIQUE a encoder, quand ce n'est pas celle ou l'on se trouve.
+   *
+   * Indispensable sur « Mon espace » : cette page est privee, donc un QR code qui encode
+   * `window.location.href` enverrait la personne qui scanne sur `/mon-espace`, c'est-a-dire
+   * sur SON propre espace vide. Il faut viser la page publique du dresseur.
+   *
+   * Absent sur une page deja publique, ou l'adresse courante est la bonne.
+   */
+  cheminPublic?: string;
   entriesParCategorie: Record<EntryCategory, PokemonEntry[]>;
   categorieActive: EntryCategory;
 }) {
@@ -60,7 +71,11 @@ export default function PartageListe({
      pages, pour une valeur dont on n'a besoin qu'une fois le panneau ouvert. */
   function basculer() {
     setOuvert((o) => {
-      if (!o) setAdresse(window.location.href.split("#")[0]);
+      if (!o) {
+        setAdresse(cheminPublic
+          ? new URL(cheminPublic, window.location.origin).href
+          : window.location.href.split("#")[0]);
+      }
       return !o;
     });
   }

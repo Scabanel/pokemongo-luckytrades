@@ -19,6 +19,7 @@ import CopyPogoShinyFilterButton from "./CopyPogoShinyFilterButton";
 import { detectCostumeGender, isCostumeShinyReleased, AVAILABLE_SPECIES, DYNAMAX_AVAILABLE_SPECIES, GIGANTAMAX_AVAILABLE_SPECIES } from "@/lib/spriteVariants";
 import { POKEMON_SIZES } from "@/lib/entryMatching";
 import GrilleParRegion from "@/components/GrilleParRegion";
+import PartageListe from "@/components/PartageListe";
 
 // La liste des dresseurs en admin inclut toujours le compte d'entrées
 // (contrairement à PokemonEntry.trainer ailleurs, qui n'en a pas besoin).
@@ -404,20 +405,6 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               >
                 {me.trainer?.name ?? "Mon espace"}
               </h1>
-              {me.trainer && (
-                <button
-                  type="button"
-                  onClick={async () => {
-                    await navigator.clipboard.writeText(`${window.location.origin}/dresseurs/${me.trainer!.id}`);
-                    toast.success("Lien copié ! Colle-le sur Discord.");
-                  }}
-                  className="btn-secondary"
-                  style={{ fontSize: "0.75rem", padding: "6px 12px" }}
-                  title="Copier le lien de mon catalogue"
-                >
-                  Partager
-                </button>
-              )}
             </div>
             <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", marginTop: 4 }}>
               {me.trainer?.team
@@ -443,6 +430,24 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
               </div>
             )}
           </header>
+
+          {/* Le meme panneau de partage qu'une page dresseur, a la meme place : Steven ne
+              le trouvait pas, et pour cause - il n'existait QUE sur la page publique.
+
+              `cheminPublic` est indispensable ici : cette page est privee, donc un QR code
+              qui encoderait l'adresse courante enverrait la personne qui scanne sur SON
+              propre « Mon espace », vide. Il vise la page publique du dresseur. */}
+          {me.trainer && (
+            <div className="flex justify-center">
+              <PartageListe
+                nomDresseur={me.trainer.name}
+                cheminPublic={`/dresseurs/${me.trainer.id}`}
+                entriesParCategorie={{ mirror: myMirrors, want: myWants, give: myGives }}
+                categorieActive={activeCategory}
+              />
+            </div>
+          )}
+
 
           <div className="flex gap-2 mb-5 flex-wrap justify-center mobile-fit-row">
             {CATEGORY_DISPLAY_ORDER.map((key) => (

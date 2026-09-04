@@ -162,15 +162,6 @@ export default function DresseurPageClient({ id }: { id: string }) {
       .then(setEntries);
   };
 
-  const handleShare = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      toast.success("Lien copié ! Colle-le sur Discord.");
-    } catch {
-      toast.error("Impossible de copier le lien");
-    }
-  };
-
   const handleCopyFriendCode = async () => {
     if (!trainer?.friendCode) return;
     try {
@@ -256,16 +247,6 @@ export default function DresseurPageClient({ id }: { id: string }) {
             >
               {loading ? "…" : trainer?.name}
             </h1>
-            {!loading && trainer && (
-              <button
-                onClick={handleShare}
-                className="btn-secondary"
-                style={{ fontSize: "0.75rem", padding: "6px 12px" }}
-                title="Copier le lien de cette page"
-              >
-                Partager
-              </button>
-            )}
           </div>
           {trainer?.team && (
             <p style={{ color: "var(--encre-tres-douce)", fontSize: "0.85rem", marginTop: 4 }}>
@@ -287,6 +268,29 @@ export default function DresseurPageClient({ id }: { id: string }) {
             </div>
           )}
         </header>
+
+        {/* ═══ LE PARTAGE EST EN HAUT, PAS ENFOUI ═══
+
+            Steven : « Je trouve pas les QR codes a partager et c'est pas normal, ca doit
+            etre accessible rapidement et clair. »
+
+            Il etait sous les onglets, la recherche et les filtres - donc apres tout ce qui
+            sert a NAVIGUER dans la liste, alors que partager n'est pas une facon de
+            naviguer. Et un bouton « Partager » concurrent, qui ne copiait que le lien,
+            occupait le haut de la page : deux gestes de partage, dont le plus faible etait
+            le plus visible.
+
+            Un seul, ici, au-dessus de tout le reste. Meme place sur « Mon espace ». */}
+        {!loading && trainer && (
+          <div className="flex justify-center">
+            <PartageListe
+              nomDresseur={trainer.name}
+              entriesParCategorie={entriesByTab}
+              categorieActive={activeTab}
+            />
+          </div>
+        )}
+
 
         <div className="flex gap-2 mb-5 flex-wrap justify-center mobile-fit-row">
           {CATEGORY_DISPLAY_ORDER.map((key) => (
@@ -467,16 +471,6 @@ export default function DresseurPageClient({ id }: { id: string }) {
             minHeight: 300,
           }}
         >
-          {/* Le QR code et le filtre a coller dans le jeu. Remplace un bouton secondaire
-              qui ne copiait que les shiny et se perdait en haut de la liste : Steven veut
-              pouvoir degainer sa liste en dix secondes devant quelqu un. */}
-          {!loading && (
-            <PartageListe
-              nomDresseur={trainer?.name ?? "ce dresseur"}
-              entriesParCategorie={entriesByTab}
-              categorieActive={activeTab}
-            />
-          )}
           {loading ? (
             <div className="grid grille-tuiles gap-3">
               {Array.from({ length: 8 }).map((_, i) => <CardSkeleton key={i} />)}
