@@ -22,13 +22,18 @@ import type { PokemonEntry } from "@/lib/types";
    Dans Pokemon GO, la virgule est un OU et l'esperluette un ET. Donc :
 
      376,384,445              l'un de ces trois Pokemon
-     !echange&376,384,445     ... et pas encore echange
-     chromatique&!echange&…   ... et chromatique
+     chromatique&376,384,445  ... et chromatique
 
-   Le `!echange` compte : sans lui, la recherche remonte aussi les Pokemon deja echanges,
-   qui ne peuvent plus l'etre une seconde fois. Il est ecrit sans accent parce que la
-   recherche du jeu accepte les deux et que l'accent se perd a la copie sur certains
-   claviers.
+   ═══ PAS DE `!echange` ═══
+
+   La premiere version en mettait un, au motif qu'un Pokemon deja echange ne peut plus
+   l'etre. Steven, le 2026-09-05 : « faut pas mettre echange dans le filtre ».
+
+   Il a raison, et pour une raison que je n'avais pas vue : ce filtre est colle par
+   L'AUTRE joueur, dans SON jeu, pour voir ce qu'IL possede. « Deja echange » decrit
+   l'etat des Pokemon de celui qui partage, pas de celui qui cherche. Le terme n'avait donc
+   rien a filtrer chez lui, et pouvait au contraire ecarter a tort ses propres Pokemon
+   marques comme echanges - alors qu'ils sont precisement ceux qu'il pourrait redonner.
    ═══════════════════════════════════════════════════════════════════════════════════════ */
 
 /** Ce qu'on peut copier pour une liste. */
@@ -58,7 +63,7 @@ export function construireFiltre(
 ): Filtre | null {
   const ids = numeros(entries, options.seulementShiny ?? false);
   if (ids.length === 0) return null;
-  const prefixe = options.seulementShiny ? "chromatique&!echange&" : "!echange&";
+  const prefixe = options.seulementShiny ? "chromatique&" : "";
   const chaine = prefixe + ids.join(",");
   return { chaine, pokemon: ids.length, taille: chaine.length };
 }

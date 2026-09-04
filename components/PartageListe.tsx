@@ -126,8 +126,23 @@ export default function PartageListe({
     ?? null;
 
   const entries = categorie ? entriesParCategorie[categorie] ?? [] : [];
-  const filtre = construireFiltre(entries);
+
+  /* ═══ UNE BASCULE, PAS DEUX BOUTONS ═══
+
+     Steven, le 2026-09-05, capture a l'appui : « y'a pas les shiny qui sont affiches
+     lorsqu'ils sont shiny ! »
+
+     Il y avait bien deux boutons, « Copier le filtre » et « Filtre shiny », mais le bloc de
+     texte en dessous affichait TOUJOURS la chaine non-shiny. Impossible de voir ce que le
+     bouton shiny allait copier, donc impossible de croire qu'il faisait quelque chose.
+     Pire : quand la liste est entierement shiny, les deux boutons affichent le meme
+     compte, ce qui achevait de donner l'impression qu'ils faisaient la meme chose.
+
+     Une bascule et une seule chaine : ce qui est affiche est exactement ce qui sera copie.
+     C'est la seule facon de rendre un bouton de copie verifiable. */
+  const [shinyUniquement, setShinyUniquement] = useState(false);
   const filtreShiny = construireFiltre(entries, { seulementShiny: true });
+  const filtre = construireFiltre(entries, { seulementShiny: shinyUniquement });
 
   async function copier(texte: string, message: string) {
     try {
@@ -224,45 +239,68 @@ export default function PartageListe({
             )}
 
             {filtre ? (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                <button
-                  type="button"
-                  className="btn-secondary"
-                  onClick={() => copier(filtre.chaine, `Filtre copié, ${filtre.pokemon} Pokémon`)}
-                  title={filtre.chaine}
-                >
-                  Copier le filtre ({filtre.pokemon})
-                </button>
+              <>
+                {/* La bascule apparait des qu'il y a AU MOINS UN shiny dans la liste.
+
+                    Premiere version : elle ne s'affichait que si les shiny etaient MOINS
+                    nombreux que le total, au motif qu'isoler une partie egale au tout ne
+                    sert a rien. Faux : la liste de Steven est entierement shiny, donc la
+                    bascule ne s'affichait jamais et le mot « chromatique » n'entrait jamais
+                    dans le filtre. C'est precisement ce qu'il signalait.
+
+                    Meme quand tout est shiny, le prefixe compte : c'est lui qui dit au jeu
+                    de l'autre joueur de ne remonter que ses formes chromatiques. */}
                 {filtreShiny && (
                   <button
                     type="button"
-                    className="btn-secondary"
-                    onClick={() => copier(filtreShiny.chaine, `Filtre shiny copié, ${filtreShiny.pokemon} Pokémon`)}
-                    title={filtreShiny.chaine}
-                    style={{ borderColor: "var(--or)" }}
+                    onClick={() => setShinyUniquement((v) => !v)}
+                    aria-pressed={shinyUniquement}
+                    style={{
+                      minHeight: 44, padding: "0 14px", marginBottom: 10,
+                      display: "inline-flex", alignItems: "center", gap: 6,
+                      borderRadius: 999,
+                      border: `var(--trait-moyen) solid var(--or)`,
+                      background: shinyUniquement ? "var(--or)" : "var(--surface)",
+                      color: "var(--encre)",
+                      fontFamily: "Exo 2, sans-serif", fontWeight: 700, fontSize: "0.8125rem",
+                      cursor: "pointer",
+                    }}
                   >
-                    Filtre shiny ({filtreShiny.pokemon}) ✨
+                    Shiny uniquement ✨
                   </button>
                 )}
-              </div>
+
+                {/* La chaine reellement copiee, visible, et c'est celle du bouton juste en
+                    dessous. Un bouton qui copie quelque chose d'invisible demande une
+                    confiance que rien ne justifie. */}
+                <p
+                  style={{
+                    margin: "0 0 10px", padding: "8px 10px", background: "var(--surface-creuse)",
+                    borderRadius: 6, fontFamily: "ui-monospace, monospace", fontSize: "0.7rem",
+                    color: "var(--encre-douce)", wordBreak: "break-all",
+                  }}
+                >
+                  {filtre.chaine}
+                </p>
+
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={() => copier(filtre.chaine, `Filtre copié, ${filtre.pokemon} Pokémon`)}
+                >
+                  Copier le filtre ({filtre.pokemon})
+                </button>
+
+                {/* La longueur est affichee parce que la barre de recherche du jeu a une
+                    limite, et qu'une chaine tronquee a la copie donnerait un resultat faux
+                    sans prevenir. Mieux vaut la voir que la subir. */}
+                <p style={{ margin: "6px 0 0", fontSize: "0.75rem", color: "var(--encre-tres-douce)" }}>
+                  {filtre.taille} caractères
+                </p>
+              </>
             ) : (
               <p style={{ margin: 0, fontSize: "0.8rem", color: "var(--encre-tres-douce)" }}>
                 Ce dresseur n&apos;a encore aucun Pokémon dans ses listes.
-              </p>
-            )}
-
-            {/* La chaine reellement copiee, visible. Un bouton qui copie quelque chose
-                d'invisible demande une confiance que rien ne justifie, et empeche de
-                reperer un filtre absurde avant de le coller dans le jeu. */}
-            {filtre && (
-              <p
-                style={{
-                  margin: "10px 0 0", padding: "8px 10px", background: "var(--surface-creuse)",
-                  borderRadius: 6, fontFamily: "ui-monospace, monospace", fontSize: "0.7rem",
-                  color: "var(--encre-douce)", wordBreak: "break-all",
-                }}
-              >
-                {filtre.chaine}
               </p>
             )}
           </div>
