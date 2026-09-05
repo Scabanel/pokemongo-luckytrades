@@ -128,10 +128,17 @@ for (const [avant, arriere, seuil, quoi] of PAIRES) {
    Le balayage des fichiers, partage par les regles 2 a 4.
    ──────────────────────────────────────────────────────────────────────────────────────── */
 
-/** ParticleBackground peint dans un canvas : `var()` n'y existe pas, il lit les tokens en
- *  JavaScript. C'est la SEULE exception, nommee ici pour qu'elle reste une exception et
- *  pas une porte ouverte. */
-const CANVAS = ["components/ParticleBackground.tsx"];
+/** Les DEUX seuls fichiers autorises a porter des couleurs litterales, nommes ici pour que
+ *  ce restent des exceptions et pas une porte ouverte :
+ *
+ *    ParticleBackground.tsx  peint dans un canvas, ou var() n'existe pas. Il lit les tokens
+ *                            en JavaScript, donc il ne contient aucun litteral.
+ *    lib/couleursOg.ts       le miroir litteral de la palette, pour les images OpenGraph.
+ *                            satori, le moteur de next/og, ne resout pas les variables CSS :
+ *                            converties en variables par la migration, les couleurs ne
+ *                            s'appliquaient plus du tout et l'apercu Discord etait devenu un
+ *                            rectangle noir. Ce miroir est verifie par la regle 5. */
+const CANVAS = ["components/ParticleBackground.tsx", "lib/couleursOg.ts"];
 const IGNORES = ["node_modules", ".next", ".git", "public", "backups", "data", "docs", "scripts"];
 
 /**
@@ -250,6 +257,33 @@ for (const f of fichiers) {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────────────────── */
+
+// ── Regle 5 : le miroir des images OpenGraph ne derive pas de la palette ──────────────
+//
+// Le danger d'une copie est qu'elle vieillisse sans que personne ne le remarque. Chaque
+// valeur de lib/couleursOg.ts doit donc exister telle quelle dans app/tokens.css : changer
+// une couleur de la DA sans changer celle-la fait echouer cette sonde.
+//
+// C'est ce qui rend l'exception acceptable. Une copie non verifiee serait juste une
+// deuxieme source de verite qui se contredit au premier changement.
+const MIROIR = "lib/couleursOg.ts";
+try {
+  const miroir = sansCommentaires(readFileSync(join(RACINE, MIROIR), "utf8"));
+  const valeursMiroir = [...new Set((miroir.match(/#[0-9a-fA-F]{6}\b/g) || []).map((c) => c.toUpperCase()))];
+  const valeursTokens = new Set(Object.values(couleurs).map((c) => c.toUpperCase()));
+  const orphelines = valeursMiroir.filter((c) => !valeursTokens.has(c));
+  if (valeursMiroir.length === 0) {
+    echecs.push(`${MIROIR} ne contient aucune couleur : le miroir ne mesure plus rien.`);
+  } else if (orphelines.length > 0) {
+    echecs.push(
+      `${orphelines.length} couleur(s) de ${MIROIR} absente(s) de ${TOKENS} : ${orphelines.join(", ")}.\n`
+      + `        Le miroir des images OpenGraph a derive de la palette. Les apercus Discord\n`
+      + `        n'afficheront plus les memes couleurs que le site.`,
+    );
+  }
+} catch {
+  echecs.push(`${MIROIR} est introuvable : les images OpenGraph n'ont plus de palette.`);
+}
 
 console.log("check:da\n");
 console.log(`${Object.keys(couleurs).length} tokens de couleur, ${PAIRES.length} paires verifiees\n`);

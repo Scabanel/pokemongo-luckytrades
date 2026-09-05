@@ -1,8 +1,9 @@
 import { ImageResponse } from "next/og";
 import { prisma } from "@/lib/prisma";
 import goIcons from "@/data/go-icons.json";
+import { OG, BANDE_LIGNES } from "@/lib/couleursOg";
 
-export const alt = "Profil dresseur Lucky Trades";
+export const alt = "Profil dresseur, échanges Pokémon GO Strasbourg";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -10,9 +11,14 @@ const GO_ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/m
 const ARTWORK_BASE = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork";
 const GO_ICONS = goIcons as Record<string, string[]>;
 
-// Statique uniquement (pas d'animation, pas de retry client possible dans une
-// image générée côté serveur) : icône officielle Pokémon GO si connue, sinon
-// l'artwork officiel PokeAPI qui existe pour absolument tout le Pokédex.
+/* L'apercu d'une page de dresseur sur Discord.
+ *
+ * Couleurs litterales, comme l'apercu du site : satori ne resout pas les variables CSS.
+ * Voir le bandeau de lib/couleursOg.ts. */
+
+// Statique uniquement (pas d'animation, pas de retry client possible dans une image générée
+// côté serveur) : icône officielle Pokémon GO si connue, sinon l'artwork officiel PokeAPI
+// qui existe pour absolument tout le Pokédex.
 function spriteUrl(pokemonId: number, shiny: boolean): string {
   const files = GO_ICONS[String(pokemonId)];
   const filename = shiny ? files?.[1] : files?.[0];
@@ -26,11 +32,15 @@ export default async function Image({ params }: { params: Promise<{ id: string }
   const { id } = await params;
   const trainer = await prisma.trainer.findUnique({ where: { id } });
 
+  /* Huit et non dix : a 1200px de large, dix vignettes passent sur deux rangees et
+     ecrasent le titre. Huit tiennent sur une seule ligne, ce qui garde l'image lisible en
+     miniature - et une miniature illisible ne sert a rien, c'est tout ce que la plupart des
+     gens verront. */
   const wants = trainer
     ? await prisma.pokemonEntry.findMany({
         where: { trainerId: id, completed: false, category: "want" },
         orderBy: [{ priority: "asc" }, { pokemonId: "asc" }],
-        take: 10,
+        take: 8,
       })
     : [];
 
@@ -42,101 +52,127 @@ export default async function Image({ params }: { params: Promise<{ id: string }
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "linear-gradient(135deg, var(--papier) 0%, var(--papier) 100%)",
+          background: OG.papier,
           fontFamily: "sans-serif",
-          padding: "40px 60px",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            fontSize: 20,
-            letterSpacing: 6,
-            color: "color-mix(in srgb, var(--encre) 65%, transparent)",
-            marginBottom: 14,
-            textTransform: "uppercase",
-          }}
-        >
-          Pokémon GO · Lucky Trades
+        <div style={{ display: "flex", height: 14, width: "100%" }}>
+          {BANDE_LIGNES.map((couleur) => (
+            <div key={couleur} style={{ display: "flex", flex: 1, background: couleur }} />
+          ))}
         </div>
 
         <div
           style={{
             display: "flex",
-            fontSize: 64,
-            fontWeight: 800,
-            color: "var(--encre)",
-            textTransform: "uppercase",
-            marginBottom: 28,
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            flex: 1,
+            padding: "36px 60px",
           }}
         >
-          {trainer?.name ?? "Dresseur inconnu"}
-        </div>
-
-        {wants.length > 0 && (
           <div
             style={{
               display: "flex",
-              flexWrap: "wrap",
-              justifyContent: "center",
-              gap: 14,
-              maxWidth: 1000,
-              marginBottom: 28,
+              fontSize: 22,
+              letterSpacing: 7,
+              color: OG.encreDouce,
+              marginBottom: 12,
+              textTransform: "uppercase",
             }}
           >
-            {wants.map((entry) => (
+            Échanges Strasbourg
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              fontSize: 68,
+              fontWeight: 800,
+              color: OG.encre,
+              textTransform: "uppercase",
+              letterSpacing: -2,
+              marginBottom: 8,
+            }}
+          >
+            {trainer?.name ?? "Dresseur inconnu"}
+          </div>
+
+          {wants.length > 0 && (
+            /* Un vrai conteneur et non un fragment React : satori, le moteur de next/og,
+               ne place pas les enfants d un fragment dans le flux du parent comme le
+               ferait un navigateur. Resultat mesure sur l apercu genere : le mot
+               "recherche" se retrouvait projete a gauche, a cheval sur la rangee de
+               vignettes, au lieu d etre centre au-dessus. */
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <div
-                key={entry.id}
                 style={{
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  width: 168,
-                  padding: "10px 8px",
-                  borderRadius: 14,
-                  background: "color-mix(in srgb, var(--ligne-cherche) 10%, transparent)",
-                  border: "1px solid color-mix(in srgb, var(--ligne-cherche) 35%, transparent)",
+                  fontSize: 26,
+                  color: OG.ligneCherche,
+                  fontWeight: 700,
+                  marginBottom: 18,
                 }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={spriteUrl(entry.pokemonId, entry.shiny === true)}
-                  alt=""
-                  width={72}
-                  height={72}
-                />
-                <div
-                  style={{
-                    display: "flex",
-                    fontSize: 18,
-                    fontWeight: 700,
-                    color: "var(--encre)",
-                    marginTop: 4,
-                    textAlign: "center",
-                  }}
-                >
-                  {entry.pokemonName}
-                </div>
+                recherche
               </div>
-            ))}
-          </div>
-        )}
 
-        <div
-          style={{
-            display: "flex",
-            fontSize: 26,
-            color: "var(--encre-douce)",
-            textAlign: "center",
-            maxWidth: 980,
-          }}
-        >
-          Ce dresseur recherche ces Pokémon et plein d&apos;autres ! Découvre sa liste d&apos;échanges pour faire son bonheur !
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 12,
+                  maxWidth: 1080,
+                }}
+              >
+                {wants.map((entry) => (
+                  <div
+                    key={entry.id}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: 116,
+                      height: 116,
+                      borderRadius: 14,
+                      background: OG.surface,
+                      /* Meme trait franc que les tuiles du site, et pas un aplat teinte :
+                         c'est ce qui fait reconnaitre l'apercu comme venant d'ici. */
+                      border: `3px solid ${OG.encre}`,
+                    }}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={spriteUrl(entry.pokemonId, entry.shiny === true)}
+                      alt=""
+                      width={78}
+                      height={78}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div
+            style={{
+              display: "flex",
+              fontSize: 28,
+              color: OG.encreDouce,
+              textAlign: "center",
+              maxWidth: 980,
+              marginTop: 28,
+            }}
+          >
+            {wants.length > 0
+              ? "Sa liste complète, et ce qu'il peut donner, sur le site"
+              : "Découvre sa liste d'échanges sur le site"}
+          </div>
         </div>
       </div>
     ),
-    { ...size }
+    { ...size },
   );
 }
