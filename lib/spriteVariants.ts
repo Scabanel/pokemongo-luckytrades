@@ -31,6 +31,7 @@ export const AVAILABLE_SPECIES = new Set(pogoAvailability.available as number[])
 export const DYNAMAX_AVAILABLE_SPECIES = DYNAMAX_SPECIES;
 export { GIGANTAMAX_AVAILABLE_SPECIES };
 const ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
+import { LABEL_FORME_REGIONALE, formeDuLabel } from "./formesRegionales";
 // data/costumes.json mélange les vraies formes régionales (Alola/Galar/Hisui/
 // Paldea) parmi les costumes événementiels — ce ne sont pas des costumes,
 // juste une autre apparence naturelle de l'espèce, donc aucun tag "costume"
@@ -39,7 +40,9 @@ const ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/mast
 // exhaustivement sur tout le catalogue). Un visuel propre nécessite quand
 // même de figer customSpriteUrl (voir variantNeedsPinnedSprite ci-dessous),
 // juste sans passer par la catégorie "tags" affichée à l'utilisateur.
-const REGIONAL_FORM_PREFIX = /^(alola|galar|hisui|paldea)/i;
+//
+// Définition unique dans lib/formesRegionales.ts.
+const REGIONAL_FORM_PREFIX = LABEL_FORME_REGIONALE;
 
 export interface SpriteVariant {
   key: string;
@@ -236,4 +239,17 @@ export function getGenderForCustomSprite(pokemonId: number, customSpriteUrl: str
   if (!match) return null;
   const allLabels = costumes.map((c) => c.label);
   return detectCostumeGender(match.label, allLabels);
+}
+
+/**
+ * L'identite de forme regionale portee par un sprite fige, ou `null`.
+ *
+ * Ramenee au meme vocabulaire que le nom de l'entree (voir lib/formesRegionales.ts) pour
+ * qu'une forme reconnue par son sprite et la meme forme reconnue par son nom se comparent
+ * comme egales, quel que soit le sprite choisi pour la representer.
+ */
+export function formeRegionaleDuSprite(pokemonId: number, customSpriteUrl: string | null | undefined): string | null {
+  if (!customSpriteUrl) return null;
+  const variante = getSpriteVariants(pokemonId).find((v) => v.url === customSpriteUrl);
+  return variante ? formeDuLabel(variante.label) : null;
 }

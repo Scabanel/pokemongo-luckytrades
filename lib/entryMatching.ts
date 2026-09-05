@@ -1,6 +1,7 @@
 import type { PokemonEntry } from "./types";
 import { parseTags } from "./tags";
-import { canonicalCustomSpriteUrl } from "./spriteVariants";
+import { canonicalCustomSpriteUrl, formeRegionaleDuSprite } from "./spriteVariants";
+import { regionDuNom } from "./formesRegionales";
 import genderDifferences from "@/data/gender-differences.json";
 
 // Partagé entre components/PokemonCard.tsx (badges want/give réciproques,
@@ -19,8 +20,51 @@ import genderDifferences from "@/data/gender-differences.json";
 // base figé (ajout solo) et un sprite de base laissé vide (ajout en masse)
 // sont la même variante.
 const FORM_TAGS = new Set(["costume", "gigamax", "dynamax"]);
-export function formVariantKey(pokemonId: number, customSpriteUrl: string | null | undefined, rawTags: string | null | undefined): string {
+
+/* ═══ LA FORME REGIONALE FAIT PARTIE DE L'IDENTITE ═══
+
+   Steven, le 2026-09-05, capture a l'appui : « Sablaireau et Sablaireau d'Alola, l'app ne
+   fait pas la distinction et considere que les deux sont la forme normale. »
+
+   Il avait raison, et la cause etait dans `canonicalCustomSpriteUrl` : elle ne reconnait
+   que les sprites du catalogue PokeMiners, et renvoie une chaine vide - donc « forme de
+   base » - pour toute autre URL. L'entree « Sablaireau d'Alola » de sa liste portait un
+   sprite anime PokeAPI (.../animated/shiny/10102.gif), inconnu du catalogue : elle se
+   retrouvait donc a egalite avec un Sablaireau normal, et les deux s'affichaient « 1 dispo »
+   l'un chez l'autre.
+
+   Ce comportement etait lui-meme un correctif : un Kyogre avec un sprite anime ne doit pas
+   compter comme une autre forme qu'un Kyogre de base. Juste, mais sur-corrige.
+
+   ═══ POURQUOI LE NOM ET PAS L'URL ═══
+
+   Le reflexe serait de comparer les URL. Il produit l'erreur SYMETRIQUE : la meme forme
+   d'Alola existe sous deux sprites differents dans les donnees reelles - le
+   `pm28.fALOLA.s.icon.png` de PokeMiners cote « peut donner », le `10102.gif` de PokeAPI
+   cote « recherche ». Distinguer par l'URL les separerait a tort, et un dresseur ne verrait
+   plus qu'un autre a exactement ce qu'il cherche.
+
+   La forme regionale, elle, est stable quelle que soit la representation : elle est dans le
+   NOM (« Sablaireau d'Alola », « Sablaireau Alola ») et, a defaut, dans le label du sprite
+   fige. Les deux signaux sont ramenes au meme vocabulaire par lib/formesRegionales.ts, seul
+   endroit du depot qui sait ce qu'est une forme regionale.
+
+   Quand une forme regionale est identifiee, elle DEVIENT l'identite et l'URL cesse de
+   compter : c'est ce qui reunit les deux representations tout en les separant de la base.
+
+   Le SPRITE prime sur le nom, et pas l'inverse : « Tauros de Paldea » ne dit pas laquelle des
+   trois races il designe, la ou « Paldea Combat » le dit. Prendre le signal le plus precis
+   quand il existe evite de fusionner les trois races - le bug d'origine, deplace d'un cran. */
+
+export function formVariantKey(
+  pokemonId: number,
+  customSpriteUrl: string | null | undefined,
+  rawTags: string | null | undefined,
+  pokemonName?: string | null,
+): string {
   const relevantTags = parseTags(rawTags).filter((t) => FORM_TAGS.has(t.toLowerCase())).sort().join(",");
+  const forme = formeRegionaleDuSprite(pokemonId, customSpriteUrl) ?? regionDuNom(pokemonName);
+  if (forme) return `forme:${forme}|${relevantTags}`;
   return `${canonicalCustomSpriteUrl(pokemonId, customSpriteUrl)}|${relevantTags}`;
 }
 
@@ -102,7 +146,8 @@ export function wantedGenderMatches(
 export function sameVariant(a: PokemonEntry, b: PokemonEntry): boolean {
   if (a.pokemonId !== b.pokemonId) return false;
   if (!!a.shiny !== !!b.shiny) return false;
-  return formVariantKey(a.pokemonId, a.customSpriteUrl, a.tags) === formVariantKey(b.pokemonId, b.customSpriteUrl, b.tags);
+  return formVariantKey(a.pokemonId, a.customSpriteUrl, a.tags, a.pokemonName)
+    === formVariantKey(b.pokemonId, b.customSpriteUrl, b.tags, b.pokemonName);
 }
 
 // True si `give` (catégorie "give" UNIQUEMENT, actif, non lié à un autre
