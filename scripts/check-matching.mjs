@@ -27,7 +27,7 @@
 import { readFileSync } from "node:fs";
 import { wantedGenderMatches, wantedSizeMatches, wantedBackgroundMatches, sameVariant } from "../lib/entryMatching.ts";
 import { getSpriteVariants } from "../lib/spriteVariants.ts";
-import { formeDuLabel, REGIONS } from "../lib/formesRegionales.ts";
+import { formeDuLabel, REGIONS, FORME_DE_BASE } from "../lib/formesIdentitaires.ts";
 
 const donnees = JSON.parse(readFileSync("data/gender-differences.json", "utf8"));
 const echecs = [];
@@ -99,7 +99,27 @@ const parRegion = Object.fromEntries(REGIONS.map((r) => [r, 0]));
 for (let pokemonId = 1; pokemonId <= 1025; pokemonId++) {
   let variantes;
   try { variantes = getSpriteVariants(pokemonId); } catch { continue; }
-  const regionales = variantes.filter((v) => formeDuLabel(v.label));
+  /* ═══ CE BALAYAGE PORTE SUR LES FORMES ALTERNATIVES, PAS SUR TOUTE FORME ═══
+
+     Modifie le 2026-09-06, et il faut dire pourquoi plutot que de laisser croire a un
+     assouplissement. Le filtre etait `formeDuLabel(v.label)` : toute forme reconnue. Depuis
+     que les formes Avatar/Totemique des quatre genies sont entrees dans le meme mecanisme,
+     ce filtre attrape aussi la forme AVATAR - qui rend FORME_DE_BASE, parce qu'elle EST la
+     forme par defaut du jeu. « Demeteros » tout court designe deja un Demeteros Avatar.
+
+     Le test 1 juste en dessous exige qu'une forme se distingue de la base. Applique a la
+     forme Avatar, il exigerait que la base se distingue d'elle-meme, et le rendre vert
+     supposerait de separer deux entrees qui designent le meme Pokemon - exactement l'erreur
+     symetrique que ce fichier existe pour empecher.
+
+     L'exigence n'a donc pas bouge d'un pouce : c'est le DOMAINE qui etait devenu faux. Et le
+     cas retire ici n'est pas perdu, il est teste a l'endroit ou il a un sens, en positif :
+     voir « Demeteros nu, sprite Avatar et nom Avatar sont le meme Pokemon » dans
+     npm run check:formes-fonds. */
+  const regionales = variantes.filter((v) => {
+    const f = formeDuLabel(v.label);
+    return f !== null && f !== FORME_DE_BASE;
+  });
   if (regionales.length === 0) continue;
   especesBalayees++;
 
@@ -126,7 +146,7 @@ for (let pokemonId = 1; pokemonId <= 1025; pokemonId++) {
 
     // 3. L'erreur symetrique : deux representations d'une MEME forme doivent se reconnaitre.
     //    Uniquement pour les formes sans sous-forme - « Tauros de Paldea » ne dit pas
-    //    laquelle des trois races il designe, donc on ne devine pas (voir lib/formesRegionales.ts).
+    //    laquelle des trois races il designe, donc on ne devine pas (voir lib/formesIdentitaires.ts).
     if (forme === region && !sameVariant(entree(pokemonId, nomRegional, URL_ETRANGERE), entree(pokemonId, "Espece", variante.url))) {
       echecs.push(`#${pokemonId} « ${variante.label} » : le sprite du catalogue et le nom « ${nomRegional} » ne se reconnaissent pas comme la meme forme.`);
     }

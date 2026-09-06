@@ -19,7 +19,26 @@ config({ path: ".env" });
 const { prisma } = await import("../lib/prisma.ts");
 import { sameVariant } from "../lib/entryMatching.ts";
 import { getSpriteVariants } from "../lib/spriteVariants.ts";
-import { formeDuLabel, regionDuNom } from "../lib/formesRegionales.ts";
+import { formeDuLabel, formeDuNom, FORME_DE_BASE } from "../lib/formesIdentitaires.ts";
+
+/* La forme ALTERNATIVE d'une entree reelle, ou null si elle designe la forme de base.
+ *
+ * Lisait `regionDuNom`, qui ne connait que les quatre regions. Depuis le 2026-09-06 les
+ * formes Avatar/Totemique suivent le meme mecanisme, donc la lecture passe par `formeDuNom`,
+ * son superset.
+ *
+ * FORME_DE_BASE est ramene a null DELIBEREMENT. « Boreas Incarnate ✨ » et « Boreas » avec le
+ * meme shiny sont le MEME Pokemon : Incarnate est la forme par defaut du jeu. Sans cette
+ * ligne, ce script signalait 13 collisions sur des entrees reelles qui n'en sont pas, et
+ * les corriger aurait consiste a separer des dresseurs qui cherchent la meme chose. */
+const formeAlternative = (pokemonId, entree) => {
+  const parNom = formeDuNom(entree.pokemonName);
+  const parSprite = formeDuLabel(
+    getSpriteVariants(pokemonId).find((v) => v.url === entree.customSpriteUrl)?.label,
+  );
+  const forme = parNom ?? parSprite;
+  return forme === FORME_DE_BASE ? null : forme;
+};
 
 const especesRegionales = [];
 for (let id = 1; id <= 1025; id++) {
@@ -47,13 +66,13 @@ let paires = 0;
 let regionales = 0;
 
 for (const [pokemonId, liste] of parEspece) {
-  for (const e of liste) if (regionDuNom(e.pokemonName) || formeDuLabel(getSpriteVariants(pokemonId).find((v) => v.url === e.customSpriteUrl)?.label)) regionales++;
+  for (const e of liste) if (formeAlternative(pokemonId, e)) regionales++;
 
   for (let i = 0; i < liste.length; i++) {
     for (let j = i + 1; j < liste.length; j++) {
       const a = liste[i], b = liste[j];
-      const formeA = regionDuNom(a.pokemonName) ?? formeDuLabel(getSpriteVariants(pokemonId).find((v) => v.url === a.customSpriteUrl)?.label);
-      const formeB = regionDuNom(b.pokemonName) ?? formeDuLabel(getSpriteVariants(pokemonId).find((v) => v.url === b.customSpriteUrl)?.label);
+      const formeA = formeAlternative(pokemonId, a);
+      const formeB = formeAlternative(pokemonId, b);
       // On ne compare que ce qui nous interesse : une forme regionale face a une non-regionale.
       if (!!formeA === !!formeB) continue;
       paires++;

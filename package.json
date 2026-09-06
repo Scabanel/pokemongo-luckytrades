@@ -21,6 +21,7 @@
     "check:da": "node scripts/check-da.mjs",
     "check:matching": "node --import ./scripts/resolveur-alias.mjs --experimental-strip-types --no-warnings scripts/check-matching.mjs",
     "check:formes-reelles": "node --import ./scripts/resolveur-alias.mjs --experimental-strip-types --no-warnings scripts/verifier-formes-reelles.mjs",
+    "check:formes-fonds": "node --import ./scripts/resolveur-alias.mjs --experimental-strip-types --no-warnings scripts/check-formes-fonds.mjs",
     "check:agencement": "node scripts/check-agencement.mjs"
   },
   "dependencies": {

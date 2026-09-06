@@ -1,7 +1,7 @@
 import type { PokemonEntry } from "./types";
 import { parseTags } from "./tags";
-import { canonicalCustomSpriteUrl, formeRegionaleDuSprite } from "./spriteVariants";
-import { regionDuNom } from "./formesRegionales";
+import { canonicalCustomSpriteUrl, formeDuSprite } from "./spriteVariants";
+import { formeDuNom, FORME_DE_BASE } from "./formesIdentitaires";
 import genderDifferences from "@/data/gender-differences.json";
 
 // Partagé entre components/PokemonCard.tsx (badges want/give réciproques,
@@ -46,7 +46,7 @@ const FORM_TAGS = new Set(["costume", "gigamax", "dynamax"]);
 
    La forme regionale, elle, est stable quelle que soit la representation : elle est dans le
    NOM (« Sablaireau d'Alola », « Sablaireau Alola ») et, a defaut, dans le label du sprite
-   fige. Les deux signaux sont ramenes au meme vocabulaire par lib/formesRegionales.ts, seul
+   fige. Les deux signaux sont ramenes au meme vocabulaire par lib/formesIdentitaires.ts, seul
    endroit du depot qui sait ce qu'est une forme regionale.
 
    Quand une forme regionale est identifiee, elle DEVIENT l'identite et l'URL cesse de
@@ -63,7 +63,19 @@ export function formVariantKey(
   pokemonName?: string | null,
 ): string {
   const relevantTags = parseTags(rawTags).filter((t) => FORM_TAGS.has(t.toLowerCase())).sort().join(",");
-  const forme = formeRegionaleDuSprite(pokemonId, customSpriteUrl) ?? regionDuNom(pokemonName);
+  const forme = formeDuSprite(pokemonId, customSpriteUrl) ?? formeDuNom(pokemonName);
+
+  /* ═══ « EXPLICITEMENT LA BASE » N'EST PAS « AUCUNE FORME TROUVEE » ═══
+
+     La forme Avatar des quatre genies EST la forme par defaut : « Demeteros » tout court
+     designe deja un Demeteros Avatar. Elle doit donc produire exactement la meme clef qu'une
+     entree sans forme du tout, sinon on recreerait a l'envers le bug de Sablaireau d'Alola -
+     deux entrees qui designent le meme Pokemon et cessent de se voir.
+
+     C'est bien un cas separe et pas un `?? null` deguise : sans cette ligne, la forme Avatar
+     retomberait sur son URL de sprite, qui est figee, et diffèrerait d'une entree nue. */
+  if (forme === FORME_DE_BASE) return `|${relevantTags}`;
+
   if (forme) return `forme:${forme}|${relevantTags}`;
   return `${canonicalCustomSpriteUrl(pokemonId, customSpriteUrl)}|${relevantTags}`;
 }

@@ -16,8 +16,9 @@ import { createClient } from "@/lib/supabase/client";
 import { EMPTY_ENTRY_FILTERS, ENTRY_FILTER_CHIPS, matchesEntryFilters, type EntryFilters } from "@/lib/entryFilters";
 import BulkAddPicker from "./BulkAddPicker";
 import CopyPogoShinyFilterButton from "./CopyPogoShinyFilterButton";
-import { detectCostumeGender, isCostumeShinyReleased, AVAILABLE_SPECIES, DYNAMAX_AVAILABLE_SPECIES, GIGANTAMAX_AVAILABLE_SPECIES } from "@/lib/spriteVariants";
-import { POKEMON_SIZES } from "@/lib/entryMatching";
+import { detectCostumeGender, isCostumeShinyReleased, estFormeIdentitaire, AVAILABLE_SPECIES, DYNAMAX_AVAILABLE_SPECIES, GIGANTAMAX_AVAILABLE_SPECIES } from "@/lib/spriteVariants";
+import { libelleForme } from "@/lib/formesIdentitaires";
+import { POKEMON_SIZES, formVariantKey } from "@/lib/entryMatching";
 import GrilleParRegion from "@/components/GrilleParRegion";
 import PartageListe from "@/components/PartageListe";
 
@@ -1181,7 +1182,23 @@ export function EntryForm(props: EntryFormProps) {
   // pokemonName proprement à chaque changement de sprite (voir le onSelect
   // du SpritePicker plus bas) au lieu d'empiler les suffixes les uns sur les
   // autres si on change plusieurs fois de costume.
-  const [baseSpeciesName, setBaseSpeciesName] = useState(entry?.pokemonName ?? "");
+  /* ═══ LE NOM D'ESPÈCE EST UN FAIT DU CATALOGUE, PAS UN ACCUMULATEUR ═══
+
+     Ce state partait de `entry?.pokemonName`, c'est-à-dire du nom COMPLET en
+     mode édition. Re-choisir un sprite sur une entrée déjà nommée "Démétéros
+     Totémique ✨" produisait "Démétéros Totémique ✨ Avatar", puis pire à
+     chaque essai. Rien ne le remettait à l'espèce : `setBaseSpeciesName`
+     n'était appelé qu'à la sélection d'espèce, qui n'existe pas en édition.
+
+     Le nom de l'espèce se lit dans data/pokemon.json à partir du numéro, qui
+     lui ne bouge pas. On ne le déduit donc plus d'un texte qu'on vient
+     soi-même de modifier. Le state reste pour le mode ajout, où l'espèce est
+     choisie avant que le catalogue n'ait été consulté. */
+  const nomEspeceDuCatalogue = (id: number): string =>
+    (pokemonList as PokeOption[]).find((p) => p.id === id)?.frenchName ?? "";
+  const [baseSpeciesName, setBaseSpeciesName] = useState(
+    entry ? nomEspeceDuCatalogue(entry.pokemonId) || entry.pokemonName : "",
+  );
   const [tradeSearch, setTradeSearch] = useState(entry?.tradeForPokemonName ?? "");
   const [showPokeSuggestions, setShowPokeSuggestions] = useState(false);
   const [showTradeSuggestions, setShowTradeSuggestions] = useState(false);
@@ -1257,21 +1274,38 @@ export function EntryForm(props: EntryFormProps) {
         return;
       }
       if (form.category === "want") {
-        // Un même numéro de Pokédex peut légitimement apparaître plusieurs
-        // fois (formes/costumes différents : Zarbi A/B/C..., Deoxys Attaque/
-        // Défense, Pikachu déguisé...) : le nom (variante) doit aussi
-        // correspondre pour que ce soit un vrai doublon, pas juste le même
-        // numéro national. Et surtout : ne comparer qu'à SES PROPRES entrées
-        // — existingEntries contient celles de tout le monde (catalogue
-        // partagé), comparer sans filtrer par dresseur bloquait un ajout dès
-        // qu'un AUTRE dresseur avait déjà le même Pokémon dans sa liste.
+        /* ═══ LE DOUBLON SE JUGE SUR L'IDENTITÉ, PAS SUR LE NOM ═══
+
+           RyN, le 2026-09-06 : "je cherche le shiny de sa forme avatar et le
+           shiny de sa forme totémique, je peux pas mettre les deux".
+
+           Cette garde comparait `pokemonName`. Or le nom n'est suffixé par la
+           variante que si le sprite a été pris dans "Costumes officiels" : la
+           grille PokéAPI et l'URL manuelle le laissent à l'espèce nue. Deux
+           formes réellement différentes arrivaient donc ici avec le même nom,
+           le même numéro et le même shiny, et la seconde était refusée.
+
+           `formVariantKey` est la fonction qui répond déjà à "ces deux entrées
+           sont-elles le même Pokémon", partout ailleurs dans l'appli
+           (voir docs/CONTEXT.md). L'employer ici supprime la divergence au
+           lieu de la corriger : la garde et le matching ne peuvent plus être
+           en désaccord sur ce qu'est un doublon.
+
+           Un vrai doublon reste refusé — deux fois la même forme, même shiny,
+           chez le même dresseur.
+
+           Ne comparer qu'à SES PROPRES entrées : existingEntries contient
+           celles de tout le monde (catalogue partagé), comparer sans filtrer
+           par dresseur bloquait un ajout dès qu'un AUTRE dresseur avait déjà
+           le même Pokémon dans sa liste. */
+        const identite = formVariantKey(form.pokemonId, form.customSpriteUrl, form.tags.join(","), form.pokemonName);
         const duplicate = existingEntries!.find(
           (x) =>
             x.category === "want" &&
             x.trainer?.id === form.trainerId &&
             x.pokemonId === form.pokemonId &&
             !!x.shiny === form.shiny &&
-            x.pokemonName.trim().toLowerCase() === form.pokemonName.trim().toLowerCase()
+            formVariantKey(x.pokemonId, x.customSpriteUrl, x.tags, x.pokemonName) === identite
         );
         if (duplicate) {
           toast.error(`${form.pokemonName}${form.shiny ? " ✨ Shiny" : ""} est déjà dans "Je recherche"`);
@@ -2159,7 +2193,30 @@ function getOfficialCostumes(pokemonId: number): CostumeEntry[] {
   return (COSTUME_CATALOG[String(pokemonId)] ?? [])
     .filter((c) => !c.label.startsWith("Mega"))
     .filter((c) => !c.label.startsWith("Gigantamax") || GIGANTAMAX_AVAILABLE_SPECIES.has(pokemonId))
-    .filter((c) => isCostumeShinyReleased(pokemonId, c.label));
+    .filter((c) => isCostumeShinyReleased(pokemonId, c.label))
+    // Libellé FRANÇAIS, comme getSpriteVariants le fait pour l'ajout en masse :
+    // "Therian" devient "Totémique". Ce label part ensuite dans le nom de
+    // l'entrée, donc les deux chemins d'ajout doivent écrire le même texte,
+    // sinon "Démétéros Therian" et "Démétéros Totémique" coexisteraient dans
+    // les listes. Les deux sont reconnus à la lecture (formesIdentitaires),
+    // mais un seul doit être écrit.
+    .map((c) => ({ ...c, label: libelleForme(c.label) }));
+}
+
+/** Les formes d'identité (Avatar, Totémique, formes régionales) parmi ces entrées.
+ *
+ *  RyN, le 2026-09-06 : "il y a pas moyen de sélectionner directement les formes
+ *  totémiques de Boréas, Fulguris, Démétéros, Amovénus ? À part en choisissant
+ *  les sprites."
+ *
+ *  Il avait raison, et le mot "sprites" désigne le fond du problème : ces formes
+ *  étaient rangées dans un accordéon FERMÉ par défaut et intitulé "Costumes
+ *  officiels Pokémon GO". Or pour Démétéros la forme n'est pas un costume et
+ *  n'est pas optionnelle — c'est le choix principal, le seul qu'il y ait à faire.
+ *  Une chose rangée sous un nom qui n'est pas le sien est introuvable, même
+ *  quand elle est là. */
+function formesDeLEspece(costumes: CostumeEntry[]): CostumeEntry[] {
+  return costumes.filter((c) => estFormeIdentitaire(c.label));
 }
 
 function SpritePicker({
@@ -2202,7 +2259,12 @@ function SpritePicker({
   // shiny (et inversement) n'a jamais de sens.
   const matchesShiny = (label: string) => label.includes("✨") === shiny;
   const visibleSprites = sprites.filter((s) => matchesShiny(s.label));
-  const officialCostumes = getOfficialCostumes(pokemonId).filter((c) => matchesShiny(c.label));
+  const toutesLesTuiles = getOfficialCostumes(pokemonId).filter((c) => matchesShiny(c.label));
+  // Les formes sortent de l'accordéon "Costumes" et montent en haut du picker :
+  // ce sont deux questions différentes, "quelle forme de ce Pokémon" et "quel
+  // costume par-dessus", et seule la première est parfois obligatoire.
+  const formesEspece = formesDeLEspece(toutesLesTuiles);
+  const officialCostumes = toutesLesTuiles.filter((c) => !estFormeIdentitaire(c.label));
 
   // Reset cache when Pokémon changes
   useEffect(() => {
@@ -2299,6 +2361,30 @@ function SpritePicker({
               <button onClick={() => setOpen(false)} style={{ background: "none", border: "1px solid var(--trait-leger)", borderRadius: 8, color: "var(--encre)", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>Fermer</button>
             </div>
 
+            {/* ═══ LA FORME AVANT TOUT LE RESTE ═══
+
+                Pour Boréas, Fulguris, Démétéros et Amovénus, la forme n'est pas
+                un ornement : c'est deux Pokémon différents, comme une forme
+                régionale, et il n'existe pas de troisième option. Elle est donc
+                toujours dépliée et placée au-dessus de la grille PokéAPI, pas
+                repliée sous un titre "Costumes" qui n'est pas son nom.
+
+                Steven, le 2026-09-06 : "ce ne sont pas des costumes. Il faut les
+                considérer comme des pokemons différents. Comme les formes
+                régionales." */}
+            {formesEspece.length > 0 && (
+              <div style={{ marginBottom: 20 }}>
+                <p style={{ fontFamily: "Exo 2, sans-serif", color: "var(--encre)", fontWeight: 700, fontSize: "0.85rem", marginBottom: 8 }}>
+                  Forme
+                </p>
+                <CostumeGrid
+                  costumes={formesEspece}
+                  currentUrl={currentUrl}
+                  onSelect={(url, label) => { onSelect(url, label); setOpen(false); }}
+                />
+              </div>
+            )}
+
             {fetching ? (
               <div style={{ textAlign: "center", padding: 32, color: "var(--encre-tres-douce)" }}>Chargement…</div>
             ) : visibleSprites.length > 0 ? (
@@ -2342,7 +2428,11 @@ function SpritePicker({
               </p>
             ) : null}
 
-            {/* Costumes officiels Pokémon GO */}
+            {/* Costumes officiels Pokémon GO.
+                Masqué quand il n'y en a aucun : depuis que les formes ont leur
+                propre bloc, les quatre génies affichaient un accordéon
+                "Costumes officiels Pokémon GO (0)" qui ne s'ouvre sur rien. */}
+            {officialCostumes.length > 0 && (
             <div style={{ borderTop: "1px solid var(--trait-leger)", paddingTop: 16, marginBottom: 16 }}>
               <button
                 type="button"
@@ -2366,6 +2456,7 @@ function SpritePicker({
                 />
               )}
             </div>
+            )}
 
             <div style={{ borderTop: "1px solid var(--trait-leger)", paddingTop: 16 }}>
               <label className="field-label">URL MANUELLE</label>
@@ -2505,6 +2596,115 @@ const BACKGROUND_CATALOG = backgroundCatalog as BackgroundEntry[];
 // est validée événement par événement — priorité à afficher en premier.
 const VALIDATED_BACKGROUNDS = validatedBackgrounds as Record<string, BackgroundEntry[]>;
 
+/* ═══ TOUS LES FONDS EXISTANTS, D'OÙ QU'ILS VIENNENT ═══
+
+   Les deux catalogues n'étaient jamais réunis, et chacun contenait ce que
+   l'autre n'avait pas : les images /event-backgrounds/ (dont le fond méga)
+   n'existent QUE dans la liste par Pokémon, les fonds PokeMiners QUE dans la
+   liste générique. Passer de l'une à l'autre par le lien "Voir tous les fonds"
+   ne changeait donc pas d'échelle, ça changeait d'univers - et faisait
+   DISPARAÎTRE des fonds réels.
+
+   RyN, le 2026-09-06 : "il n'y a pas le fond méga de ce weekend dans le site"
+   et "on peut pas mettre le fond Ethernatos sur Kraboss Gmax". Le second est
+   exact et mesuré : Kraboss n'a qu'un seul fond confirmé, donc la liste
+   générique ne s'affichait jamais par défaut, et le fond Éthernatos (le Max
+   Finale) n'y est de toute façon accessible qu'après avoir trouvé le lien. */
+const TOUS_LES_FONDS: BackgroundEntry[] = (() => {
+  const vus = new Set(BACKGROUND_CATALOG.map((b) => b.url));
+  const supplement: BackgroundEntry[] = [];
+  for (const liste of Object.values(VALIDATED_BACKGROUNDS)) {
+    for (const b of liste) {
+      if (vus.has(b.url)) continue;
+      vus.add(b.url);
+      supplement.push(b);
+    }
+  }
+  return [...BACKGROUND_CATALOG, ...supplement];
+})();
+
+/** Le libellé d'un fond, lisible.
+ *
+ *  Le scraper colle le nom de l'événement à sa date sans séparateur :
+ *  "Pokémon GO Tour Kalos28 février et 1er mars 2026". Une lettre suivie
+ *  immédiatement d'un chiffre ne se produit jamais dans un nom d'événement
+ *  réel, c'est donc la couture, et on la rouvre. Corrigé à l'affichage plutôt
+ *  que dans les données : le fichier est régénéré par le cron hebdomadaire,
+ *  une retouche du JSON serait effacée au prochain passage. */
+function libelleFond(label: string): string {
+  return label.replace(/(\p{L})(\d)/gu, "$1, $2");
+}
+
+/** Le texte sur lequel porte la recherche de fond.
+ *
+ *  Les libellés nomment les Pokémon en ANGLAIS ("Go Fest 2025 Eternatus"),
+ *  parce qu'ils viennent des noms de fichiers du jeu. Un joueur francophone
+ *  tape "Éthernatos" et ne trouve rien - c'est exactement ce qui est arrivé à
+ *  RyN. On indexe donc AUSSI le nom français de tout Pokémon cité dans le
+ *  libellé, en repliant les accents des deux côtés.
+ *
+ *  Construit depuis data/pokemon.json, donc aucune table d'alias à tenir à
+ *  jour : un Pokémon ajouté au catalogue est cherchable le jour même. */
+const sansAccent = (t: string) => t.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+
+const TEXTE_CHERCHABLE = new Map<string, string>();
+for (const b of TOUS_LES_FONDS) {
+  const plat = sansAccent(b.label);
+  const alias: string[] = [];
+  for (const p of pokemonList as PokeOption[]) {
+    // `name` vaut "landorus-incarnate" : seule la racine apparaît dans un
+    // nom de fichier d'événement.
+    const anglais = sansAccent(p.name.split("-")[0]);
+    if (anglais.length >= 4 && plat.includes(anglais)) alias.push(sansAccent(p.frenchName));
+  }
+  TEXTE_CHERCHABLE.set(b.url, `${plat} ${alias.join(" ")}`);
+}
+
+/** La grille de vignettes de fonds. Extraite parce que les deux sections
+ *  (confirmés / tous les autres) l'affichent à l'identique : une seule
+ *  définition, donc pas de dérive possible entre les deux blocs. */
+function GrilleFonds({
+  fonds,
+  currentUrl,
+  onChoisir,
+}: {
+  fonds: BackgroundEntry[];
+  currentUrl: string | null;
+  onChoisir: (url: string) => void;
+}) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(70px, 20vw, 110px), 1fr))", gap: 8 }}>
+      {fonds.map(({ url, label }) => (
+        <button
+          key={url + label}
+          type="button"
+          onClick={() => onChoisir(url)}
+          style={{
+            background: currentUrl === url ? "color-mix(in srgb, var(--ligne-miroir) 15%, transparent)" : "var(--surface-creuse)",
+            border: `1px solid ${currentUrl === url ? "color-mix(in srgb, var(--ligne-miroir) 40%, transparent)" : "var(--trait-leger)"}`,
+            borderRadius: 10, padding: 6, cursor: "pointer",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={url}
+            alt={libelleFond(label)}
+            style={{ width: 90, height: 60, objectFit: "cover", borderRadius: 6 }}
+            onError={(e) => {
+              const btn = (e.currentTarget as HTMLImageElement).closest("button");
+              if (btn) btn.style.display = "none";
+            }}
+          />
+          <span style={{ fontSize: "0.75rem", color: "var(--encre-douce)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
+            {libelleFond(label)}
+          </span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function BackgroundPicker({
   pokemonId,
   currentUrl,
@@ -2519,7 +2719,6 @@ function BackgroundPicker({
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [search, setSearch] = useState("");
-  const [showAll, setShowAll] = useState(false);
 
   // Voir le commentaire équivalent dans SpritePicker : .glass-card piège les
   // position:fixed descendantes via son backdrop-filter, d'où le portal.
@@ -2535,10 +2734,27 @@ function BackgroundPicker({
   }, [autoOpenKey]);
 
   const validated = VALIDATED_BACKGROUNDS[String(pokemonId)] ?? [];
-  const source = showAll || validated.length === 0 ? BACKGROUND_CATALOG : validated;
-  const filtered = search.trim()
-    ? source.filter((b) => b.label.toLowerCase().includes(search.trim().toLowerCase()))
-    : source;
+
+  /* ═══ DEUX SECTIONS, PLUS UNE BASCULE ═══
+
+     C'était un ou-exclusif : soit les fonds confirmés pour ce Pokémon, soit le
+     catalogue générique, jamais les deux. Sur un Pokémon qui n'a qu'un seul
+     fond confirmé - Kraboss en a un - la liste par défaut comptait donc UN
+     élément, et il fallait deviner un lien pour voir les 450 autres.
+
+     Les confirmés restent en premier et gardent leur mention : ils sont d'une
+     autre nature, vérifiés événement par événement. Mais ils ne cachent plus
+     le reste. Une bascule qui remplace une liste par une autre demande à
+     l'utilisateur de savoir ce qu'il ne voit pas. */
+  const urlsConfirmees = new Set(validated.map((b) => b.url));
+  const autres = TOUS_LES_FONDS.filter((b) => !urlsConfirmees.has(b.url));
+
+  const requete = sansAccent(search.trim());
+  const correspond = (b: BackgroundEntry) =>
+    !requete || (TEXTE_CHERCHABLE.get(b.url) ?? sansAccent(b.label)).includes(requete);
+  const confirmesFiltres = validated.filter(correspond);
+  const autresFiltres = autres.filter(correspond);
+  const total = confirmesFiltres.length + autresFiltres.length;
 
   return (
     <>
@@ -2586,72 +2802,45 @@ function BackgroundPicker({
           >
             <div className="flex items-center justify-between mb-4">
               <h3 style={{ fontFamily: "Exo 2, sans-serif", color: "var(--ligne-miroir)", fontWeight: 700, fontSize: "1.1rem" }}>
-                {showAll || validated.length === 0
-                  ? `Tous les fonds (${BACKGROUND_CATALOG.length})`
-                  : `Fonds confirmés pour ce Pokémon (${validated.length})`}
+                Fonds ({total})
               </h3>
               <button onClick={() => setOpen(false)} style={{ background: "none", border: "1px solid var(--trait-leger)", borderRadius: 8, color: "var(--encre)", cursor: "pointer", fontSize: "0.8rem", padding: "4px 10px" }}>Fermer</button>
             </div>
-
-            {validated.length > 0 && (
-              <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", marginBottom: 10 }}>
-                {showAll
-                  ? "Liste complète : rien ne garantit que ce Pokémon a réellement eu ce fond."
-                  : "Confirmés événement par événement (source : margxt.fr)."}
-                {" "}
-                <button
-                  type="button"
-                  onClick={() => setShowAll((v) => !v)}
-                  style={{ background: "none", border: "none", color: "var(--ligne-miroir)", cursor: "pointer", textDecoration: "underline", fontSize: "0.75rem", padding: 0 }}
-                >
-                  {showAll ? "Revenir aux fonds confirmés" : "Voir tous les fonds à la place"}
-                </button>
-              </p>
-            )}
 
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="glass-input"
-              placeholder="Chercher (ex: paris, anniversary, team leader...)"
+              placeholder="Chercher (ex: paris, ethernatos, mega, anniversaire...)"
               style={{ marginBottom: 12 }}
             />
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(clamp(70px, 20vw, 110px), 1fr))", gap: 8 }}>
-              {filtered.map(({ url, label }) => (
-                <button
-                  key={url + label}
-                  type="button"
-                  onClick={() => { onSelect(url); setOpen(false); }}
-                  style={{
-                    background: currentUrl === url ? "color-mix(in srgb, var(--ligne-miroir) 15%, transparent)" : "var(--surface-creuse)",
-                    border: `1px solid ${currentUrl === url ? "color-mix(in srgb, var(--ligne-miroir) 40%, transparent)" : "var(--trait-leger)"}`,
-                    borderRadius: 10, padding: 6, cursor: "pointer",
-                    display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
-                  }}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={url}
-                    alt={label}
-                    style={{ width: 90, height: 60, objectFit: "cover", borderRadius: 6 }}
-                    onError={(e) => {
-                      const btn = (e.currentTarget as HTMLImageElement).closest("button");
-                      if (btn) btn.style.display = "none";
-                    }}
-                  />
-                  <span style={{ fontSize: "0.75rem", color: "var(--encre-douce)", textAlign: "center", wordBreak: "break-word", lineHeight: 1.2 }}>
-                    {label}
-                  </span>
-                </button>
-              ))}
-              {filtered.length === 0 && (
-                <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", gridColumn: "1 / -1" }}>
-                  Aucun fond ne correspond à « {search} ».
+            {confirmesFiltres.length > 0 && (
+              <>
+                <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", marginBottom: 8 }}>
+                  Confirmés pour ce Pokémon, événement par événement (source : margxt.fr).
                 </p>
-              )}
-            </div>
+                <GrilleFonds fonds={confirmesFiltres} currentUrl={currentUrl} onChoisir={(url) => { onSelect(url); setOpen(false); }} />
+              </>
+            )}
+
+            {autresFiltres.length > 0 && (
+              <>
+                <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)", margin: confirmesFiltres.length > 0 ? "16px 0 8px" : "0 0 8px" }}>
+                  {confirmesFiltres.length > 0
+                    ? "Tous les autres fonds. Rien ne garantit que ce Pokémon a réellement eu celui-ci."
+                    : "Aucun fond confirmé pour ce Pokémon. Rien ne garantit qu'il a réellement eu celui que tu choisis."}
+                </p>
+                <GrilleFonds fonds={autresFiltres} currentUrl={currentUrl} onChoisir={(url) => { onSelect(url); setOpen(false); }} />
+              </>
+            )}
+
+            {total === 0 && (
+              <p style={{ fontSize: "0.75rem", color: "var(--encre-tres-douce)" }}>
+                Aucun fond ne correspond à « {search} ».
+              </p>
+            )}
           </div>
         </div>,
         document.body

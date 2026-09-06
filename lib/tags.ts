@@ -13,7 +13,7 @@ export function parseTags(raw: string | null | undefined): string[] {
 // entrées régionales réelles en prod (toutes tags:null) : sans faux positif
 // sur les ~1160 autres noms distincts de la base.
 //
-// La définition elle-même vit dans lib/formesRegionales.ts, seul endroit du
+// La définition elle-même vit dans lib/formesIdentitaires.ts, seul endroit du
 // dépôt qui sait ce qu'est une forme régionale. Ce ré-export garde les appelants
 // existants intacts sans recréer une deuxième définition à côté.
-export { NOM_FORME_REGIONALE as REGIONAL_FORM_NAME } from "./formesRegionales";
+export { NOM_FORME_REGIONALE as REGIONAL_FORM_NAME } from "./formesIdentitaires";

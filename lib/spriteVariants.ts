@@ -31,7 +31,7 @@ export const AVAILABLE_SPECIES = new Set(pogoAvailability.available as number[])
 export const DYNAMAX_AVAILABLE_SPECIES = DYNAMAX_SPECIES;
 export { GIGANTAMAX_AVAILABLE_SPECIES };
 const ICON_BASE = "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets";
-import { LABEL_FORME_REGIONALE, formeDuLabel } from "./formesRegionales";
+import { LABEL_FORME_REGIONALE, LABEL_FORME_NOMMEE, FORME_DE_BASE, formeDuLabel, libelleForme } from "./formesIdentitaires";
 // data/costumes.json mélange les vraies formes régionales (Alola/Galar/Hisui/
 // Paldea) parmi les costumes événementiels — ce ne sont pas des costumes,
 // juste une autre apparence naturelle de l'espèce, donc aucun tag "costume"
@@ -41,8 +41,32 @@ import { LABEL_FORME_REGIONALE, formeDuLabel } from "./formesRegionales";
 // même de figer customSpriteUrl (voir variantNeedsPinnedSprite ci-dessous),
 // juste sans passer par la catégorie "tags" affichée à l'utilisateur.
 //
-// Définition unique dans lib/formesRegionales.ts.
+// Définition unique dans lib/formesIdentitaires.ts.
 const REGIONAL_FORM_PREFIX = LABEL_FORME_REGIONALE;
+
+// Les formes Avatar/Totémique des quatre génies (Boréas, Fulguris, Démétéros,
+// Amovénus) sont dans le même cas exact que les formes régionales : le
+// catalogue les range parmi les costumes alors que le jeu en fait deux
+// Pokémon distincts. Elles suivent donc la même règle partout dans ce
+// fichier — pas de tag "costume", mais un sprite figé, parce qu'aucune des
+// deux ne se reconstruit à partir de pokemonId+shiny+tags.
+//
+// RyN, le 2026-09-06 : "il y a pas moyen de sélectionner directement les
+// formes totémiques [...] à part en choisissant les sprites."
+const FORME_NOMMEE_PREFIX = LABEL_FORME_NOMMEE;
+
+/** Vrai si ce label porte une identité de forme (régionale ou nommée), par
+ *  opposition à un costume événementiel. Un seul test, appelé partout, plutôt
+ *  qu'un `REGIONAL_FORM_PREFIX.test(...) || FORME_NOMMEE_PREFIX.test(...)`
+ *  recopié à cinq endroits — c'est exactement la duplication qui avait produit
+ *  quatre définitions divergentes avant lib/formesIdentitaires.ts.
+ *
+ *  Exporté parce que l'interface d'ajout doit poser la MÊME question : une
+ *  forme d'identité n'est pas un costume, donc elle ne se range pas dans
+ *  l'accordéon "Costumes officiels" — c'est le choix principal, pas un extra. */
+export function estFormeIdentitaire(label: string): boolean {
+  return REGIONAL_FORM_PREFIX.test(label) || FORME_NOMMEE_PREFIX.test(label);
+}
 
 export interface SpriteVariant {
   key: string;
@@ -95,15 +119,26 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
   // chaque forme régionale.
   const regionalFormShinyReleased = REGIONAL_FORM_SHINY_AVAILABLE_SPECIES.has(pokemonId);
   const variants: SpriteVariant[] = costumes
+    // UNE SEULE RÈGLE DE SHINY, CELLE DE isCostumeShinyReleased. Ce filtre en
+    // portait une copie qui ne connaissait que les formes régionales : en
+    // ajoutant les formes nommées à la fonction sans les ajouter ici, les deux
+    // se seraient contredites sur le premier génie dont le shiny n'est pas
+    // sorti. Le harnais compare désormais les deux chemins sur tout le
+    // catalogue, plutôt que de faire confiance à cette ligne.
+    .filter((c) => isCostumeShinyReleased(pokemonId, c.label))
     .filter((c) => regionalFormShinyReleased || !(REGIONAL_FORM_PREFIX.test(c.label) && c.label.includes("✨")))
     .map((c) => ({
       key: c.url,
-      label: c.label,
+      // MONTRÉ à l'utilisateur, donc en français : "Therian" devient
+      // "Totémique". La comparaison, elle, continue de porter sur `c.label`
+      // brut juste en dessous — traduire une clé de comparaison casserait
+      // l'appariement des paires de genre et la détection du shiny.
+      label: libelleForme(c.label),
       url: c.url,
       shiny: c.label.includes("✨"),
       // Seuls les vrais costumes événementiels sont tagués "costume" : ni la
-      // base, ni les formes régionales (voir REGIONAL_FORM_PREFIX plus haut).
-      tags: c.label.startsWith("Officiel Pokémon GO") || REGIONAL_FORM_PREFIX.test(c.label) ? [] : ["costume"],
+      // base, ni les formes d'identité (voir estFormeIdentitaire plus haut).
+      tags: c.label.startsWith("Officiel Pokémon GO") || estFormeIdentitaire(c.label) ? [] : ["costume"],
       gender: detectCostumeGender(c.label, allLabels),
     }));
 
@@ -114,15 +149,32 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
   // avant le shiny sauvage de l'espèce, et sa présence dans costumes.json
   // (scrapée du client au moment de l'événement, pas dataminée à l'avance
   // comme une nouvelle espèce) suffit déjà à le confirmer réellement sorti.
+  // Le retrait du shiny de base est désormais fait par le filtre ci-dessus,
+  // via isCostumeShinyReleased qui porte exactement la même règle. Il en
+  // restait ici une seconde application, par splice après le map : elle est
+  // retirée plutôt que laissée en double, une règle appliquée deux fois étant
+  // une règle qu'on corrigera un jour à un seul des deux endroits.
+  // `shinyReleased` reste nécessaire pour le repli go-icons juste en dessous,
+  // qui construit une tuile ABSENTE du catalogue et n'est donc pas filtrée.
   const shinyReleased = SHINY_AVAILABLE_SPECIES.has(pokemonId);
-  const baseShinyIndex = variants.findIndex((v) => v.label === "Officiel Pokémon GO ✨");
-  if (baseShinyIndex !== -1 && !shinyReleased) variants.splice(baseShinyIndex, 1);
 
   // costumes.json ne couvre que les espèces ayant déjà eu un costume/une
   // forme événementielle (~925/1025) : sans repli, tout Pokémon jamais
   // costumé n'aurait AUCUNE tuile du tout dans le picker, pas même son sprite
   // de base. go-icons.json couvre lui l'icône officielle de chaque espèce.
-  if (!costumes.some((c) => c.label.startsWith("Officiel Pokémon GO"))) {
+  // « A déjà une tuile de base » inclut la forme Avatar des quatre génies :
+  // leur catalogue ne contient PAS de "Officiel Pokémon GO", parce que leur
+  // forme par défaut s'appelle "Incarnate". Sans cette seconde condition, le
+  // repli ajoutait une tuile supplémentaire pointant sur le MÊME fichier que
+  // la tuile Avatar.
+  //
+  // Ce n'était pas qu'un doublon à l'écran. `formeDuSprite` retrouve la forme
+  // en cherchant la variante qui porte cette URL : avec deux variantes pour la
+  // même URL, `.find` rendait la tuile de repli, dont le label ne porte aucune
+  // forme, et l'entrée retombait sur son URL comme identité. Un Démétéros
+  // Avatar cessait donc de correspondre à un Démétéros nu - exactement
+  // l'erreur symétrique que la clef FORME_DE_BASE existe pour empêcher.
+  if (!costumes.some((c) => c.label.startsWith("Officiel Pokémon GO") || formeDuLabel(c.label) === FORME_DE_BASE)) {
     const files = GO_ICONS[String(pokemonId)];
     if (files?.[0]) {
       variants.unshift({ key: `base-${files[0]}`, label: "Officiel Pokémon GO", url: `${ICON_BASE}/${encodeURIComponent(files[0])}`, shiny: false, tags: [], gender: null });
@@ -188,6 +240,11 @@ export function getSpriteVariants(pokemonId: number): SpriteVariant[] {
 export function isCostumeShinyReleased(pokemonId: number, label: string): boolean {
   if (!label.includes("✨")) return true;
   if (REGIONAL_FORM_PREFIX.test(label)) return REGIONAL_FORM_SHINY_AVAILABLE_SPECIES.has(pokemonId);
+  // Le classeur de Steven ne suit PAS les formes Avatar/Totémique ligne à
+  // ligne. Leur shiny est celui de l'espèce : Démétéros shiny existe, donc
+  // ses deux formes shiny existent. On lit donc la même case que la base
+  // plutôt que d'inventer une colonne qui n'est pas tenue à jour.
+  if (FORME_NOMMEE_PREFIX.test(label)) return SHINY_AVAILABLE_SPECIES.has(pokemonId);
   if (label.startsWith("Gigantamax")) return GIGANTAMAX_SHINY_AVAILABLE_SPECIES.has(pokemonId);
   if (label.startsWith("Officiel Pokémon GO")) return SHINY_AVAILABLE_SPECIES.has(pokemonId);
   // Costume événementiel classique : pas suivi par le classeur, sa présence
@@ -201,7 +258,12 @@ export function isCostumeShinyReleased(pokemonId: number, label: string): boolea
 // costumes événementiels, formes régionales, et variantes de genre pairées
 // (même sans costume, ex. Pikachu femelle a une queue différente).
 export function variantNeedsPinnedSprite(variant: SpriteVariant): boolean {
-  return variant.tags.includes("costume") || REGIONAL_FORM_PREFIX.test(variant.label) || !!variant.gender;
+  // `variant.label` est ici le libellé FRANÇAIS ("Totémique"), pas le label
+  // brut du catalogue : les deux motifs de formesIdentitaires acceptent les
+  // deux écritures, précisément pour que ce test n'ait pas à savoir laquelle
+  // il tient. Sans cela, une forme totémique perdrait son sprite figé et
+  // s'afficherait avec l'apparence de la forme avatar.
+  return variant.tags.includes("costume") || estFormeIdentitaire(variant.label) || !!variant.gender;
 }
 
 // customSpriteUrl ne représente une VRAIE variante distincte en jeu (pour le
@@ -242,14 +304,26 @@ export function getGenderForCustomSprite(pokemonId: number, customSpriteUrl: str
 }
 
 /**
- * L'identite de forme regionale portee par un sprite fige, ou `null`.
+ * L'identite de forme portee par un sprite fige, ou `null` si le sprite n'en porte aucune.
  *
- * Ramenee au meme vocabulaire que le nom de l'entree (voir lib/formesRegionales.ts) pour
+ * Ramenee au meme vocabulaire que le nom de l'entree (voir lib/formesIdentitaires.ts) pour
  * qu'une forme reconnue par son sprite et la meme forme reconnue par son nom se comparent
  * comme egales, quel que soit le sprite choisi pour la representer.
+ *
+ * Couvre les formes regionales ET les formes nommees (Avatar, Totemique). S'appelait
+ * `formeRegionaleDuSprite` : le nom a suivi ce que la fonction fait, parce qu'un nom qui
+ * ment sur son perimetre est ce qui fait qu'on oublie d'y penser au cas suivant.
  */
-export function formeRegionaleDuSprite(pokemonId: number, customSpriteUrl: string | null | undefined): string | null {
+export function formeDuSprite(pokemonId: number, customSpriteUrl: string | null | undefined): string | null {
   if (!customSpriteUrl) return null;
-  const variante = getSpriteVariants(pokemonId).find((v) => v.url === customSpriteUrl);
-  return variante ? formeDuLabel(variante.label) : null;
+
+  /* PLUSIEURS VARIANTES PEUVENT PARTAGER UNE URL, et c'est normal : Dynamax réutilise
+     telle quelle l'image de la forme de base. La question posée ici n'est donc pas
+     « quelle tuile porte cette URL » mais « une tuile portant cette URL porte-t-elle une
+     identité de forme ». Un `.find` répondait à la première, et rendait la réponse de la
+     tuile qui se trouvait être en tête de liste. */
+  const formes = getSpriteVariants(pokemonId)
+    .filter((v) => v.url === customSpriteUrl)
+    .map((v) => formeDuLabel(v.label));
+  return formes.find((f) => f !== null) ?? null;
 }
