@@ -21,6 +21,10 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
+      "label": "Aventure Céleste au Japon18 septembre 2026 au 31 août 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-gpj.webp"
+    },
+    {
       "label": "Chasse aux tampons à MinatoDepuis le 25 mai 2026",
       "url": "/event-backgrounds/pokemon-go-location-background-tokmun-minato.webp"
     },
@@ -48,6 +52,10 @@
     }
   ],
   "4": [
+    {
+      "label": "Célébration pour La série Pokémon, les horizons16 au 22 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-sb-s24-sep-2026.png"
+    },
     {
       "label": "Ultra Bonus : Édition 10ᵉ anniversaire21 au 27 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-fond-special-valor.webp"
@@ -98,6 +106,10 @@
     }
   ],
   "6": [
+    {
+      "label": "Célébration pour La série Pokémon, les horizons16 au 22 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-sb-s24-sep-2026.png"
+    },
     {
       "label": "Pokémon GO Tour Kalos28 février et 1er mars 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
@@ -210,6 +222,10 @@
     }
   ],
   "25": [
+    {
+      "label": "Célébration pour La série Pokémon, les horizons16 au 22 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-sb-s24-sep-2026.png"
+    },
     {
       "label": "LEGO Store3 août au 30 septembre 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-lego.webp"
@@ -3399,7 +3415,7 @@
   ],
   "650": [
     {
-      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "label": "Méga Ascension31 août et 4 septembre 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
     },
     {
@@ -3429,13 +3445,13 @@
   ],
   "652": [
     {
-      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "label": "Méga Ascension31 août et 4 septembre 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
     }
   ],
   "653": [
     {
-      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "label": "Méga Ascension31 août et 4 septembre 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
     },
     {
@@ -3465,13 +3481,13 @@
   ],
   "655": [
     {
-      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "label": "Méga Ascension31 août et 4 septembre 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
     }
   ],
   "656": [
     {
-      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "label": "Méga Ascension31 août et 4 septembre 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
     },
     {
@@ -3501,7 +3517,7 @@
   ],
   "658": [
     {
-      "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
+      "label": "Méga Ascension31 août et 4 septembre 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
     }
   ],
@@ -4563,6 +4579,10 @@
   ],
   "908": [
     {
+      "label": "Célébration pour La série Pokémon, les horizons16 au 22 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-sb-s24-sep-2026.png"
+    },
+    {
       "label": "Terres Sauvages (Wild Area) Nagasaki7 au 9 novembre 2025",
       "url": "/event-backgrounds/pokemon-go-fond-lieu-wild-area-nagasaki.webp"
     }
@@ -4593,6 +4613,12 @@
       "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
     }
   ],
+  "911": [
+    {
+      "label": "Célébration pour La série Pokémon, les horizons16 au 22 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-sb-s24-sep-2026.png"
+    }
+  ],
   "912": [
     {
       "label": "Ultra Bonus : Édition 10ᵉ anniversaire21 au 27 juillet 2026",
@@ -4613,6 +4639,12 @@
     {
       "label": "Community Day Coiffeton20 juillet 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-delightful-days.webp"
+    }
+  ],
+  "914": [
+    {
+      "label": "Célébration pour La série Pokémon, les horizons16 au 22 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-sb-s24-sep-2026.png"
     }
   ],
   "915": [
