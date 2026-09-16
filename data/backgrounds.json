@@ -12,6 +12,10 @@
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_2026_BR_001.png"
   },
   {
+    "label": "2026 Jp Green",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_2026_jp_green.png"
+  },
+  {
     "label": "2026 Jp Red",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_2026_jp_red.png"
   },
@@ -186,6 +190,30 @@
   {
     "label": "City Safari 2025 Vancouver",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_CitySafari2025_vancouver.png"
+  },
+  {
+    "label": "City Safari 2026 Boston",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_CitySafari2026_boston.png"
+  },
+  {
+    "label": "City Safari 2026 Brisbane",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_CitySafari2026_brisbane.png"
+  },
+  {
+    "label": "City Safari 2026 Lisbon",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_CitySafari2026_lisbon.png"
+  },
+  {
+    "label": "City Safari 2026 Marseille",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_CitySafari2026_marseille.png"
+  },
+  {
+    "label": "City Safari 2026 Munich",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_CitySafari2026_munich.png"
+  },
+  {
+    "label": "City Safari 2026 Rio",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_CitySafari2026_rio.png"
   },
   {
     "label": "Community 2026",
@@ -382,6 +410,10 @@
   {
     "label": "Lotte Giants",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_LotteGiants.png"
+  },
+  {
+    "label": "Mid Autumn",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_MidAutumn.png"
   },
   {
     "label": "Mlb Arizona Diamondbacks",
