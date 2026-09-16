@@ -1545,18 +1545,6 @@
       "animated": true
     },
     {
-      "id": 111,
-      "name": "Rhinocorne (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/111.gif",
-      "animated": true
-    },
-    {
-      "id": 112,
-      "name": "Rhinoféros (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/112.gif",
-      "animated": true
-    },
-    {
       "id": 114,
       "name": "Saquedeneu (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/114.gif",
@@ -3348,12 +3336,6 @@
       "id": 463,
       "name": "Coudlangue (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/463.gif",
-      "animated": true
-    },
-    {
-      "id": 464,
-      "name": "Rhinastoc (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/464.gif",
       "animated": true
     },
     {
