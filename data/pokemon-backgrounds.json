@@ -2415,6 +2415,12 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-might-and-mastery.png"
     }
   ],
+  "443": [
+    {
+      "label": "Community Day Classique Griknot12 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-special-community-day-2026.webp"
+    }
+  ],
   "448": [
     {
       "label": "Passe GO En route pour Kalos23 février au 1er mars",
@@ -4367,7 +4373,7 @@
       "url": "/event-backgrounds/pokemon-go-special-background-10th-anniversary.webp"
     },
     {
-      "label": "Community Day Classique Larméléon4 juillet 2026",
+      "label": "Community Day Larméléon4 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-fond-special-community-day-2026.webp"
     },
     {
@@ -4389,6 +4395,12 @@
     {
       "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
+    }
+  ],
+  "827": [
+    {
+      "label": "Community Day Classique Goupilou15 août 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-special-community-day-2026.webp"
     }
   ],
   "831": [
