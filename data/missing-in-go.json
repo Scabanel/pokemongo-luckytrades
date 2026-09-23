@@ -907,12 +907,6 @@
       "animated": true
     },
     {
-      "id": 398,
-      "name": "Méga-Étouraptor",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/398.gif",
-      "animated": true
-    },
-    {
       "id": 478,
       "name": "Méga-Momartik",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/478.gif",
