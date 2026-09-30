@@ -247,6 +247,10 @@
       "url": "/event-backgrounds/pokemon-go-special-background-ruby.webp"
     },
     {
+      "label": "San Diego Comic-Con Malaga1er au 4 octobre 2026",
+      "url": "/event-backgrounds/pokemon-go-lc-2026-comiccon-malaga.png"
+    },
+    {
       "label": "Pokémon GO Night à Boston22 septembre 2026",
       "url": "/event-backgrounds/pokemon-go-fond-lieu-red-sox-boston.webp"
     },
@@ -599,7 +603,11 @@
   ],
   "35": [
     {
-      "label": "Événement de l’Observatoire Pokémon Koriyama11 avril au 14 juin 2026",
+      "label": "Danses au clair de lune 202623 au 27 septembre 2026",
+      "url": "/event-backgrounds/pokemon-go-sb-midautumn.png"
+    },
+    {
+      "label": "Événement de l’Observatoire Pokémon Toyohashi21 septembre au 5 décembre 2026",
       "url": "/event-backgrounds/pokemon-go-fond-observatoire-astronomique-sagamihara.webp"
     }
   ],
