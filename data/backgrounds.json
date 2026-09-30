@@ -12,6 +12,10 @@
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_2026_BR_001.png"
   },
   {
+    "label": "2026 Comic Con Malaga",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_2026_ComicCon_Malaga.png"
+  },
+  {
     "label": "2026 Jp Green",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_2026_jp_green.png"
   },
@@ -226,6 +230,30 @@
   {
     "label": "Cr 2026 001",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_CR_2026_001.png"
+  },
+  {
+    "label": "Esa Cite De Espace",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_ESA_citeDeEspace.png"
+  },
+  {
+    "label": "Esa Ciudad De Las Artes",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_ESA_ciudadDeLasArtes.png"
+  },
+  {
+    "label": "Esa Euro Space Center",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_ESA_euroSpaceCenter.png"
+  },
+  {
+    "label": "Esa Science Museum London",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_ESA_scienceMuseumLondon.png"
+  },
+  {
+    "label": "Esa Space Center Germany",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_ESA_spaceCenterGermany.png"
+  },
+  {
+    "label": "Esa Space Expo Nl",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_ESA_spaceExpoNL.png"
   },
   {
     "label": "Festivalof Colors 2026",
@@ -592,6 +620,10 @@
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_NFL_cardinals.png"
   },
   {
+    "label": "Nfl Cardinals 2026",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_NFL_cardinals_2026.png"
+  },
+  {
     "label": "Observatory Exhibition Tour",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_ObservatoryExhibitionTour.png"
   },
@@ -778,6 +810,10 @@
   {
     "label": "Pokelid Miyazaki",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_pokelid_miyazaki.png"
+  },
+  {
+    "label": "Pokelid Nagano",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_pokelid_nagano.png"
   },
   {
     "label": "Pokelid Nagasaki",
