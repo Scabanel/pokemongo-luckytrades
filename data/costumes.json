@@ -1501,6 +1501,14 @@
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fGIGANTAMAX.s.icon.png"
     },
     {
+      "label": "Glass Helmet 2026",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fGLASS_HELMET_2026.icon.png"
+    },
+    {
+      "label": "Glass Helmet 2026 ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fGLASS_HELMET_2026.s.icon.png"
+    },
+    {
       "label": "Gofest 2022",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fGOFEST_2022.icon.png"
     },
@@ -3193,6 +3201,14 @@
     {
       "label": "Gigantamax ✨",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm68.fGIGANTAMAX.s.icon.png"
+    },
+    {
+      "label": "Wildarea 2026 01",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm68.fWILDAREA_2026_01.icon.png"
+    },
+    {
+      "label": "Wildarea 2026 01 ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm68.fWILDAREA_2026_01.s.icon.png"
     },
     {
       "label": "Officiel Pokémon GO ✨",
@@ -16183,6 +16199,26 @@
     {
       "label": "Officiel Pokémon GO ✨",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm945.s.icon.png"
+    }
+  ],
+  "946": [
+    {
+      "label": "Officiel Pokémon GO",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm946.icon.png"
+    },
+    {
+      "label": "Officiel Pokémon GO ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm946.s.icon.png"
+    }
+  ],
+  "947": [
+    {
+      "label": "Officiel Pokémon GO",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm947.icon.png"
+    },
+    {
+      "label": "Officiel Pokémon GO ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm947.s.icon.png"
     }
   ],
   "948": [
