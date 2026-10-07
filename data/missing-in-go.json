@@ -549,24 +549,6 @@
       "animated": true
     },
     {
-      "id": 840,
-      "name": "Verpom",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/840.gif",
-      "animated": true
-    },
-    {
-      "id": 841,
-      "name": "Pomdrapi",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/841.gif",
-      "animated": true
-    },
-    {
-      "id": 842,
-      "name": "Dratatin",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/842.gif",
-      "animated": true
-    },
-    {
       "id": 843,
       "name": "Dunaja",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/843.gif",
@@ -723,18 +705,6 @@
       "animated": true
     },
     {
-      "id": 944,
-      "name": "Gribouraigne",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/944.gif",
-      "animated": true
-    },
-    {
-      "id": 945,
-      "name": "Tag-Tag",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/945.gif",
-      "animated": true
-    },
-    {
       "id": 950,
       "name": "Craparoi",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/950.gif",
@@ -783,12 +753,6 @@
       "animated": true
     },
     {
-      "id": 1011,
-      "name": "Pomdramour",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/1011.gif",
-      "animated": true
-    },
-    {
       "id": 1012,
       "name": "Poltchageist",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/1012.gif",
@@ -798,12 +762,6 @@
       "id": 1013,
       "name": "Théffroyable",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/1013.gif",
-      "animated": true
-    },
-    {
-      "id": 1019,
-      "name": "Pomdorochi",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/1019.gif",
       "animated": true
     }
   ],
