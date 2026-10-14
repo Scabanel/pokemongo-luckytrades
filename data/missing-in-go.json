@@ -151,18 +151,6 @@
       "animated": true
     },
     {
-      "id": 946,
-      "name": "Virovent",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/946.gif",
-      "animated": true
-    },
-    {
-      "id": 947,
-      "name": "Virevorreur",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/947.gif",
-      "animated": true
-    },
-    {
       "id": 951,
       "name": "Pimito",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/951.gif",
@@ -702,6 +690,18 @@
       "id": 943,
       "name": "Dogrino",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/943.gif",
+      "animated": true
+    },
+    {
+      "id": 946,
+      "name": "Virovent",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/946.gif",
+      "animated": true
+    },
+    {
+      "id": 947,
+      "name": "Virevorreur",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/947.gif",
       "animated": true
     },
     {
@@ -5235,18 +5235,6 @@
       "animated": true
     },
     {
-      "id": 850,
-      "name": "Grillepattes (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/850.gif",
-      "animated": true
-    },
-    {
-      "id": 851,
-      "name": "Scolocendre (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/851.gif",
-      "animated": true
-    },
-    {
       "id": 852,
       "name": "Poulpaf (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/852.gif",
@@ -5682,6 +5670,18 @@
       "id": 945,
       "name": "Tag-Tag (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/945.gif",
+      "animated": true
+    },
+    {
+      "id": 946,
+      "name": "Virovent (Dynamax)",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/946.gif",
+      "animated": true
+    },
+    {
+      "id": 947,
+      "name": "Virevorreur (Dynamax)",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/947.gif",
       "animated": true
     },
     {
