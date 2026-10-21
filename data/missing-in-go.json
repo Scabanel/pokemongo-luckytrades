@@ -43,12 +43,6 @@
       "animated": true
     },
     {
-      "id": 774,
-      "name": "Météno",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/774.gif",
-      "animated": true
-    },
-    {
       "id": 801,
       "name": "Magearna",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/801.gif",
@@ -432,6 +426,12 @@
       "id": 764,
       "name": "Guérilande",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/764.gif",
+      "animated": true
+    },
+    {
+      "id": 774,
+      "name": "Météno",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/774.gif",
       "animated": true
     },
     {
@@ -1983,12 +1983,6 @@
       "animated": true
     },
     {
-      "id": 215,
-      "name": "Farfuret (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/215.gif",
-      "animated": true
-    },
-    {
       "id": 216,
       "name": "Teddiursa (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/216.gif",
@@ -3270,12 +3264,6 @@
       "id": 460,
       "name": "Blizzaroi (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/460.gif",
-      "animated": true
-    },
-    {
-      "id": 461,
-      "name": "Dimoret (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/461.gif",
       "animated": true
     },
     {
@@ -4908,6 +4896,12 @@
       "id": 770,
       "name": "Trépassable (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/770.gif",
+      "animated": true
+    },
+    {
+      "id": 774,
+      "name": "Météno (Dynamax)",
+      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/774.gif",
       "animated": true
     },
     {
