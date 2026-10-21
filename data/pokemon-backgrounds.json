@@ -77,6 +77,10 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
     {
+      "label": "FC Séoul 2026Samedi 24 octobre",
+      "url": "/event-backgrounds/pokemon-go-location-background-fc2026-seoul.webp"
+    },
+    {
       "label": "Aventure Céleste au Japon28 juillet 2026 au 31 août 2027",
       "url": "/event-backgrounds/pokemon-go-location-background-rpj.webp"
     },
@@ -121,6 +125,10 @@
     {
       "label": "Pokémon GO Tour Kalos28 février et 1er mars 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-y.webp"
+    },
+    {
+      "label": "FC Séoul 2026Samedi 24 octobre",
+      "url": "/event-backgrounds/pokemon-go-location-background-fc2026-seoul.webp"
     },
     {
       "label": "Pokémon GO Tour Los Angeles20 au 22 février 2026",
@@ -197,6 +205,10 @@
     {
       "label": "Festival Pokémon GO 2026 : Mondial – Événement spécial de raids du dimanche26 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
+    },
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
     }
   ],
   "18": [
@@ -245,6 +257,14 @@
     {
       "label": "En route pour Kalos25 février 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-ruby.webp"
+    },
+    {
+      "label": "Pokémon Night Out Londres10 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-night-out-2026-london.webp"
+    },
+    {
+      "label": "Pokémon Night Out Los Angeles24 octobre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-night-out-2026-la.webp"
     },
     {
       "label": "San Diego Comic-Con Malaga1er au 4 octobre 2026",
@@ -609,6 +629,30 @@
     {
       "label": "Événement de l’Observatoire Pokémon Toyohashi21 septembre au 5 décembre 2026",
       "url": "/event-backgrounds/pokemon-go-fond-observatoire-astronomique-sagamihara.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-expo-nl.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-center-germany.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-science-museum-london.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-euro-space-center.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-ciudad-de-las-artes.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-cite-de-espace.webp"
     }
   ],
   "37": [
@@ -669,6 +713,32 @@
       "url": "/event-backgrounds/pokemon-go-location-background-tokmun-shinagawa.webp"
     }
   ],
+  "81": [
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-expo-nl.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-center-germany.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-science-museum-london.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-euro-space-center.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-ciudad-de-las-artes.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-cite-de-espace.webp"
+    }
+  ],
   "87": [
     {
       "label": "Championnats du Monde 202628 au 30 août 2026",
@@ -679,6 +749,16 @@
     {
       "label": "Sombres cieux18 au 23 août 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
+    }
+  ],
+  "94": [
+    {
+      "label": "Pokémon Night Out Londres10 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-night-out-2026-london.webp"
+    },
+    {
+      "label": "Pokémon Night Out Los Angeles24 octobre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-night-out-2026-la.webp"
     }
   ],
   "98": [
@@ -705,6 +785,32 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-community-day.webp"
     }
   ],
+  "121": [
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-expo-nl.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-center-germany.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-science-museum-london.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-euro-space-center.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-ciudad-de-las-artes.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-cite-de-espace.webp"
+    }
+  ],
   "127": [
     {
       "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
@@ -717,6 +823,10 @@
     {
       "label": "Festival Pokémon GO 2026 : Mondial – Événement spécial de raids du dimanche26 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
+    },
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
     }
   ],
   "128": [
@@ -1139,6 +1249,10 @@
     {
       "label": "Pokémon GO Fest Global11 et 12 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
+    },
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
     },
     {
       "label": "Pokémon GO Tour Los Angeles20 au 22 février 2026",
@@ -2069,6 +2183,10 @@
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
     },
     {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
+    },
+    {
       "label": "Terres Sauvages (Wild Area) Nagasaki7 au 9 novembre 2025",
       "url": "/event-backgrounds/pokemon-go-fond-lieu-wild-area-nagasaki.webp"
     }
@@ -2077,6 +2195,10 @@
     {
       "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    },
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
     }
   ],
   "307": [
@@ -2089,6 +2211,10 @@
     {
       "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    },
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
     }
   ],
   "320": [
@@ -2101,6 +2227,10 @@
     {
       "label": "Pokémon GO Fest Méga-Finale5 et 6 septembre 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
+    },
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
     }
   ],
   "334": [
@@ -2109,12 +2239,68 @@
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
     },
     {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
+    },
+    {
       "label": "Pokémon GO Tour Los Angeles20 au 22 février 2026",
       "url": "/event-backgrounds/pokemon-go-location-background-los-angeles-29.webp"
     },
     {
       "label": "Pokémon GO Tour Tainan20 au 22 février 2026",
       "url": "/event-backgrounds/pokemon-go-location-background-tainan-29.webp"
+    }
+  ],
+  "337": [
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-expo-nl.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-center-germany.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-science-museum-london.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-euro-space-center.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-ciudad-de-las-artes.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-cite-de-espace.webp"
+    }
+  ],
+  "338": [
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-expo-nl.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-center-germany.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-science-museum-london.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-euro-space-center.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-ciudad-de-las-artes.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-cite-de-espace.webp"
     }
   ],
   "359": [
@@ -2301,10 +2487,6 @@
       "url": "/event-backgrounds/pokemon-go-location-background-go-fest-2026-tokyo.webp"
     },
     {
-      "label": "Terres Sauvages (Wild Area) Fukuoka16 et 17 novembre 2024",
-      "url": "/event-backgrounds/pokemon-go-fond-souvenir-fukuoka.png"
-    },
-    {
       "label": "Pokémon GO Tour: Hoenn Las Vegas18 et 19 février 2023",
       "url": "/event-backgrounds/pokemon-go-location-card-las-vegas.webp"
     }
@@ -2337,10 +2519,6 @@
     {
       "label": "Pokémon GO Fest Tokyo25 mai au 1er juin 2026",
       "url": "/event-backgrounds/pokemon-go-location-background-go-fest-2026-tokyo.webp"
-    },
-    {
-      "label": "Terres Sauvages (Wild Area) Fukuoka16 et 17 novembre 2024",
-      "url": "/event-backgrounds/pokemon-go-fond-souvenir-fukuoka.png"
     },
     {
       "label": "Pokémon GO Tour: Hoenn Las Vegas18 et 19 février 2023",
@@ -2531,6 +2709,14 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-terres-sauvages.png"
     },
     {
+      "label": "Terres Sauvages (Wild Area) Sendai6 au 8 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-wild-area-sendai.webp"
+    },
+    {
+      "label": "Terres Sauvages (Wild Area) Mexico City6 au 8 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-wild-area-mexico-city.webp"
+    },
+    {
       "label": "Terres Sauvages (Wild Area) Fukuoka16 et 17 novembre 2024",
       "url": "/event-backgrounds/pokemon-go-fond-souvenir-fukuoka.png"
     },
@@ -2559,6 +2745,14 @@
     {
       "label": "Terres Sauvages (Wild Area)23 et 24 novembre 2024",
       "url": "/event-backgrounds/pokemon-go-fond-special-terres-sauvages.png"
+    },
+    {
+      "label": "Terres Sauvages (Wild Area) Sendai6 au 8 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-wild-area-sendai.webp"
+    },
+    {
+      "label": "Terres Sauvages (Wild Area) Mexico City6 au 8 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-wild-area-mexico-city.webp"
     },
     {
       "label": "Terres Sauvages (Wild Area) Fukuoka16 et 17 novembre 2024",
@@ -2821,6 +3015,10 @@
     {
       "label": "Festival Pokémon GO 2026 : Mondial – Événement spécial de raids du dimanche26 juillet 2026",
       "url": "/event-backgrounds/pokemon-go-special-background-go-fest-2026-mewtwo.webp"
+    },
+    {
+      "label": "Championnats du Monde 202628 au 30 août 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-san-francisco.webp"
     }
   ],
   "532": [
@@ -3075,6 +3273,10 @@
   ],
   "570": [
     {
+      "label": "Community Day Zorua10 octobre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-special-community-day-2026.webp"
+    },
+    {
       "label": "Pokémon GO Tour 20251er et 2 mars 2025",
       "url": "/event-backgrounds/pokemon-go-tour-2025-fond-special-1.png"
     },
@@ -3181,6 +3383,32 @@
     {
       "label": "Community Day Global21 et 22 décembre 2024",
       "url": "/event-backgrounds/pokemon-go-fond-special-community-day.webp"
+    }
+  ],
+  "605": [
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-expo-nl.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-center-germany.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-science-museum-london.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-euro-space-center.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-ciudad-de-las-artes.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-cite-de-espace.webp"
     }
   ],
   "615": [
@@ -4279,14 +4507,6 @@
       "url": "/event-backgrounds/pokemon-go-sb-gofest2024-wormhole-sun.png"
     },
     {
-      "label": "Festival Pokémon GO : New-York5 au 7 juillet 2024",
-      "url": "/event-backgrounds/pokemon-go-fond-souvenir-new-york.jpg"
-    },
-    {
-      "label": "Festival Pokémon GO : Madrid14 au 16 juin 2024",
-      "url": "/event-backgrounds/pokemon-go-fond-souvenir-madrid.jpg"
-    },
-    {
       "label": "Festival Pokémon GO : Sendai30 mai au 2 juin 2024",
       "url": "/event-backgrounds/pokemon-go-fond-souvenir-senddai.jpg"
     }
@@ -4319,6 +4539,14 @@
     {
       "label": "Pokémon GO Fest Global 202413 et 14 juillet 2024",
       "url": "/event-backgrounds/pokemon-go-sb-gofest2024-wormhole-sun.png"
+    },
+    {
+      "label": "Festival Pokémon GO : New-York5 au 7 juillet 2024",
+      "url": "/event-backgrounds/pokemon-go-fond-souvenir-new-york.jpg"
+    },
+    {
+      "label": "Festival Pokémon GO : Madrid14 au 16 juin 2024",
+      "url": "/event-backgrounds/pokemon-go-fond-souvenir-madrid.jpg"
     }
   ],
   "807": [
@@ -4429,6 +4657,32 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     }
   ],
+  "824": [
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-expo-nl.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-space-center-germany.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-science-museum-london.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-euro-space-center.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-ciudad-de-las-artes.webp"
+    },
+    {
+      "label": "Agence spatiale Européenne 20264 octobre 2026 au 30 avril 2027",
+      "url": "/event-backgrounds/pokemon-go-location-background-esa-cite-de-espace.webp"
+    }
+  ],
   "827": [
     {
       "label": "Community Day Classique Goupilou15 août 2026",
@@ -4519,6 +4773,14 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-bouclier.webp"
     },
     {
+      "label": "Terres Sauvages (Wild Area) Sendai6 au 8 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-wild-area-sendai.webp"
+    },
+    {
+      "label": "Terres Sauvages (Wild Area) Mexico City6 au 8 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-wild-area-mexico-city.webp"
+    },
+    {
       "label": "Pokémon GO Fest Paris13 au 15 juin 2025",
       "url": "/event-backgrounds/pokemon-go-fond-paris-fest-2025.webp"
     },
@@ -4547,6 +4809,14 @@
     {
       "label": "Pokémon GO Fest Global28 et 29 juin 2025",
       "url": "/event-backgrounds/pokemon-go-fond-special-bouclier.webp"
+    },
+    {
+      "label": "Terres Sauvages (Wild Area) Sendai6 au 8 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-wild-area-sendai.webp"
+    },
+    {
+      "label": "Terres Sauvages (Wild Area) Mexico City6 au 8 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-location-background-wild-area-mexico-city.webp"
     },
     {
       "label": "Pokémon GO Fest Paris13 au 15 juin 2025",
