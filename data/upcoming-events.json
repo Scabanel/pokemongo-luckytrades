@@ -148,7 +148,7 @@
     "title": "Passe GO Octobre",
     "category": "Passe GO",
     "start": 1791273600000,
-    "end": 1793732400000,
+    "end": 1793696400000,
     "url": "https://www.margxt.fr/guide-du-passe-go-octobre-2026-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/09/Pokemon-GO-Passe-GO-Octobre-2026.jpg"
   },
@@ -158,7 +158,7 @@
     "category": "Raids Obscurs",
     "start": 1791345600000,
     "end": 1793739600000,
-    "url": "https://www.margxt.fr/events/demeteros-avatar-%e2%9c%a8/",
+    "url": "https://www.margxt.fr/demeteros-avatar-obscur-les-meilleurs-pokemon-pour-le-vaincre-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Volonte-de-fer-Offensive.jpg"
   },
   {
@@ -171,15 +171,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Lab-Une-grande-aventure.jpg"
   },
   {
-    "id": "205953",
-    "title": "Ligue Super + Ligue Hyper : Méga-édition + Coupe des jeunes",
-    "category": "Ligue de Combat GO",
-    "start": 1792008000000,
-    "end": 1792612800000,
-    "url": "https://www.margxt.fr/guide-ligue-de-combat-go-sentiers-crepusculaires-saison-28-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
-  },
-  {
     "id": "206417",
     "title": "Halloween AEON Mall 2026 (Japon)",
     "category": "Événement local",
@@ -189,60 +180,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Halloween-Aeon.jpg"
   },
   {
-    "id": "205905",
-    "title": "Farfuret ✨",
-    "category": "Combats Max",
-    "start": 1792382400000,
-    "end": 1792958400000,
-    "url": "https://www.margxt.fr/calendrier-des-pokemon-des-combats-max-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
-  },
-  {
-    "id": "206116",
-    "title": "Pluie de Météno : Orionides",
-    "category": "Événement",
-    "start": 1792422000000,
-    "end": 1792879140000,
-    "url": "https://www.margxt.fr/evenement-pluies-de-meteno-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Pluie-Meteno.jpg"
-  },
-  {
-    "id": "205878",
-    "title": "Palkia ✨",
-    "category": "Raids",
-    "start": 1792555200000,
-    "end": 1793134800000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-palkia-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/07/Pokemon-GO-Palkia.jpeg"
-  },
-  {
-    "id": "205884",
-    "title": "Méga-Dracaufeu X ✨",
-    "category": "Méga-Raids",
-    "start": 1792555200000,
-    "end": 1793134800000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-mega-dracaufeu-x-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/12/Pokemon-Go-Mega-Dracaufeu-X.jpeg"
-  },
-  {
-    "id": "205885",
-    "title": "Méga-Dracaufeu Y ✨",
-    "category": "Méga-Raids",
-    "start": 1792555200000,
-    "end": 1793134800000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-mega-dracaufeu-y-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/08/Pokemon-Go-Mega-Evolutions-1.jpg"
-  },
-  {
-    "id": "205844",
-    "title": "Palkia ✨",
-    "category": "Heure de Raids",
-    "start": 1792598400000,
-    "end": 1792602000000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-palkia-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2022/08/Pokemon-GO-Raids-Passe.webp"
-  },
-  {
     "id": "205954",
     "title": "Ligue Hyper + Ligue Master : Méga-édition + Coupe Fantaisie : Édition Ligue Super",
     "category": "Ligue de Combat GO",
@@ -250,96 +187,6 @@
     "end": 1793221200000,
     "url": "https://www.margxt.fr/guide-ligue-de-combat-go-sentiers-crepusculaires-saison-28-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
-  },
-  {
-    "id": "197359",
-    "title": "Jeudi Combat GO",
-    "category": "Découvertes quotidiennes",
-    "start": 1792620000000,
-    "end": 1792706340000,
-    "url": "https://www.margxt.fr/events/jeudi-combat-go/var/ri-7.l-L1",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Jeudi-Combat-GO.jpg"
-  },
-  {
-    "id": "205838",
-    "title": "Spododo  ✨ + Poussière d’étoiles x2 à la capture",
-    "category": "Événement",
-    "start": 1792684800000,
-    "end": 1792688400000,
-    "url": "https://www.margxt.fr/heures-vedettes-du-mois-doctobre-2026-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/06/Pokemon-Go-Heures-Pokemon-Vedette.jpg"
-  },
-  {
-    "id": "197357",
-    "title": "Vendredi amitié",
-    "category": "Découvertes quotidiennes",
-    "start": 1792706400000,
-    "end": 1792792740000,
-    "url": "https://www.margxt.fr/events/vendredi-amitie-2/var/ri-7.l-L1",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Vendredi-Amitie.jpg"
-  },
-  {
-    "id": "206176",
-    "title": "FC Séoul 2026 (Séoul, Corée du Sud)",
-    "category": "Événement local",
-    "start": 1792767600000,
-    "end": 1792853999000,
-    "url": "https://www.margxt.fr/evenement-fc-seoul-2026-seoul-coree-du-sud-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-FC-Seoul.jpg"
-  },
-  {
-    "id": "206524",
-    "title": "Pokémon Night Out (Los Angeles, États-Unis)",
-    "category": "Événement local",
-    "start": 1792767600000,
-    "end": 1792853999000,
-    "url": "https://www.margxt.fr/evenement-pokemon-night-out-los-angeles-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Night-Out-Los-Angeles-Londres.jpg"
-  },
-  {
-    "id": "206106",
-    "title": "Codes de recherche à durée limitée via le stream Twitch Pokémon",
-    "category": "Événement local",
-    "start": 1792792800000,
-    "end": 1792879199000,
-    "url": "https://www.margxt.fr/recuperer-letude-ponctuelle-du-maillot-de-baseball-night-out-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Night-Out-Twitch-Stream.jpg"
-  },
-  {
-    "id": "204451",
-    "title": "Championnats Régionaux Pokémon de Puebla (Méxique) 2027",
-    "category": "Pokémon Championships",
-    "start": 1792792800000,
-    "end": 1792969199000,
-    "url": "https://championships.pokemon.com/fr-fr/events/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/09/Pokemon-GO-Regionaux-Puebla-2027.webp"
-  },
-  {
-    "id": "199787",
-    "title": "Pokémon GO City Safari Boston (États-Unis) - DÉPLACÉ & À DISTANCE",
-    "category": "Événement local",
-    "start": 1792828800000,
-    "end": 1792947600000,
-    "url": "https://www.margxt.fr/guide-du-pokemon-go-city-safari-de-boston-etats-unis-avec-tiboudet-et-evoli-explorateur/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-City-Safari-Boston.webp"
-  },
-  {
-    "id": "206140",
-    "title": "Journée Combat Dynamax Créhelf, Créfollet et Créfadet Dynamax",
-    "category": "Événement",
-    "start": 1792843200000,
-    "end": 1792854000000,
-    "url": "https://www.margxt.fr/journee-combat-dynamax-crehelf-crefollet-et-crefadet-dynamax-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Crehelf-Crefadet-Crefollet-Dynamax.jpg"
-  },
-  {
-    "id": "197355",
-    "title": "Dimanche en plein air",
-    "category": "Découvertes quotidiennes",
-    "start": 1792879200000,
-    "end": 1792969140000,
-    "url": "https://www.margxt.fr/events/scenic-sunday/var/ri-7.l-L1",
-    "image": "https://www.margxt.fr/wp-content/uploads/2023/11/Pokemon-GO-Sur-les-Routes.png"
   },
   {
     "id": "206560",
@@ -360,31 +207,13 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
   },
   {
-    "id": "205902",
-    "title": "Ténéfix ✨",
-    "category": "Heure de Combats Max",
-    "start": 1793034000000,
-    "end": 1793037600000,
-    "url": "https://www.margxt.fr/calendrier-des-pokemon-des-combats-max-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
-  },
-  {
-    "id": "190833",
-    "title": "Pleine Lune",
-    "category": null,
-    "start": 1793041200000,
-    "end": 1793077200000,
-    "url": "https://www.margxt.fr/events/pleine-lune-11/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2024/12/Pokemon-GO-Pleine-Lune.jpg"
-  },
-  {
-    "id": "197356",
-    "title": "Mardi Concours",
-    "category": "Découvertes quotidiennes",
-    "start": 1793055600000,
-    "end": 1793141940000,
-    "url": "https://www.margxt.fr/le-guide-complet-des-concours-pokestops-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2023/07/Pokemon-GO-Epreuves-Pokestops.webp"
+    "id": "206214",
+    "title": "Passe GO Halloween 2026",
+    "category": "Passe GO",
+    "start": 1793091600000,
+    "end": 1793905200000,
+    "url": "https://www.margxt.fr/guide-du-passe-go-halloween-2026-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Passe-Deluxe-Objets-Avatar-Patissier.jpg"
   },
   {
     "id": "206213",
@@ -394,15 +223,6 @@
     "end": 1793523600000,
     "url": "http://margxt.fr/halloween-2026-1ere-partie-avec-pikachu-pelerine-nosferapti-haut-de-forme-et-theffroi-noeud-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Halloween-Partie-1-2026.jpg"
-  },
-  {
-    "id": "206214",
-    "title": "Passe GO Halloween 2026",
-    "category": "Passe GO",
-    "start": 1793091600000,
-    "end": 1793905200000,
-    "url": "https://www.margxt.fr/guide-du-passe-go-halloween-2026-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Passe-Deluxe-Objets-Avatar-Patissier.jpg"
   },
   {
     "id": "205879",
@@ -441,6 +261,15 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
   },
   {
+    "id": "197359",
+    "title": "Jeudi Combat GO",
+    "category": "Découvertes quotidiennes",
+    "start": 1793228400000,
+    "end": 1793314740000,
+    "url": "https://www.margxt.fr/events/jeudi-combat-go/var/ri-8.l-L1",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Jeudi-Combat-GO.jpg"
+  },
+  {
     "id": "205839",
     "title": "Fantominus  ✨ + XP x2 sur l’évolution",
     "category": "Événement",
@@ -448,6 +277,15 @@
     "end": 1793296800000,
     "url": "https://www.margxt.fr/heures-vedettes-du-mois-doctobre-2026-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2020/06/Pokemon-Go-Heures-Pokemon-Vedette.jpg"
+  },
+  {
+    "id": "197357",
+    "title": "Vendredi amitié",
+    "category": "Découvertes quotidiennes",
+    "start": 1793314800000,
+    "end": 1793401140000,
+    "url": "https://www.margxt.fr/events/vendredi-amitie-2/var/ri-8.l-L1",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Vendredi-Amitie.jpg"
   },
   {
     "id": "204679",
@@ -477,6 +315,15 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Journee-Super-Mega-Raids-Mega-Lugulabre.jpg"
   },
   {
+    "id": "197355",
+    "title": "Dimanche en plein air",
+    "category": "Découvertes quotidiennes",
+    "start": 1793487600000,
+    "end": 1793573940000,
+    "url": "https://www.margxt.fr/events/scenic-sunday/var/ri-8.l-L1",
+    "image": "https://www.margxt.fr/wp-content/uploads/2023/11/Pokemon-GO-Sur-les-Routes.png"
+  },
+  {
     "id": "205910",
     "title": "Halloween 2026 - 2ème partie",
     "category": "Événement",
@@ -502,6 +349,24 @@
     "end": 1793642400000,
     "url": "https://www.margxt.fr/calendrier-des-pokemon-des-combats-max-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
+  },
+  {
+    "id": "197356",
+    "title": "Mardi Concours",
+    "category": "Découvertes quotidiennes",
+    "start": 1793660400000,
+    "end": 1793746740000,
+    "url": "https://www.margxt.fr/le-guide-complet-des-concours-pokestops-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2023/07/Pokemon-GO-Epreuves-Pokestops.webp"
+  },
+  {
+    "id": "206625",
+    "title": "Passe GO Novembre",
+    "category": "Passe GO",
+    "start": 1793696400000,
+    "end": 1796115600000,
+    "url": "https://www.margxt.fr/guide-du-passe-go-novembre-2026-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Passe-GO-Novembre-2026.jpg"
   },
   {
     "id": "206536",
@@ -1062,15 +927,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/06/Pokemon-GO-PokeXciting-2026.webp"
   },
   {
-    "id": "204463",
-    "title": "Championnats Internationaux Pokémon d’Europe Londres (Angleterre) 2027",
-    "category": "Pokémon Championships",
-    "start": 1802991600000,
-    "end": 1803250799000,
-    "url": "https://championships.pokemon.com/fr-fr/events/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/09/Pokemon-GO-Inernationaux-Europe-2027.webp"
-  },
-  {
     "id": "205355",
     "title": "Circuit Pokémon GO (Pokémon GO Tour) Los Angeles (USA)",
     "category": "Événement local",
@@ -1087,6 +943,15 @@
     "end": 1803250799000,
     "url": "https://www.margxt.fr/events/circuit-pokemon-go-pokemon-go-tour-kaohsiung-taiwan/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/09/Pokemon-GO-Tour-2027.jpg"
+  },
+  {
+    "id": "204463",
+    "title": "Championnats Internationaux Pokémon d’Europe Londres (Angleterre) 2027",
+    "category": "Pokémon Championships",
+    "start": 1802991600000,
+    "end": 1803250799000,
+    "url": "https://championships.pokemon.com/fr-fr/events/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/09/Pokemon-GO-Inernationaux-Europe-2027.webp"
   },
   {
     "id": "204464",
