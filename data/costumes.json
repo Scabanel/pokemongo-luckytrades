@@ -1925,6 +1925,22 @@
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fGOTOUR_2026_C_02.g2.s.icon.png"
     },
     {
+      "label": "Halloween 2026",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fHALLOWEEN_2026.icon.png"
+    },
+    {
+      "label": "Halloween 2026 ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fHALLOWEEN_2026.s.icon.png"
+    },
+    {
+      "label": "Halloween 2026 (2)",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fHALLOWEEN_2026.g2.icon.png"
+    },
+    {
+      "label": "Halloween 2026 (2) ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fHALLOWEEN_2026.g2.s.icon.png"
+    },
+    {
       "label": "Horizons",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm25.fHORIZONS.icon.png"
     },
@@ -14389,6 +14405,128 @@
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm771.s.icon.png"
     }
   ],
+  "774": [
+    {
+      "label": "Blue",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fBLUE.icon.png"
+    },
+    {
+      "label": "Blue ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fBLUE.s.icon.png"
+    },
+    {
+      "label": "Green",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fGREEN.icon.png"
+    },
+    {
+      "label": "Green ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fGREEN.s.icon.png"
+    },
+    {
+      "label": "Indigo",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fINDIGO.icon.png"
+    },
+    {
+      "label": "Indigo ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fINDIGO.s.icon.png"
+    },
+    {
+      "label": "Meteor",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR.icon.png"
+    },
+    {
+      "label": "Meteor ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR.s.icon.png"
+    },
+    {
+      "label": "Meteor Blue",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_BLUE.icon.png"
+    },
+    {
+      "label": "Meteor Blue ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_BLUE.s.icon.png"
+    },
+    {
+      "label": "Meteor Green",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_GREEN.icon.png"
+    },
+    {
+      "label": "Meteor Green ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_GREEN.s.icon.png"
+    },
+    {
+      "label": "Meteor Indigo",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_INDIGO.icon.png"
+    },
+    {
+      "label": "Meteor Indigo ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_INDIGO.s.icon.png"
+    },
+    {
+      "label": "Meteor Orange",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_ORANGE.icon.png"
+    },
+    {
+      "label": "Meteor Orange ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_ORANGE.s.icon.png"
+    },
+    {
+      "label": "Meteor Red",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_RED.icon.png"
+    },
+    {
+      "label": "Meteor Red ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_RED.s.icon.png"
+    },
+    {
+      "label": "Meteor Violet",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_VIOLET.icon.png"
+    },
+    {
+      "label": "Meteor Violet ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_VIOLET.s.icon.png"
+    },
+    {
+      "label": "Meteor Yellow",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_YELLOW.icon.png"
+    },
+    {
+      "label": "Meteor Yellow ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fMETEOR_YELLOW.s.icon.png"
+    },
+    {
+      "label": "Orange",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fORANGE.icon.png"
+    },
+    {
+      "label": "Orange ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fORANGE.s.icon.png"
+    },
+    {
+      "label": "Red",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fRED.icon.png"
+    },
+    {
+      "label": "Red ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fRED.s.icon.png"
+    },
+    {
+      "label": "Violet",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fVIOLET.icon.png"
+    },
+    {
+      "label": "Violet ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fVIOLET.s.icon.png"
+    },
+    {
+      "label": "Yellow",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fYELLOW.icon.png"
+    },
+    {
+      "label": "Yellow ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm774.fYELLOW.s.icon.png"
+    }
+  ],
   "775": [
     {
       "label": "Officiel Pokémon GO",
@@ -15255,12 +15393,28 @@
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm854.fANTIQUE.s.icon.png"
     },
     {
+      "label": "A Halloween 2026 01",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm854.fA_HALLOWEEN_2026_01.icon.png"
+    },
+    {
+      "label": "A Halloween 2026 01 ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm854.fA_HALLOWEEN_2026_01.s.icon.png"
+    },
+    {
       "label": "Phony",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm854.fPHONY.icon.png"
     },
     {
       "label": "Phony ✨",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm854.fPHONY.s.icon.png"
+    },
+    {
+      "label": "P Halloween 2026 01",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm854.fP_HALLOWEEN_2026_01.icon.png"
+    },
+    {
+      "label": "P Halloween 2026 01 ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm854.fP_HALLOWEEN_2026_01.s.icon.png"
     },
     {
       "label": "Officiel Pokémon GO ✨",
@@ -15281,12 +15435,28 @@
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm855.fANTIQUE.s.icon.png"
     },
     {
+      "label": "A Halloween 2026 01",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm855.fA_HALLOWEEN_2026_01.icon.png"
+    },
+    {
+      "label": "A Halloween 2026 01 ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm855.fA_HALLOWEEN_2026_01.s.icon.png"
+    },
+    {
       "label": "Phony",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm855.fPHONY.icon.png"
     },
     {
       "label": "Phony ✨",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm855.fPHONY.s.icon.png"
+    },
+    {
+      "label": "P Halloween 2026 01",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm855.fP_HALLOWEEN_2026_01.icon.png"
+    },
+    {
+      "label": "P Halloween 2026 01 ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm855.fP_HALLOWEEN_2026_01.s.icon.png"
     },
     {
       "label": "Officiel Pokémon GO ✨",
@@ -15521,6 +15691,14 @@
     {
       "label": "Officiel Pokémon GO",
       "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm884.icon.png"
+    },
+    {
+      "label": "Gigantamax",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm884.fGIGANTAMAX.icon.png"
+    },
+    {
+      "label": "Gigantamax ✨",
+      "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/Pokemon%20-%20256x256/Addressable%20Assets/pm884.fGIGANTAMAX.s.icon.png"
     },
     {
       "label": "Officiel Pokémon GO ✨",
