@@ -16,6 +16,14 @@
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_2026_ComicCon_Malaga.png"
   },
   {
+    "label": "2026 Gowa Mexicocity",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_2026_gowa_mexicocity.png"
+  },
+  {
+    "label": "2026 Gowa Sendai",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_2026_gowa_sendai.png"
+  },
+  {
     "label": "2026 Jp Green",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_2026_jp_green.png"
   },
@@ -102,6 +110,10 @@
   {
     "label": "Arraia 2026",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_arraia_2026.png"
+  },
+  {
+    "label": "Black",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_black.png"
   },
   {
     "label": "Busan Fireworks Festival 2025",
@@ -232,6 +244,10 @@
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_CR_2026_001.png"
   },
   {
+    "label": "Dia De Muertos 2026",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/sb_DiaDeMuertos_2026.png"
+  },
+  {
     "label": "Esa Cite De Espace",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_ESA_citeDeEspace.png"
   },
@@ -254,6 +270,10 @@
   {
     "label": "Esa Space Expo Nl",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_ESA_spaceExpoNL.png"
+  },
+  {
+    "label": "Fc 2026 Seoul",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_fc2026_seoul.png"
   },
   {
     "label": "Festivalof Colors 2026",
@@ -622,6 +642,14 @@
   {
     "label": "Nfl Cardinals 2026",
     "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_NFL_cardinals_2026.png"
+  },
+  {
+    "label": "Night Out 2026 La",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_nightOut2026_LA.png"
+  },
+  {
+    "label": "Night Out 2026 London",
+    "url": "https://raw.githubusercontent.com/PokeMiners/pogo_assets/master/Images/LocationCards/lc_nightOut2026_London.png"
   },
   {
     "label": "Observatory Exhibition Tour",
