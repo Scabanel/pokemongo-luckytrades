@@ -735,18 +735,6 @@
       "animated": true
     },
     {
-      "id": 971,
-      "name": "Toutombe",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/971.gif",
-      "animated": true
-    },
-    {
-      "id": 972,
-      "name": "Tomberro",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/shiny/972.gif",
-      "animated": true
-    },
-    {
       "id": 978,
       "name": "Nigirigon",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/shiny/978.gif",
@@ -910,12 +898,6 @@
       "id": 604,
       "name": "Méga-Ohmassacre",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/604.gif",
-      "animated": true
-    },
-    {
-      "id": 609,
-      "name": "Méga-Lugulabre",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/609.gif",
       "animated": true
     },
     {
