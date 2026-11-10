@@ -815,12 +815,6 @@
       "animated": true
     },
     {
-      "id": 884,
-      "name": "Duralugon Gigamax",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/884.gif",
-      "animated": true
-    },
-    {
       "id": 892,
       "name": "Shifours Gigamax",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/showdown/892.gif",
@@ -3318,18 +3312,6 @@
       "id": 479,
       "name": "Motisma (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/479.gif",
-      "animated": true
-    },
-    {
-      "id": 483,
-      "name": "Dialga (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/483.gif",
-      "animated": true
-    },
-    {
-      "id": 484,
-      "name": "Palkia (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/484.gif",
       "animated": true
     },
     {
