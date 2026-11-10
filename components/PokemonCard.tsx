@@ -671,7 +671,7 @@ export default function PokemonCard({
   return (
     <>
       <div
-        className="glass-card animate-scale-in tuile-pokemon p-2 sm:p-3 md:p-4 flex flex-col items-center relative cursor-pointer select-none"
+        className={`glass-card animate-scale-in tuile-pokemon p-2 sm:p-3 md:p-4 flex flex-col items-center relative cursor-pointer select-none${entry.notes && entry.notes.trim() ? " tuile-avec-note" : ""}`}
         style={{
           ...style,
           ...(entry.backgroundUrl && {
@@ -1183,6 +1183,27 @@ export default function PokemonCard({
           >
             Tu l&apos;as !
           </div>
+        )}
+
+        {/* ═══ LE DEBUT DE LA NOTE, SUR UNE LIGNE ═══
+
+            Steven, le 2026-11-10 : afficher les notes sur les tuiles, tronquees, sans
+            deformer la tuile. Il avait retire les notes le 2026-09-04 parce que leur
+            longueur imprevisible faisait la hauteur de la tuile. Elles reviennent a une
+            condition : UNE ligne, hauteur fixe, coupee par une ellipse. Le contenu ne
+            decide plus de rien. Texte entier en infobulle et dans la fiche. */}
+        {entry.notes && entry.notes.trim() && (
+          <p
+            title={entry.notes}
+            style={{
+              marginTop: 4, maxWidth: "100%", flex: "0 0 auto",
+              fontSize: "0.75rem", lineHeight: 1.2, color: "var(--encre-douce)",
+              whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+              textAlign: "center",
+            }}
+          >
+            {entry.notes.replace(/\s+/g, " ").trim()}
+          </p>
         )}
       </div>
 

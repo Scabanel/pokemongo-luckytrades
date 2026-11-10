@@ -532,6 +532,13 @@ body {
   flex: 0 0 auto;
 }
 
+/* Une tuile qui porte une note cede une part du sprite a la ligne de note (une ligne,
+   hauteur fixe, voir PokemonCard.tsx) : le carre ne grandit pas, le sprite rapetisse. */
+.tuile-pokemon.tuile-avec-note > .mt-7 {
+  width: 58% !important;
+  max-width: 58% !important;
+}
+
 .tuile-pokemon h3 {
   font-size: 0.75rem;
   line-height: 1.2;
