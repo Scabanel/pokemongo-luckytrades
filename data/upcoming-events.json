@@ -189,15 +189,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-Ame-Sauvage-2026.jpg"
   },
   {
-    "id": "206521",
-    "title": "Pokémon Night Out (Londres, Royaume-Uni)",
-    "category": "Événement local",
-    "start": 1794236400000,
-    "end": 1794322799000,
-    "url": "https://www.margxt.fr/evenement-pokemon-night-out-londres-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Night-Out-Los-Angeles-Londres.jpg"
-  },
-  {
     "id": "197356",
     "title": "Mardi Concours",
     "category": "Découvertes quotidiennes",
@@ -592,6 +583,15 @@
     "end": 1796061600000,
     "url": "https://www.margxt.fr/calendrier-des-pokemon-des-combats-max-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
+  },
+  {
+    "id": "206993",
+    "title": "Saison 29 de la Ligue de Combat GO",
+    "category": "Ligue de Combat GO",
+    "start": 1796245200000,
+    "end": 1804107600000,
+    "url": "https://www.margxt.fr/events/saison-29-de-la-ligue-de-combat-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Saison-29-Ligue.jpg"
   },
   {
     "id": "204457",
