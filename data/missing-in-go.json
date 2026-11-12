@@ -5037,18 +5037,6 @@
       "animated": true
     },
     {
-      "id": 808,
-      "name": "Meltan (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/808.gif",
-      "animated": true
-    },
-    {
-      "id": 809,
-      "name": "Melmetal (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/809.gif",
-      "animated": true
-    },
-    {
       "id": 824,
       "name": "Larvadar (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/824.gif",
