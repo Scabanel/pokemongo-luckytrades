@@ -162,15 +162,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Passe-GO-Novembre-2026.jpg"
   },
   {
-    "id": "205956",
-    "title": "Ligue Super : Méga-édition + Ligue Hyper : Méga-édition + Ligue Master : Méga-édition",
-    "category": "Ligue de Combat GO",
-    "start": 1793826000000,
-    "end": 1794430800000,
-    "url": "https://www.margxt.fr/guide-ligue-de-combat-go-sentiers-crepusculaires-saison-28-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
-  },
-  {
     "id": "206826",
     "title": "Passe GO Âme Sauvage 2026",
     "category": "Passe GO",
@@ -187,15 +178,6 @@
     "end": 1794596400000,
     "url": "https://www.margxt.fr/evenement-ame-sauvage-2026-dans-pokemon-go-avec-regidrago-dinamax-et-meltan-dynamax/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-Ame-Sauvage-2026.jpg"
-  },
-  {
-    "id": "197356",
-    "title": "Mardi Concours",
-    "category": "Découvertes quotidiennes",
-    "start": 1794265200000,
-    "end": 1794351540000,
-    "url": "https://www.margxt.fr/le-guide-complet-des-concours-pokestops-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2023/07/Pokemon-GO-Epreuves-Pokestops.webp"
   },
   {
     "id": "205957",
@@ -340,6 +322,15 @@
     "end": 1794852000000,
     "url": "https://www.margxt.fr/calendrier-des-pokemon-des-combats-max-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
+  },
+  {
+    "id": "197356",
+    "title": "Mardi Concours",
+    "category": "Découvertes quotidiennes",
+    "start": 1794870000000,
+    "end": 1794956340000,
+    "url": "https://www.margxt.fr/le-guide-complet-des-concours-pokestops-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2023/07/Pokemon-GO-Epreuves-Pokestops.webp"
   },
   {
     "id": "206569",
