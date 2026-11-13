@@ -189,15 +189,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
   },
   {
-    "id": "197359",
-    "title": "Jeudi Combat GO",
-    "category": "Découvertes quotidiennes",
-    "start": 1794438000000,
-    "end": 1794524340000,
-    "url": "https://www.margxt.fr/events/jeudi-combat-go/var/ri-10.l-L1",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Jeudi-Combat-GO.jpg"
-  },
-  {
     "id": "197357",
     "title": "Vendredi amitié",
     "category": "Découvertes quotidiennes",
@@ -358,6 +349,15 @@
     "end": 1795640400000,
     "url": "https://www.margxt.fr/guide-ligue-de-combat-go-sentiers-crepusculaires-saison-28-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
+  },
+  {
+    "id": "197359",
+    "title": "Jeudi Combat GO",
+    "category": "Découvertes quotidiennes",
+    "start": 1795042800000,
+    "end": 1795129140000,
+    "url": "https://www.margxt.fr/events/jeudi-combat-go/var/ri-11.l-L1",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Jeudi-Combat-GO.jpg"
   },
   {
     "id": "206764",
