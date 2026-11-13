@@ -5319,12 +5319,6 @@
       "animated": true
     },
     {
-      "id": 895,
-      "name": "Regidrago (Dynamax)",
-      "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/895.gif",
-      "animated": true
-    },
-    {
       "id": 899,
       "name": "Cerbyllin (Dynamax)",
       "spriteUrl": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/899.gif",
