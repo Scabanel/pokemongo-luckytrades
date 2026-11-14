@@ -171,15 +171,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Passe-GO-Ame-Sauvage.jpg"
   },
   {
-    "id": "206400",
-    "title": "Âme Sauvage",
-    "category": "Événement",
-    "start": 1794214800000,
-    "end": 1794596400000,
-    "url": "https://www.margxt.fr/evenement-ame-sauvage-2026-dans-pokemon-go-avec-regidrago-dinamax-et-meltan-dynamax/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-Ame-Sauvage-2026.jpg"
-  },
-  {
     "id": "205957",
     "title": "Ligue Super + Ligue Hyper : Méga-édition + Coupe GO CIAL 2026",
     "category": "Ligue de Combat GO",
@@ -187,15 +178,6 @@
     "end": 1795035600000,
     "url": "https://www.margxt.fr/guide-ligue-de-combat-go-sentiers-crepusculaires-saison-28-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
-  },
-  {
-    "id": "197357",
-    "title": "Vendredi amitié",
-    "category": "Découvertes quotidiennes",
-    "start": 1794524400000,
-    "end": 1794610740000,
-    "url": "https://www.margxt.fr/events/vendredi-amitie-2/var/ri-10.l-L1",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Vendredi-Amitie.jpg"
   },
   {
     "id": "204677",
@@ -367,6 +349,15 @@
     "end": 1795111200000,
     "url": "https://www.margxt.fr/heures-vedettes-du-mois-de-novembre-2026-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2020/06/Pokemon-Go-Heures-Pokemon-Vedette.jpg"
+  },
+  {
+    "id": "197357",
+    "title": "Vendredi amitié",
+    "category": "Découvertes quotidiennes",
+    "start": 1795129200000,
+    "end": 1795215540000,
+    "url": "https://www.margxt.fr/events/vendredi-amitie-2/var/ri-11.l-L1",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Vendredi-Amitie.jpg"
   },
   {
     "id": "204454",
