@@ -162,15 +162,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Passe-GO-Novembre-2026.jpg"
   },
   {
-    "id": "206826",
-    "title": "Passe GO Âme Sauvage 2026",
-    "category": "Passe GO",
-    "start": 1794214800000,
-    "end": 1794762000000,
-    "url": "https://www.margxt.fr/guide-du-passe-go-ame-sauvage-2026-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Passe-GO-Ame-Sauvage.jpg"
-  },
-  {
     "id": "205957",
     "title": "Ligue Super + Ligue Hyper : Méga-édition + Coupe GO CIAL 2026",
     "category": "Ligue de Combat GO",
@@ -180,33 +171,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
   },
   {
-    "id": "204677",
-    "title": "Pokémon RUN 30 (New Taipei, Taïwan)",
-    "category": "Événement local",
-    "start": 1794582000000,
-    "end": 1794754799000,
-    "url": "https://www.margxt.fr/evenement-pokemon-run-2026-philippines-taiwan-singapour-malaisie-et-indonesie-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/06/Pokemon-GO-Pokemon-RUN-30.jpg"
-  },
-  {
-    "id": "204453",
-    "title": "Championnats Spéciaux Pokémon de Buenos Aires (Argentine) 2027",
-    "category": "Pokémon Championships",
-    "start": 1794610800000,
-    "end": 1794783599000,
-    "url": "https://championships.pokemon.com/fr-fr/events/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/09/Pokemon-GO-Regionaux-Buenos-Aires-2027.webp"
-  },
-  {
-    "id": "198823",
-    "title": "Terres Sauvages Mondial (Wild Area)",
-    "category": "Événement local",
-    "start": 1794646800000,
-    "end": 1794762000000,
-    "url": "https://www.margxt.fr/evenement-terres-sauvages-wild-area-2026-dans-pokemon-go-le-14-et-15-novembre/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/09/Pokemon-GO-Wild-Area-2026.jpg"
-  },
-  {
     "id": "206122",
     "title": "Pluie de Météno : Léonides",
     "category": "Événement",
@@ -214,15 +178,6 @@
     "end": 1795129140000,
     "url": "https://www.margxt.fr/evenement-pluies-de-meteno-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Pluie-Meteno.jpg"
-  },
-  {
-    "id": "197355",
-    "title": "Dimanche en plein air",
-    "category": "Découvertes quotidiennes",
-    "start": 1794697200000,
-    "end": 1794783540000,
-    "url": "https://www.margxt.fr/events/scenic-sunday/var/ri-10.l-L1",
-    "image": "https://www.margxt.fr/wp-content/uploads/2023/11/Pokemon-GO-Sur-les-Routes.png"
   },
   {
     "id": "206544",
@@ -394,6 +349,15 @@
     "end": 1795276800000,
     "url": "https://www.margxt.fr/evenement-community-day-scalpion-de-novembre-2026-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Community-Day-Scalpion.jpg"
+  },
+  {
+    "id": "197355",
+    "title": "Dimanche en plein air",
+    "category": "Découvertes quotidiennes",
+    "start": 1795302000000,
+    "end": 1795388340000,
+    "url": "https://www.margxt.fr/events/scenic-sunday/var/ri-11.l-L1",
+    "image": "https://www.margxt.fr/wp-content/uploads/2023/11/Pokemon-GO-Sur-les-Routes.png"
   },
   {
     "id": "206545",
