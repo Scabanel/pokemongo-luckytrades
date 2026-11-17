@@ -180,31 +180,13 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Pluie-Meteno.jpg"
   },
   {
-    "id": "206544",
-    "title": "TOUS LES POKÉMON DYNAMAX ✨",
-    "category": "Combats Max",
+    "id": "206537",
+    "title": "Boréas Avatar ✨",
+    "category": "Raids Obscurs",
     "start": 1794805200000,
-    "end": 1795464000000,
-    "url": "https://www.margxt.fr/calendrier-des-pokemon-des-combats-max-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
-  },
-  {
-    "id": "206559",
-    "title": "Méga-Branette ✨",
-    "category": "Méga-Raids",
-    "start": 1794805200000,
-    "end": 1795554000000,
-    "url": "https://www.margxt.fr/les-meilleurs-pokemon-pour-battre-en-raids-mega-branette-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2022/06/Pokemon-GO-Halloween-2022.jpeg"
-  },
-  {
-    "id": "206562",
-    "title": "Cresselia ✨",
-    "category": "Raids",
-    "start": 1794805200000,
-    "end": 1795554000000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-cresselia-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/10/Pokemon-GO-Cresselia.jpeg"
+    "end": 1796158800000,
+    "url": "https://www.margxt.fr/events/boreas-avatar-%e2%9c%a8-2/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2025/09/Pokemon-GO-Fantasmagorie-Psy-Offensive.jpg"
   },
   {
     "id": "206563",
@@ -216,22 +198,31 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2020/10/Pokemon-GO-Darkrai.jpg"
   },
   {
-    "id": "206537",
-    "title": "Boréas Avatar ✨",
-    "category": "Raids Obscurs",
+    "id": "206562",
+    "title": "Cresselia ✨",
+    "category": "Raids",
     "start": 1794805200000,
-    "end": 1796158800000,
-    "url": "https://www.margxt.fr/events/boreas-avatar-%e2%9c%a8-2/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2025/09/Pokemon-GO-Fantasmagorie-Psy-Offensive.jpg"
+    "end": 1795554000000,
+    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-cresselia-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2020/10/Pokemon-GO-Cresselia.jpeg"
   },
   {
-    "id": "206804",
-    "title": "Sentiers Dynamax",
-    "category": "Événement",
-    "start": 1794819600000,
-    "end": 1795460400000,
-    "url": "https://www.margxt.fr/evenement-sentiers-dynamax-avec-le-retour-de-lensemble-des-dynamax-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GPO-Sentiers-Dynamax-Ethernatos.jpg"
+    "id": "206559",
+    "title": "Méga-Branette ✨",
+    "category": "Méga-Raids",
+    "start": 1794805200000,
+    "end": 1795554000000,
+    "url": "https://www.margxt.fr/les-meilleurs-pokemon-pour-battre-en-raids-mega-branette-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2022/06/Pokemon-GO-Halloween-2022.jpeg"
+  },
+  {
+    "id": "206544",
+    "title": "TOUS LES POKÉMON DYNAMAX ✨",
+    "category": "Combats Max",
+    "start": 1794805200000,
+    "end": 1795464000000,
+    "url": "https://www.margxt.fr/calendrier-des-pokemon-des-combats-max-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
   },
   {
     "id": "206817",
@@ -243,13 +234,13 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Ethernatos-Gigamax.jpg"
   },
   {
-    "id": "206539",
-    "title": "? ✨",
-    "category": "Heure de Combats Max",
-    "start": 1794848400000,
-    "end": 1794852000000,
-    "url": "https://www.margxt.fr/calendrier-des-pokemon-des-combats-max-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
+    "id": "206804",
+    "title": "Sentiers Dynamax",
+    "category": "Événement",
+    "start": 1794819600000,
+    "end": 1795460400000,
+    "url": "https://www.margxt.fr/evenement-sentiers-dynamax-avec-le-retour-de-lensemble-des-dynamax-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GPO-Sentiers-Dynamax-Ethernatos.jpg"
   },
   {
     "id": "197356",
