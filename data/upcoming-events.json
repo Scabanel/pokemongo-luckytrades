@@ -243,15 +243,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GPO-Sentiers-Dynamax-Ethernatos.jpg"
   },
   {
-    "id": "197356",
-    "title": "Mardi Concours",
-    "category": "Découvertes quotidiennes",
-    "start": 1794870000000,
-    "end": 1794956340000,
-    "url": "https://www.margxt.fr/le-guide-complet-des-concours-pokestops-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2023/07/Pokemon-GO-Epreuves-Pokestops.webp"
-  },
-  {
     "id": "206569",
     "title": "Darkrai ✨",
     "category": "Heure de Raids",
@@ -367,6 +358,15 @@
     "end": 1795456800000,
     "url": "https://www.margxt.fr/calendrier-des-pokemon-des-combats-max-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
+  },
+  {
+    "id": "197356",
+    "title": "Mardi Concours",
+    "category": "Découvertes quotidiennes",
+    "start": 1795474800000,
+    "end": 1795561140000,
+    "url": "https://www.margxt.fr/le-guide-complet-des-concours-pokestops-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2023/07/Pokemon-GO-Epreuves-Pokestops.webp"
   },
   {
     "id": "206578",
