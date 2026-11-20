@@ -162,15 +162,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Passe-GO-Novembre-2026.jpg"
   },
   {
-    "id": "206122",
-    "title": "Pluie de Météno : Léonides",
-    "category": "Événement",
-    "start": 1794672000000,
-    "end": 1795129140000,
-    "url": "https://www.margxt.fr/evenement-pluies-de-meteno-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/10/Pokemon-GO-Pluie-Meteno.jpg"
-  },
-  {
     "id": "206537",
     "title": "Boréas Avatar ✨",
     "category": "Raids Obscurs",
@@ -243,22 +234,13 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
   },
   {
-    "id": "197359",
-    "title": "Jeudi Combat GO",
-    "category": "Découvertes quotidiennes",
-    "start": 1795042800000,
-    "end": 1795129140000,
-    "url": "https://www.margxt.fr/events/jeudi-combat-go/var/ri-11.l-L1",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Jeudi-Combat-GO.jpg"
-  },
-  {
-    "id": "206764",
-    "title": "Ouistempo ✨, Flambino ✨ et Larméléon ✨ + Bonbon x2 à la capture",
-    "category": "Événement",
-    "start": 1795107600000,
-    "end": 1795111200000,
-    "url": "https://www.margxt.fr/heures-vedettes-du-mois-de-novembre-2026-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/06/Pokemon-Go-Heures-Pokemon-Vedette.jpg"
+    "id": "204454",
+    "title": "Championnats Internationaux Pokémon d’Amérique latine São Paulo (Brésil) 2027",
+    "category": "Pokémon Championships",
+    "start": 1795129200000,
+    "end": 1795388399000,
+    "url": "https://championships.pokemon.com/fr-fr/events/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/09/Pokemon-GO-Internationaux-Amerique-Latine-2027.webp"
   },
   {
     "id": "197357",
@@ -268,15 +250,6 @@
     "end": 1795215540000,
     "url": "https://www.margxt.fr/events/vendredi-amitie-2/var/ri-11.l-L1",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Vendredi-Amitie.jpg"
-  },
-  {
-    "id": "204454",
-    "title": "Championnats Internationaux Pokémon d’Amérique latine São Paulo (Brésil) 2027",
-    "category": "Pokémon Championships",
-    "start": 1795129200000,
-    "end": 1795388399000,
-    "url": "https://championships.pokemon.com/fr-fr/events/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/09/Pokemon-GO-Internationaux-Amerique-Latine-2027.webp"
   },
   {
     "id": "204673",
@@ -448,6 +421,15 @@
     "end": 1796245200000,
     "url": "https://www.margxt.fr/guide-ligue-de-combat-go-sentiers-crepusculaires-saison-28-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
+  },
+  {
+    "id": "197359",
+    "title": "Jeudi Combat GO",
+    "category": "Découvertes quotidiennes",
+    "start": 1795647600000,
+    "end": 1795733940000,
+    "url": "https://www.margxt.fr/events/jeudi-combat-go/var/ri-12.l-L1",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Jeudi-Combat-GO.jpg"
   },
   {
     "id": "206551",
