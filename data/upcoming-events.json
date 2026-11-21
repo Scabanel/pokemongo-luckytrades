@@ -243,15 +243,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/09/Pokemon-GO-Internationaux-Amerique-Latine-2027.webp"
   },
   {
-    "id": "197357",
-    "title": "Vendredi amitié",
-    "category": "Découvertes quotidiennes",
-    "start": 1795129200000,
-    "end": 1795215540000,
-    "url": "https://www.margxt.fr/events/vendredi-amitie-2/var/ri-11.l-L1",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Vendredi-Amitie.jpg"
-  },
-  {
     "id": "204673",
     "title": "Pokémon RUN 30 (Kuala Lumpur, Malaisie)",
     "category": "Événement local",
@@ -439,6 +430,15 @@
     "end": 1795716000000,
     "url": "https://www.margxt.fr/heures-vedettes-du-mois-de-novembre-2026-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2020/06/Pokemon-Go-Heures-Pokemon-Vedette.jpg"
+  },
+  {
+    "id": "197357",
+    "title": "Vendredi amitié",
+    "category": "Découvertes quotidiennes",
+    "start": 1795734000000,
+    "end": 1795820340000,
+    "url": "https://www.margxt.fr/events/vendredi-amitie-2/var/ri-12.l-L1",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Vendredi-Amitie.jpg"
   },
   {
     "id": "204455",
