@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { scrapePogoAvailability } from "@/scripts/generate-pogo-availability.mjs";
 import { buildCostumeCatalog } from "@/scripts/generate-costume-catalog.mjs";
-import { scrapeValidatedBackgrounds, downloadImage, slugify } from "@/scripts/generate-pokemon-backgrounds.mjs";
+import { scrapeValidatedBackgrounds, mergeManualBackgrounds, downloadImage, slugify } from "@/scripts/generate-pokemon-backgrounds.mjs";
+import manualBackgrounds from "@/data/manual-backgrounds.json";
 import { scrapeUpcomingEvents } from "@/scripts/generate-upcoming-events.mjs";
 import { putIfChangedText, createBinaryFile, listRepoDirectory, getExistingMissingInGo } from "@/lib/github-repo";
 import pokemonList from "@/data/pokemon.json";
@@ -135,7 +136,10 @@ export async function GET(request: NextRequest) {
   // Fonds validés par Pokémon (margxt.fr) + téléchargement/commit des
   // nouvelles images (plafonné, voir MAX_NEW_IMAGES_PER_RUN).
   try {
-    const { byDex, uniqueImageUrls } = await scrapeValidatedBackgrounds();
+    const { byDex: scraped, uniqueImageUrls } = await scrapeValidatedBackgrounds();
+    // Fonds ajoutés à la main (absents de margxt) : sans cette fusion, le
+    // cron les effacerait à chaque passage.
+    const byDex = mergeManualBackgrounds(scraped, manualBackgrounds);
     steps.pokemonBackgrounds = await putIfChangedText(
       "data/pokemon-backgrounds.json",
       JSON.stringify(byDex, null, 2) + "\n",

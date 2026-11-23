@@ -153,11 +153,30 @@ export async function scrapeValidatedBackgrounds() {
   return { byDex, uniqueImageUrls };
 }
 
+// Fusionne data/manual-backgrounds.json (fonds trouvés ailleurs que sur
+// margxt.fr, avec leur image déjà dans public/event-backgrounds/) dans le
+// résultat du scrape. Sans cela, chaque exécution du cron réécrit
+// data/pokemon-backgrounds.json depuis margxt seul et efface ces ajouts.
+// Les entrées manuelles passent en tête (les plus récentes d'abord, comme
+// margxt) ; une URL déjà présente pour le Pokémon n'est pas doublée. Quand
+// margxt finit par lister le fond, l'entrée manuelle peut être retirée.
+export function mergeManualBackgrounds(byDex, manual) {
+  for (const [dex, entries] of Object.entries(manual ?? {})) {
+    const existing = byDex[dex] ?? [];
+    const known = new Set(existing.map((e) => e.url));
+    const added = entries.filter((e) => !known.has(e.url));
+    byDex[dex] = [...added, ...existing];
+  }
+  return byDex;
+}
+
 async function main() {
   await mkdir(IMAGES_DIR, { recursive: true });
 
   console.log("Téléchargement et analyse des pages margxt.fr…");
   const { byDex, uniqueImageUrls } = await scrapeValidatedBackgrounds();
+  const { readFile } = await import("node:fs/promises");
+  mergeManualBackgrounds(byDex, JSON.parse(await readFile(path.join(__dirname, "..", "data", "manual-backgrounds.json"), "utf-8")));
   console.log(`${uniqueImageUrls.length} images uniques à vérifier/télécharger…`);
 
   let downloaded = 0;
