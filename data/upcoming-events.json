@@ -234,33 +234,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
   },
   {
-    "id": "204454",
-    "title": "Championnats Internationaux Pokémon d’Amérique latine São Paulo (Brésil) 2027",
-    "category": "Pokémon Championships",
-    "start": 1795129200000,
-    "end": 1795388399000,
-    "url": "https://championships.pokemon.com/fr-fr/events/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/09/Pokemon-GO-Internationaux-Amerique-Latine-2027.webp"
-  },
-  {
-    "id": "204673",
-    "title": "Pokémon RUN 30 (Kuala Lumpur, Malaisie)",
-    "category": "Événement local",
-    "start": 1795186800000,
-    "end": 1795359599000,
-    "url": "https://www.margxt.fr/evenement-pokemon-run-2026-philippines-taiwan-singapour-malaisie-et-indonesie-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/06/Pokemon-GO-Pokemon-RUN-30.jpg"
-  },
-  {
-    "id": "197355",
-    "title": "Dimanche en plein air",
-    "category": "Découvertes quotidiennes",
-    "start": 1795302000000,
-    "end": 1795388340000,
-    "url": "https://www.margxt.fr/events/scenic-sunday/var/ri-11.l-L1",
-    "image": "https://www.margxt.fr/wp-content/uploads/2023/11/Pokemon-GO-Sur-les-Routes.png"
-  },
-  {
     "id": "206545",
     "title": "Psystigri ✨",
     "category": "Combats Max",
@@ -439,6 +412,15 @@
     "end": 1795881600000,
     "url": "https://www.margxt.fr/evenement-journee-de-super-mega-raids-melodelfe-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Super-Mega-Raids-Melodelfe.jpg"
+  },
+  {
+    "id": "197355",
+    "title": "Dimanche en plein air",
+    "category": "Découvertes quotidiennes",
+    "start": 1795906800000,
+    "end": 1795993140000,
+    "url": "https://www.margxt.fr/events/scenic-sunday/var/ri-12.l-L1",
+    "image": "https://www.margxt.fr/wp-content/uploads/2023/11/Pokemon-GO-Sur-les-Routes.png"
   },
   {
     "id": "206546",
