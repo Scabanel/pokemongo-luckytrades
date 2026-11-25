@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { scrapePogoAvailability } from "@/scripts/generate-pogo-availability.mjs";
 import { buildCostumeCatalog } from "@/scripts/generate-costume-catalog.mjs";
-import { scrapeValidatedBackgrounds, mergeManualBackgrounds, downloadImage, slugify } from "@/scripts/generate-pokemon-backgrounds.mjs";
+import { scrapeValidatedBackgrounds, mergeManualBackgrounds, downloadImage, slugify, nomWebp, convertirEnWebp } from "@/scripts/generate-pokemon-backgrounds.mjs";
 import manualBackgrounds from "@/data/manual-backgrounds.json";
 import { scrapeUpcomingEvents } from "@/scripts/generate-upcoming-events.mjs";
 import { putIfChangedText, createBinaryFile, listRepoDirectory, getExistingMissingInGo } from "@/lib/github-repo";
@@ -156,15 +156,17 @@ export async function GET(request: NextRequest) {
     const failed: string[] = [];
     for (const url of uniqueImageUrls) {
       const slug = slugify(url);
-      if (existingImages.has(slug)) continue;
+      // Le fichier stocké est toujours .webp (l'URL publique garde l'extension d'origine).
+      const fichier = nomWebp(slug);
+      if (existingImages.has(fichier)) continue;
 
       if (uploaded >= MAX_NEW_IMAGES_PER_RUN) {
         skippedForLimit++;
         continue;
       }
       try {
-        const buf = await downloadImage(url);
-        await createBinaryFile(`public/event-backgrounds/${slug}`, buf, `Auto-ajout fond ${slug} : ${runId}`);
+        const buf = await convertirEnWebp(await downloadImage(url));
+        await createBinaryFile(`public/event-backgrounds/${fichier}`, buf, `Auto-ajout fond ${fichier} : ${runId}`);
         uploaded++;
       } catch (err) {
         failed.push(`${slug}: ${err instanceof Error ? err.message : String(err)}`);

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentTrainer } from "@/lib/auth";
 import { createBinaryFile, listRepoDirectory } from "@/lib/github-repo";
-import { slugify } from "@/scripts/generate-pokemon-backgrounds.mjs";
+import { slugify, nomWebp, convertirEnWebp } from "@/scripts/generate-pokemon-backgrounds.mjs";
 
 // Téléverse une image de fond choisie par Steven (upload manuel, pas un
 // scrape) dans public/event-backgrounds/ via l'API Contents GitHub (même
@@ -21,8 +21,10 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const buffer = Buffer.from(dataBase64, "base64");
-    const baseSlug = slugify(filename);
+    // Toujours converti en WebP, comme les imports automatiques : le fichier ET l'URL
+    // renvoyée sont en .webp (nouvelle URL, aucune entrée existante n'en dépend).
+    const buffer = await convertirEnWebp(Buffer.from(dataBase64, "base64"));
+    const baseSlug = nomWebp(slugify(filename));
     const existing = await listRepoDirectory("public/event-backgrounds");
 
     // Évite d'écraser un fichier existant du même nom : suffixe numérique

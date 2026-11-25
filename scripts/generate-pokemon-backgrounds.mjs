@@ -47,6 +47,24 @@ export function slugify(url) {
   return `${normalized}.${ext}`;
 }
 
+// Nom du FICHIER stocké sur disque / GitHub pour un slug : toujours .webp, quelle que soit
+// l'extension de la source (png/jpg chez margxt). L'URL publique, elle, ne change JAMAIS
+// (/event-backgrounds/<slug> avec l'extension d'origine) : des entrées en base (backgroundUrl)
+// et le matching want/give comparent ces chaînes. next.config.ts réécrit .png/.jpg vers .webp.
+export function nomWebp(slug) {
+  return slug.replace(/\.[a-z0-9]+$/i, ".webp");
+}
+
+// Convertit en WebP (qualité 80 : indiscernable pour un fond, 3 à 5 fois plus léger qu'un PNG).
+// Un WebP en entrée est gardé tel quel, pour ne pas le recompresser (perte cumulative).
+// À appeler à CHAQUE import de fond : cron refresh-data, upload admin, ce script.
+export async function convertirEnWebp(buf) {
+  const sharp = (await import("sharp")).default;
+  const meta = await sharp(buf).metadata();
+  if (meta.format === "webp") return buf;
+  return sharp(buf).webp({ quality: 80, effort: 5 }).toBuffer();
+}
+
 // Réutilisée par app/api/cron/refresh-data/route.ts pour re-télécharger une
 // image sans dépendre du disque local (pas de cache "déjà présent").
 export async function downloadImage(url) {
@@ -182,13 +200,19 @@ async function main() {
   let downloaded = 0;
   for (const url of uniqueImageUrls) {
     const slug = slugify(url);
-    const dest = path.join(IMAGES_DIR, slug);
+    const dest = path.join(IMAGES_DIR, nomWebp(slug));
     if (await fileExists(dest)) continue;
     let buf;
     try {
       buf = await downloadImage(url);
     } catch (err) {
       console.warn(`  ⚠ Échec téléchargement ${url} (${err.message})`);
+      continue;
+    }
+    try {
+      buf = await convertirEnWebp(buf);
+    } catch (err) {
+      console.warn(`  ⚠ Échec conversion WebP ${url} (${err.message})`);
       continue;
     }
     await writeFile(dest, buf);
