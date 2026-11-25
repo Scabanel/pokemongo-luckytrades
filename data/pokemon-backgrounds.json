@@ -235,6 +235,10 @@
   ],
   "25": [
     {
+      "label": "Duolingo x Pokémon GODepuis le 17 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-special-duolingo-2026.png"
+    },
+    {
       "label": "Sentiers Dynamax16 au 23 novembre 2026",
       "url": "/event-backgrounds/pokemon-go-fond-special-finale-max.webp"
     },
@@ -681,6 +685,12 @@
     {
       "label": "Terres Sauvages (Wild Area) Nagasaki7 au 9 novembre 2025",
       "url": "/event-backgrounds/pokemon-go-fond-lieu-wild-area-nagasaki.webp"
+    }
+  ],
+  "52": [
+    {
+      "label": "Duolingo x Pokémon GODepuis le 17 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-special-duolingo-2026.png"
     }
   ],
   "56": [
@@ -2757,6 +2767,12 @@
       "url": "/event-backgrounds/pokemon-go-fond-special-might-and-mastery.png"
     }
   ],
+  "441": [
+    {
+      "label": "Duolingo x Pokémon GODepuis le 17 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-special-duolingo-2026.png"
+    }
+  ],
   "443": [
     {
       "label": "Community Day Classique Griknot12 septembre 2026",
@@ -2764,6 +2780,10 @@
     }
   ],
   "448": [
+    {
+      "label": "Duolingo x Pokémon GODepuis le 17 novembre 2026",
+      "url": "/event-backgrounds/pokemon-go-fond-special-duolingo-2026.png"
+    },
     {
       "label": "Passe GO En route pour Kalos23 février au 1er mars",
       "url": "/event-backgrounds/pokemon-go-special-background-mega.webp"
