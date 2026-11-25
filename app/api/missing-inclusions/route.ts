@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentTrainer } from "@/lib/auth";
+import { CACHE_LISTES } from "@/lib/cacheHttp";
 
 // Ajout manuel à la lecture par-dessus data/missing-in-go.json (voir
 // app/pas-encore-sortis/page.tsx) : symétrique de missing-exclusions, pour
@@ -9,7 +10,7 @@ import { getCurrentTrainer } from "@/lib/auth";
 // par le cron de rafraîchissement.
 export async function GET() {
   const inclusions = await prisma.missingPokemonInclusion.findMany();
-  return NextResponse.json(inclusions);
+  return NextResponse.json(inclusions, { headers: CACHE_LISTES });
 }
 
 export async function POST(request: NextRequest) {

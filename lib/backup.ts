@@ -7,7 +7,10 @@ export async function buildBackupPayload() {
   const [entries, trainers] = await Promise.all([
     prisma.pokemonEntry.findMany({
       include: { trainer: true },
-      orderBy: { createdAt: "asc" },
+      // createdAt seul n'est pas un ordre total (108 entrées partagent la même milliseconde
+      // après un ajout en masse) : sans l'id, l'ordre change d'un jour à l'autre et git voit
+      // un fichier entièrement réécrit (5 700 lignes) alors que rien n'a bougé.
+      orderBy: [{ createdAt: "asc" }, { id: "asc" }],
     }),
     prisma.trainer.findMany({ orderBy: { name: "asc" } }),
   ]);

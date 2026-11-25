@@ -1,6 +1,7 @@
 {
   "buildCommand": "prisma generate && next build",
   "framework": "nextjs",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)backups'",
   "crons": [
     { "path": "/api/cron/backup", "schedule": "0 6 * * *" },
     { "path": "/api/cron/refresh-data", "schedule": "0 2 * * *" }

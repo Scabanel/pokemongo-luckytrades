@@ -2,6 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentTrainer } from "@/lib/auth";
 import { POKEMON_SIZES } from "@/lib/entryMatching";
+import { CACHE_LISTES } from "@/lib/cacheHttp";
+
+// Seuls les champs du dresseur que l'interface affiche. `include: { trainer: true }` renvoyait
+// aussi authUserId (identifiant du compte Supabase Auth) et createdAt, répétés sur chacune des
+// ~3 000 entrées : de la bande passante payée pour rien, et un identifiant interne exposé.
+const TRAINER_PUBLIC = {
+  select: { id: true, name: true, team: true, level: true, friendCode: true, city: true, preferredSpriteStyle: true },
+} as const;
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -29,12 +37,12 @@ export async function GET(request: NextRequest) {
       ...(trainerId ? { trainerId } : undefined),
       ...(seulementShiny ? { shiny: true } : undefined),
     },
-    include: { trainer: true },
+    include: { trainer: TRAINER_PUBLIC },
     orderBy: { createdAt: "desc" },
     ...(limite ? { take: limite } : undefined),
   });
 
-  return NextResponse.json(entries);
+  return NextResponse.json(entries, { headers: CACHE_LISTES });
 }
 
 export async function POST(request: NextRequest) {

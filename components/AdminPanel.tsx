@@ -88,8 +88,9 @@ export default function AdminPanel({ onLogout }: AdminPanelProps) {
 
   const fetchData = useCallback(async () => {
     const [eRes, tRes, meRes] = await Promise.all([
-      fetch("/api/entries?completed=false"),
-      fetch("/api/trainers"),
+      // `_` : l'admin revoit ses écritures tout de suite (ces GET sont cachés 60 s par le CDN).
+      fetch(`/api/entries?completed=false&_=${Date.now()}`),
+      fetch(`/api/trainers?_=${Date.now()}`),
       fetch("/api/auth/me"),
     ]);
     setEntries(await eRes.json());

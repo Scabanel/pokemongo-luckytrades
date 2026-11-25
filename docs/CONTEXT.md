@@ -171,3 +171,14 @@ Itéré plusieurs fois avant de trouver la bonne recette :
   dossiers `_xxx` sous `app/` sont des "private folders" exclus du routing),
   la interroger via `curl` pendant que `next dev` tourne, puis la supprimer
   et `rm -rf .next` pour nettoyer les types générés qui la référencent.
+
+## Économie d'usage Vercel / Supabase (2026-11-25)
+
+Passe faite pour ne pas se retrouver à payer (leçon TFNC). Chaque point a une raison, ne pas les défaire :
+
+- **Un commit de sauvegarde ne redéploie plus.** `vercel.json` `ignoreCommand` saute le build quand seul `backups/` a changé. Avant, le backup quotidien (6h UTC) committait sur `main` donc 1 déploiement par jour pour rien.
+- **Le backup ne committe que si les données ont changé.** `exportedAt` n'est plus dans le fichier (il reste dans le message de commit) et la comparaison se fait par sha git, sans téléchargement (l'API Contents ne renvoie pas le contenu au-delà de 1 Mo). Tri `createdAt` puis `id` : 108 entrées partagent la même milliseconde, l'ancien tri instable réécrivait ~5 700 lignes par jour.
+- **GET publics cachés par le CDN** (`lib/cacheHttp.ts`) : `/api/entries`, `/api/trainers`, `/api/missing-*` 60 s, `/api/trainers/count` 10 min. Jamais sur une route qui lit la session (`/api/auth/me`). Un client qui doit revoir sa propre écriture ajoute `&_=${Date.now()}` à son GET (déjà fait dans `refetchEntries` et `AdminPanel.fetchData`). Toute NOUVELLE lecture après écriture doit faire pareil.
+- **`/api/entries` ne renvoie plus `authUserId`** du dresseur joint (identifiant Supabase Auth, répété sur ~3 000 entrées).
+- **Le middleware n'appelle Supabase Auth que s'il existe un cookie de session `sb-*-auth-token`.** Avant : 1 appel Auth par page, prefetch et appel /api, y compris pour les visiteurs anonymes.
+- Pas de `next/image` sur le projet (donc aucun quota d'optimisation d'images), ne pas en introduire sans le mesurer. `public/event-backgrounds` pèse 23 Mo en PNG : candidat à une conversion WebP si la bande passante Vercel devient un sujet.

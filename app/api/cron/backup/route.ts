@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createHash } from "node:crypto";
 import { buildBackupPayload } from "@/lib/backup";
 
 // Backup automatique quotidien : déclenché par Vercel Cron (voir vercel.json),
@@ -36,7 +37,11 @@ export async function GET(request: NextRequest) {
   }
 
   const payload = await buildBackupPayload();
-  const content = JSON.stringify(payload, null, 2);
+  // exportedAt reste dans le message de commit et la réponse, mais PAS dans le fichier :
+  // sinon le fichier change tous les jours même quand les données sont identiques.
+  const { exportedAt: _exportedAt, ...stable } = payload;
+  void _exportedAt;
+  const content = JSON.stringify(stable, null, 2);
   const apiUrl = `https://api.github.com/repos/${githubRepo}/contents/${BACKUP_PATH}`;
   const githubHeaders = {
     Authorization: `Bearer ${githubToken}`,
@@ -56,6 +61,27 @@ export async function GET(request: NextRequest) {
       { error: "Impossible de lire le backup existant sur GitHub", detail },
       { status: 502 }
     );
+  }
+
+  // Rien n'a changé depuis la dernière sauvegarde : on ne committe pas. Un commit sur main
+  // = un déploiement Vercel (minutes de build) + 3,7 Mo de plus dans l'historique git.
+  // Le sha d'un fichier git est sha1("blob <taille>\0" + contenu) : on le calcule ici plutôt
+  // que de télécharger le fichier (l'API Contents ne renvoie pas le contenu au-delà de 1 Mo).
+  if (sha) {
+    const buf = Buffer.from(content, "utf-8");
+    const localSha = createHash("sha1")
+      .update(`blob ${buf.length}\0`)
+      .update(buf)
+      .digest("hex");
+    if (localSha === sha) {
+      return NextResponse.json({
+        success: true,
+        unchanged: true,
+        exportedAt: payload.exportedAt,
+        trainers: payload.trainers.length,
+        entries: payload.entries.length,
+      });
+    }
   }
 
   const putRes = await fetch(apiUrl, {

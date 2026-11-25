@@ -157,7 +157,8 @@ export default function DresseurPageClient({ id }: { id: string }) {
   };
 
   const refetchEntries = () => {
-    fetch(`/api/entries?trainerId=${id}`)
+    // `_` change l'URL : le CDN (cache 60 s sur ce GET) ne ressert pas la liste d'avant l'écriture.
+    fetch(`/api/entries?trainerId=${id}&_=${Date.now()}`)
       .then((r) => r.json())
       .then(setEntries);
   };

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { CACHE_COMPTEUR } from "@/lib/cacheHttp";
 
 // Endpoint public dédié et léger pour le compteur du footer (SiteFooter.tsx,
 // affiché sur toutes les pages) : évite de refetch la liste complète des
@@ -7,5 +8,5 @@ import { prisma } from "@/lib/prisma";
 // juste pour en lire la longueur.
 export async function GET() {
   const count = await prisma.trainer.count();
-  return NextResponse.json({ count });
+  return NextResponse.json({ count }, { headers: CACHE_COMPTEUR });
 }

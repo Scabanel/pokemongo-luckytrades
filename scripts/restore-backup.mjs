@@ -40,7 +40,7 @@ if (!Array.isArray(raw.trainers) || !Array.isArray(raw.entries)) {
 }
 
 console.log(`Backup chargé : ${backupPath}`);
-console.log(`  exportedAt : ${raw.exportedAt}`);
+console.log(`  exportedAt : ${raw.exportedAt ?? "(non daté dans le fichier, voir la date du commit)"}`);
 console.log(`  trainers   : ${raw.trainers.length}`);
 console.log(`  entries    : ${raw.entries.length}`);
 

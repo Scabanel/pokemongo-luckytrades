@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentTrainer } from "@/lib/auth";
+import { CACHE_LISTES } from "@/lib/cacheHttp";
 
 // Filtre appliqué à la lecture par-dessus data/missing-in-go.json (voir
 // app/pas-encore-sortis/page.tsx) : ne modifie jamais ce fichier lui-même,
 // régénéré périodiquement par le cron de rafraîchissement.
 export async function GET() {
   const exclusions = await prisma.missingPokemonExclusion.findMany();
-  return NextResponse.json(exclusions);
+  return NextResponse.json(exclusions, { headers: CACHE_LISTES });
 }
 
 export async function POST(request: NextRequest) {

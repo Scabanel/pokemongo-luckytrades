@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getCurrentTrainer } from "@/lib/auth";
+import { CACHE_LISTES } from "@/lib/cacheHttp";
 
 export async function GET() {
   const [trainers, shinyCounts] = await Promise.all([
@@ -26,7 +27,7 @@ export async function GET() {
     _count: { ...t._count, shinyEntries: shinyCountByTrainerId.get(t.id) ?? 0 },
   }));
 
-  return NextResponse.json(withShinyCount);
+  return NextResponse.json(withShinyCount, { headers: CACHE_LISTES });
 }
 
 export async function POST(request: NextRequest) {

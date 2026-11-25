@@ -4,6 +4,14 @@ import { NextResponse, type NextRequest } from "next/server";
 // Rafraîchit la session Supabase (le token d'accès expire et doit être
 // silencieusement renouvelé) sur chaque requête qui traverse ce middleware.
 export async function middleware(request: NextRequest) {
+  // Un visiteur sans cookie de session Supabase (la grande majorité du trafic) n'a rien à
+  // rafraîchir : sans ce garde-fou, chaque page, chaque prefetch et chaque appel /api
+  // déclenchait un aller-retour vers Supabase Auth pour apprendre qu'il n'y a personne.
+  const aUneSession = request.cookies
+    .getAll()
+    .some((c) => c.name.startsWith("sb-") && c.name.includes("-auth-token"));
+  if (!aUneSession) return NextResponse.next({ request });
+
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
