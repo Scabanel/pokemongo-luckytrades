@@ -171,42 +171,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2025/09/Pokemon-GO-Fantasmagorie-Psy-Offensive.jpg"
   },
   {
-    "id": "206563",
-    "title": "Darkrai ✨",
-    "category": "Raids",
-    "start": 1794805200000,
-    "end": 1795554000000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-darkrai-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/10/Pokemon-GO-Darkrai.jpg"
-  },
-  {
-    "id": "206562",
-    "title": "Cresselia ✨",
-    "category": "Raids",
-    "start": 1794805200000,
-    "end": 1795554000000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-cresselia-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/10/Pokemon-GO-Cresselia.jpeg"
-  },
-  {
-    "id": "206559",
-    "title": "Méga-Branette ✨",
-    "category": "Méga-Raids",
-    "start": 1794805200000,
-    "end": 1795554000000,
-    "url": "https://www.margxt.fr/les-meilleurs-pokemon-pour-battre-en-raids-mega-branette-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2022/06/Pokemon-GO-Halloween-2022.jpeg"
-  },
-  {
-    "id": "205958",
-    "title": "Ligue Hyper + Ligue Master : Méga-édition + Coupe GO CIAL 2026",
-    "category": "Ligue de Combat GO",
-    "start": 1795035600000,
-    "end": 1795640400000,
-    "url": "https://www.margxt.fr/guide-ligue-de-combat-go-sentiers-crepusculaires-saison-28-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
-  },
-  {
     "id": "206545",
     "title": "Psystigri ✨",
     "category": "Combats Max",
@@ -214,24 +178,6 @@
     "end": 1795982400000,
     "url": "https://www.margxt.fr/calendrier-des-pokemon-des-combats-max-dans-pokemon-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
-  },
-  {
-    "id": "197356",
-    "title": "Mardi Concours",
-    "category": "Découvertes quotidiennes",
-    "start": 1795474800000,
-    "end": 1795561140000,
-    "url": "https://www.margxt.fr/le-guide-complet-des-concours-pokestops-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2023/07/Pokemon-GO-Epreuves-Pokestops.webp"
-  },
-  {
-    "id": "206578",
-    "title": "Souhaits crépusculaires",
-    "category": "Événement",
-    "start": 1795510800000,
-    "end": 1796065200000,
-    "url": "https://www.margxt.fr/evenement-souhaits-crepusculaires-avec-notali-et-mentali-costumes-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Souhaits-Crepusculaires.jpg"
   },
   {
     "id": "206756",
@@ -243,40 +189,13 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Passe-GO-Souhaits-crepusculaires.jpg"
   },
   {
-    "id": "190834",
-    "title": "Pleine Lune",
-    "category": null,
-    "start": 1795546800000,
-    "end": 1795582800000,
-    "url": "https://www.margxt.fr/events/pleine-lune-12/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2024/12/Pokemon-GO-Pleine-Lune.jpg"
-  },
-  {
-    "id": "206564",
-    "title": "Deoxys Forme Vitesse ✨",
-    "category": "Raids",
-    "start": 1795582800000,
-    "end": 1796158800000,
-    "url": "https://www.margxt.fr/les-meilleurs-pokemon-pour-battre-en-raids-deoxys-vitesse-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2022/06/Pokemon-GO-Journee-Raids-Deoxys.jpeg"
-  },
-  {
-    "id": "206565",
-    "title": "Deoxys Forme Attaque ✨",
-    "category": "Raids",
-    "start": 1795582800000,
-    "end": 1796158800000,
-    "url": "https://www.margxt.fr/les-meilleurs-pokemon-pour-battre-en-raids-deoxys-forme-attaque-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2022/06/Pokemon-GO-Journee-Raids-Deoxys.jpeg"
-  },
-  {
-    "id": "206566",
-    "title": "Deoxys Forme Défense ✨",
-    "category": "Raids",
-    "start": 1795582800000,
-    "end": 1796158800000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-deoxys-defense-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/10/Pokemon-GO-Deoxys-Defense.jpg"
+    "id": "206578",
+    "title": "Souhaits crépusculaires",
+    "category": "Événement",
+    "start": 1795510800000,
+    "end": 1796065200000,
+    "url": "https://www.margxt.fr/evenement-souhaits-crepusculaires-avec-notali-et-mentali-costumes-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Souhaits-Crepusculaires.jpg"
   },
   {
     "id": "206567",
@@ -288,40 +207,31 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2020/10/Pokemon-GO-Deoxys-normal.jpeg"
   },
   {
-    "id": "206570",
-    "title": "Deoxys Forme Normale ✨",
-    "category": "Heure de Raids",
-    "start": 1795626000000,
-    "end": 1795629600000,
-    "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-deoxys-forme-normale-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2022/08/Pokemon-GO-Raids-Passe.webp"
-  },
-  {
-    "id": "206573",
-    "title": "Deoxys Forme Vitesse ✨",
-    "category": "Heure de Raids",
-    "start": 1795626000000,
-    "end": 1795629600000,
-    "url": "https://www.margxt.fr/les-meilleurs-pokemon-pour-battre-en-raids-deoxys-vitesse-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2022/08/Pokemon-GO-Raids-Passe.webp"
-  },
-  {
-    "id": "206574",
-    "title": "Deoxys Forme Attaque ✨",
-    "category": "Heure de Raids",
-    "start": 1795626000000,
-    "end": 1795629600000,
-    "url": "https://www.margxt.fr/les-meilleurs-pokemon-pour-battre-en-raids-deoxys-forme-attaque-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2022/08/Pokemon-GO-Raids-Passe.webp"
-  },
-  {
-    "id": "206575",
+    "id": "206566",
     "title": "Deoxys Forme Défense ✨",
-    "category": "Heure de Raids",
-    "start": 1795626000000,
-    "end": 1795629600000,
+    "category": "Raids",
+    "start": 1795582800000,
+    "end": 1796158800000,
     "url": "https://www.margxt.fr/guide-les-meilleurs-pokemon-pour-battre-en-raids-deoxys-defense-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2022/08/Pokemon-GO-Raids-Passe.webp"
+    "image": "https://www.margxt.fr/wp-content/uploads/2020/10/Pokemon-GO-Deoxys-Defense.jpg"
+  },
+  {
+    "id": "206565",
+    "title": "Deoxys Forme Attaque ✨",
+    "category": "Raids",
+    "start": 1795582800000,
+    "end": 1796158800000,
+    "url": "https://www.margxt.fr/les-meilleurs-pokemon-pour-battre-en-raids-deoxys-forme-attaque-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2022/06/Pokemon-GO-Journee-Raids-Deoxys.jpeg"
+  },
+  {
+    "id": "206564",
+    "title": "Deoxys Forme Vitesse ✨",
+    "category": "Raids",
+    "start": 1795582800000,
+    "end": 1796158800000,
+    "url": "https://www.margxt.fr/les-meilleurs-pokemon-pour-battre-en-raids-deoxys-vitesse-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2022/06/Pokemon-GO-Journee-Raids-Deoxys.jpeg"
   },
   {
     "id": "205959",
