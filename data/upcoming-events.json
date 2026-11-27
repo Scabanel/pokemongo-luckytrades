@@ -171,6 +171,15 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2025/09/Pokemon-GO-Fantasmagorie-Psy-Offensive.jpg"
   },
   {
+    "id": "207264",
+    "title": "Étude ponctuelle Duolingo",
+    "category": "Passe GO",
+    "start": 1794906000000,
+    "end": 1797893940000,
+    "url": "https://www.margxt.fr/recuperer-letude-ponctuelle-se-lancer-sur-duolingo-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Duolingo.jpg"
+  },
+  {
     "id": "206545",
     "title": "Psystigri ✨",
     "category": "Combats Max",
@@ -243,24 +252,6 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2026/08/Pokemon-GO-Ligue-Sentiers-Crepusculaires.png"
   },
   {
-    "id": "197359",
-    "title": "Jeudi Combat GO",
-    "category": "Découvertes quotidiennes",
-    "start": 1795647600000,
-    "end": 1795733940000,
-    "url": "https://www.margxt.fr/events/jeudi-combat-go/var/ri-12.l-L1",
-    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Jeudi-Combat-GO.jpg"
-  },
-  {
-    "id": "206551",
-    "title": "Sonistrelle Serre-tête ✨ + Bonbon x2 à la capture",
-    "category": "Événement",
-    "start": 1795712400000,
-    "end": 1795716000000,
-    "url": "https://www.margxt.fr/heures-vedettes-du-mois-de-novembre-2026-dans-pokemon-go/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2020/06/Pokemon-Go-Heures-Pokemon-Vedette.jpg"
-  },
-  {
     "id": "197357",
     "title": "Vendredi amitié",
     "category": "Découvertes quotidiennes",
@@ -315,6 +306,33 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
   },
   {
+    "id": "207280",
+    "title": "Paradis Tropical",
+    "category": "Événement",
+    "start": 1796115600000,
+    "end": 1796670000000,
+    "url": "https://www.margxt.fr/evenement-paradis-tropical-avec-notali-et-mentali-costumes-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Paradis-Tropical.jpg"
+  },
+  {
+    "id": "207295",
+    "title": "Passe GO Paradis Tropical",
+    "category": "Passe GO",
+    "start": 1796115600000,
+    "end": 1796670000000,
+    "url": "https://www.margxt.fr/guide-du-passe-go-paradis-tropical-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Passe-GO-Paradis-Tropical.jpg"
+  },
+  {
+    "id": "207244",
+    "title": "Passe GO Décembre",
+    "category": "Passe GO",
+    "start": 1796115600000,
+    "end": 1799139600000,
+    "url": "https://www.margxt.fr/guide-du-passe-go-decembre-2026-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Passe-GO-Decembre-2026.jpg"
+  },
+  {
     "id": "206993",
     "title": "Saison 29 de la Ligue de Combat GO",
     "category": "Ligue de Combat GO",
@@ -322,6 +340,15 @@
     "end": 1804107600000,
     "url": "https://www.margxt.fr/events/saison-29-de-la-ligue-de-combat-go/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Saison-29-Ligue.jpg"
+  },
+  {
+    "id": "197359",
+    "title": "Jeudi Combat GO",
+    "category": "Découvertes quotidiennes",
+    "start": 1796252400000,
+    "end": 1796338740000,
+    "url": "https://www.margxt.fr/events/jeudi-combat-go/var/ri-13.l-L1",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Jeudi-Combat-GO.jpg"
   },
   {
     "id": "204457",
@@ -334,12 +361,30 @@
   },
   {
     "id": "206915",
-    "title": "Journée Combat Dynamax ?",
+    "title": "Journée Combat Dynamax Lézargus Gigamax",
     "category": "Événement",
     "start": 1796475600000,
     "end": 1796486400000,
-    "url": "https://www.margxt.fr/events/journee-combat-dynamax/",
-    "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
+    "url": "https://www.margxt.fr/journee-de-combats-max-lezargus-gigamax-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Lezargus-Gigamax.jpg"
+  },
+  {
+    "id": "207305",
+    "title": "Célébration pour Pokémon Champions",
+    "category": "Événement",
+    "start": 1796720400000,
+    "end": 1797274800000,
+    "url": "https://www.margxt.fr/evenement-celebration-pour-pokemon-champions-avec-plus-de-kecleon-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-Celebration-Pokemon-Champions-2026.jpg"
+  },
+  {
+    "id": "207308",
+    "title": "Passe GO Célébration pour Pokémon Champions",
+    "category": "Passe GO",
+    "start": 1796720400000,
+    "end": 1797274800000,
+    "url": "https://www.margxt.fr/guide-du-passe-go-celebration-pour-pokemon-champions-dans-pokemon-go/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/03/Pokemon-GO-Passe-GO.webp"
   },
   {
     "id": "204674",
@@ -367,6 +412,15 @@
     "end": 1797091200000,
     "url": "https://www.margxt.fr/events/community-day-global-%e2%9c%a8/",
     "image": "https://www.margxt.fr/wp-content/uploads/2021/10/Pokemon-GO-Community-Day.jpeg"
+  },
+  {
+    "id": "207314",
+    "title": "Étude ponctuelle Choisis ton parcours",
+    "category": "Événement",
+    "start": 1797325200000,
+    "end": 1797879600000,
+    "url": "https://www.margxt.fr/events/etude-ponctuelle-choisis-ton-parcours/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Choisis-Ton-Parcours-Daydream-Destinations.jpg"
   },
   {
     "id": "206928",
@@ -421,6 +475,15 @@
     "end": 1799510400000,
     "url": "https://www.margxt.fr/events/journee-de-super-mega-raids/",
     "image": "https://www.margxt.fr/wp-content/uploads/2026/07/Pokemon-GO-Super-Mega-Raids.webp"
+  },
+  {
+    "id": "207316",
+    "title": "Étude ponctuelle Choisis ton parcours",
+    "category": "Événement",
+    "start": 1799744400000,
+    "end": 1800298800000,
+    "url": "https://www.margxt.fr/events/etude-ponctuelle-choisis-ton-parcours-2/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Choisis-Ton-Parcours-Daydream-Destinations.jpg"
   },
   {
     "id": "204458",
@@ -486,6 +549,15 @@
     "image": "https://www.margxt.fr/wp-content/uploads/2024/09/Pokemon-GO-Dynamax-Source-Energie-Particules-Max.jpg"
   },
   {
+    "id": "207317",
+    "title": "Étude ponctuelle Choisis ton parcours",
+    "category": "Événement",
+    "start": 1800954000000,
+    "end": 1801508400000,
+    "url": "https://www.margxt.fr/events/etude-ponctuelle-choisis-ton-parcours-3/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Choisis-Ton-Parcours-Daydream-Destinations.jpg"
+  },
+  {
     "id": "204461",
     "title": "Championnats Régionaux Pokémon de Birmingham (Angleterre) 2027",
     "category": "Pokémon Championships",
@@ -538,6 +610,15 @@
     "end": 1802534400000,
     "url": "https://www.margxt.fr/events/journee-de-raids-2/",
     "image": "https://www.margxt.fr/wp-content/uploads/2025/05/Pokemon-GO-Raids-Obscurs-Dynamax-Distance.jpg"
+  },
+  {
+    "id": "207318",
+    "title": "Étude ponctuelle Choisis ton parcours",
+    "category": "Événement",
+    "start": 1802768400000,
+    "end": 1803236400000,
+    "url": "https://www.margxt.fr/events/etude-ponctuelle-choisis-ton-parcours-4/",
+    "image": "https://www.margxt.fr/wp-content/uploads/2026/11/Pokemon-GO-Choisis-Ton-Parcours-Daydream-Destinations.jpg"
   },
   {
     "id": "205355",
